@@ -82,6 +82,7 @@ BEGIN
     BEGIN
         MENUITEM "Slave to SMPTE",              IDM_A_RECEIVE_SMPTE
         MENUITEM "Stamp SMPTE",                 IDM_A_UPDATEMIDIMANUAL
+        MENUITEM "Solo CUE Mode",               IDM_SOLO_CUE_MODE
     END
     POPUP "&Options"
     BEGIN
@@ -95,7 +96,6 @@ BEGIN
         MENUITEM "S&top VU Read",               IDM_STOP_VU_READ
         MENUITEM SEPARATOR
         MENUITEM "Reset DCX bus",               IDM_RESETBUS
-        MENUITEM "Solo CUE Mode",               IDM_SOLO_CUE_MODE
     END
     POPUP "&Window"
     BEGIN
