@@ -30,6 +30,7 @@
 #define IDC_PRF_SEQCHANNELS             1006
 #define IDBTN_SEQ_EXPAND                1006
 #define IDC_MIXER_IN                    1007
+#define IDBTN_SEQ_EXPAND2               1007
 #define IDC_PRF_MIXERIN_CHANNEL         1008
 #define IDC_MIXER_OUT                   1009
 #define IDC_PRF_FULLVIEW                1009
@@ -66,6 +67,7 @@
 #define IDC_INP_COMP                    1034
 #define IDC_SHOW_CHANGES                1035
 #define IDC_USE_AUTO                    1036
+#define ID_DEFAULTBOX                   1037
 #define IDS_QUIT_MESSAGE                2025
 #define IDS_DCXBIN_FILE_FAILED          2026
 #define IDS_ERR_LOAD_BITMAP             2030
@@ -196,7 +198,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        111
 #define _APS_NEXT_COMMAND_VALUE         40051
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_CONTROL_VALUE         1038
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
