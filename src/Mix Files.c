@@ -101,8 +101,8 @@ return 0;
 int     SaveMixFile(void)
 {
 OPENFILENAME    ofn;
-//	char						new_sequence_files [MAX_PATH];
-//	char						old_sequence_files [MAX_PATH];
+	char						new_sequence_files [MAX_PATH];
+	char						old_sequence_files [MAX_PATH];
 	char						szFile [MAX_PATH];
 	USHORT					compression;
 	HANDLE          hf;
@@ -134,14 +134,13 @@ ofn.lpstrDefExt = ".mix";//(LPSTR)szDefExt;
 
 		if(GetSaveFileName(&ofn))
 		{
-		// FDS		CloseSequenceFiles ();	
+				CloseSequenceFiles ();	
 				wsprintf(gfsMix.szFileName, "%s", &gfsTemp.szFileName[ofn.nFileOffset]);
 				gfsTemp.szFileName[ofn.nFileOffset] = 0;
 				wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
 				WriteMixFile(&gfsMix, TRUE);
 
 				wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
-				wsprintf(g_sequence_file_name, "%s", szFile);
 
 
 		// close the old files and the sequence window
@@ -149,23 +148,29 @@ ofn.lpstrDefExt = ".mix";//(LPSTR)szDefExt;
 		//DestroyWindow (ghwndSeq);
 		//ghwndSeq = NULL;
 		// assemble the new sequence file names and copy the old ones over
-//fds		wsprintf (new_sequence_files, "%s.ctek", szFile);
-//fds		wsprintf (old_sequence_files, "%s.ctek", g_sequence_file_name);
-//fds		CopyFile (old_sequence_files, new_sequence_files, FALSE);
+		wsprintf (new_sequence_files, "%s.ctek", szFile);
+		wsprintf (old_sequence_files, "%s.ctek", g_sequence_file_name);
+		CopyFile (old_sequence_files, new_sequence_files, FALSE);
 
-//fds		wsprintf (new_sequence_files, "%s.data", szFile);
-//fds		wsprintf (old_sequence_files, "%s.data", g_sequence_file_name);
-//fds		CopyFile (old_sequence_files, new_sequence_files, FALSE);
+		CloseDataFile();
+
+		wsprintf (new_sequence_files, "%s.data", szFile);
+		wsprintf (old_sequence_files, "%s.data", g_sequence_file_name);
+		CopyFile (old_sequence_files, new_sequence_files, FALSE);
 		// cool ... now set the compression on this file
 
-		wsprintf (szBuff, "%s.ctek", g_sequence_file_name);
-    g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szFile);
+//		wsprintf (szBuff, "%s.ctek", g_sequence_file_name);
+//		wsprintf (szBuff, "%s.ctek", szFile);
+//    g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szBuff);
 
-    wsprintf(szBuff, "%s.data",g_sequence_file_name);
-    if(CreateDataFile(szBuff))
+//    wsprintf(szBuff, "%s.data",g_sequence_file_name);
+    wsprintf(szBuff, "%s.data",szFile);
 
+				wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
+				wsprintf(g_sequence_file_name, "%s", szFile);
 
-		OpenSequenceFiles (g_sequence_file_name);
+    if(OpenDataFile(szBuff))
+			OpenSequenceFiles (g_sequence_file_name);
 		//ShowSeqWindow(TRUE);
     
 		}
@@ -423,12 +428,12 @@ if(g_CueMasterSystem == 0){
 	}
 
 	OpenSequenceFiles (szBuff);
-
-	ShowSeqWindow(TRUE);
-
+	SetFocus(ghwndZoom);			// Gamble wants the Zoom window to be the one with focus after loading
 
 return 0;
 }
+
+
 //
 //
 //
@@ -805,8 +810,9 @@ switch(pmwd->lpZoneMap->wID)
     case IDZM_INPUT_ZOOM:
         // Create the Window
         hwndLink = CreateZoomViewWindow(pmwd->szTitle, pmwd, 1);
-        if(pmwd->bLink && hwndLink)
-            ghwndZoom = hwndLink;
+
+//       if(pmwd->bLink && hwndLink)
+            ghwndZoom = hwndLink;	// Gamble wants zoom window with focux, Always set this
         break;
     }
 
