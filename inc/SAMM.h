@@ -337,6 +337,10 @@ int             SaveMixFile(void);
 int             UpdateMixFile(void);
 int             LoadMixFile(LPFILESTRUCT, BOOL);
 int             WriteMixFile(LPFILESTRUCT, BOOL);
+// added by Francis 
+int							WriteFkeyFile(LPFILESTRUCT  , int );
+int							LoadFkeyFile(LPFILESTRUCT , int );
+//
 int             WriteMixerWndDataToFile(HWND , HANDLE);
 int             WriteSequenceWndDataToFile(HWND , HANDLE);
 int             ReadMixerWndDataFromFile(HANDLE , LPFILESECTIONHEADER);
