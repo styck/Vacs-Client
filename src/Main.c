@@ -3,9 +3,9 @@
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author:: Styck                                $
+// $Archive:: /Vacs Client/src/Main.c             $
+// $Revision:: 47                                 $
 //
 
 
@@ -31,6 +31,8 @@ void		CancelAllCues (HWND);
 
 BOOL		g_bIsSoloCueMode;	// Default as true
 
+WORD	wKeyFlags=0;				// Shift Key Flag
+
 //======================
 // Windows Main Routine
 //
@@ -47,10 +49,12 @@ int         iInit;
 int         iMessage;
 FILESTRUCT	fsTemp;
 int					shift_key;	 
-WORD	wKeyFlags=0;
 int			iRet;
+HANDLE	hAccel;
 
 	ghInstMain = hInstance;
+
+	hAccel = LoadAccelerators(hInstance,"MdiAccel");
 
 	// 
 	//dwProcessID = GetCurrentProcessId();
@@ -100,7 +104,7 @@ int			iRet;
 
 	if ( shift_key & 0x8000)
 	{
-		CreateZoomViewWindow("Zoom View", NULL, 1);
+		CreateZoomViewWindow(ghwndMDIClient,"Zoom View", NULL, DCX_DEVMAP_MODULE_INPUT);
 	}
 	else
 	{
@@ -121,7 +125,7 @@ int			iRet;
 			{
 				// Ok... LA$T.mix file did NOT load
 				// so open a new Zoom window by default
-				CreateZoomViewWindow("Zoom View", NULL, 1);
+				CreateZoomViewWindow(ghwndMDIClient,"Zoom View", NULL, DCX_DEVMAP_MODULE_INPUT);
 				
 				// If this isn't done then when they try to add a sequence
 				// to the sequence window it will create an exception
@@ -160,9 +164,14 @@ int			iRet;
 	// Process Until WM_QUIT Message Is Received
 	//------------------------------------------
 
-	while((ghwndMain != NULL) && GetMessage(&msg, NULL/*ghwndMain*/, 0, 0) == TRUE)
+
+	while((ghwndMain != NULL) && GetMessage(&msg,NULL,/*ghwndMain,*/ 0, 0) == TRUE)
   {
-			iMessage = msg.message;
+
+		iMessage = msg.message;
+
+#define MOVEDTOWNDPROC		// THIS NEEDS TO BE HERE ALSO??? FIND OUT WHY AND FIX
+#ifdef MOVEDTOWNDPROC
 
 			//////////////
 			if(msg.message == WM_KEYUP)
@@ -287,6 +296,7 @@ int			iRet;
 
 			}
 
+
 			if(msg.message == WM_SYSKEYDOWN)
 			{
 				g_bReversDirection = TRUE; 
@@ -296,43 +306,23 @@ int			iRet;
 				g_bReversDirection = FALSE; 
 			}
 
-			/////////////////////////////////////////////////////////////////////////////////////////
-			// We are quiting or exiting, kill the mix file update timer and write the LA$T.mix file
-			/////////////////////////////////////////////////////////////////////////////////////////
-			if(msg.message == WM_QUIT || msg.message == WM_CLOSE || msg.message == WM_DESTROY)
+#endif		// MOVEDTOWNDPROC
 
-			{
-
-// FDS - This is done in WndMainProc() WM_CLOSE
-//				
-//				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
-//				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
-//				WriteMixFile(&fsTemp, FALSE);
-//
-//				DestroyWindow (ghwndSeq);
-			}
-
-			if(!TranslateMDISysAccel(ghwndMDIClient, &msg))
+			if(!TranslateMDISysAccel(ghwndMDIClient, &msg) &&
+				 !TranslateAccelerator(ghwndMain, hAccel, &msg) )
 			{
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 			}
 
-//        if(iMessage == WM_QUIT)
-//            break;
-
-//        if(TranslateAccelerator(ghwndMain, hAccelMain, &msg) == 0)
-//            {
-//            TranslateMessage(&msg);
-//            DispatchMessage(&msg);
-//            }
+	}			
 
     // Perform Background Processing Functions
     //----------------------------------------
 //        CheckMidiStatus();
 //		}
 
-  }
+//fds  }
 
 
 	// WM_QUIT Message Received
@@ -381,9 +371,10 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 	DWORD dwType;
 	DWORD rc;
 	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
-	char								szTempSeq[MAX_PATH];
+	char	szTempSeq[MAX_PATH];
+	char  szBuff[MAX_PATH];
 
-	char            szBuff[MAX_PATH];
+	LPMIXERWNDDATA      lpmwd;
 
 
   switch (wMessage)
@@ -391,6 +382,132 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 //  case WM_MOUSEMOVE:
 //    UpdateTrackingWindow(NULL);
 //    break;
+
+	case WM_KEYUP:
+
+
+		g_bReversDirection = FALSE; 
+
+    switch(LOWORD(wParam))
+		{
+				case VK_SHIFT:
+				wKeyFlags &= ~VK_SHIFT;
+				break;
+
+		}
+		break;
+
+	case WM_KEYDOWN:
+
+		g_bReversDirection = TRUE; 
+		wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
+		iRet=0;	// Just in case it was not initialized
+
+    switch(LOWORD(wParam))
+		{
+
+					case VK_SHIFT:
+						wKeyFlags |= VK_SHIFT;
+					break;
+
+					///////////////////////////////////////////////////////////
+					// Processes SCREEN buttons
+
+					case VK_F1:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",1 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F1);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F1);
+					break;
+
+					case VK_F2:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",2 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F2);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F2);
+					break;
+
+					case VK_F3:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",3 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F3);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F3);
+					break;
+
+					case VK_F4:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",4 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F4);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F4);
+					break;
+
+					case VK_F5:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",5 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F5);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F5);
+
+					break;
+
+					case VK_F6:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",6 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F6);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F6);
+					break;
+
+					case VK_F7:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",7 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F7);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F4);
+					break;
+
+					case VK_F8:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",8 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F8);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F8);
+					break;
+
+					case VK_F9:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",9 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F9);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F9);
+					break;
+#ifdef NOT_USEDSYSTEMKEY
+					case VK_F10:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",10 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F10);
+						else	// Restore window
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F10);
+					break;
+#endif
+
+				}
+				
+
+				////////////////////////////////////////////////////////////////////
+				// Trying to load an FKEY file that is incompatible with the RACK setting
+				// Shutdown and EXIT
+				if(iRet==2)	
+				{
+					ShutdownProc();
+					return FALSE;
+				}
+		
+		break;
 
 	//````````````````````````````
 	case WM_U_COMIO_IN_DONE:
@@ -543,7 +660,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
         break;
     //``````````````
     case IDM_V_FULLZOOM:
-        CreateZoomViewWindow("Zoom View", NULL, 1);
+        CreateZoomViewWindow(hWnd, "Zoom View", NULL, DCX_DEVMAP_MODULE_INPUT);
         break;
     //``````````````
     case IDM_V_FULLZOOM_MASTER:
@@ -838,6 +955,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
 						if(rc == ERROR_SUCCESS)
 							wsprintf(gfsTemp.szFileName, "%s", szTempSeq);
+
+						// Since this is triggered by the timer we never know when
+						// we will get here.
+
+						ReleaseCapture(); // Release the mouse capture in any case
 
 						SaveMixFile();									// 
 						timerID = SetTimer(hWnd, 33, 200000, NULL);
@@ -1437,7 +1559,8 @@ LPARAM  lParam;
 void      GetMaxWindowSize(LPRECT lpRect,
                                  LPZONE_MAP lpZM,
                                  long lZMCount,
-                                 LPMIXERWNDDATA lpmwd)
+                                 LPMIXERWNDDATA lpmwd,
+																 BOOL bScrollBars)
 {
 long    lCount;
 RECT    rect;
@@ -1479,6 +1602,13 @@ int     iBmpIndx;
         break;
     }
   }
+
+	// ADJUST for Vertical Scroll Bars
+
+#ifdef SCROLLBARS
+	if(bScrollBars)
+		rect.right = rect.right + GetSystemMetrics(SM_CYVTHUMB) ;
+#endif
 
 	/////////////////////////////////////////////////////
 	// This is the actual Maximum size of the Image Window 
