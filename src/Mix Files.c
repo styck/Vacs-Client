@@ -18,6 +18,7 @@
 extern int	g_CueMasterSystem;
 extern int  g_iMasterModuleIdx;
 extern int	g_inputCueActiveCounter;
+extern char	g_sequence_file_name[MAX_PATH];
 
 void	UpdateTBGroupButtons(); // external 
 void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd, 
@@ -27,6 +28,8 @@ int     WriteGroupWndDataToFile(HWND hwnd, HANDLE hFile);
 void		HadleCueMasterSystem (void);
 int			countInputCuesOn (void);
 void		handleInputCuePriority (LPMIXERWNDDATA lpmwd, BOOL	input_cue_on);
+BOOL		OpenSequenceFiles (void);
+void		CloseSequenceFiles (void);
 
 
 static char gszTitleBuffer[255] = {0};
@@ -87,6 +90,12 @@ return 0;
 int     SaveMixFile(void)
 {
 OPENFILENAME    ofn;
+	char						new_sequence_files [MAX_PATH];
+	char						old_sequence_files [MAX_PATH];
+	char						szFile [MAX_PATH];
+	USHORT					compression;
+	HANDLE          hf;
+	DWORD						dwBWrite;
 
 if (gfsMix.szFileDir[0] == 0)
 	sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
@@ -112,12 +121,42 @@ ofn.lpstrDefExt = ".mix";//(LPSTR)szDefExt;
 
 if(GetSaveFileName(&ofn))
     {
+		CloseSequenceFiles ();	
     wsprintf(gfsMix.szFileName, "%s", &gfsTemp.szFileName[ofn.nFileOffset]);
     gfsTemp.szFileName[ofn.nFileOffset] = 0;
     wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
     WriteMixFile(&gfsMix, TRUE);
+
+		wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
+		// close the old files and the sequence window
+		//SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)ghwndSeq, 0L);
+		//DestroyWindow (ghwndSeq);
+		//ghwndSeq = NULL;
+		// assemble the new sequence file names and copy the old ones over
+		wsprintf (new_sequence_files, "%s.ctek", szFile);
+		wsprintf (old_sequence_files, "%s.ctek", g_sequence_file_name);
+		CopyFile (old_sequence_files, new_sequence_files, FALSE);
+
+		wsprintf (new_sequence_files, "%s.data", szFile);
+		wsprintf (old_sequence_files, "%s.data", g_sequence_file_name);
+		CopyFile (old_sequence_files, new_sequence_files, FALSE);
+		// cool ... now set the compression on this file
+		hf = CreateFile(new_sequence_files, GENERIC_WRITE, 
+										0, NULL, OPEN_EXISTING, 
+										FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+										NULL);
+
+		if (hf != INVALID_HANDLE_VALUE){
+			compression = COMPRESSION_FORMAT_LZNT1;
+			DeviceIoControl (hf, FSCTL_SET_COMPRESSION, &compression, sizeof (compression), 0, 0, 
+											 &dwBWrite, 0);
+			CloseHandle(hf);
     }
 
+		wsprintf(g_sequence_file_name, "%s", szFile);
+		OpenSequenceFiles ();
+		//ShowSeqWindow(TRUE);
+    }
 
 return 0;
 }
@@ -308,11 +347,19 @@ if(g_CueMasterSystem == 0){
 }
 */
 
-if(saveName)
-{
+	if(saveName){
 	wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
 	SetWindowText(ghwndMain, gszTitleBuffer);
 }
+	//
+
+	//SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)ghwndSeq, 0L);
+	//DestroyWindow (ghwndSeq);
+	//ghwndSeq = NULL;
+	wsprintf(g_sequence_file_name, "%s", szFile);
+	OpenSequenceFiles ();
+	//ShowSeqWindow(TRUE);
+
 
 return 0;
 }
