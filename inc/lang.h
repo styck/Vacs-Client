@@ -123,6 +123,7 @@
 #define IDS_SEQCOLUMN4                  4003
 #define IDS_CDEF_CONTROLNAME_NOTFOUND   5000
 #define IDS_DCX32_LOADED                5001
+#define IDS_MULTIPLE_APPLICATIONS_RUNNING 5001
 #define IDSS_TEXT_1                     6000
 #define IDSS_TEXT_2                     6001
 #define IDM_F_SAVEPREFERENCES           32004
@@ -137,6 +138,7 @@
 #define IDM_WINDOWICONS                 32035
 #define IDM_WINDOWCLOSEALL              32036
 #define IDM_V_CANCELGROUPS              32037
+#define IDM_V_CANCELCUES                33000
 #define IDM_F_OPEN_FILE                 40001
 #define IDM_F_SAVE_FILE                 40002
 #define IDM_F_UPDATE_FILE               40004
