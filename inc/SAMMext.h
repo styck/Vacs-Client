@@ -203,6 +203,7 @@ extern HDC                 ghdc256;
 extern HDC                 ghdcMemory;
 extern HDC                 g_hdcMemory;
 extern HDC                 g_hdcBuffer;
+extern HDC                 g_hdcTempBuffer;
 
 extern HBITMAP             g_hbmpBuffer;
 
