@@ -30,14 +30,19 @@ long CreatePropertySheet_PRF(HWND hwndOwner)
 PROPSHEETPAGE psp[4];
 PROPSHEETHEADER psh;
 
-psp[0].dwSize = sizeof(PROPSHEETPAGE);
-psp[0].dwFlags = 0;
-psp[0].hInstance = ghInstStrRes;    
-psp[0].pszTemplate = MAKEINTRESOURCE(IDD_PRF_GENERAL);
-psp[0].pszIcon = NULL;
-psp[0].pfnDlgProc = dlgPRFGeneral;
-psp[0].pszTitle = NULL;
-psp[0].lParam = 0;
+int iIndex=0;
+
+#ifdef NOTUSED	// Removed 1/7/2001 as per Gamble
+psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+psp[iIndex].dwFlags = 0;
+psp[iIndex].hInstance = ghInstStrRes;    
+psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_GENERAL);
+psp[iIndex].pszIcon = NULL;
+psp[iIndex].pfnDlgProc = dlgPRFGeneral;
+psp[iIndex].pszTitle = NULL;
+psp[iIndex].lParam = 0;
+iIndex++;
+#endif
 
 /*
 psp[1].dwSize = sizeof(PROPSHEETPAGE);
@@ -59,32 +64,37 @@ psp[1].pszTitle = NULL;
 psp[1].lParam = 0;
 */
 
-psp[1].dwSize = sizeof(PROPSHEETPAGE);
-psp[1].dwFlags = 0;
-psp[1].hInstance = ghInstStrRes;
-psp[1].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MIXER_CHANNELPORT);
-psp[1].pszIcon = NULL;
-psp[1].pfnDlgProc = dlgPRFMixerChanPort;
-psp[1].pszTitle = NULL;
-psp[1].lParam = 0;
+psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+psp[iIndex].dwFlags = 0;
+psp[iIndex].hInstance = ghInstStrRes;
+psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MIXER_CHANNELPORT);
+psp[iIndex].pszIcon = NULL;
+psp[iIndex].pfnDlgProc = dlgPRFMixerChanPort;
+psp[iIndex].pszTitle = NULL;
+psp[iIndex].lParam = 0;
+iIndex++;
 
-psp[2].dwSize = sizeof(PROPSHEETPAGE);
-psp[2].dwFlags = 0;
-psp[2].hInstance = ghInstStrRes;
-psp[2].pszTemplate = MAKEINTRESOURCE(IDD_PRF_VIEWS);
-psp[2].pszIcon = NULL;
-psp[2].pfnDlgProc = dlgPRFViews;
-psp[2].pszTitle = NULL;
-psp[2].lParam = 0;
+#ifdef NOTUSED	// Removed 1/7/2001 as per Gamble
+psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+psp[iIndex].dwFlags = 0;
+psp[iIndex].hInstance = ghInstStrRes;
+psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_VIEWS);
+psp[iIndex].pszIcon = NULL;
+psp[iIndex].pfnDlgProc = dlgPRFViews;
+psp[iIndex].pszTitle = NULL;
+psp[iIndex].lParam = 0;
+iIndex++;
     
-psp[3].dwSize = sizeof(PROPSHEETPAGE);
-psp[3].dwFlags = 0;
-psp[3].hInstance = ghInstStrRes;
-psp[3].pszTemplate = MAKEINTRESOURCE(IDD_PRF_ACTIONS);
-psp[3].pszIcon = NULL;
-psp[3].pfnDlgProc = dlgPRFActions;
-psp[3].pszTitle = NULL;
-psp[3].lParam = 0;
+psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+psp[iIndex].dwFlags = 0;
+psp[iIndex].hInstance = ghInstStrRes;
+psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_ACTIONS);
+psp[iIndex].pszIcon = NULL;
+psp[iIndex].pfnDlgProc = dlgPRFActions;
+psp[iIndex].pszTitle = NULL;
+psp[iIndex].lParam = 0;
+iIndex++;
+#endif
 
 psh.dwSize = sizeof(PROPSHEETHEADER);
 psh.dwFlags = PSH_PROPSHEETPAGE;
