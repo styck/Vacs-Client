@@ -309,12 +309,12 @@ void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWND
   }
   else
     if( ((lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_VU_METER) &&
-       (iModuleType == 5) || (iModuleType  == 4)) 
+       (iModuleType == DCX_DEVMAP_MODULE_MASTER) || (iModuleType  == DCX_DEVMAP_MODULE_CUE)) 
         ||
         ( ((lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_VU_METER) || 
           (lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX2_VU_METER)) 
           &&
-          (iModuleType  == 3)) )
+          (iModuleType  == DCX_DEVMAP_MODULE_MATRIX)) )
     {
       iVal = pVuData->wVUValue[wVUType];
       // Calculate the Vertical Position
@@ -593,22 +593,28 @@ return;
 void    RdOutText(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
   RECT            r;
-  int             iStrIndx;
   char            szRdOut[32];
   BOOL            bText = FALSE;
   int             ivalue;
   HBITMAP         hbmp;
-  //int             iPhisChannel;
   int             iBMPIndex;
   HFONT           hfont;
+	HBRUSH					hBrush;
 
   ZeroMemory(szRdOut, 32);
 
   if(lpczm->iCtrlNumAbs < 0)
   {
-    if(lpczm->iCtrlChanPos == CTRL_NUM_MASTER_CUEB_SYSTEM_SEL)
+
+		//////////////////////////////////////////////
+		// Handle the special case for the Cue A/B
+		// system and toggle the text depending
+		// on the which cue is selected
+
+    if((lpczm->iCtrlChanPos == CTRL_NUM_MASTER_CUEB_SYSTEM_SEL || lpczm->iCtrlChanPos == CTRL_NUM_MASTER_CUEA_SYSTEM_SEL) &&
+			  lpczm->iCtrlType == CTRL_TYPE_STRING_UPDATE)
     {
-      bText = TRUE;
+      bText = TRUE;	// Text only, no need to lookup value
       if(GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEB_SYSTEM_SEL) == 0 &&
         GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEA_SYSTEM_SEL) > 0 ) 
       {
@@ -632,41 +638,61 @@ void    RdOutText(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, 
   }
 
 START_STRING_UPDATE:
-  // Get this Control Zone
-  //----------------------
-  r = lpczm->rZone;
 
+	// Get this Control Zone
+	//----------------------
+	r = lpczm->rZone;
 
-  // Load the Module Bitmap in the Memory DC
-  //----------------------------------------
-  //iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
-  iBMPIndex = lpmwd->lpZoneMap[iChan].iBmpIndx;
+	//////////////////////////////////////////////////////////////////////////
+	// If ONLY text then lets erase what is there before displaying the text
+	// Currently ONLY used by the Cue A/B system to display the text, the
+	// code below will clear the area for the text (all the time by the way)
+	// These read out controns do not have a bitmap to select so if we don't
+	// clear it then the text will eventually overwrite each other
 
-  // Select the Original Bitmap
-  //---------------------------
-  hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
+	if(bText)
+	{
+//			hBrush = CreateSolidBrush(GetSysColor(COLOR_BTNFACE)); <== allows user to select COLOR
+			hBrush = CreateSolidBrush(PALETTERGB(156,223,206));
+			FillRect(hdc,&r, hBrush);
+			if(hBrush)
+				DeleteObject(hBrush);
 
-  // copy the Clean  bitmap to the memory
-  //--------------------------------------
-  BitBlt(hdc, r.left, r.top, r.right - r.left, r.bottom - r.top,
-         g_hdcBuffer, r.left, r.top, SRCCOPY);
-  SelectObject(g_hdcBuffer, hbmp);
+	}
+	else
+	{
 
-  iStrIndx = 0;
-  if(bText)
-    goto JUST_SHOW_THE_TEXT;
-  // Check the Vlalue
-  //-----------------
-  ivalue = CDef_GetCtrlMaxVal(lpczm->iCtrlNumAbs);
-  if(ivalue < iVal)
-      iVal = ivalue;
-  ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);
-  if(ivalue > iVal)
-      iVal = ivalue;
+		// Load the Module Bitmap in the Memory DC
+		//----------------------------------------
+		// iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
+		iBMPIndex = lpmwd->lpZoneMap[iChan].iBmpIndx;
 
-  CDef_GetCtrlReadout(lpczm->iCtrlNumAbs, iVal, szRdOut);
+		// Select the Original Bitmap
+		//---------------------------
+		hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
 
-JUST_SHOW_THE_TEXT:
+		// copy the Clean  bitmap to the memory
+		//--------------------------------------
+
+			BitBlt(hdc, r.left, r.top, r.right - r.left, r.bottom - r.top,
+					 g_hdcBuffer, r.left, r.top, SRCCOPY);
+
+		SelectObject(g_hdcBuffer, hbmp);
+
+	// Check if we are only showing text, else get the value to show
+
+		// Check the Value
+		//-----------------
+		ivalue = CDef_GetCtrlMaxVal(lpczm->iCtrlNumAbs);
+		if(ivalue < iVal)
+				iVal = ivalue;
+		ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);
+		if(ivalue > iVal)
+				iVal = ivalue;
+
+		CDef_GetCtrlReadout(lpczm->iCtrlNumAbs, iVal, szRdOut);
+	}
+
   hfont = SelectObject(hdc, g_hConsoleFont);
   WriteTextToDC(hdc, &r, 0, 0, RGB(0, 0, 0), szRdOut);
   SelectObject(hdc, hfont);
