@@ -5,7 +5,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/Controls.c $
-// $Revision: 31 $
+// $Revision: 32 $
 //
 //
 //=================================================
@@ -396,7 +396,8 @@ int             iBMPIndex;
 
 	// Check the Value
 	//----------------
-	ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);
+//fds		ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);	// ALWAYS RETURNS 0
+	ivalue = 0;
 	if(ivalue == iVal)
   {
     // Get this Controls Bitmap
@@ -708,7 +709,8 @@ START_STRING_UPDATE:
 		ivalue = CDef_GetCtrlMaxVal(lpczm->iCtrlNumAbs);
 		if(ivalue < iVal)
 				iVal = ivalue;
-		ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);
+//FDS		ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);	// ALWAYS RETURNS 0
+		ivalue = 0;
 		if(ivalue > iVal)
 				iVal = ivalue;
 
@@ -916,7 +918,8 @@ int									sum_in_flag = 0;
 	else
 		iV ++;
 
-	ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+//FDS	ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);	// ALWAYS RETURNS 0
+	ivalue = 0;
 	if(ivalue > iV)
 		iV = ivalue;
 	ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
