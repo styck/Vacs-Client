@@ -28,6 +28,81 @@
 IDZM_SUBMATRIX_ZOOM	ZONEMAP	MOVEABLE IMPURE LOADONCALL DISCARDABLE
 BEGIN
 
+/*
+	// THESE ARE NOT WORKING YET BEGIN
+	
+    // The VU meter      ######################
+    //-------------------
+    30, 2867,   46, 2876,
+    CTRL_NUM_MATRIX_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+    // The VU meter      ######################
+    //-------------------
+    30, 2875,   46, 2884,
+    CTRL_NUM_MATRIX_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+    // The VU meter      ######################
+    //-------------------
+    67, 2867,   83, 2876,
+    CTRL_NUM_MATRIX_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+    // The VU meter      ######################
+    //-------------------
+    67, 2875,   83, 2884,
+    CTRL_NUM_MATRIX_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+
+	// THESE ARE NOT WORKING YET END
+*/
+
+    // The VU meter      ######################
+    //-------------------
+    30, 3575,   46, 3584,
+    CTRL_NUM_SUB_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+    // The VU meter      ######################
+    //-------------------
+    30, 3583,   46, 3592,
+    CTRL_NUM_SUB_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+    // The VU meter      ######################
+    //-------------------
+    67, 3575,   83, 3584,
+    CTRL_NUM_SUB_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+    // The VU meter      ######################
+    //-------------------
+    67, 3583,   83, 3592,
+    CTRL_NUM_SUB_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+
+
+
+
     // The VU meter Left   ######################
     //-------------------
     10, 3648,   21, 3910,

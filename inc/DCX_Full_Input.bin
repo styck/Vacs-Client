@@ -100,10 +100,10 @@ BEGIN
 	"\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     IDB_ZOOM_SMALLKNOB, 0x0000, 0x0000,
-/*
+
     // Input Mute Button ########################		
     //------------------
-    2, 490,   12, 500,
+    2, 405,   12, 415,
     CTRL_NUM_INPUT_MUTE, CTRL_TYPE_BTN_INPUTMUTE_FILTER, DISP_TYPE_NORMAL,
 	"MUTE THE GATE\0            ",  // the control name ....
 	"\0                         ",  // the control name .... Alternative
@@ -112,13 +112,13 @@ BEGIN
 
 	// Input PRE Fad Cue Button  -aux01########################		
     //------------------
-    2, 503,   12, 513,
+    2, 418,   12, 428,
      CTRL_NUM_INPUT_CUE_FAD_PRE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
 	  "CUE A PRE MUTE\0           ",  // the control name ....
 	  "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     0x0000, IDB_FULL_I_SOLO_DOWN, 0x0000,
-
+/*
     // The Gate Feed Thru (Depth) Section ######################
     //------------------------
     43, 2049,     59,2069,
@@ -168,7 +168,7 @@ BEGIN
     0x0000, 0x0000, 0x0000,
 
     // Explode Sub Section
-    1, 82,     13, 127,
+    1, 82,     13, 96,
     CTRL_NUM_NULL, CTRL_TYPE_OPEN_MATRIX_SUB, DISP_TYPE_NULL,
 	"\0                         ",  // no control name ....
 	"\0                         ",  // the control name .... Alternative

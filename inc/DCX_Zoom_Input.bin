@@ -31,6 +31,77 @@ BEGIN
 	// Do not change he order of these controls
 	//  START			!!!!!!!!!!!!!!
 
+	
+    // The clip lights     ######################
+    //-------------------
+    49, 3575,   65, 3591,
+    CTRL_NUM_CLIP_PRE_FADER, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_BIG, 0x0000, 0x0000,
+    // The clip lights   ######################
+    //-------------------
+    69, 3575,   85, 3591,
+    CTRL_NUM_CLIP_PRE_FADER, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_BIG, 0x0000, 0x0000,
+    // The clip lights   ######################
+    //-------------------
+    7, 2666,   16, 2676,
+    CTRL_NUM_CLIP_PRE_FADER, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_SMALL, 0x0000, 0x0000,
+    // The clip lights   ######################
+    //-------------------
+    97, 2666,   106, 2676,
+    CTRL_NUM_CLIP_PRE_FADER, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_SMALL, 0x0000, 0x0000,
+    // The clip lights   ######################
+    //-------------------
+    7, 2487,   16, 2497,
+    CTRL_NUM_CLIP_PRE_FADER, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_SMALL, 0x0000, 0x0000,
+    // The clip lights   ######################
+    //-------------------
+    97, 2487,   106, 2497,
+    CTRL_NUM_CLIP_PRE_FADER, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_SMALL, 0x0000, 0x0000,
+    // The clip lights   ######################
+    //-------------------
+    7, 2384,   16, 2394,
+    CTRL_NUM_CLIP_PRE_FADER, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_SMALL, 0x0000, 0x0000,
+    // The clip lights   ######################
+    //-------------------
+    4, 1589,   13, 1599,
+    CTRL_NUM_CLIP_PRE_FADER, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_SMALL, 0x0000, 0x0000,
+
+
+
+
+
+
     // The VU meter      ######################
     //-------------------
     28, 3648,   39, 3910,
@@ -125,7 +196,7 @@ BEGIN
 	// The Sideways Scroller
 	//----------------------
 	24, 3398,		88, 3413,
-    CTRL_NUM_INPUT_PAN, CTRL_TYPE_LEFTRIGHT, DISP_TYPE_NORMAL,
+    CTRL_NUM_INPUT_PAN, CTRL_TYPE_LEFTRIGHT, DISP_TYPE_NULL,
 	"LCR Pan\0                  ",  // the control name ....
 	"\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,

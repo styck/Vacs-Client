@@ -291,6 +291,9 @@ IDB_FDR_BLUE_SMALL      BITMAP  DISCARDABLE     "dcx\\fdr_blue_small.bmp"
 IDB_FDR_WHITE_TINY      BITMAP  DISCARDABLE     "dcx\\bitmap1.bmp"
 IDB_STEREO_CUE_METERS   BITMAP  DISCARDABLE     "dcx\\Stereo Cue Meters.BMP"
 IDB_VU_DISPLAY2         BITMAP  DISCARDABLE     "dcx\\vu_displ.bmp"
+IDB_CLIP_LIGHT_MEDIUM   BITMAP  DISCARDABLE     "dcx\\clip_light_medium.bmp"
+IDB_CLIP_LIGHT_BIG      BITMAP  DISCARDABLE     "dcx\\clip_light_big.bmp"
+IDB_CLIP_LIGHT_SMALL    BITMAP  DISCARDABLE     "dcx\\clip_light_small.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
