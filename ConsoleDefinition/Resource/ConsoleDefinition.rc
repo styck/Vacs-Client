@@ -117,21 +117,25 @@ BEGIN
                     IDC_STATIC,47,24,117,24
 END
 
-IDD_CONFIGURATION DIALOGEX 0, 0, 210, 119
+IDD_CONFIGURATION DIALOGEX 0, 0, 265, 138
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
 CAPTION "TCP/IP Settings"
-FONT 8, "MS Sans Serif", 0, 0, 0x1
+FONT 8, "MS Sans Serif"
 BEGIN
-    EDITTEXT        IDC_IP_ADDR,46,9,70,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_IP_ADDR,41,7,59,12,ES_AUTOHSCROLL
     LTEXT           "IP Address",IDC_STATIC,4,12,35,8
     LTEXT           "Port",IDC_STATIC,4,26,14,8
-    EDITTEXT        IDC_PORT,46,23,40,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "Test Connection",IDC_BTN_TEST_CONNECTION,120,8,50,28,
+    EDITTEXT        IDC_PORT,41,20,40,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Test Connection",IDC_BTN_TEST_CONNECTION,115,7,50,28,
                     BS_MULTILINE,WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE
-    LTEXT           "Enter the IP Address and TCP/IP Port that has been configured on the GServer",
-                    IDC_STAT_1,23,82,155,20,SS_SUNKEN
+    LTEXT           "Enter the IP Address and TCP/IP Port that has been configured on the GServer or select the Work Offline option",
+                    IDC_STAT_1,21,82,112,44,SS_SUNKEN
     LTEXT           "Ensure that the ""Start Server"" button is pressed on the GServer program.",
-                    IDC_STATIC,23,46,155,23
+                    IDC_STATIC,22,47,134,25
+    PUSHBUTTON      "Work Offline",IDC_BTN_WORK_OFFLINE,187,7,50,28,
+                    BS_MULTILINE,WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE
+    COMBOBOX        IDC_DCX_RACK_CONFIG,173,50,83,43,CBS_DROPDOWN | 
+                    WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_TABLE DIALOG DISCARDABLE  0, 0, 230, 114
@@ -179,9 +183,9 @@ BEGIN
     IDD_CONFIGURATION, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 203
+        RIGHTMARGIN, 256
         TOPMARGIN, 7
-        BOTTOMMARGIN, 112
+        BOTTOMMARGIN, 134
     END
 
     IDD_TABLE, DIALOG
