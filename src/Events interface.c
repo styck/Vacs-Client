@@ -3,9 +3,9 @@
 //=================================================
 //
 //
-// $Author: $
-// $Archive: $
-// $Revision: $
+// $Author: Styck $
+// $Archive: /Vacs Client/src/Events interface.c $
+// $Revision: 34 $
 //
 
 //=================================================
@@ -564,78 +564,79 @@ RECT    rChan;
 HDC     hdc;
 HPEN    hpen, hpenSel, hpenOld;
 
-
-	hdc = GetDC(hwnd);
-
-	/////////////////////////////////////////////////
-	// Get rectangle for the Last Active Channel 
-	// so that we can replace the white with black
-	/////////////////////////////////////////////////
-
-	GetMWScrChanRect(lpmwd, lpmwd->iLastChan, &rChan);
-	if(rChan.right == 0)
-			return;
-
-	rChan.right++;	// Make the rectangle one bigger to the right
-
-	hpen = CreatePen(PS_SOLID, 1, RGB(0,0,0));	// Black rectangle
-	hpenSel = NULL;
-
-	//--------------------------------------------------
-	// Set it to null brush, so we will end up only with
-	// the rectangle
-	//--------------------------------------------------
-	SelectObject(hdc, GetStockObject(NULL_BRUSH));
-	hpenOld = SelectObject(hdc, GetStockObject(BLACK_PEN));
-
-	//-------------------------
-	// Draw the black rectangle
-	//-------------------------
-	Rectangle(hdc, rChan.left, rChan.top, rChan.right, rChan.bottom);
-
-
-	/////////////////////////////////////////////////
-	// Get rectangle for the Current Channel 
-	// so that we can draw the white rectangle
-	/////////////////////////////////////////////////
-	
-	GetMWScrChanRect(lpmwd, lpmwd->iCurChan, &rChan);
-	if(rChan.right == 0)
-			goto ON_EXIT;
-
-	rChan.right++;	// Make the rectangle one bigger to the right
-
-	// Check if we are draggin a channel, if so draw a RED rectangle
-
-	switch(lpmwd->iCurMode)
+//	if( lpmwd->iCurMode != MW_CONTROL_ACTIVE)
 	{
-			case MW_DRAGDROP_MODE:
-					hpenSel = CreatePen(PS_SOLID, 1, RGB(255,0,0));		// Red rectangle when moving channel
-					SelectObject(hdc, hpenSel);
-					break;
+		hdc = GetDC(hwnd);
 
-			case MW_NOTHING_MODE:
-			default:
-					hpenSel = CreatePen(PS_SOLID, 1, RGB(255,255,255));	// White Rectangle showing current selection
-					SelectObject(hdc, hpenSel);
+		/////////////////////////////////////////////////
+		// Get rectangle for the Last Active Channel 
+		// so that we can replace the white with black
+		/////////////////////////////////////////////////
 
+		GetMWScrChanRect(lpmwd, lpmwd->iLastChan, &rChan);
+		if(rChan.right == 0)
+				return;
+
+		rChan.right++;	// Make the rectangle one bigger to the right
+
+		hpen = CreatePen(PS_SOLID, 1, RGB(0,0,0));	// Black rectangle
+		hpenSel = NULL;
+
+		//--------------------------------------------------
+		// Set it to null brush, so we will end up only with
+		// the rectangle
+		//--------------------------------------------------
+		SelectObject(hdc, GetStockObject(NULL_BRUSH));
+		hpenOld = SelectObject(hdc, GetStockObject(BLACK_PEN));
+
+		//-------------------------
+		// Draw the black rectangle
+		//-------------------------
+		Rectangle(hdc, rChan.left, rChan.top, rChan.right, rChan.bottom);
+
+
+		/////////////////////////////////////////////////
+		// Get rectangle for the Current Channel 
+		// so that we can draw the white rectangle
+		/////////////////////////////////////////////////
+		
+		GetMWScrChanRect(lpmwd, lpmwd->iCurChan, &rChan);
+		if(rChan.right == 0)
+				goto ON_EXIT;
+
+		rChan.right++;	// Make the rectangle one bigger to the right
+
+		// Check if we are draggin a channel, if so draw a RED rectangle
+
+		switch(lpmwd->iCurMode)
+		{
+				case MW_DRAGDROP_MODE:
+						hpenSel = CreatePen(PS_SOLID, 1, RGB(255,0,0));		// Red rectangle when moving channel
+						SelectObject(hdc, hpenSel);
+						break;
+
+				case MW_NOTHING_MODE:
+				default:
+						hpenSel = CreatePen(PS_SOLID, 1, RGB(255,255,255));	// White Rectangle showing current selection
+						SelectObject(hdc, hpenSel);
+
+		}
+
+		// Now Draw the highlite rectangle
+		//----------------------------
+		Rectangle(hdc, rChan.left, rChan.top, rChan.right, rChan.bottom);
+
+
+		// Clean up and exit
+
+		ON_EXIT:
+		SelectObject(hdc, hpenOld);
+		DeleteObject(hpen);
+		if(hpenSel)
+				DeleteObject(hpenSel);
+
+		ReleaseDC(hwnd, hdc);
 	}
-
-	// Now Draw the highlite rectangle
-	//----------------------------
-	Rectangle(hdc, rChan.left, rChan.top, rChan.right, rChan.bottom);
-
-
-	// Clean up and exit
-
-	ON_EXIT:
-	SelectObject(hdc, hpenOld);
-	DeleteObject(hpen);
-	if(hpenSel)
-			DeleteObject(hpenSel);
-
-	ReleaseDC(hwnd, hdc);
-return;
 }
 
 //==================================================
@@ -1295,9 +1296,17 @@ WORD								wVal;
 	syncInputPriority (lpctrlZM, g_inputCueActiveCounter, lpmwd);
 
 	// Force redraw of this window
+	// This is needed for the solo cue mode
+	// if its not here then the master module cues
+	// are not redrawn when they are turned off when
+	// pressing a cue button on another module.
+	// if it is here then it causes the white border
+	// around the zoom window channel to flash
+	// Fix is to use the master window handle rather
+	// than hwnd
 
-	GetClientRect(hwnd, &rInvalidate);
-	InvalidateRect(hwnd,&rInvalidate,FALSE);
+	GetClientRect(ghwndMaster, &rInvalidate);
+	InvalidateRect(ghwndMaster,&rInvalidate,FALSE);
 
 return;
 }
