@@ -17,7 +17,7 @@
 
 #include "DCXTCP_protocol.h"
 #define CONTROLDATA      // This is very dumb but for some reason CONTROLDATA gets redefinition ERROR
-#include  "..\..\GServerLite\DCXParser.h"
+#include  "..\..\GServer\DCXParser.h"
 #undef CONTROLDATA
 #include "ConsoleDefinition.h"
 #include "CDef_External.h"

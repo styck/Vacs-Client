@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by D:\Work\styck\Vacs Client\usengl\usengl.rc
+// Used by C:\bu\gamble\vacs client\usengl\usengl.rc
 //
 #define IDD_SEQUENCE_WINDOW             101
 #define IDD_PRF_MIDI                    102

@@ -61,7 +61,6 @@ BEGIN
         MENUITEM "Save Mix as ...",             IDM_F_SAVE_FILE_AS
         MENUITEM SEPARATOR
         MENUITEM "&Preferences",                IDM_F_SAVEPREFERENCES
-        , GRAYED
         MENUITEM "&Console Definition",         IDM_F_CONDEF_PREFERENCES
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       IDM_F_EXIT
@@ -254,7 +253,7 @@ END
 
 IDD_SEQUENCE_WINDOW DIALOGEX 0, 0, 176, 158
 STYLE WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
-FONT 8, "Arial"
+FONT 8, "Arial", 0, 0, 0x1
 BEGIN
     PUSHBUTTON      "&Add",IDBTN_SEQ_ADD,2,7,37,15
     PUSHBUTTON      "&Update",IDBTN_SEQ_UPDATE,38,7,37,15
