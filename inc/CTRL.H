@@ -1,8 +1,15 @@
 //=================================================
-// 
-// Header Code For Windows 3.x
+// Copyright 2001, CorTek Software, Inc.
+//=================================================
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
+//
+//=================================================
 // This file contains only the CTRL definitions
-// CopyRight 1998 CorTek Software, Inc
 //=================================================
 
 //=================================================
@@ -317,7 +324,7 @@
 //
 #define  CTRL_NUM_MATRIX_HI_FREQ_LT                    1
 #define  CTRL_NUM_MATRIX_HF_BW_LT                      2
-#define  CTRL_NUM_MATRIX_HF_BC_LT                      3
+#define  CTRL_NUM_MATRIX_HF_BC_LT                      3	// used by CTRL_NUM_INPUT_LINE_B_VU and NOT restored in RecallMemoryMapBuffer()
 #define  CTRL_NUM_MATRIX_HF_PK_SHELF_LT                4
 #define  CTRL_NUM_MATRIX_HI_FREQ_RT                    5
 #define  CTRL_NUM_MATRIX_HF_BW_RT                      6
