@@ -897,8 +897,8 @@ switch(uiMsg)
                   if(i==IDT_TRADEMARKS)
                   {
  
-											hFontCopyRight = CreateFont(18,0, 0, 0,
-                                       FW_BOLD , 0, 0, 0,
+											hFontCopyRight = CreateFont(12,0, 0, 0,
+                                       0 , 0, 0, 0,
                                        0, 0, 0, 0,
                                        VARIABLE_PITCH,"Arial");
 
