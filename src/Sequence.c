@@ -1,10 +1,7 @@
 //=================================================
-// Copyright 1998, CorTek Software, Inc.
+// Copyright 2001, CorTek Software, Inc.
 //=================================================
 
-//#include <windows.h>
-//#include <commctrl.h>
-//#include <string.h>
 
 #include "SAMM.H"
 #include "SAMMEXT.H"
@@ -1621,6 +1618,10 @@ seqentry.dwSize = sizeof(SEQENTRY);
 
     lDLInsert = GetEntryLinkState(g_pdlrSequence, lItemAdd);
     SeqAddItem(lItemAdd, lDLInsert, htreeitem);
+
+		// We added a new scene, now go to it!!
+
+		SeqGoToNext();
   }
 
 
