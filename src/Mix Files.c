@@ -1,7 +1,7 @@
 //=================================================
-//Mix files
+// Mix files
 //
-// CopyRight 2001 CorTek Software, Inc.
+// CopyRight 1998-2001 CorTek Software, Inc.
 //=================================================
 
 //#include <windows.h>
@@ -54,6 +54,7 @@ static char gszTitleBuffer[255] = {0};
 int     OpenMixFile(void)
 {
 OPENFILENAME    ofn;
+int	iRet;
 
 	if (gfsMix.szFileDir[0] == 0)
 		sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
@@ -94,13 +95,19 @@ OPENFILENAME    ofn;
     wsprintf(gfsMix.szFileName, "%s", &gfsTemp.szFileName[ofn.nFileOffset]);
     gfsTemp.szFileName[ofn.nFileOffset] = 0;
     wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
-    LoadMixFile(&gfsMix, TRUE);
+		iRet = LoadMixFile(&gfsMix, TRUE);
+    if(iRet == 2)	// MIX FILE did not match RACK CONFIGURATION
+		{
+				ShutdownProc();
+				return FALSE;
+		}
+
 		g_monitor_mix_file_changes = TRUE;
 
   }
 
 
-return 0;
+return TRUE;
 }
 
 //======================================================
@@ -247,20 +254,27 @@ char								szBuff[MAX_PATH];
 	wsprintf(g_sequence_file_name, "%s", szFile);
 	wsprintf(szBuff, "%smix\\%s", gszProgDir, "LA$T.mix");
 
+	/////////////////////////////////////
+	// OPEN an existing MIX FILE
 
 	hf = CreateFile(szFile, GENERIC_READ, 
                 0, NULL, OPEN_EXISTING, 
                 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
                 NULL);
+
 	if(hf == INVALID_HANDLE_VALUE)
   {
     return 1;
   }
 
 
+	////////////////////////////////////////
+	// READ the MIX FILE Header
+
 	bResult = ReadFile(hf, (LPSTR)&gmfhTemp, 
                    sizeof(MIXFILEHEADER), &dwBRead, NULL);
-	if(bResult == FALSE || dwBRead == 0)
+
+	if (bResult == FALSE || dwBRead == 0)
   {
     InformationStatus(ghInstStrRes, IDS_ERR_OPENING_FILE);
     CloseHandle(hf);
@@ -268,10 +282,17 @@ char								szBuff[MAX_PATH];
   }
 
 
-	if((gmfhTemp.dwID != SAMMPLUS_ID) || (gmfhTemp.dwSize != sizeof(MIXFILEHEADER))||
-    gmfhTemp.dwVersion > SAMMPLUS_VERSION)
+	/////////////////////////////////////////
+	// CHECK MIX FILE Header to see if valid
+
+	if((gmfhTemp.dwID != SAMMPLUS_ID) || 
+		(gmfhTemp.dwSize != sizeof(MIXFILEHEADER)) ||
+    (gmfhTemp.dwVersion > SAMMPLUS_VERSION) ||														
+		(gmfhTemp.dwDevID == 0) ||	// // for BACKWARD COMPATIBILITY, if zero then let them load it
+		(gmfhTemp.dwDevID != giMixerType))	//  make sure compatible with mixfile that we are loading
   {
     ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_MIX_FILE);
+		return 2;	// signal EXIT - make define
   }
 	else
   {
@@ -281,8 +302,8 @@ char								szBuff[MAX_PATH];
   }
 
 	///////////////////////////////////////////////////////////////////////////////
-	// If we are loading the LAS$T.mix file then try to get the sequence
-	// of the last loaded mix file
+	// If we are loading the LAS$T.mix file then try to get the SEQUENCE FILE
+	// of the last loaded MIX FILE
 
 	if(lstrcmp(szBuff, g_sequence_file_name) == 0)
 	{
@@ -309,6 +330,7 @@ char								szBuff[MAX_PATH];
 
 		  // Set our global sequence name to the last loaded mix file
 
+		if(rc == ERROR_SUCCESS)
 			wsprintf(g_sequence_file_name, "%s", szTempSeq);
 
 	}
@@ -334,10 +356,16 @@ char								szBuff[MAX_PATH];
     case MASTER_WINDOW_FILE_ID:
       // Make sure the Master Window is visible ..
       if(ghwndMaster == NULL)
+			{
         CreateMasterViewWindow("Zoom Master View", NULL);
+			}
       break;
     case MIXER_WINDOW_FILE_ID:
-        ReadMixerWndDataFromFile(hf, &fsh);
+        if(ReadMixerWndDataFromFile(hf, &fsh))	// Returns value if ERROR, more channels than setup for
+				{
+			    ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_MIX_FILE);
+					return 2;	// signal EXIT - make define
+				}
         break;
     case SEQUENCE_WINDOW_FILE_ID:
         ReadSequenceWndDataFromFile(hf, &fsh, TRUE);
@@ -541,7 +569,8 @@ USHORT					compression;
 	gmfhMix.dwID   = SAMMPLUS_ID;
 	gmfhMix.dwVersion   = SAMMPLUS_VERSION;
 	gmfhMix.dwSize = sizeof(MIXFILEHEADER);
-	gmfhMix.dwDevID = 0; // IT SHOULD BE SET TO THE DEVICE ID for THE MIXER
+	gmfhMix.dwDevID = giMixerType; // Now used to indicate MIXER TYPE
+//	gmfhMix.dwDevID = 0; // IT SHOULD BE SET TO THE DEVICE ID for THE MIXER
 	gmfhMix.iNumDev = 0; // the number of devices
 	gmfhMix.iScrCX = 0; // the screen resolution CX
 	gmfhMix.iScrCY = 0; // the screen resolution CX
@@ -771,15 +800,11 @@ BOOL            bResult;
 DWORD           dwBRead;
 LPMIXERWNDDATA  pmwd;
 HWND            hwndLink;
+int							i, iPhisChannel;
+int							iRackMaxChannel[]={18,32,58,78};							// cabaret, showtime, event 40, event 60
 
-
-	// ??????????????????????????
-	// ??????????????????????????
-	//
-	// Save the type of the modules in the Windows in the file
-	//
-	// ??????????????????????????
-	// ??????????????????????????
+	///////////////////////////////////////////////////////////
+	// READ the type of the modules in the Windows in the file
 
 	ZeroMemory(&mwdfile, sizeof(MIXERWINDOWFILE));
 
@@ -822,6 +847,17 @@ HWND            hwndLink;
 	pmwd->rVisible = mwdfile.rVisible;
 	pmwd->bLink = mwdfile.bLink;
 
+
+	///////////////////////////////////////////
+	// VALIDATE the MIX FILE with what
+	// RACK we are set for
+
+	for(i=pmwd->iStartScrChan;i<pmwd->iEndScrChan+1;i++)
+	{
+		iPhisChannel = LOBYTE(pmwd->lpwRemapToScr[i]);
+		if((giMixerType) && (iPhisChannel > iRackMaxChannel[giMixerType-1]))	// giMixerType is base 1
+			return 1;		// error, we have more channels then we are supposed to
+	}
 
 	switch(pmwd->lpZoneMap->wID)
 	{
@@ -1067,7 +1103,8 @@ FILESECTIONHEADER   fsh;
 	gmfhMix.dwID   = SAMMPLUS_ID;
 	gmfhMix.dwVersion   = SAMMPLUS_VERSION;
 	gmfhMix.dwSize = sizeof(MIXFILEHEADER);
-	gmfhMix.dwDevID = 0; // IT SHOULD BE SET TO THE DEVICE ID for THE MIXER
+	gmfhMix.dwDevID = giMixerType; // Now used to indicate MIXER TYPE
+//	gmfhMix.dwDevID = 0; // IT SHOULD BE SET TO THE DEVICE ID for THE MIXER
 	gmfhMix.iNumDev = 0; // the number of devices
 	gmfhMix.iScrCX = 0; // the screen resolution CX
 	gmfhMix.iScrCY = 0; // the screen resolution CX
@@ -1184,9 +1221,9 @@ DWORD               dwBRead;
 			return 1;
 	}
 
-		// Only close windows if we have a valid file available
+	// Only close windows if we have a valid file available
 
-			CloseAllMDI();	// close all the open windows
+	CloseAllMDI();	// close all the open windows
 
 	bResult = ReadFile(hf, (LPSTR)&gmfhTemp, 
 										 sizeof(MIXFILEHEADER), &dwBRead, NULL);
@@ -1198,17 +1235,28 @@ DWORD               dwBRead;
 	}
 
 
-	if((gmfhTemp.dwID != SAMMPLUS_ID) || (gmfhTemp.dwSize != sizeof(MIXFILEHEADER))||
-			gmfhTemp.dwVersion > SAMMPLUS_VERSION)
-	{
-		ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_MIX_FILE);
-	}
+	/////////////////////////////////////////
+	// CHECK MIX FILE Header to see if valid
+	// This validaties ONLINE and OFFLINE
+	// modes of operation
+	/////////////////////////////////////////
+
+	if((gmfhTemp.dwID != SAMMPLUS_ID) || 
+		(gmfhTemp.dwSize != sizeof(MIXFILEHEADER)) ||
+    (gmfhTemp.dwVersion > SAMMPLUS_VERSION) ||
+		(gmfhTemp.dwDevID == 0) ||	// // for BACKWARD COMPATIBILITY, if zero then let them load it
+		(gmfhTemp.dwDevID != giMixerType))	// != -1 then OFFLINE, make sure compatible with mixfile that we are loading
+  {
+    ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_MIX_FILE);
+		return 2;	// signal EXIT - make define
+  }
 	else
-	{
-		gmfhMix = gmfhTemp;
-		if(gmfhTemp.dwVersion < SAMMPLUS_VERSION)
-				;//InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
-	}
+  {
+    gmfhMix = gmfhTemp;
+    if(gmfhTemp.dwVersion < SAMMPLUS_VERSION)
+        ;//InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
+  }
+
 
 
 	////////////////////////////////////////////////////////////////////////////
@@ -1238,6 +1286,7 @@ DWORD               dwBRead;
 					&szTempSeq, 
 					&dwBufferSize ); 
 
+		if(rc == ERROR_SUCCESS)	// Only set if it was a success
 			wsprintf(g_sequence_file_name, "%s", szTempSeq);	// Set it to the last .mix file in registry.
 
 	}
@@ -1247,6 +1296,7 @@ DWORD               dwBRead;
 	// Go through the file and
 	// Read the Header for every Section
 	//----------------------------------
+
 	bResult = ReadFile(hf, (LPSTR)&fsh, 
                    sizeof(FILESECTIONHEADER), &dwBRead, NULL);
 	if(bResult == FALSE || dwBRead != sizeof(FILESECTIONHEADER))
@@ -1260,33 +1310,40 @@ DWORD               dwBRead;
   {
     switch(fsh.dwID)
     {
-    case MASTER_WINDOW_FILE_ID:
-      // Make sure the Master Window is visible ..
-      if(ghwndMaster == NULL)
-        CreateMasterViewWindow("Zoom Master View", NULL);
-      break;
-    case MIXER_WINDOW_FILE_ID:
-        ReadMixerWndDataFromFile(hf, &fsh);
-        break;
-    case SEQUENCE_WINDOW_FILE_ID:
-        ReadSequenceWndDataFromFile(hf, &fsh,FALSE); // get the sequence window up but don't set its position
-        break;
-    case GROUP_WINDOW_FILE_ID:
-        ReadGroupWndDataFromFile(hf, &fsh);
-        break;
+			case MASTER_WINDOW_FILE_ID:
+				// Make sure the Master Window is visible ..
+				if(ghwndMaster == NULL)
+					CreateMasterViewWindow("Zoom Master View", NULL);
+				break;
 
-    default:
+			case MIXER_WINDOW_FILE_ID:
+				if(ReadMixerWndDataFromFile(hf, &fsh))	// Returns value if ERROR, more channels than setup for
+				{
+					ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_MIX_FILE);
+					return 2;	// signal EXIT - make define
+				}
+					break;
+
+			case SEQUENCE_WINDOW_FILE_ID:
+					ReadSequenceWndDataFromFile(hf, &fsh,FALSE); // get the sequence window up but don't set its position
+					break;
+
+			case GROUP_WINDOW_FILE_ID:
+					ReadGroupWndDataFromFile(hf, &fsh);
+					break;
+
+			default:
         // in case we don't know what
         // is this Section just skip over it
         //----------------------------------
         if(fsh.lSize > 0)
             SetFilePointer(hf, fsh.lSize, 0, FILE_CURRENT);
         else
-            {
-            InformationStatus(ghInstStrRes, IDS_ERR_READING_FILE);
-            CloseHandle(hf);
-            return 1;
-            }
+        {
+          InformationStatus(ghInstStrRes, IDS_ERR_READING_FILE);
+          CloseHandle(hf);
+          return 1;
+        }
         break;
     }
 
