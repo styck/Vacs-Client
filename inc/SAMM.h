@@ -1,12 +1,13 @@
 //=================================================
-// Copyright 1998 - 2001, CorTek Softawre, Inc.
+// Copyright 1998 - 2002, CorTek Softawre, Inc.
 //=================================================
 //
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/inc/SAMM.h $
-// $Revision: 42 $
+// $Revision: 43 $
 //
+
 #include <windows.h>
 #include <commctrl.h>
 #include <stdlib.h>
@@ -15,6 +16,8 @@
 #include <string.h>
 
 #define SCROLLBARS		// FOR TOUCHSCREEN OPERATION WE NEED SCROLL BARS
+// #define AUTOSAVE		// 3 MINUTE POP UP BOX TO SAVE MIX
+
 
 // FLAGS FOR DEBUG SESSION
 //------------------------
@@ -407,7 +410,7 @@ LRESULT CALLBACK  ScrollerWndProc(HWND , UINT , WPARAM , LPARAM );
 int             ShowScrollWindow(HWND ,LPMIXERWNDDATA);
 void            DrawImgWindow(LPPAINTSTRUCT ,LPMIXERWNDDATA);
 void            DrawControls(HDC , int, int , LPMIXERWNDDATA);
-void            ScrollImgWindow(HWND, LPMIXERWNDDATA);
+void            ScrollImgWindow(HWND, LPMIXERWNDDATA,int);
 void            ScrollImgWindowRelative(HWND, LPMIXERWNDDATA);
 void            ScrollSideWays(HWND hwnd, LPMIXERWNDDATA lpmwd, int iDir);
 void            HandleScrollImgWindowRelative(HWND, LPMIXERWNDDATA);
@@ -609,7 +612,7 @@ int             RemapPhisFromScr(LPMIXERWNDDATA);
 int             GetMWScrChanNum(LPMIXERWNDDATA);
 int             GetMWScrChanRect(LPMIXERWNDDATA , int ,RECT *);
 int             ActivateMWMode(HWND, LPMIXERWNDDATA);
-int             StopMWMode(HWND, LPMIXERWNDDATA, WPARAM);
+int             StopMWMode(HWND, LPMIXERWNDDATA);
 BOOL            MakeModulesArraySameType(LPMIXERWNDDATA , int, int );
 
 // Module 17

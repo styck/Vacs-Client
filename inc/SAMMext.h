@@ -1,11 +1,11 @@
 //=================================================
-// Copyright 1998 - 2001, CorTek Softawre, Inc.
+// Copyright 1998 - 2002, CorTek Softawre, Inc.
 //=================================================
 //
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/inc/SAMMext.h $
-// $Revision: 15 $
+// $Revision: 16 $
 //
 
 #include "consoledefinition.h"
@@ -195,7 +195,7 @@ extern LPGROUPSTORE        gpGroupStoreFaders;
 extern LPGROUPSTORE        gpGroupStoreMutes;
 extern LPGROUPSTORE        gpGroupStoreGeneral;
 
-extern STEREOGROUP         g_StereoGroups[120];
+extern STEREOGROUP         g_StereoGroups[MAX_GROUPS_COUNT];
 
 // Palette
 //--------
