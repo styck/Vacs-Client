@@ -1,13 +1,12 @@
 //=================================================
 //
-// Copyright 1998, CorTek Software, Inc
+// Copyright 2001, CorTek Software, Inc
 //=================================================
 
 //=================================================
 // Controls drawing and handling routines
 //
 //=================================================
-//#include <windows.h>
 
 #include "SAMM.h"
 #include "SAMMEXT.h"
@@ -445,6 +444,14 @@ return;
 }
 
 
+////////////////////////////////
+//
+// DELETE DELETE WHEN NEW CODE AT END IS WORKING
+// PER GAMBLE
+
+//#define ORIGINAL
+
+#ifdef ORIGINAL
 //==================================================
 //FUNCTION: JumpToMZWindow
 //
@@ -497,7 +504,6 @@ int				iScrVisible = 0;
 	}
 
 
-
 if(ghwndZoom == NULL)
     {
     lpMWD = MixerWindowDataAlloc(gwActiveMixer,
@@ -510,6 +516,8 @@ if(ghwndZoom == NULL)
         }
     else
         {
+
+
         // Set the Window Start channel
         // and Remap table, and start channel
         // and End Channel
@@ -523,6 +531,7 @@ if(ghwndZoom == NULL)
 				
 				iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
 				lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
+
 				if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
 					lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
 
@@ -540,6 +549,7 @@ if(ghwndZoom == NULL)
     }
 else
     {
+
     lpMWD = (LPMIXERWNDDATA)GetWindowLong(ghwndZoom, 0);
     if(lpMWD)
         {
@@ -554,11 +564,12 @@ else
         
 				iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
 				lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
+
 				if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
 					lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
 //        lpMWD->iStartScrChan = lpmwd->iCurChan;//lpmwd->iStartScrChan
 //				if((iScrVisible	> (lpMWD->iEndScrChan - lpMWD->iStartScrChan))
-					lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
+				lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
         lpMWD->iCurChan = lpmwd->iCurChan;
 
         InvalidateRect(lpMWD->hwndLblGroup, NULL, FALSE);
@@ -578,10 +589,12 @@ else
 
         }
     }
+
+
 return;
 }
 
-
+#endif
 
 //==================================================
 //FUNCTION: RdOutText
@@ -1054,3 +1067,170 @@ void    LeftRightControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDA
   
 
 
+
+#define MYCODE
+
+#ifdef MYCODE
+
+//==================================================
+//FUNCTION: JumpToMZWindow
+//
+//
+//purpose:
+//  Jump to a Mixer Zoom Window with a particular
+// Y offset
+//==================================================
+void    JumpToMZWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
+                            LPMIXERWNDDATA lpmwd, int iChan)
+{
+LPMIXERWNDDATA      lpMWD;
+int				iYOffset = 0;
+int				iScrVisible = 0;
+HWND			hWnd;
+
+
+	// Set the offset based on the control type
+
+	switch(lpczm->iCtrlType)
+	{
+  case    CTRL_TYPE_OPEN_ZOOM_IAUX:
+		iYOffset = JUMP_TO_INPUT_AUX;
+		break;
+	case		CTRL_TYPE_OPEN_ZOOM_CCOMP:
+		iYOffset = JUMP_TO_INPUT_COMP;
+		break;
+	case		CTRL_TYPE_OPEN_ZOOM_EQ:
+		iYOffset = JUMP_TO_INPUT_EQ;
+		break;
+	case CTRL_TYPE_OPEN_ZOOM_SUB:
+		iYOffset = JUMP_TO_INPUT_SUB;
+		break;
+	case CTRL_TYPE_OPEN_FADER:
+		iYOffset = JUMP_TO_INPUT_FADER;
+		break;
+	case	CTRL_TYPE_OPEN_MATRIX_EQ:
+		iYOffset = JUMP_TO_MATRIX_EQ;
+		break;
+	case	CTRL_TYPE_OPEN_MATRIX_AUX:
+		iYOffset = JUMP_TO_MATRIX_AUX;
+		break;
+	case	CTRL_TYPE_OPEN_MATRIX_SUB:
+		iYOffset = JUMP_TO_MATRIX_SUB;
+		break;
+	default:
+		iYOffset = 4000;
+		break;
+	}
+
+
+////////////////////////////////////////
+// See if we have a Linked Zoom View
+// If not then we must create one    
+
+	if(ghwndZoom == NULL)
+  {
+    lpMWD = MixerWindowDataAlloc(gwActiveMixer,
+                                 gpZoneMaps_Zoom,
+                                 MAX_CHANNELS, 1);
+    if(lpMWD == NULL)
+    {
+        ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
+        return;
+    }
+    else
+    {
+        // Set the Window Start channel
+        // and Remap table, and start channel
+        // and End Channel
+        //-----------------------------------
+        CopyMemory(lpMWD->lpwRemapToScr, lpmwd->lpwRemapToScr, MAX_CHANNELS * sizeof(WORD));
+        CopyMemory(lpMWD->lpwRemapToPhis, lpmwd->lpwRemapToPhis, MAX_CHANNELS * sizeof(WORD));
+
+        lpMWD->iYOffset = iYOffset;
+				
+				iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
+				lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
+
+				if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
+					lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
+
+				lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
+        lpMWD->iCurChan = lpmwd->iCurChan;
+				
+        wsprintf(lpMWD->szTitle, "Zoom View");	// was Zoom View (Link)
+
+				// If we don't have a link yet, try to find a Zoom View that
+				// is already open.
+
+				hWnd=FindWindowEx(ghwndMDIClient,NULL,gszZoomViewClass,"Zoom View");
+
+				if(hWnd)
+				{
+					ghwndZoom = hWnd;		// We found a Zoom View, make it our link to the Full View
+
+
+				}
+				else	// No Zoom View windows exist, so create one.
+				{
+					ghwndZoom = CreateZoomViewWindow("Zoom View", lpMWD, 1);// was Zoom View (Link)
+
+				}
+#ifdef NOTUSED
+					InvalidateRect(lpMWD->hwndLblGroup, NULL, FALSE);
+					UpdateWindow(lpMWD->hwndLblGroup);
+        
+					lpMWD->pntMouseCur.y = iYOffset - lpMWD->iYOffset;
+					lpMWD->pntMouseLast.y = 0;
+
+					ScrollImgWindow(ghwndZoom, lpMWD);		// Position the Zoom view as requested.
+
+					InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
+					UpdateWindow(lpMWD->hwndImg);
+
+					RequestVisibleVU(lpMWD, -1, -1);
+#endif
+
+    }
+  }
+	else	// We already have a linked Zoom View
+  {
+    lpMWD = (LPMIXERWNDDATA)GetWindowLong(ghwndZoom, 0);
+    if(lpMWD)
+    {
+				TurnOffAllVUforMixerWindow(lpMWD);
+				// Set the Window Start channel
+        // and Remap table, and start channel
+        // and End Channel
+        //-----------------------------------
+        CopyMemory(lpMWD->lpwRemapToScr, lpmwd->lpwRemapToScr, MAX_CHANNELS * sizeof(WORD));
+        CopyMemory(lpMWD->lpwRemapToPhis, lpmwd->lpwRemapToPhis, MAX_CHANNELS * sizeof(WORD));
+        
+				iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
+				lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
+
+				if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
+					lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
+
+				lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
+        lpMWD->iCurChan = lpmwd->iCurChan;
+
+        InvalidateRect(lpMWD->hwndLblGroup, NULL, FALSE);
+        UpdateWindow(lpMWD->hwndLblGroup);
+        
+				lpMWD->pntMouseCur.y = iYOffset - lpMWD->iYOffset;
+				lpMWD->pntMouseLast.y = 0;
+
+				ScrollImgWindow(ghwndZoom, lpMWD);
+
+        InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
+        UpdateWindow(lpMWD->hwndImg);
+
+			  RequestVisibleVU(lpMWD, -1, -1);
+
+    }
+  }
+
+return;
+}
+
+#endif
