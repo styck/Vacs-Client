@@ -804,7 +804,7 @@ switch(uiMsg)
             LPSTR lpstrVffInfo;
             HANDLE  hMem;
 
-                hFontDlg = CreateFont(14,0, 0, 0,
+                hFontDlg = CreateFont(20,0, 0, 0,
                                        0, 0, 0, 0,
                                        0, 0, 0, 0,
                                        VARIABLE_PITCH | FF_SWISS,"");
