@@ -106,6 +106,7 @@ BEGIN
     END
     POPUP "&Info"
     BEGIN
+        MENUITEM "&VACS Info",                  IDM_H_INFO
         MENUITEM "&About",                      IDM_H_ABOUT
     END
 END
@@ -242,14 +243,14 @@ END
 
 IDD_SEQUENCE_WINDOW DIALOGEX 0, 0, 281, 129
 STYLE WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
-FONT 8, "Arial", 0, 0, 0x1
+FONT 8, "Arial"
 BEGIN
     PUSHBUTTON      "&Add",IDBTN_SEQ_ADD,0,0,45,15,0,WS_EX_CLIENTEDGE
     PUSHBUTTON      "&Update",IDBTN_SEQ_UPDATE,45,0,40,15,0,WS_EX_CLIENTEDGE
     PUSHBUTTON      "&Delete",IDBTN_SEQ_DELETE,85,0,40,15,0,WS_EX_CLIENTEDGE
     CONTROL         "Slider1",IDSLIDER_SEQ_MORPH,"msctls_trackbar32",
-                    TBS_AUTOTICKS | TBS_VERT,0,30,25,95,WS_EX_DLGMODALFRAME | 
-                    WS_EX_CLIENTEDGE
+                    TBS_AUTOTICKS | TBS_VERT,134,38,25,91,
+                    WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE
     PUSHBUTTON      "&Expand",IDBTN_SEQ_EXPAND,125,0,40,15,BS_MULTILINE,
                     WS_EX_CLIENTEDGE
     PUSHBUTTON      "&Next",IDBTN_SEQ_NEXT,95,15,35,15,BS_FLAT
@@ -260,11 +261,11 @@ BEGIN
                     WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
     CONTROL         "Tree1",IDTREE_SEQUENCE,"SysTreeView32",TVS_HASBUTTONS | 
                     TVS_HASLINES | TVS_EDITLABELS | TVS_SHOWSELALWAYS | 
-                    WS_TABSTOP,30,30,135,95,WS_EX_DLGMODALFRAME | 
+                    WS_TABSTOP,0,34,132,95,WS_EX_DLGMODALFRAME | 
                     WS_EX_LEFTSCROLLBAR
     CONTROL         "List1",IDLIST_SEQ_EVENTS,"SysListView32",LVS_REPORT | 
-                    LVS_SINGLESEL | LVS_EDITLABELS | WS_TABSTOP,165,30,115,
-                    95,WS_EX_DLGMODALFRAME
+                    LVS_SINGLESEL | LVS_EDITLABELS | WS_TABSTOP,165,33,115,
+                    96,WS_EX_DLGMODALFRAME
     CONTROL         "",IDC_MTC_READOUT,"Static",SS_BITMAP | SS_CENTERIMAGE,
                     166,0,115,29,WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE
 END
@@ -287,36 +288,38 @@ BEGIN
     DEFPUSHBUTTON   "Cancel Group",IDC_CANCEL_GROUP,60,21,66,12
 END
 
-IDD_SEQ_UPDATE_PROP DIALOGEX 0, 0, 255, 144
+IDD_SEQ_UPDATE_PROP DIALOGEX 0, 0, 219, 77
 STYLE DS_ABSALIGN | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Update"
-FONT 8, "MS Sans Serif", 0, 0, 0x1
+FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "Done",IDOK,7,123,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,61,123,50,14
-    GROUPBOX        "Custom Propagate Filter",IDC_STATIC,7,37,241,68,
-                    BS_CENTER
+    DEFPUSHBUTTON   "Done",IDOK,7,56,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,61,56,50,14
+    GROUPBOX        "Custom Propagate Filter",IDC_STATIC,169,7,43,9,
+                    BS_CENTER | NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "Do not propagate changes to the subsequent Cues.",
                     IDC_DONOT_PROP,"Button",BS_AUTORADIOBUTTON,7,7,169,10
     CONTROL         "Propagate all changes to the subsequent Cues.",
                     IDC_PROP_ALL,"Button",BS_AUTORADIOBUTTON,7,17,157,10
     CONTROL         "Propagate Custom.",IDC_PROP_CUSTOM,"Button",
-                    BS_AUTORADIOBUTTON,7,27,74,10
+                    BS_AUTORADIOBUTTON | NOT WS_VISIBLE | WS_DISABLED,138,28,
+                    74,10
     CONTROL         "Input Volume",IDC_INP_VOLUME,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,8,50,55,10
-    CONTROL         "Input Mute",IDC_INP_MUTE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,8,60,46,10
-    CONTROL         "Input Eq",IDC_INP_EQ,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,8,69,40,10
-    CONTROL         "Input Gate",IDC_INP_GATE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,8,78,46,10
-    CONTROL         "Input Comp",IDC_INP_COMP,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,8,87,50,10
-    PUSHBUTTON      "Show changes",IDC_SHOW_CHANGES,198,123,50,14
+                    NOT WS_VISIBLE | WS_DISABLED | WS_TABSTOP,111,28,55,10
+    CONTROL         "Input Mute",IDC_INP_MUTE,"Button",BS_AUTOCHECKBOX | NOT 
+                    WS_VISIBLE | WS_DISABLED | WS_TABSTOP,114,28,46,10
+    CONTROL         "Input Eq",IDC_INP_EQ,"Button",BS_AUTOCHECKBOX | NOT 
+                    WS_VISIBLE | WS_DISABLED | WS_TABSTOP,117,28,40,10
+    CONTROL         "Input Gate",IDC_INP_GATE,"Button",BS_AUTOCHECKBOX | NOT 
+                    WS_VISIBLE | WS_DISABLED | WS_TABSTOP,114,28,46,10
+    CONTROL         "Input Comp",IDC_INP_COMP,"Button",BS_AUTOCHECKBOX | NOT 
+                    WS_VISIBLE | WS_DISABLED | WS_TABSTOP,112,28,50,10
+    PUSHBUTTON      "Show changes",IDC_SHOW_CHANGES,162,56,50,14,NOT 
+                    WS_VISIBLE | WS_DISABLED
     CONTROL         "Use these settings and do not prompt again.",
-                    IDC_USE_AUTO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,109,
-                    147,10,WS_EX_STATICEDGE
+                    IDC_USE_AUTO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,39,
+                    165,10,WS_EX_STATICEDGE
 END
 
 
@@ -333,7 +336,6 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 274
         TOPMARGIN, 7
-        BOTTOMMARGIN, 122
     END
 
     IDD_GROUPS, DIALOG
@@ -347,9 +349,9 @@ BEGIN
     IDD_SEQ_UPDATE_PROP, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 248
+        RIGHTMARGIN, 212
         TOPMARGIN, 7
-        BOTTOMMARGIN, 137
+        BOTTOMMARGIN, 70
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -393,6 +395,7 @@ BEGIN
     IDS_ERR_LOADING_RESOURCE "Couldn't Load the Resource!"
     IDS_ERR_MAX_WINDOW      "Maximum Window Opened!"
     IDS_ERR_GET_SERVER_DATA "Error getting Server Data!"
+    IDS_CHANGES_MESSAGE     "Console state has changed. Do you want to save change(s)?"
 END
 
 STRINGTABLE DISCARDABLE 
@@ -425,6 +428,7 @@ BEGIN
     IDM_F_UPDATE_FILE       "Update Mix File"
     IDS_MIXFILE_SAVED       "Mix File Saved."
     IDS_MIXFILE_NOTSAVED    "Mix File NOT Saved!"
+    IDS_DELETE_SEQUENCE_ENTRY "Delete this Sequence Entry?"
 END
 
 STRINGTABLE DISCARDABLE 
@@ -438,6 +442,7 @@ BEGIN
     IDS_SEQCOLUMN2          "SMPTE In"
     IDS_SEQCOLUMN3          "SMPTE Out"
     IDS_SEQCOLUMN4          "Flags"
+    IDS_RECALL_ALL_CONTROLS "The Controls on the Mixer will be disabled for one minute. Proceed?"
 END
 
 STRINGTABLE DISCARDABLE 
