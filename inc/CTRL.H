@@ -869,10 +869,13 @@
 
 
 // the actual Jump Zoom offsets
+// These are the offsets to move the
+// Zoon window to show the desired controls
+
 #define JUMP_TO_INPUT_AUX						904
 #define JUMP_TO_INPUT_COMP					1844
 #define JUMP_TO_INPUT_EQ						1302
-#define JUMP_TO_INPUT_SUB						2878
+#define JUMP_TO_INPUT_SUB						2378	// Modified 11/17/2001 as per Gamble
 #define JUMP_TO_INPUT_FADER					3950
 #define JUMP_TO_MATRIX_EQ						18
 #define JUMP_TO_MATRIX_AUX					1524
