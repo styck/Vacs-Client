@@ -46,21 +46,26 @@ BEGIN
                     LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
 END
 
-IDD_ABOUT DIALOGEX 0, 0, 283, 236
+IDD_ABOUT DIALOGEX 0, 0, 283, 274
 STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About Virtual Audio Console System"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,219,210,50,14
+    DEFPUSHBUTTON   "OK",IDOK,219,248,50,14
     CONTROL         136,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | 
-                    SS_REALSIZEIMAGE,51,82,186,55,WS_EX_TRANSPARENT
-    LTEXT           "CompanyName",IDT_COMPANY_NAME,21,9,198,12
-    LTEXT           "FileDescription",IDT_FILE_DESC,21,33,140,15
-    LTEXT           "LegalCopyright",IDT_COPYRIGHT,21,57,249,15
-    LTEXT           "ProductVersion",IDT_PROD_VER,181,33,87,15
-    LTEXT           "LegalTrademarks",IDT_TRADEMARKS,41,149,204,24
+                    SS_REALSIZEIMAGE,19,73,186,55,WS_EX_TRANSPARENT
+    LTEXT           "CompanyName",IDT_COMPANY_NAME,19,9,198,12
+    LTEXT           "FileDescription",IDT_FILE_DESC,19,24,140,11
+    LTEXT           "LegalCopyright",IDT_COPYRIGHT,19,40,249,15
+    LTEXT           "ProductVersion",IDT_PROD_VER,181,25,87,15
+    LTEXT           "LegalTrademarks",IDT_TRADEMARKS,19,133,245,24
     LTEXT           "www.corteksoft.com      sales@corteksoft.com",
-                    IDC_STATIC,16,209,169,14
+                    IDC_STATIC,22,55,169,14
+    LTEXT           "Warning: this computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
+                    IDC_STATIC,19,210,250,34
+    LTEXT           "This product is Licensed to:\n\nJim Gamble Associates\nP.O. Box 7047\nTahoe City, California 96145\n",
+                    IDC_STATIC,19,155,245,50,SS_SUNKEN
+    LTEXT           "",IDC_STATIC,17,211,251,37,NOT WS_GROUP
 END
 
 IDD_SPLASH DIALOG DISCARDABLE  0, 0, 246, 122
@@ -111,7 +116,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 276
         TOPMARGIN, 7
-        BOTTOMMARGIN, 229
+        BOTTOMMARGIN, 262
     END
 
     IDD_SPLASH, DIALOG
@@ -151,14 +156,14 @@ BEGIN
             VALUE "Comments", "by CorTek Software, Inc.\0"
             VALUE "CompanyName", "CorTek Software Inc.\0"
             VALUE "FileDescription", "VACS® Client Workstation\0"
-            VALUE "FileVersion", "2.47e\0"
+            VALUE "FileVersion", "2.47L\0"
             VALUE "InternalName", "VACS® Client Workstation\0"
             VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2001\0"
             VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc. all rights reserved.\0"
             VALUE "OriginalFilename", "VACS.EXE\0"
-            VALUE "PrivateBuild", "Build 02/05/2001\0"
+            VALUE "PrivateBuild", "Build 02/25/2001\0"
             VALUE "ProductName", "CorTek Software VACS\0"
-            VALUE "ProductVersion", "2.47e\0"
+            VALUE "ProductVersion", "2.47L\0"
             VALUE "SpecialBuild", "\0"
         END
     END

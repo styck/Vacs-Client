@@ -2,7 +2,6 @@
 // Microsoft Developer Studio generated include file.
 // Used by D:\Work\styck\Vacs Client\usengl\usengl.rc
 //
-#define t                               0
 #define IDD_SEQUENCE_WINDOW             101
 #define IDD_PRF_MIDI                    102
 #define MENU_TVN_POPUP                  102
@@ -151,7 +150,7 @@
 #define IDS_MIXFILE_SAVED               40005
 #define IDM_V_SEQUENCE                  40005
 #define IDS_MIXFILE_NOTSAVED            40006
-#define IDS_INCOMP_MIX_FILE             40007
+#define IDS_INCOMP_MIX_FILE             40008
 #define MENU_TVN_ADD                    40007
 #define IDS_DELETE_SEQUENCE_ENTRY       40007
 #define MENU_TVN_UPDATE                 40008
@@ -174,6 +173,7 @@
 #define IDM_RECAL_ALL_CONTROLS          40028
 #define IDM_START_TRACKING_WINDOW       40029
 #define IDM_V_PROP_FILTER               40030
+#define IDS_DEFINITION_FAILED3          40031
 #define IDM_S_PLAY                      40032
 #define IDM_S_RECALL_CURRENT            40033
 #define IDM_S_PAUSE                     40034

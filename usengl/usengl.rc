@@ -252,7 +252,7 @@ END
 
 IDD_SEQUENCE_WINDOW DIALOGEX 0, 0, 302, 158
 STYLE WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
-FONT 8, "Arial"
+FONT 8, "Arial", 0, 0, 0x1
 BEGIN
     PUSHBUTTON      "&Add",IDBTN_SEQ_ADD,1,7,37,15
     PUSHBUTTON      "&Update",IDBTN_SEQ_UPDATE,38,7,37,15
@@ -284,7 +284,7 @@ END
 
 IDD_GROUPS DIALOGEX 0, 0, 129, 140
 STYLE WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     LTEXT           "",IDC_STATIC,0,0,129,21,0,WS_EX_DLGMODALFRAME | 
                     WS_EX_CLIENTEDGE
@@ -304,7 +304,7 @@ IDD_SEQ_UPDATE_PROP DIALOGEX 0, 0, 219, 77
 STYLE DS_ABSALIGN | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
 CAPTION "Update"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "Done",IDOK,7,56,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,61,56,50,14
@@ -442,6 +442,7 @@ BEGIN
     IDS_MIXFILE_SAVED       "Mix File Saved."
     IDS_MIXFILE_NOTSAVED    "Mix File NOT Saved!"
     IDS_DELETE_SEQUENCE_ENTRY "Delete this Sequence Entry?"
+    IDS_INCOMP_MIX_FILE     "Incompatible Mix File - check GServer settings \nRack type MUST match Mix File Settings \n\nHold SHIFT key down to force RACK setting when starting VACS."
 END
 
 STRINGTABLE DISCARDABLE 
@@ -493,6 +494,7 @@ BEGIN
     IDM_V_FULLZOOM_MASTER   "Zoom Master View"
     IDM_START_TRACKING_WINDOW "Start Tracking Window"
     IDM_V_PROP_FILTER       "Display the Propagate filter"
+    IDS_DEFINITION_FAILED3  "User CANCEL - Exiting"
 END
 
 STRINGTABLE DISCARDABLE 
