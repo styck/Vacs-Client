@@ -509,6 +509,7 @@ void HandleGroupLVKeyDown(LV_KEYDOWN *pKeyDown)
 {
 int iListItem, iCount;
 
+	///////////////////////////////////////////////////////////////
   // If user pressed the Up or Down key then activate that group
 
 	switch(pKeyDown->wVKey)
@@ -516,13 +517,13 @@ int iListItem, iCount;
 		case VK_UP:
 			iListItem =  GetLisControlSelection();
             if(iListItem > -1)
-              ActivateGroup(iListItem, FADERS_GROUPS, -1);
+              ActivateGroup(iListItem-1, FADERS_GROUPS, -1);
 		break;
 
 		case VK_DOWN:
 			iListItem =  GetLisControlSelection();
             if(iListItem > -1)
-              ActivateGroup(iListItem, FADERS_GROUPS, -1);
+              ActivateGroup(iListItem+1, FADERS_GROUPS, -1);
 		break;
 
 		// Pressing the Delete key has same affect as pressing delete button
@@ -534,6 +535,7 @@ int iListItem, iCount;
 
 		break;
 	}
+	///////////////////////////////////////////////////////////////
   
 };
 
