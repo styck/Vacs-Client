@@ -342,7 +342,7 @@ switch(uiMsg)
     case WM_INITDIALOG:
 			ghwndSeqDlg = hwnd;
 
-/*
+#ifdef NOTUSED
       // Prepare the Critical Section
       // for the MTC Emulate
       //-----------------------------
@@ -373,21 +373,21 @@ switch(uiMsg)
       hwndCtrl = GetDlgItem(hwnd, IDLIST_SEQ_EVENTS);
       if(hwndCtrl)
           InitSeqList(hwndCtrl);
-*/
+
       if(OpenSequenceFiles () == FALSE){
 				CloseSequenceFiles ();
         DestroyWindow(ghwndSeqDlg);
         return FALSE;
       }
-			
-      
+#endif
+	     
       g_hwndMTCReadout = GetDlgItem(hwnd, IDC_MTC_READOUT);
       if(g_hwndMTCReadout) {
           GetClientRect(g_hwndMTCReadout, &g_rMTCReadout);
           PrepareMTCReadout();
           }
 
-      return FALSE;        
+//      return FALSE;        
       break;
     ////////////////////////////////////////////////////
     case WM_DESTROY:
