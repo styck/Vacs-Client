@@ -351,7 +351,7 @@ CloseHandle(hf);
 
 
 if(bRecallFromMemBuffer)
-  RecallMemoryMapBuffer(FALSE);
+  RecallMemoryMapBuffer(FALSE,0);
 
 //HadleCueMasterSystem ();
 /*
