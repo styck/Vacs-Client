@@ -2401,6 +2401,13 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
       // aha ... turn off this duda
       // 
       FlipTheControl(lpctrl, lpmwd);
+      // now update all of the other mixers
+      // windows that represent this mixer
+      // using the iMixer, iPhisChannel
+      // and iVal
+      //-----------------------------------
+      UpdateSameMixWndByCtrlNum(lpmwd->hwndImg, lpmwd->iMixer, pctrlzm->iModuleNumber, pctrlzm, 0, NULL);
+
     }
     break;
 
@@ -2633,8 +2640,8 @@ void HandleMasterToggleSwtches(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
     break;
 
   case CTRL_NUM_MASTER_CUEA_SYSTEM_SEL:
-    wVal = GETPHISDATAVALUE(0, pctrlzm, CTRL_NUM_MASTER_CUEA_SYSTEM_SEL);
-    if(wVal > 0)
+    wVal = GETPHISDATAVALUE(0, pctrlzm, CTRL_NUM_MASTER_CUEB_SYSTEM_SEL);
+    if(wVal == 0)
     {
       lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_CUEB_SYSTEM_SEL);
       // aha ... turn off this duda
@@ -2648,7 +2655,7 @@ void HandleMasterToggleSwtches(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
       //-----------------------------------
       UpdateSameMixWndByCtrlNum(lpmwd->hwndImg, lpmwd->iMixer, g_iMasterModuleIdx, pctrlzm, 0, NULL);
     }
-    else
+    else	// Cue A is Already pressed in
     {
       wVal = GETPHISDATAVALUE(0, pctrlzm, CTRL_NUM_MASTER_CUEA_SYSTEM_SEL);
       if(wVal == 0)
@@ -2657,7 +2664,6 @@ void HandleMasterToggleSwtches(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
         // aha ... turn off this duda
         // 
         FlipTheControl(lpctrl, lpmwd);
-				//FlipHardwareControl(lpctrl);
         // now update all of the other mixers
         // windows that represent this mixer
         // using the iMixer, iPhisChannel
@@ -2684,7 +2690,7 @@ void HandleMasterToggleSwtches(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
       //-----------------------------------
       UpdateSameMixWndByCtrlNum(lpmwd->hwndImg, lpmwd->iMixer, g_iMasterModuleIdx, pctrlzm, 0, NULL);
     }
-    else
+    else	// Cue B is Already pressed in
     {
       wVal = GETPHISDATAVALUE(0, pctrlzm, CTRL_NUM_MASTER_CUEB_SYSTEM_SEL);
       if(wVal == 0)
@@ -2865,7 +2871,7 @@ int IsSpecialFilter(LPMIXERWNDDATA lpmwd, int iPhisChan, LPCTRLZONEMAP pctrlzm)
 
   switch(gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber])
   {
-  case 1:
+  case DCX_DEVMAP_MODULE_INPUT:
     switch(pctrlzm->iCtrlChanPos)
     {
     case CTRL_NUM_INPUT_HIGHFREQ:
@@ -2883,7 +2889,7 @@ int IsSpecialFilter(LPMIXERWNDDATA lpmwd, int iPhisChan, LPCTRLZONEMAP pctrlzm)
     case CTRL_NUM_INPUT_LF_BC:      
     case CTRL_NUM_INPUT_LF_PEAKSHELF:
 		case CTRL_NUM_INPUT_LOWCUT:
-		case CTRL_NUM_INPUT_LOWCUT_INOUT:
+//		case CTRL_NUM_INPUT_LOWCUT_INOUT:		// Removing this fixes EQ display going to other channels
       
       return CTRL_TYPE_DISP_INPUT_EQ_FILTER;
       break;
@@ -2893,7 +2899,7 @@ int IsSpecialFilter(LPMIXERWNDDATA lpmwd, int iPhisChan, LPCTRLZONEMAP pctrlzm)
     }
     break;
     // Check the module type !!!
-  case 3:
+  case DCX_DEVMAP_MODULE_MATRIX:
     switch(pctrlzm->iCtrlChanPos)
     {
     case CTRL_NUM_MATRIX_HI_FREQ_LT:
