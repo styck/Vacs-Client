@@ -107,7 +107,7 @@ int     SavePreferences();
 
 
 // Exported functions
-
+__declspec(dllexport)int      CDef_isRunning(void);
 __declspec(dllexport)int      CDef_Init(void);
 __declspec(dllexport)BOOL     CDEF_GetCSData(HWND);
 
@@ -143,6 +143,7 @@ __declspec(dllexport)void     CDef_ResetBus(void);
 ///////////////////   IMPORT SECTION  ///////////////////////////////
 
 // Imported functions from Other modules ... APP
+__declspec(dllimport)int      CDef_isRunning(void);
 
 __declspec(dllimport)int      CDef_Init(void);
 __declspec(dllimport)BOOL     CDEF_GetCSData(HWND);
