@@ -36,12 +36,8 @@ BOOL		g_bIsSoloCueMode;	// Default as true
 //
 //
 //
-//
-//
-//
-//
-
 //======================
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR  lpszCmdLine, int nCmdShow)
 
@@ -50,7 +46,6 @@ MSG         msg;
 int         iInit;
 int         iMessage;
 FILESTRUCT	fsTemp;
-UINT				timerID;
 int					shift_key;	 
 WORD	wKeyFlags=0;
 int			iRet;
@@ -154,11 +149,6 @@ int			iRet;
 			// At this point LoadMix() has already been called
 
 			CancelAllCues (ghwndMain);
-	
-
-	//
-	timerID = SetTimer(ghwndMain, 33, 200000, NULL);
-
 
 	// Main Message Loop
 	//------------------
@@ -307,13 +297,11 @@ int			iRet;
 			}
 
 			/////////////////////////////////////////////////////////////////////////////////////////
-			// We are quiting or exiting, kill the mix file update timer and write the LA$T.mis file
+			// We are quiting or exiting, kill the mix file update timer and write the LA$T.mix file
 			/////////////////////////////////////////////////////////////////////////////////////////
 			if(msg.message == WM_QUIT || msg.message == WM_CLOSE || msg.message == WM_DESTROY)
 
 			{
-				// go to the right directory and store the current state of the mixer....			
-				KillTimer(ghwndMain, timerID);
 
 // FDS - This is done in WndMainProc() WM_CLOSE
 //				
@@ -377,6 +365,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 	FILESTRUCT	fsTemp;
 	HWND				focus_wnd;
 	HWND				last_wnd;
+	static UINT				timerID;
 
   //RECT    TempDesktopRect, TempMainRect;
   int     iRet;
@@ -388,6 +377,12 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 	HKEY hKey = NULL;
 	DWORD dwDisposition;
 	static LPCTSTR szRegKey = "Software\\CorTek\\VACS"; 
+	static LPCTSTR szRegValue; 
+	DWORD dwType;
+	DWORD rc;
+	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
+	char								szTempSeq[MAX_PATH];
+
 	char            szBuff[MAX_PATH];
 
 
@@ -785,16 +780,70 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 				ghwndMain = NULL;
       }
 
+			// Used to periodically save mix files
+
+			timerID = SetTimer(hWnd, 33, 200000, NULL);
       break;
+
 		///////////////////////////////////////////////////////////////
 		case WM_TIMER:
 			
 			// Our timer to update the LA$T.mix file
 
-			wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
-			wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
-			WriteMixFile(&fsTemp, FALSE);
+			if(giMixerTypeOffline != NULL)	// Don't try to save unless mixer type has been set
+			{
+				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
+				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
+				WriteMixFile(&fsTemp, FALSE);
 
+				////////////////////////////////////////////////
+				// Jims AutoSave mix file logic
+				// If a mix had been loaded then save it
+				// else prompt them for a file name and save it
+
+					if(lstrlen(gfsMix.szFileName) > 0)
+						WriteMixFile(&gfsMix, TRUE);
+					else
+					{
+						bResult=KillTimer(hWnd, timerID);	// Make sure we don't get here again
+
+						////////////////////////////////////
+						// Get the last mix file that was
+						// saved and set the global filename
+						// structure
+
+						lnResult = RegCreateKeyEx(
+												HKEY_CURRENT_USER,
+												szRegKey,
+												0, 
+												REG_NONE, 
+												0, 
+												KEY_ALL_ACCESS, 
+												NULL, 
+												&hKey,
+												&dwDisposition );
+
+						szRegValue = "MRUmix";
+						rc = RegQueryValueEx( 
+									hKey, 
+									szRegValue, 
+									NULL, 
+									&dwType, 
+									&szTempSeq, 
+									&dwBufferSize ); 
+
+						// Set our global filename name to the last loaded mix file
+						// so that when we ask them to save the mix file it is the
+						// defailt name 
+
+						if(rc == ERROR_SUCCESS)
+							wsprintf(gfsTemp.szFileName, "%s", szTempSeq);
+
+						SaveMixFile();									// 
+						timerID = SetTimer(hWnd, 33, 200000, NULL);
+					}
+
+			}
 			break;
 
     //////////////////////////////////////////////////////////////
@@ -802,6 +851,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
       if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_QUIT_MESSAGE) == IDNO)
           break;
+
+				// Kill the 3 minute timer to save mix file
+				
+				KillTimer(hWnd, timerID);
+
 
 			if (g_mixer_state_changed)
 			{	
