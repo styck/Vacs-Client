@@ -552,7 +552,7 @@ int				iScrVisible = 0;
 				//GetMaxWindowSize(&lpMWD->rMaxWndPos, lpMWD->lpZoneMap, lpMWD->lZMCount, lpMWD);
 
         wsprintf(lpMWD->szTitle, "Zoom View (Link)");
-        ghwndZoom = CreateZoomViewWindow("Zoom View (Link)", lpMWD, 1);
+        ghwndZoom = CreateZoomViewWindow(ghwndMDIClient,"Zoom View (Link)", lpMWD, 1);
 
      }
 	}
@@ -675,7 +675,6 @@ START_STRING_UPDATE:
 
 	if(bText)
 	{
-//			hBrush = CreateSolidBrush(GetSysColor(COLOR_BTNFACE)); <== allows user to select COLOR
 			hBrush = CreateSolidBrush(PALETTERGB(156,223,206));
 			FillRect(hdc,&r, hBrush);
 			if(hBrush)
@@ -1190,7 +1189,7 @@ HWND			hWnd;
 				}
 				else	// No Zoom View windows exist, so create one.
 				{
-					ghwndZoom = CreateZoomViewWindow("Zoom View", lpMWD, 1);// was Zoom View (Link)
+					ghwndZoom = CreateZoomViewWindow(ghwndMDIClient,"Zoom View", lpMWD, 1);// was Zoom View (Link)
 
 				}
 #ifdef NOTUSED
