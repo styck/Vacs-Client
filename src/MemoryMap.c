@@ -365,10 +365,15 @@ int     SetMemoryMapDefaults(void)
         if((iCtrlNum != CTRL_NUM_NULL) && (lpctrlZM->iModuleNumber > -1))
         {
           // This is very UGLY !!! Please fix it !!!!!!!!!!!! ??????
-          //
-          if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_PREPOST_FADER_VU
-            && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT)
-            ||
+          // These are all SOFTWARE CONTROLS
+					// We are setting their default values here, ie on/off
+					//
+          if(
+
+//	DO NOT DEFAULT					(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_PREPOST_FADER_VU
+//  THE PREPOST           && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT)
+//  FADER BUTTON TO ON          ||
+
             ( (lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_POST_LT_VU 
                || lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_POST_RT_VU )
              && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_MASTER) 
