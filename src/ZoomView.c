@@ -1,5 +1,5 @@
 //=================================================
-// CopyRight 1998-2001, CorTek Software, Inc.
+// Copyright 1998-2001, CorTek Software, Inc.
 //=================================================
 
 //=================================================
@@ -437,6 +437,7 @@ return 0;
 //			Special Stereo Cue Meters Window
 //
 //
+
 int       RegisterStereoCueMetersViewClass(void)
 {
 	int         iReturn;
@@ -484,6 +485,10 @@ HBITMAP		g_bmpCueVu;
 //
 // Function: showStereoCueMetersView()
 //
+// Purpose: create the Stereo Cue VU meter window, save handle in
+//					global variable g_stereoCueMetersWindow so that we can
+//					hide and show window when CUE's are active
+//					see ShowStereoCueMetersWindow()
 //
 int showStereoCueMetersView (void)
 {
@@ -549,7 +554,11 @@ int showStereoCueMetersView (void)
 //
 // Function: ShowStereoCueMetersWindow()
 //
+// Purpose: Show/Hide the Stereo Cue VU Meter window
 //
+// Inputs: TRUE - show Cue VU window, FALSE - hide Cue Vu Window
+//
+
 int			g_leftPosSCM = -1;
 int			g_topPosSCM = -1;
 HDC			g_memoryCueDC = NULL;
@@ -593,7 +602,9 @@ void		ShowStereoCueMetersWindow (BOOL show)
 //
 // Function: StereoCueMetersViewProc()
 //
+// Purpose: Process messages for the Stereo CUE VU Window
 //
+
 LRESULT CALLBACK  StereoCueMetersViewProc(HWND hWnd, UINT wMessage, 
 																					WPARAM wParam, LPARAM lParam)
 {
@@ -657,7 +668,9 @@ LRESULT CALLBACK  StereoCueMetersViewProc(HWND hWnd, UINT wMessage,
 //
 // Function: DisplayStereoCueVUData()
 //
+// Purpose: Display the VU data for the Stereo CUE VU window
 //
+
 void	DisplayStereoCueVUData(VU_READ *pVuDataBuffer)
 {
 	HDC		hdc, hdcLocal;
