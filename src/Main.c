@@ -149,7 +149,7 @@ while((ghwndMain != NULL) && GetMessage(&msg, NULL/*ghwndMain*/, 0, 0) == TRUE)
 
 			if(msg.message == WM_KEYDOWN)
 			{
-				wsprintf(fsTemp.szFileDir, "%s\\mix\\", gszProgDir);
+				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 
 				switch(msg.wParam)
 				{
