@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/MemoryMap.c        $
-// $Revision:: 36                                 $
+// $Revision:: 37                                 $
 //
 //
 
@@ -619,7 +619,7 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 									((lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_STERIO_CUE_PRE) ||	// MATRIX CUES
 									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_STERIO_CUE_POST) ||
 									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_CUE_PRE) ||
-									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_CUE_POST) 
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_CUE_POST)
 
 									)	
 									)
@@ -729,10 +729,29 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 ************************************************************************************/
 
 								// Press the MUTE button in since the value has changed
+							if( (lpctrlZM->iCtrlType == CTRL_MARIXLT_MUTE_FILTER) ||
+									(lpctrlZM->iCtrlType == CTRL_MARIXRT_MUTE_FILTER))
+							{
 
+									// TODO: HANDLE MATRIX MUTE DIFFERENTLY
+									// Since we are restoring we need to fake
+								  // out a zone map and channel and then
+									// handle it like a button click
+									// 
+								if(lpmwd)
+								{
+									lpmwd->lpCtrlZM = lpctrlZM;	// Need a zone map
+									lpmwd->iCurChan=iChannel;		// Need a channel
+	                HandleCtrlBtnClick(NULL, lpmwd);
+								}
+
+
+							}
+							else
+							{
 								if(lpmwd)
 									HandleCtrlBtnClickInGroup(NULL, lpmwd, lpctrlZM, iChannel);
-
+							}
 /*********************
 							}
 **********************/
