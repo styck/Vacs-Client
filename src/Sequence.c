@@ -1,6 +1,12 @@
 //=================================================
-// Copyright 2001, CorTek Software, Inc.
+// Copyright 1998-2001 CorTek Software, Inc.
 //=================================================
+//
+//
+// $Author:: Styck                                $
+// $Archive:: /Vacs Client/src/Sequence.c         $
+// $Revision:: 22                                 $
+//
 
 
 #include "SAMM.H"
@@ -64,8 +70,6 @@ BOOL SeqGoToIndex(DWORD index);
 
 extern void		UpdateSeqSceneNumber(void);
 
-
-// lParam으로 대입되는 구조체
 struct tag_Param {
 	char Num[10];
 };
@@ -83,25 +87,25 @@ int         iReturn;
 WNDCLASS    wc;
 
 
-// Register Full View Class
-//--------------------------
-ZeroMemory(&wc, sizeof(WNDCLASS));      // Clear wndclass structure
+	// Register Full View Class
+	//--------------------------
+	ZeroMemory(&wc, sizeof(WNDCLASS));      // Clear wndclass structure
 
-wc.style = CS_HREDRAW | CS_VREDRAW;
-wc.lpfnWndProc = (WNDPROC)SeqWndProc;
-wc.cbClsExtra = 0;
-wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
-wc.hInstance = ghInstMain;                        
-wc.hIcon = LoadIcon(ghInstConsoleDef, MAKEINTRESOURCE(IDICON_SEQUENCE));// this might leak memory
-wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-//wc.hbrBackground = GetStockObject(BLACK_BRUSH);
-wc.lpszMenuName = NULL;
-wc.lpszClassName = gszSeqClass;
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = (WNDPROC)SeqWndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
+	wc.hInstance = ghInstMain;                        
+	wc.hIcon = LoadIcon(ghInstConsoleDef, MAKEINTRESOURCE(IDICON_SEQUENCE));// this might leak memory
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	//wc.hbrBackground = GetStockObject(BLACK_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = gszSeqClass;
 
-iReturn = RegisterClass(&wc);
+	iReturn = RegisterClass(&wc);
 
-if(iReturn == 0)
-	 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+	if(iReturn == 0)
+		 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
 
 return 0;
@@ -199,13 +203,15 @@ char            szBuff[MAX_PATH];
 HTREEITEM       htItem;  // handle of target item 
 TV_HITTESTINFO  tvht;  // hit test information 
 
-switch(uiMsg)
-    {
+	switch(uiMsg)
+  {
+
     /////////////////////////////////////////////////////////////
-	case WM_NOTIFY:	{
-		//SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
+		case WM_NOTIFY:	
+		{
+			//SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
         switch (((LPNMHDR) lParam)->code)
-            {
+        {
             //----------------
             case TVN_SETDISPINFO:
                 HandleTVSetItemIfno((TV_DISPINFO *)lParam);
@@ -242,27 +248,27 @@ switch(uiMsg)
       case NM_SETFOCUS:
           SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
           break;
-      }
-            }
+				}
+    }
         break;
 
 
-				// Handle the right-click and POPUP menu HERE
-				// This will set the selection to the item that
-				// the user right clicked on.
+		// Handle the right-click and POPUP menu HERE
+		// This will set the selection to the item that
+		// the user right clicked on.
 
-        case WM_CONTEXTMENU:
-            tvht.pt.x = LOWORD(lParam);
-            tvht.pt.y = HIWORD(lParam);
-            ScreenToClient(g_hwndTV, &tvht.pt);
-            htItem = TreeView_HitTest(g_hwndTV, &tvht);
-            if (htItem) {
+    case WM_CONTEXTMENU:
+        tvht.pt.x = LOWORD(lParam);
+        tvht.pt.y = HIWORD(lParam);
+        ScreenToClient(g_hwndTV, &tvht.pt);
+        htItem = TreeView_HitTest(g_hwndTV, &tvht);
+        if (htItem) {
 
-                TreeView_SelectItem(g_hwndTV, htItem);
-                DisplayTVNPopupMenu(hwnd);
+            TreeView_SelectItem(g_hwndTV, htItem);
+            DisplayTVNPopupMenu(hwnd);
 
-            }
-            break;
+        }
+        break;
         
     /////////////////////////////////////////////////////////////
     case WM_MOUSEMOVE:
@@ -285,7 +291,7 @@ switch(uiMsg)
         SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
 
         switch(LOWORD(wParam))
-            {
+        {
             //----------------
             /*
             case IDBTN_SEQ_PLAY:
@@ -396,7 +402,7 @@ switch(uiMsg)
             case IDBTN_SEQ_TOP:
               SeqGoToFirst();
               break;
-            }
+        }
 
 
         break;
@@ -404,32 +410,32 @@ switch(uiMsg)
     case WM_SIZE:
 
         if((wParam != SIZE_MINIMIZED) && ghwndSeqDlg)
-            {
+        {
             GetClientRect(hwnd, &rect);
             // adjust the size of the 
             // tree and the list view
             //-----------------------
             hwndCtrl = GetDlgItem(hwnd, IDTREE_SEQUENCE);
             if(hwndCtrl)
-                {
+            {
                 GetWindowRect(hwndCtrl, &rectCtrl);
                 ScreenToClient(hwnd, (LPPOINT)&rectCtrl.left);
                 ScreenToClient(hwnd, (LPPOINT)&rectCtrl.right);
                 SetWindowPos(hwndCtrl, NULL, 0, 0, rectCtrl.right - rectCtrl.left, 
                                                    rect.bottom - rectCtrl.top,
                              SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
-                }
+            }
 
             hwndCtrl = GetDlgItem(hwnd, IDLIST_SEQ_EVENTS);
             if(hwndCtrl)
-                {
+            {
                 GetWindowRect(hwndCtrl, &rectCtrl);
                 ScreenToClient(hwnd, (LPPOINT)&rectCtrl.left);
                 SetWindowPos(hwndCtrl, NULL, 0, 0, rect.right - rectCtrl.left, 
                                                    rect.bottom - rectCtrl.top,
                              SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
-                }
             }
+        }
 
         break;
     /////////////////////////////////////////////////////
@@ -467,7 +473,8 @@ switch(uiMsg)
           InitSeqList(hwndCtrl);
 
 			wsprintf(szBuff, "%s", g_sequence_file_name);
-      if(OpenSequenceFiles (szBuff) == FALSE){
+      if(OpenSequenceFiles (szBuff) == FALSE)
+			{
 				CloseSequenceFiles ();
         DestroyWindow(ghwndSeqDlg);
         return FALSE;
@@ -516,19 +523,12 @@ switch(uiMsg)
             g_iStopTimeEvent = 1;
 
 				CloseSequenceFiles ();
-/*
-        // Free the Linked list
-        //---------------------
-        FreeDLListRootAll(&g_pdlrSequence);
-        g_pdlrSequence = NULL;
-        CloseDataFile();
-*/
 
         ghwndSeqDlg = NULL;
         FreeMTCReadout();
     default:
         return FALSE;
-    }
+  }
 
 return FALSE;
 }
@@ -544,9 +544,10 @@ LRESULT CALLBACK  SeqWndProc(HWND hwnd, UINT uiMsg,
 {
 RECT        rect;
 MINMAXINFO  *lpMMI;
+int i;
 
-switch(uiMsg)
-    {
+	switch(uiMsg)
+  {
     ////////////////////////////////////////////
 //    case WM_MDIACTIVATE:
 //        if((HWND)lParam == hwnd)
@@ -554,13 +555,20 @@ switch(uiMsg)
             //SetFocus(ghwndSeqDlg);
 //        break;
     ////////////////////////////////////////////
+
+		case	WM_VSCROLL:
+			i=5;
+			break;
+
+
     case WM_CREATE:
 				ShowWindow(hwnd, SW_HIDE);
 
         ghwndSeqDlg = CreateDialog(ghInstStrRes, MAKEINTRESOURCE(IDD_SEQUENCE_WINDOW), hwnd, SeqProc);
-        if(ghwndSeqDlg == NULL){
+        if(ghwndSeqDlg == NULL)
+				{
             return -1;
-            }
+        }
         
 				GetClientRect(ghwndSeqDlg, &rect);        
         SetWindowPos(hwnd, NULL, 0, 0, 
@@ -1490,7 +1498,7 @@ return 0;
 HTREEITEM CopyTreeItem(HWND hTree, HTREEITEM hSrc, HTREEITEM hDest)
 {
 
-
+#ifdef NOTUSED
 	HTREEITEM hNew;
 	TVINSERTSTRUCT TI;
 	TVITEMEX TvEx;
@@ -1516,6 +1524,10 @@ HTREEITEM CopyTreeItem(HWND hTree, HTREEITEM hSrc, HTREEITEM hDest)
 	TI.hInsertAfter=TVI_LAST;
 	hNew=TreeView_InsertItem(hTree,&TI);
 	return hNew;
+#else
+	return NULL;
+#endif
+
 }
 
 
@@ -1547,21 +1559,26 @@ HTREEITEM CopyTreeItems(HWND hTree, HTREEITEM hSrc, HTREEITEM hDest)
 void HandleSeqTVNStopDrag(void) 
 { 
 HTREEITEM       htiTarget;  // handle of target item 
-HTREEITEM hItem;
 
-if (g_bDragging) 
-    { 
+#ifdef DRAGDROP
+HTREEITEM hItem;
+#endif
+
+	if (g_bDragging) 
+  { 
     StopDragTimer();
     ImageList_DragLeave(g_hwndTV);
     ImageList_EndDrag(); 
 
     if((htiTarget = TreeView_GetDropHilight(g_hwndTV)) != NULL)
-        {
+    {
         TreeView_SelectDropTarget(g_hwndTV, NULL); 
         TreeView_SelectItem(g_hwndTV, htiTarget);
-        }
+    }
     else
+		{
         TreeView_SelectDropTarget(g_hwndTV, NULL); 
+		}
 
 //#define DRAGDROP
 #ifdef DRAGDROP
@@ -1569,17 +1586,18 @@ if (g_bDragging)
 		if (hDrag == htiTarget)
 				return;
 
-
 		hItem=htiTarget;
-			while (hItem != NULL) {
-				hItem=TreeView_GetParent(g_hwndTV,hItem);
-				if (hItem == hDrag)
-					return;
-			}
 
-			CopyTreeItems(g_hwndTV, hDrag, htiTarget);
-			TreeView_Expand(g_hwndTV,htiTarget,TVE_EXPAND);
-			TreeView_DeleteItem(g_hwndTV,hDrag);
+		while (hItem != NULL) 
+		{
+			hItem=TreeView_GetParent(g_hwndTV,hItem);
+			if (hItem == hDrag)
+				return;
+		}
+
+		CopyTreeItems(g_hwndTV, hDrag, htiTarget);
+		TreeView_Expand(g_hwndTV,htiTarget,TVE_EXPAND);
+		TreeView_DeleteItem(g_hwndTV,hDrag);
 #endif
 
     ReleaseDC(g_hwndTV, g_dcTV);
@@ -1587,7 +1605,8 @@ if (g_bDragging)
     g_htiTargetOld = NULL;    
     ReleaseCapture(); 
     g_bDragging = FALSE; 
-    } 
+  } 
+
 return; 
 } 
  
@@ -1605,8 +1624,8 @@ TV_HITTESTINFO  tvht;  // hit test information
 POINT           pnt;
 int             iDragScrlDir;
 
-if (g_bDragging) 
-    { 
+	if (g_bDragging) 
+  { 
     pnt.x = xCur;
     pnt.y = yCur;
     // Convert the Point 
@@ -1623,18 +1642,18 @@ if (g_bDragging)
     // Do not try to Drag outside the Rect
     //------------------------------------
     if(PtInRect(&g_rDrag, pnt) == FALSE)
-        {
+    {
         StopDragTimer();
         ImageList_DragShowNolock(FALSE);
         return;
-        }
+    }
 
     // check if there are enough items
     // visible to scroll through them
     // while dragging an Item
     //---------------------------------
     if((g_rDragItem.bottom * 4) < g_rDrag.bottom) 
-        {
+    {
         if((pnt.y + (g_rDragItem.bottom*2)) > g_rDrag.bottom)
             iDragScrlDir = 1;
         else 
@@ -1648,27 +1667,29 @@ if (g_bDragging)
             StartDragTimer(iDragScrlDir);
         else
             StopDragTimer();
-        }
+    }
 
 
     // Find out if the cursor is on the item. If it is, highlight 
     // the item as a drop target. 
     if((htiTarget = TreeView_HitTest(g_hwndTV, &tvht)) != NULL) 
-        {
+    {
         if(g_htiTargetOld != htiTarget)
-            {
+        {
             ImageList_DragShowNolock(FALSE);
             //TreeView_EnsureVisible(hwndTV, htiTarget);
             TreeView_SelectDropTarget(g_hwndTV, htiTarget); 
             g_htiTargetOld = htiTarget;
-            }
         }
+    }
 
     // Drag the item to the current position of the mouse cursor. 
     ImageList_DragShowNolock(TRUE);
     ImageList_DragMove(pnt.x, pnt.y);
-    } 
+  } 
+
 return; 
+
 } 
 
 //=======================================
@@ -1678,13 +1699,13 @@ return;
 //=======================================
 void    StartDragTimer(int iDragScrlDir)
 {
-g_iDragScrlDir = iDragScrlDir;
-if(g_iTimerID)
-    return;
+	g_iDragScrlDir = iDragScrlDir;
+	if(g_iTimerID)
+			return;
 
-g_iTimerID = DRAG_TIMER_ID;
-if(SetTimer(ghwndSeqDlg, g_iTimerID, DRAG_DELAY_TIME, NULL) == 0)
-    g_iTimerID = 0;
+	g_iTimerID = DRAG_TIMER_ID;
+	if(SetTimer(ghwndSeqDlg, g_iTimerID, DRAG_DELAY_TIME, NULL) == 0)
+			g_iTimerID = 0;
     
 return;
 }
@@ -2305,10 +2326,10 @@ void    CALLBACK MTC_EmulateProc(UINT uID, UINT iMsg, DWORD dwUser,
 {
 
 	if(g_iStopTimeEvent == 1)
-			{
+	{
 			StopTimeEvent();
 			return;
-			}
+	}
 
 	g_mtcNow.u.smpte.frame++;
 	VerifySMPTE(&g_mtcNow);
@@ -2345,21 +2366,21 @@ return;
 void    VerifySMPTE(MMTIME *pmm)
 {
 
-if(pmm->u.smpte.frame > 29)
+	if(pmm->u.smpte.frame > 29)
   {
-  pmm->u.smpte.frame = 0;
-  pmm->u.smpte.sec ++;
-  if(pmm->u.smpte.sec > 59)
+		pmm->u.smpte.frame = 0;
+		pmm->u.smpte.sec ++;
+		if(pmm->u.smpte.sec > 59)
     {
-    pmm->u.smpte.sec = 0;
-    pmm->u.smpte.min ++;
-    if(pmm->u.smpte.min > 59)
+			pmm->u.smpte.sec = 0;
+			pmm->u.smpte.min ++;
+			if(pmm->u.smpte.min > 59)
       {
-      pmm->u.smpte.min = 0;
-      pmm->u.smpte.hour ++;
-      if(pmm->u.smpte.hour > 99)
+				pmm->u.smpte.min = 0;
+				pmm->u.smpte.hour ++;
+				if(pmm->u.smpte.hour > 99)
         {
-        pmm->u.smpte.hour = 0;
+	        pmm->u.smpte.hour = 0;
         }
       }
     }
