@@ -1,6 +1,12 @@
 //=================================================
-// Copyright 2001, CorTek Software, Inc.
+// Copyright 1998 - 2001, CorTek Softawre, Inc.
 //=================================================
+//
+//
+// $Author::													$
+// $Archive::													$
+// $Revision::												$
+//
 
 // Purpose handle all General Group assignments
 // and cotrol routines
@@ -1706,7 +1712,9 @@ BOOL    GroupChannel(int iChannel, int iControl)
 			type = gDeviceSetup.iaChannelTypes[g_CurrentGroup.Group[i].iChannel]; 
 	}
 
-	if (type != -1 && type != gDeviceSetup.iaChannelTypes[iChannel])
+	if (type != -1 && 
+		  type != gDeviceSetup.iaChannelTypes[iChannel] ||
+			gDeviceSetup.iaChannelTypes[iChannel] == DCX_DEVMAP_MODULE_MASTER) // can't group master
 		return FALSE;
 
 
