@@ -613,7 +613,7 @@ int             SetMemoryMapDefaults(void);
 int             PhisDataToScrPos(LPCTRLZONEMAP, int, int);
 int             ScrPosToPhisData(LPCTRLZONEMAP , int, int);
 
-void            RecallMemoryMapBuffer(BOOL);
+void            RecallMemoryMapBuffer(BOOL,DWORD);
 
 // Module 18
 //----------
