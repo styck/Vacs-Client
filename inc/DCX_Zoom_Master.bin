@@ -2957,7 +2957,7 @@ BEGIN
 	  "\0                         ",  // the control name ....
 	  "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
-    0x0000, IDB_MASTER_BLUE_MED, 0x0000,
+    0x0000, 0x0000, 0x0000,
 
 // Master Cue B Button########################		
     //------------------
@@ -2975,7 +2975,7 @@ BEGIN
 	  "\0                         ",  // the control name ....
 	  "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
-    0x0000, IDB_MASTER_BLUE_MED, 0x0000,
+    0x0000, 0x0000, 0x0000,
 
 ////////////////////////////////////////////////////////////////////
 //Sterio Cue Pre Post
