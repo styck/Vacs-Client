@@ -372,7 +372,7 @@ END
 STRINGTABLE DISCARDABLE 
 BEGIN
     IDS_QUIT_MESSAGE        "Do You Want To Quit VACS?"
-    IDS_DCXBIN_FILE_FAILED  "Couldn't load DCX.bin file!"
+    IDS_DCXBIN_FILE_FAILED  "Couldn't load DCX.BIN.  If file exists then delete the .PRF file."
     IDS_ERR_LOAD_BITMAP     "Error loading bitmap!"
     IDS_ERR_RESOURCE_ZONES  "Error Loading Resource Zones!"
 END
