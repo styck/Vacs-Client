@@ -31,7 +31,41 @@
 IDZM_MASTER_ZOOM	ZONEMAP	MOVEABLE IMPURE LOADONCALL DISCARDABLE
 BEGIN
 
-    // The VU meter      ######################
+    // CUE CLIP     ######################
+    //-------------------
+    30, 2857,   45, 2865,
+    CTRL_NUM_CUE_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+    //      ######################
+    //-------------------
+    30, 2865,   45, 2873,
+    CTRL_NUM_CUE_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+    //      ######################
+    //-------------------
+    67, 2857,   82, 2865,
+    CTRL_NUM_CUE_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+    //    ######################
+    //-------------------
+    67, 2865,   82, 2873,
+    CTRL_NUM_CUE_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+
+
+    // MASTER CLIP     ######################
     //-------------------
     30, 3575,   46, 3584,
     CTRL_NUM_MASTER_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
@@ -39,7 +73,7 @@ BEGIN
     "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
-    // The VU meter      ######################
+    // clip light      ######################
     //-------------------
     30, 3583,   46, 3592,
     CTRL_NUM_MASTER_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
@@ -47,7 +81,7 @@ BEGIN
     "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
-    // The VU meter      ######################
+    // clip light      ######################
     //-------------------
     67, 3575,   83, 3584,
     CTRL_NUM_MASTER_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
@@ -55,7 +89,7 @@ BEGIN
     "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
-    // The VU meter      ######################
+    // clip light   ######################
     //-------------------
     67, 3583,   83, 3592,
     CTRL_NUM_MASTER_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
@@ -63,6 +97,26 @@ BEGIN
     "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
+
+
+
+    // CENTER AND MONO CLIP / MASTER CLIP     ######################
+    //-------------------
+    10, 3250,   28, 3256,
+    CTRL_NUM_MASTER_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CENTER_MONO_CLIP, 0x0000, 0x0000,
+    // clip light      ######################
+    //-------------------
+    84, 3250,   102, 3256,
+    CTRL_NUM_MASTER_CLIP_LIGHT, CTRL_TYPE_CLIP_LIGHT, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_CENTER_MONO_CLIP, 0x0000, 0x0000,
+
 
 
 

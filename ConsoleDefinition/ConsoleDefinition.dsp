@@ -258,6 +258,10 @@ SOURCE=.\Resource\dcx\BtnYellow_Med2.bmp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Resource\dcx\Center_Mono_Clip_ON.bmp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Resource\CLIENT_B.BMP
 # End Source File
 # Begin Source File
