@@ -77,6 +77,7 @@ BOOL  IsMuteFilter(LPCTRLZONEMAP pctrlzm)
   case CTRL_MATRIX_CENTER_MUTE_FILTER:
   case CTRL_CUE_MASTER_MUTE_FILTER:
 	case CTRL_SUB_SUMIN_MUTE_FILTER:
+//	case CTRL_TYPE_BTN_EQ_RESET_FILTER:		// fds maybe needs to be commented out????
     bRet = TRUE;
     break;
   }
@@ -1236,6 +1237,23 @@ void  HandleMasterAuxPrePostSwtch(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZO
 
 }
 
+
+///////////////////////////////////////////////////////////////////////////
+//
+// Reset the EQ to flat
+//
+void HandleResetEQFilter(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
+{
+  LPCTRLZONEMAP       lpctrl;
+  WORD                wVal;
+  int                 iIdx;
+  int                 iCount;
+
+
+
+}
+
+
 ///////////////////////////////////////////////////
 //
 //
@@ -1685,6 +1703,12 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
     HandleSubAuxMasterMatrixFilter(iPhisChann, lpmwd, lpctrlZM, bIsOn);
     break;
 
+	// EQ RESET FILTER
+  case CTRL_TYPE_BTN_EQ_RESET_FILTER:
+		// NOT THE REAL ROUTINE FDS TESTING FDS TESTING
+    // HandleResetEQFilter(iPhisChann, lpmwd, lpctrlZM, bIsOn);
+    break;
+
   default:
     return;
     break;
@@ -1920,6 +1944,8 @@ CHECK_FOR_GROUPS:
   if((bUseGroups == TRUE) && pCtrlData->wChannel < 80)
     UpdateGroupedControls(pCtrlData, pctrlzm, iDelta, lpmwd, FALSE);
 
+	if (g_monitor_mix_file_changes == TRUE)
+		g_mixer_state_changed = TRUE;
 
   // Cleanup here .....
   //
@@ -2689,6 +2715,10 @@ void HandleMatrixToggleSwtches(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
   }
 
 }
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////
 //   Check for the Toggle switches
