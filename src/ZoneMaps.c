@@ -1,5 +1,5 @@
 //=================================================
-// Copyright 1998 CorTek Software, Inc.
+// Copyright 2001 CorTek Software, Inc.
 //=================================================
 
 //=================================================
@@ -468,15 +468,15 @@ for(iCount = 0; iCount < MAX_CHANNELS; iCount++)
 
   for(iCount = 0; iCount < MAX_CHANNELS; iCount++)
   {
-    if(gDeviceSetup.iaChannelTypes[iCount] == 1)
+    if(gDeviceSetup.iaChannelTypes[iCount] == DCX_DEVMAP_MODULE_INPUT)
       wsprintf(&gpLabels[iCount * MAX_LABEL_SIZE], "Channel #%d", iCount + 1);
     else
-      if(gDeviceSetup.iaChannelTypes[iCount] == 2)
+      if(gDeviceSetup.iaChannelTypes[iCount] == DCX_DEVMAP_MODULE_AUX)
       {
         wsprintf(&gpLabels[iCount * MAX_LABEL_SIZE], "Sub Group %d", iCountSub++);
       }
       else
-        if(gDeviceSetup.iaChannelTypes[iCount] == 5)
+        if(gDeviceSetup.iaChannelTypes[iCount] == DCX_DEVMAP_MODULE_MASTER)
           wsprintf(&gpLabels[iCount * MAX_LABEL_SIZE], "Master");
   }
 
