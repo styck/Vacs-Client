@@ -28,7 +28,7 @@
 IDZM_SUBMATRIX_ZOOM	ZONEMAP	MOVEABLE IMPURE LOADONCALL DISCARDABLE
 BEGIN
 
-/*
+
 	// THESE ARE NOT WORKING YET BEGIN
 	
     // The VU meter      ######################
@@ -65,7 +65,6 @@ BEGIN
     IDB_CLIP_LIGHT_MEDIUM, 0x0000, 0x0000,
 
 	// THESE ARE NOT WORKING YET END
-*/
 
     // The VU meter      ######################
     //-------------------
