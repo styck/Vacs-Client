@@ -13,7 +13,6 @@
 // Button handling - updating all windows
 //                   and sending over network
 //=================================================
-//#include <windows.h>
 
 #include "SAMM.h"
 #include "SAMMEXT.h"
@@ -307,6 +306,7 @@ void    HandleRBDown(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
 
 return;
 }
+
 //================================================
 //FUNCTION: HandleLBUp
 //
@@ -332,6 +332,7 @@ POINT       pnt;
 
 return;
 }
+
 //================================================
 //FUNCTION: HandleMBUp
 //
@@ -383,15 +384,16 @@ POINT           pnt;
 return;
 }
 
-//====================================================
+//=========================================================
 //FUNCTION: HandleWndSize
 //
-// Whenever a window is sized this routine is called
+// Whenever ANY window is sized this routine is called
+// Shared with FULL and ZOOM windows
 //
-// Need to handle sizing the Zoom View window so that
-// it is always on a Channel boarder and need to keep
+// Need to handle sizing the Zoom/Full View windows so that
+// they are always on a Channel boarder and need to keep
 // track of what channels are visible
-//====================================================
+//=========================================================
 
 void     HandleWndSize(HWND hwnd, LPMIXERWNDDATA lpmwd,
                              WORD wWidth, WORD wHeight, WPARAM wFlags)
@@ -430,23 +432,15 @@ int     iPrevStart, iPrevEnd;
 	iStartScrChan = lpmwd->iStartScrChan;
 	iOldWidth = lpmwd->rWndPos.right;
 
-////////////////////////////////////////////
-// this is set to -1 only if we have just
-// isued the resize command
-// so there is nothing more to do here
-// but store the values and return
-//---------------------------------------
-//if(iOldWidth == -1)
-//    {
-//    lpmwd->rVisible.right = wWidth;// - (GetSystemMetrics(SM_CXFRAME)*2);
-//    return;
-//    }
+
+	////////////////////////////////////////////////////
+	// Calculate the width of all the visible channels
+	// Proceses Zoom and Full windows
 
 	CALC_WIDTH:
 	lZMCount = lpmwd->lZMCount;
 	iCX = 0;
 
-	//for(iCount=iStartScrChan; iCount < lZMCount; iCount++)
 	for(iCount=0; iCount < lZMCount; iCount++)
   {
 		//////////////////////////////////
@@ -474,7 +468,7 @@ int     iPrevStart, iPrevEnd;
     goto CALC_WIDTH;
   }
 
-	iCount--;
+	iCount--;		// This is the count of visible modules
 
 	/////////////////////////////
   // store the new End channel
@@ -495,14 +489,20 @@ int     iPrevStart, iPrevEnd;
 	// Store the new size of the visible window
 	//-----------------------------------------
 
-	lpmwd->rVisible.right = iCX;
+	lpmwd->rVisible.right = iCX+(GetSystemMetrics(SM_CXFRAME)*2);
 	lpmwd->rVisible.bottom = wHeight - HEIGHT_FULL_LABEL_WND;
 
 	iAdjWidth = iCX+(GetSystemMetrics(SM_CXFRAME)*2);
+
+#ifdef SCROLLBARS
+	// ADJUST Width for Vertical Scroll Bars
+	if(ghwndFull != hwnd)		// don't do this for full view
+		iAdjWidth += GetSystemMetrics(SM_CYVTHUMB);
+#endif
+
 	iAdjHeight = wHeight + GetSystemMetrics(SM_CYFRAME) +
 												 (GetSystemMetrics(SM_CYBORDER)*4) +
 												 GetSystemMetrics(SM_CYCAPTION);
-
 
 	lpmwd->rWndPos.right = iAdjWidth;
 	lpmwd->rWndPos.bottom = iAdjHeight;
@@ -511,18 +511,19 @@ int     iPrevStart, iPrevEnd;
 	// visible Chanels. Here we care only about
 	// the width.
 	//----------------------------------------------
-	//if((wWidth != iCX) || (iAdjWidth == lpmwd->rMaxSize.right))
-	//    {
-	//    lpmwd->rVisible.right = -1; // use it as a flag so the second time arround
+//	if((wWidth != iCX) || (iAdjWidth == lpmwd->rMaxSize.right))
+//	{
+//	    lpmwd->rVisible.right = -1; // use it as a flag so the second time arround
 																	// we will not get to here
 
+
     SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, iAdjWidth,
-                 iAdjHeight, SWP_NOMOVE | SWP_NOZORDER);
+                 iAdjHeight, SWP_NOMOVE | SWP_NOZORDER ); // | SWP_NOSIZE);
     if(lpmwd->hwndImg)
     {
 			if(ImageWindowSize(hwnd, &lpmwd->rVisible, lpmwd) == FALSE)
       {
-          InvalidateRect(lpmwd->hwndImg, NULL, FALSE);
+         InvalidateRect(lpmwd->hwndImg, NULL, FALSE);
       }
 
         SetWindowPos(lpmwd->hwndImg, HWND_NOTOPMOST, 
@@ -531,7 +532,16 @@ int     iPrevStart, iPrevEnd;
                      SWP_NOMOVE | SWP_NOZORDER);
     }
 
-//    }
+//  }
+
+
+#ifdef SCROLLBARS
+	if(ghwndFull != hwnd)		// don't do this for full view
+	{
+				SetScrollRange(hwnd, SB_VERT, 0, 3950, FALSE);             
+				SetScrollPos(hwnd, SB_VERT, 1975, TRUE); 
+	}
+#endif
 
 	RequestVisibleVU(lpmwd, -1, 0);
 	SetEvent(gDisplayEvent);
@@ -636,6 +646,9 @@ return;
 // how quickly they are incremented/decremented.
 // This routine is called when the timer expires so
 // that we can handle updating the control value
+//
+// This routine also handles the scrolling of the 
+// Zoom, Full, and Master View windows
 //==================================================
 
 void    HandleCtrlTimer(HWND hwnd, LPMIXERWNDDATA lpmwd)
@@ -653,15 +666,18 @@ void    HandleCtrlTimer(HWND hwnd, LPMIXERWNDDATA lpmwd)
 				break;
     }
   }
-	else
-  if(lpmwd->iCurMode != MW_NOTHING_MODE)
-    switch(lpmwd->iCurMode)
-    {
-      case MW_SCROLL_RELATIVE:
-        HandleScrollImgWindowRelative(hwnd, lpmwd);
-        break;
-    }
-
+	else		// We are scrolling a WINDOW
+	{
+		if(lpmwd->iCurMode != MW_NOTHING_MODE)
+		{
+			switch(lpmwd->iCurMode)
+			{
+				case MW_SCROLL_RELATIVE:
+					HandleScrollImgWindowRelative(hwnd, lpmwd);
+					break;
+			}
+		}
+	}
 
 return;
 }
@@ -825,9 +841,9 @@ RECT            r;
 	// now calculate the value against the scaling factors
 	//----------------------------------------------------
 	if(lpctrlZM->iNumScrPos > 0)
-		{
+	{
 		CONVERTSCREENTOPHISICAL(lpctrlZM, iVal);
-		}
+	}
 	else
 		iVal = 0;
 
@@ -1044,8 +1060,6 @@ BOOL  IsCtrlCueButton(int iType, int iModuleNumber )
 			break;
 		}
 		break;
-
-
   }
 
   return FALSE;
@@ -1520,23 +1534,6 @@ while(lpdle)
 return;
 }
 */
-
-//=============================================
-//FUNCTION: UpdateControl
-//
-//purpose:
-//      Updates a single control.
-//
-//=============================================
-int        UpdateControl(LPMIXERWNDDATA lpmwnd)
-{
-
-
-
-
-return 0;
-}
-
 
 
 ///////////////////////////////////////////////
