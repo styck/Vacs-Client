@@ -2139,6 +2139,8 @@ void FlipHardwareControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd_work)
   {
 		iVal = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs) - 1;
   }
+
+
   // Set the Phisical Data Value
   //----------------------------
   SETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
@@ -2148,6 +2150,8 @@ void FlipHardwareControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd_work)
   ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
 	ctrlData.wVal     = iVal;
 
+  SendDataToDevice(&ctrlData, TRUE, lpctrlZM, 1, lpmwd, TRUE);	// TURN OFF the other one
+
 	//if ( ! lpmwd->wKeyFlags & MK_SHIFT)
 		UpdateGroupedControls(&ctrlData, lpctrlZM, 1, NULL, TRUE);
 
@@ -2156,6 +2160,20 @@ void FlipHardwareControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd_work)
     UpdateControlFromNetwork(ctrlData.wChannel, (WORD)lpctrlZM->iCtrlChanPos, (int)ctrlData.wVal, FALSE);
   //UpdateControlFromNetwork(ctrlData.wChannel, ctrlData.wCtrl, (int)ctrlData.wVal, TRUE);
 
+}
+
+void HandleMasterCueSwitch(LPMIXERWNDDATA lpmwd, WORD wVal)
+{
+		// handle the master Cue switch
+		if(wVal == 0){
+			g_cue_priority.input --; if (g_cue_priority.input < 0) g_cue_priority.input = 0;
+			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, FALSE);
+			handleInputCuePriority (lpmwd, FALSE);
+		}else{
+			g_cue_priority.input ++;
+			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, TRUE);
+			handleInputCuePriority (lpmwd, TRUE);
+		}
 }
 
 //////////////////////////////////////////////////////////////////
@@ -2201,15 +2219,8 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 			}
     }
 
-		if(wVal == 0){
-			g_cue_priority.input --; if (g_cue_priority.input < 0) g_cue_priority.input = 0;
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, FALSE);
-			handleInputCuePriority (lpmwd, FALSE);
-		}else{
-			g_cue_priority.input ++;
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, TRUE);
-			handleInputCuePriority (lpmwd, TRUE);
-		}
+//		HandleMasterCueSwitch(lpmwd, wVal);		// Now called directly from HandleCtrlBtnClick()
+
 		break;
 	//////////////////////////////
 	case CTRL_NUM_INPUT_MIC_B_CUE:
@@ -2239,15 +2250,8 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 			}
     }
 
-		if(wVal == 0){
-			g_cue_priority.input --; if (g_cue_priority.input < 0) g_cue_priority.input = 0;
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, FALSE);
-			handleInputCuePriority (lpmwd, FALSE);
-		}else{
-			g_cue_priority.input ++;
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, TRUE);
-			handleInputCuePriority (lpmwd, TRUE);
-		}
+//		HandleMasterCueSwitch(lpmwd, wVal);		// Now called directly from HandleCtrlBtnClick()
+
 		break;
 	///////////////////////////////////
 	case CTRL_NUM_INPUT_GATE_KEY_INOUT:
@@ -2277,16 +2281,9 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 			}
     }
 
-    wVal = GETPHISDATAVALUE(0, pctrlzm, pctrlzm->iCtrlChanPos);
-		if(wVal == 0){
-			g_cue_priority.input --; if (g_cue_priority.input < 0) g_cue_priority.input = 0;
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, FALSE);
-			handleInputCuePriority (lpmwd, FALSE);
-		}else{
-			g_cue_priority.input ++;
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, TRUE);
-			handleInputCuePriority (lpmwd, TRUE);
-		}
+//    wVal = GETPHISDATAVALUE(0, pctrlzm, pctrlzm->iCtrlChanPos);
+//		HandleMasterCueSwitch(lpmwd, wVal);		// Now called directly from HandleCtrlBtnClick()
+
 		break;
 	///////////////////////////////
   case CTRL_NUM_INPUT_CUE_FAD_PRE:
@@ -2303,17 +2300,10 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 			FlipHardwareControl (lpctrl, lpmwd);
     }
 		
-		// handle the master Cue switch
 		wVal = GETPHISDATAVALUE(0, pctrlzm, pctrlzm->iCtrlChanPos);
-		if(wVal == 0){
-			g_cue_priority.input --; if (g_cue_priority.input < 0) g_cue_priority.input = 0;
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, FALSE);
-			handleInputCuePriority (lpmwd, FALSE);
-		}else{
-			g_cue_priority.input ++; 
-			handleInputCuePriority (lpmwd, TRUE);
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, TRUE);
-		}
+
+		HandleMasterCueSwitch(lpmwd, wVal);
+
     break;
   //////////////////////////////////
   case CTRL_NUM_INPUT_CUE_FAD_POST:
@@ -2334,15 +2324,9 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 		
 		// handle the master Cue switch
 		wVal = GETPHISDATAVALUE(0, pctrlzm, pctrlzm->iCtrlChanPos);
-		if(wVal == 0){
-			g_cue_priority.input --; if (g_cue_priority.input < 0) g_cue_priority.input = 0;
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, FALSE);
-			handleInputCuePriority (lpmwd, FALSE);
-		}else{
-			g_cue_priority.input ++; 
-			handleInputCuePriority (lpmwd, TRUE);
-			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, TRUE);
-		}
+
+		HandleMasterCueSwitch(lpmwd, wVal);
+
     break;
 
   ///////////////////////////////
@@ -2824,15 +2808,15 @@ void    CheckForToggleSwitches(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
 
   switch(gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber])
   {
-  case 1:
+  case DCX_DEVMAP_MODULE_INPUT:
     HandleInputToggleSwtches(lpmwd, pctrlzm);
     break;
-  case 3:
+  case DCX_DEVMAP_MODULE_MATRIX:
     HandleMatrixToggleSwtches(lpmwd, pctrlzm);
     break;
-  case 5:
-  case 2:
-  case 4:// Cue as well
+  case DCX_DEVMAP_MODULE_MASTER:
+  case DCX_DEVMAP_MODULE_AUX:
+  case DCX_DEVMAP_MODULE_CUE:// Cue as well
     HandleMasterToggleSwtches(lpmwd, pctrlzm);
     break;
   default:
