@@ -1,18 +1,19 @@
 //=================================================
-// Mix files
-//
-// CopyRight 1998-2001 CorTek Software, Inc.
+// Copyright 1998-2001 CorTek Software, Inc.
 //=================================================
-
-//#include <windows.h>
-//#include <commctrl.h>
-//#include <string.h>
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
 
 #include "SAMM.H"
 #include "SAMMEXT.H"
 #include "MACRO.h"
 #include <stdio.h>
 #include <winioctl.h>
+
 
 // externals ..
 extern int	g_CueMasterSystem;
@@ -24,7 +25,7 @@ extern DWORD g_dwCurrentSeqSelection;
 extern HWND		ghwndTBSeqSceneNumber;	// see CREATEMAIN.C
 
 void	UpdateTBGroupButtons(); // external 
-void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd, 
+void	HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd, 
                                   LPCTRLZONEMAP lpctrlZM, BOOL bIsOn);
 int     ReadGroupWndDataFromFile(HANDLE hFile, LPFILESECTIONHEADER pFSH);
 int     WriteGroupWndDataToFile(HWND hwnd, HANDLE hFile);
@@ -34,7 +35,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd, BOOL	input_cue_on);
 BOOL		OpenSequenceFiles (LPSTR  lpstrFName);
 void		CloseSequenceFiles (void);
 void		UpdateSeqSceneNumber(void);
-LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType );
+LPSTR		GetMixerTypeName(enum MIXER_TYPES iMixType );
 
 
 extern DWORD SeqSelectionIndex(void);
@@ -96,7 +97,7 @@ int	iRet;
     gfsTemp.szFileName[ofn.nFileOffset] = 0;
     wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
 		iRet = LoadMixFile(&gfsMix, TRUE);
-    if(iRet == 2)	// MIX FILE did not match RACK CONFIGURATION
+    if(iRet != 0)	// MIX FILE did not match RACK CONFIGURATION or other problem
 		{
 				ShutdownProc();
 				return FALSE;
@@ -125,7 +126,7 @@ int     SaveMixFile(void)
 	char						szFile [MAX_PATH];
 	USHORT					compression;
 	char						szBuff[MAX_PATH];
-
+	DWORD						dwRet;
 
 	if (gfsMix.szFileDir[0] == 0)
 		sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
@@ -143,7 +144,7 @@ int     SaveMixFile(void)
 	ofn.nFilterIndex = 1; // Always pick the first one
 	ofn.lpstrFile = (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
 	ofn.nMaxFile = 512;
-	ofn.lpstrFileTitle = NULL;//(LPSTR)fsTemp.szFileName;
+	ofn.lpstrFileTitle = NULL;		//(LPSTR)gfsMix.szFileName;	// THIS IS THE DEFAULT FILE NAME
 	ofn.nMaxFileTitle = 0;//512;
 	ofn.lpstrInitialDir = (LPSTR)gfsTemp.szFileDir;
 	ofn.lpstrTitle = "Save Mix File";  // Title for dialog
@@ -166,6 +167,7 @@ int     SaveMixFile(void)
 	//SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)ghwndSeq, 0L);
 	//DestroyWindow (ghwndSeq);
 	//ghwndSeq = NULL;
+
 	// assemble the new sequence file names and copy the old ones over
 	wsprintf (new_sequence_files, "%s.ctek", szFile);
 	wsprintf (old_sequence_files, "%s.ctek", g_sequence_file_name);
@@ -176,22 +178,26 @@ int     SaveMixFile(void)
 	wsprintf (new_sequence_files, "%s.data", szFile);
 	wsprintf (old_sequence_files, "%s.data", g_sequence_file_name);
 	CopyFile (old_sequence_files, new_sequence_files, FALSE);
+
 	// cool ... now set the compression on this file
 
 //		wsprintf (szBuff, "%s.ctek", g_sequence_file_name);
 //		wsprintf (szBuff, "%s.ctek", szFile);
 //    g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szBuff);
-
 //    wsprintf(szBuff, "%s.data",g_sequence_file_name);
+
   wsprintf(szBuff, "%s.data",szFile);
 
-			wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
-			wsprintf(g_sequence_file_name, "%s", szFile);
+	wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
+	wsprintf(g_sequence_file_name, "%s", szFile);
 
   if(OpenDataFile(szBuff))
 		OpenSequenceFiles (g_sequence_file_name);
-	//ShowSeqWindow(TRUE);
   
+	}
+	else
+	{
+		dwRet = CommDlgExtendedError();	// Could not open Save dialog
 	}
 
 return 0;
@@ -237,6 +243,7 @@ char								szBuff[MAX_PATH];
 	LONG lnResult;
 	HKEY hKey = NULL;
 	DWORD dwDisposition;
+	DWORD   	  dwError;
 	static LPCTSTR szRegKey = "Software\\CorTek\\VACS";
 	static LPCTSTR szRegValue; 
 	
@@ -245,6 +252,11 @@ char								szBuff[MAX_PATH];
 	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
 	char								szTempSeq[MAX_PATH];
 
+/////////////////
+
+	BY_HANDLE_FILE_INFORMATION	bhfi;
+	SYSTEMTIME	systime;
+	FILETIME		ftLocal;
 
 //LPMIXERWNDDATA			lpmwd; // temp memory for the Mixer Window data
 //int									CueActiveCountTemp;
@@ -423,11 +435,6 @@ char								szBuff[MAX_PATH];
     bResult = ReadFile(hf, (LPSTR)&fsh, sizeof(FILESECTIONHEADER), &dwBRead, NULL);
   }
 
-	CloseHandle(hf);
-
-
-	if(bRecallFromMemBuffer)
-		RecallMemoryMapBuffer(FALSE,0);
 
 //HadleCueMasterSystem ();
 /*
@@ -460,12 +467,41 @@ if(g_CueMasterSystem == 0){
 */
 
 	// If saveName then add the name of the mix file to our window title
+	// and the time it was last written 
 
 	if(saveName)
 	{
- 		wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
-		SetWindowText(ghwndMain, gszTitleBuffer);
+		GetFileInformationByHandle(hf,&bhfi);	// Lets get the time it was last written
+		bResult=FileTimeToLocalFileTime(&(bhfi.ftLastWriteTime),&ftLocal);
+
+		if(bResult)
+		{
+			bResult=FileTimeToSystemTime(&ftLocal,&systime);
+			if(bResult)
+			{
+ 				wsprintf(gszTitleBuffer, "%s %s: %d//%d//%d %d:%d:%d", gszMainWndTitle, pfs->szFileName,
+																											systime.wMonth, systime.wDay, systime.wYear,
+																											systime.wHour, systime.wMinute, systime.wSecond);
+				SetWindowText(ghwndMain, gszTitleBuffer);
+			}
+			else
+			{
+				dwError = GetLastError();
+			}
+		}
+		else
+		{
+// debug only			dwERR=GetLastError();
+ 			wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
+			SetWindowText(ghwndMain, gszTitleBuffer);
+		}
 	}
+
+	CloseHandle(hf);
+
+
+	if(bRecallFromMemBuffer)
+		RecallMemoryMapBuffer(FALSE,0);
 
 	SetFocus(ghwndZoom);			// Gamble wants the Zoom window to be the one with focus after loading
 
@@ -490,7 +526,7 @@ void	HadleCueMasterSystem ()
 
 		lpmwd = MixerWindowDataAlloc(gwActiveMixer,
 																 gpZoneMaps_Zoom,
-																 MAX_CHANNELS, 1);
+																 MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
 		// Scan for any Cue buttons.
 		// We need this so the Cue_Master_System 
 		// will not mess-up the Cues that might be active!
@@ -545,6 +581,9 @@ int             *piWndID;
 FILESECTIONHEADER   fsh;
 USHORT					compression;
 
+	BY_HANDLE_FILE_INFORMATION	bhfi;
+	FILETIME ftLocal;	// Local time
+	SYSTEMTIME	systime;
 
 	wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
 
@@ -701,19 +740,39 @@ USHORT					compression;
 	// Save the Memory State
 	////////////////////////////////////////////
 
+	// If saveName then add the name of the mix file to our window title
+	// and the time it was last written 
+
+	if(showName)
+	{
+		GetFileInformationByHandle(hf,&bhfi);	// Lets get the time it was last written
+		bResult=FileTimeToLocalFileTime(&(bhfi.ftLastWriteTime),&ftLocal);
+
+		if(bResult)
+		{
+			bResult=FileTimeToSystemTime(&ftLocal,&systime);
+			if(bResult)
+			{
+ 				wsprintf(gszTitleBuffer, "%s %s: %d//%d//%d %d:%d:%d", gszMainWndTitle, pfs->szFileName,
+																											systime.wMonth, systime.wDay, systime.wYear,
+																											systime.wHour, systime.wMinute, systime.wSecond);
+				SetWindowText(ghwndMain, gszTitleBuffer);
+			}
+		}
+		else
+		{
+// debug only			dwERR=GetLastError();
+ 			wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
+			SetWindowText(ghwndMain, gszTitleBuffer);
+		}
+	}
+
 	// Set the End-Of-File
 	// Close the file
 	//--------------------
 	SetEndOfFile(hf);
 	CloseHandle(hf);
 
-	// If saveName then add the name of the mix file to our window title
-
-	if(showName)
-	{
-		wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
-		SetWindowText(ghwndMain, gszTitleBuffer);
-	}
 	return 0;
 
 	ON_ERROR_EXIT:
@@ -820,12 +879,12 @@ int							iRackMaxChannel[]={18,32,58,78};							// cabaret, showtime, event 40,
       // Set the pointers
       pmwd = MixerWindowDataAlloc((WORD)mwdfile.iMixer,
                                    gpZoneMaps_Full,
-                                   MAX_CHANNELS, 1);
+                                   MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
         break;
     case IDZM_INPUT_ZOOM:
       pmwd = MixerWindowDataAlloc((WORD)mwdfile.iMixer,
                                    gpZoneMaps_Zoom,
-                                   MAX_CHANNELS, 1);
+                                   MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
         break;
     }
 
@@ -867,10 +926,10 @@ int							iRackMaxChannel[]={18,32,58,78};							// cabaret, showtime, event 40,
       break;
     case IDZM_INPUT_ZOOM:
       // Create the Window
-      hwndLink = CreateZoomViewWindow(pmwd->szTitle, pmwd, 1);
+      hwndLink = CreateZoomViewWindow(ghwndMDIClient,pmwd->szTitle, pmwd, DCX_DEVMAP_MODULE_INPUT);
 
 //       if(pmwd->bLink && hwndLink)
-          ghwndZoom = hwndLink;	// Gamble wants zoom window with focux, Always set this
+          ghwndZoom = hwndLink;	// Gamble wants zoom window with focus, Always set this
       break;
 	}
 
