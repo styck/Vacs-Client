@@ -1,6 +1,12 @@
 //=================================================
-// Copyright 1998 CorTek Software, Inc.
+// Copyright 1998 - 2001, CorTek Softawre, Inc.
 //=================================================
+//
+//
+// $Author: Styck $
+// $Archive: /Vacs Client/inc/SAMM.h $
+// $Revision: 42 $
+//
 #include <windows.h>
 #include <commctrl.h>
 #include <stdlib.h>
@@ -8,6 +14,7 @@
 #include <mmsystem.h>
 #include <string.h>
 
+#define SCROLLBARS		// FOR TOUCHSCREEN OPERATION WE NEED SCROLL BARS
 
 // FLAGS FOR DEBUG SESSION
 //------------------------
@@ -206,7 +213,7 @@ int             ConfirmationBox(HWND ,  HINSTANCE ,int );
 int             InformationBox(HWND ,  HINSTANCE ,int );
 int             ErrorBox(HWND , HINSTANCE , int );
 void            InformationStatus(HINSTANCE , int );
-void            GetMaxWindowSize(LPRECT ,LPZONE_MAP , long, LPMIXERWNDDATA);
+void            GetMaxWindowSize(LPRECT ,LPZONE_MAP , long, LPMIXERWNDDATA ,BOOL );
 void            AddToCaption(HWND ,LPSTR);
 void            ClipCtrlZone(HWND, LPMIXERWNDDATA);
 void            ClipZone(HWND , LPRECT);
@@ -424,7 +431,7 @@ BOOL            IsTrackingActive(void);
 // Zoom View functions
 //--------------------
 int             RegisterZoomViewClass(void);
-HWND             CreateZoomViewWindow(LPSTR, LPMIXERWNDDATA, int);
+HWND             CreateZoomViewWindow(HWND, LPSTR, LPMIXERWNDDATA, int);
 //HWND            OpenZoomViewWindow(LPMIXERWNDDATA , LPSTR);
 LRESULT CALLBACK  ZoomViewProc(HWND , UINT , WPARAM , LPARAM);
 
@@ -561,7 +568,6 @@ void            HandleCtrlBtnClick(HWND hwnd, LPMIXERWNDDATA lpmwd);
 void            UpdateControlsByCtrlNum(HDC , HDC , LPMIXERWNDDATA , int , int,
                                         LPCTRLZONEMAP , int , int , BOOL);
 void            UpdateSameMixWndByCtrlNum(HWND, int ,int , LPCTRLZONEMAP, int, HDC );
-int             UpdateControl(LPMIXERWNDDATA);
 
 // Group Window
 //
