@@ -263,11 +263,14 @@ while((ghwndMain != NULL) && GetMessage(&msg, NULL/*ghwndMain*/, 0, 0) == TRUE)
 			{
 				// go to the right directory and store the current state of the mixer....			
 				KillTimer(ghwndMain, timerID);
-				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
-				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
-				WriteMixFile(&fsTemp, FALSE);
 
-				DestroyWindow (ghwndSeq);
+// FDS - This is done in WndMainProc() WM_CLOSE
+//				
+//				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
+//				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
+//				WriteMixFile(&fsTemp, FALSE);
+//
+//				DestroyWindow (ghwndSeq);
 			}
 
 			if(!TranslateMDISysAccel(ghwndMDIClient, &msg))
