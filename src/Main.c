@@ -15,6 +15,9 @@
 
 
 extern HWND			g_stereoCueMetersWindow;
+extern char	g_sequence_file_name[MAX_PATH];
+
+BOOL		OpenSequenceFiles (void);
 
 BOOL    g_bReversDirection = FALSE;
 int			FindConsecutiveGroupIndex(int iNum, int iType);
@@ -72,6 +75,12 @@ InitVULookupTables(TRUE);
 CDef_StartVuData();
 
 
+//////////////////////////////////
+// If the SHIFT key is held down
+// during startup then we bypass
+// loading the mix file and just
+// create an default zoom window
+
 shift_key = GetKeyState (VK_SHIFT);
 
 if ( shift_key & 0x8000)
@@ -89,9 +98,15 @@ else
 	wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
 	if(LoadMixFile(&fsTemp, FALSE) != 0)
 	{
-		// Ok... LA$T.mix file didn't load
+		// Ok... LA$T.mix file did NOT load
 		// so open a new Zoom window by default
 		CreateZoomViewWindow("Zoom Input View", NULL, 1);
+		
+		// If this isn't done then when they try to add a sequence
+		// to the sequence window it will create an exception
+
+	  wsprintf(g_sequence_file_name,"%s%s",gszProgDir, fsTemp.szFileName);
+	 	OpenSequenceFiles ();
 	}
 }
 
