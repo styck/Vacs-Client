@@ -156,9 +156,9 @@ BEGIN
             VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2000\0"
             VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc.\0"
             VALUE "OriginalFilename", "VACS.EXE\0"
-            VALUE "PrivateBuild", "Build 10/25/2000\0"
+            VALUE "PrivateBuild", "Build 11/24/2000\0"
             VALUE "ProductName", "CorTek Software VACS\0"
-            VALUE "ProductVersion", "2.46L\0"
+            VALUE "ProductVersion", "2.46M\0"
             VALUE "SpecialBuild", "\0"
         END
     END
