@@ -465,6 +465,7 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 	char		szBuff[80];
 
   int                 iModuleType;	// INPUT, MATRIX, etc
+	int		Dummy; 
 
 	iMaxFaderMovement = -1;		// Not Valid
 
@@ -540,13 +541,91 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 							// and these two will be default OFF so 
 							// no need to restore. They are saved and
 							// should be removed when time permits.
+							//
+							// DO NOT RESTORE CUE CONTROLS
+							// As per Gamble 10/19/2001, we don't want
+							// the cues tied to a sequence change
+							// We may want this if we are loading $ASTMIX
+							// so that the previous cue settings are there.
+							// These values are still stored in the MIX file
+							// just not resotre here.
 							/////////////////////////////////////////////
 
-							if( (iModuleType == DCX_DEVMAP_MODULE_INPUT) && 
-								  ((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_GATE_KEY_VU) || (lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_LINE_B_VU)))
+							if( 
+									(iModuleType == DCX_DEVMAP_MODULE_INPUT) && 
+								  ((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_GATE_KEY_VU) || 
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_LINE_B_VU) ||
+
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_CUE_FAD_PRE) ||		// INPUT MODULE
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_CUE_FAD_POST) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_MIC_A_CUE) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_MIC_B_CUE) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_CUE_FAD_POST) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_GATE_KEY_INOUT)
+
+									)	
+									)
 
 							{
-									iModuleType = 0;	// Stupid logic but it works, do not want to restore if the above is true	
+									Dummy = 0;	// Stupid logic but it works, do not want to restore if the above is true	
+							}
+							else if( 
+									(iModuleType == DCX_DEVMAP_MODULE_MASTER) && 
+									((lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX16PRE) ||	// MASTER CUES
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX15PRE) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX14PRE) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX13PRE) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX12PRE) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX11PRE) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX10PRE) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX09PRE)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX08PRE)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX07PRE)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX06PRE)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX05PRE)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX04PRE)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX03PRE)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX02PRE)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX01PRE)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX16POST) ||	// MASTER CUES
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX15POST) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX14POST) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX13POST) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX12POST) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX11POST) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX10POST) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX09POST)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX08POST)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX07POST)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX06POST)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX05POST)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX04POST)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX03POST)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX02POST)  ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_AUX01POST)	 ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_CUE_LEVEL_MONO)	 ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_CUE_LEVEL_CENTER)	 ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_STEREO_CUE_PRE)	 ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_STEREO_CUE_POST)
+
+									)	
+									)
+
+							{
+									Dummy = 0;	// Stupid logic but it works, do not want to restore if the above is true	
+							}
+							else if( 
+									(iModuleType == DCX_DEVMAP_MODULE_MATRIX) && 
+									((lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_STERIO_CUE_PRE) ||	// MATRIX CUES
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_STERIO_CUE_POST) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_CUE_PRE) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_CUE_POST) 
+
+									)	
+									)
+
+							{
+									Dummy = 0;	// Stupid logic but it works, do not want to restore if the above is true	
 							}
 							else
 							{
@@ -564,35 +643,52 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 								}
 							}
 
-
-
-
 						}
 						else if(lpctrlZM->iCtrlType == CTRL_TYPE_FADER_VERT)	// It IS a main fader, so save info so that we can crossfade later
 						{
 
-							if(dwfadeDelay)   // But only if crossfade is set
-							{
-								lpctrlZMSave[iSavedZM++] = lpctrlZM;
-								if( abs(GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) - iValue) > iMaxFaderMovement)				// Save the largest fader movement
-									iMaxFaderMovement = abs(GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) - iValue);
-							}
-							else		// no crossfade so handle normally (need to make better logic)
-							{
-								SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValue);
-          
-								if(lpctrlZM->iFiltered == NO_FILTER)
-								{
-									// Send the Data out
-									//------------------
-									ctrlData.wMixer   = 0;
-									ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
-									ctrlData.wCtrl    = iCtrlAbs; // we use this one since for the definition dll
-									ctrlData.wVal     = iValue;
-									SendDataToDevice(&ctrlData, FALSE, NULL, 0, NULL, FALSE); // was TRUE
-								}
 
-							} // end for if(dwfadeDelay)
+							// If its the CUE FADER then DO NOT RECALL it.
+							if( 
+									(iModuleType == DCX_DEVMAP_MODULE_MASTER) && 
+									((lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTERLT_CUE_A_LT) ||	// MASTER CUES
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTERLT_CUE_A_RT) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTERLT_CUE_B_LT) ||
+									(lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTERLT_CUE_B_RT) 
+									)	
+									)
+
+							{
+									Dummy = 0;	// Stupid logic but it works, do not want to restore if the above is true	
+							}
+							else
+							{
+								if(dwfadeDelay)   // But only if crossfade is set
+								{
+									lpctrlZMSave[iSavedZM++] = lpctrlZM;
+									if( abs(GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) - iValue) > iMaxFaderMovement)				// Save the largest fader movement
+										iMaxFaderMovement = abs(GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) - iValue);
+								}
+								else		// no crossfade so handle normally (need to make better logic)
+								{
+									SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValue);
+          
+									if(lpctrlZM->iFiltered == NO_FILTER)
+									{
+										// Send the Data out
+										//------------------
+										ctrlData.wMixer   = 0;
+										ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
+										ctrlData.wCtrl    = iCtrlAbs; // we use this one since for the definition dll
+										ctrlData.wVal     = iValue;
+										SendDataToDevice(&ctrlData, FALSE, NULL, 0, NULL, FALSE); // was TRUE
+									}
+
+								} // end for if(dwfadeDelay)
+
+							} // end if check for CUE FADER
+
+
 						} // end for != CTRL_TYPE_FADER_VERT
 
           } // end for iValue != GETPHISDATAVAULE
