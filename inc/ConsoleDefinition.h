@@ -4,7 +4,7 @@
 // this is a general include file to be used by other modules
 // to communicate with the ConsoleDefinition DLL
 //
-// Copyright 1998 CorTek Software, Inc.
+// Copyright 1998-2001 CorTek Software, Inc.
 //===========================================================
 #ifndef CONSOLEDEFINITION_HEADER_
 #define CONSOLEDEFINITION_HEADER_
@@ -36,8 +36,26 @@ typedef DEVICE_SETUP_DATA *LPDEVICE_SETUP_DATA;
 
 #define  CDEF_SHOW_ERROR    0xf0000000L
 
+enum 
+{
+  NOT_SET = 0,
+  APPLY,
+	CANCEL
+} PREFERENCE_SETTINGS;
 
 
+////////////////////////////////////////////////
+// Types of mixer supported on the GServer side.
+////////////////////////////////////////////////
+
+enum 
+{
+	DCX_CABARET = 1,		// 0 indicates that it hasn't been set
+	DCX_SHOWTIME,
+	DCX_EVENT_40,
+	DCX_EVENT_60,
+	DCX_CUSTOM
+} MIXER_TYPES;
 
 
 
@@ -69,7 +87,8 @@ typedef struct
   char      szTableFileName[MAX_PATH];
   char      szIP_Address[MAX_PATH];
   int       iPort;
-  int       iReserved[32];
+	int				iMixerType;			// added 17 Feb 2001 to save the Mixer type
+  int       iReserved[31];	// was 32
   } CDEF_PREFERENCES;
 
 #define CDEF_PREFERENCES_ID           mmioFOURCC('C','D','E','F')
@@ -108,6 +127,7 @@ int     SavePreferences();
 
 // Exported functions
 __declspec(dllexport)int      CDef_isRunning(void);
+__declspec(dllexport)int      CDef_MixerTypePreference(void);
 __declspec(dllexport)int      CDef_Init(void);
 __declspec(dllexport)BOOL     CDEF_GetCSData(HWND);
 
@@ -144,6 +164,8 @@ __declspec(dllexport)void     CDef_ResetBus(void);
 
 // Imported functions from Other modules ... APP
 __declspec(dllimport)int      CDef_isRunning(void);
+
+__declspec(dllimport)int      CDef_MixerTypePreference(void);
 
 __declspec(dllimport)int      CDef_Init(void);
 __declspec(dllimport)BOOL     CDEF_GetCSData(HWND);
