@@ -349,6 +349,7 @@ switch(iMode)
             case CTRL_INPUT_LINEA_MUTE_FILTER:
             case CTRL_INPUT_MICB_MUTE_FILTER:
             case CTRL_INPUT_LINEB_MUTE_FILTER:
+				    case CTRL_TYPE_BTN_EQ_RESET_FILTER:
                 HandleCtrlBtnClick(hwnd, lpmwd);
               break;
             //-----------------------------------------
@@ -430,8 +431,8 @@ switch(iMode)
         gddcChanInfo.iMixer= lpmwd->iMixer;
         gddcChanInfo.bInUse= TRUE;
         ShowMousePos(hwnd, lpmwd);
-        break;
-    }
+        break;  
+		}
 
 
 return 0;
