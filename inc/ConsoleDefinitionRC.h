@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by D:\work\Vacs Client\consoledefinition\Resource\ConsoleDefinition.rc
+// Used by D:\Work\styck\Vacs Client\ConsoleDefinition\Resource\ConsoleDefinition.rc
 //
 #define IDI_RD                          101
 #define IDD_ABOUT_CONSOLEDEFINITION     101
