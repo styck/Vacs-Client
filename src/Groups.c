@@ -108,6 +108,7 @@ int     ShowGroupWindow(BOOL bShow)
 {
 char                    szTitle[128];
 LPGROUPWINDOWFILE       pGroupWF;
+DWORD										style;
 
 if(ghwndGroup == NULL)
     {
@@ -119,11 +120,16 @@ if(ghwndGroup == NULL)
         }
     pGroupWF->iWndID = GROUP_WINDOW_FILE_ID;        
 
+		style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE
+																| WS_THICKFRAME | WS_MINIMIZEBOX// | WS_MAXIMIZEBOX
+																| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+		style &= ~WS_MAXIMIZEBOX;
+
     LoadString(ghInstStrRes, IDS_GROUP_WINDOW_TITLE, szTitle, 128);
     ghwndGroup = CreateMDIWindow (
                             gszGroupClass,
                             szTitle,
-                            WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_BORDER,
+														style,
                             CW_USEDEFAULT,
                             CW_USEDEFAULT,
                             CW_USEDEFAULT,
@@ -263,6 +269,10 @@ switch(uiMsg)
   case WM_NOTIFY:
     switch (((LPNM_LISTVIEW) lParam)->hdr.code)
       {
+      //----------------
+      case NM_SETFOCUS:
+          SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
+          break;
       //----------------
       case LVN_SETDISPINFO:
           HandleGroupLVSetItemIfno((LV_DISPINFO *)lParam);

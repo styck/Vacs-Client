@@ -71,6 +71,9 @@ int   InitializeProc(void)
       {
       return IDS_NO_RES2_FILE;
       }
+	// Is Vacs already running
+	if (CDef_isRunning ())
+		return IDS_MULTIPLE_APPLICATIONS_RUNNING;
 
   // Read the Preferences
   //---------------------
@@ -293,7 +296,13 @@ int   InitializeProc(void)
 
 	// now try to open the External interface
 	//
-	OpenCommPort("\\\\.\\COM1");
+	if (OpenCommPort("\\\\.\\COM1"))
+	{
+//		unsigned char enable_time[6] = { 0xF0,0x15,0x25,0x31,0x01,0xF7};
+//		unsigned char	spec_mode_1[9] = {0xF0,0x15,0x25,0x02,0x00,0x00,0x00,0x00,0xF7};
+//		WriteCommBlock (spec_mode_1, sizeof (spec_mode_1));
+//		WriteCommBlock (enable_time, sizeof (enable_time));
+	}
 
   return 0;
 };
@@ -512,6 +521,9 @@ if(ghPalette)
 
   if(g_hdcBuffer)
     DeleteDC(g_hdcBuffer);
+
+  if(g_hdcTempBuffer)
+    DeleteDC(g_hdcTempBuffer);
 
   if(g_hConsoleFont)
     DeleteObject(g_hConsoleFont);
