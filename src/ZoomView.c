@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/ZoomView.c         $
-// $Revision:: 18                                 $
+// $Revision:: 19                                 $
 //
 
 //=================================================
@@ -605,7 +605,7 @@ static cyClient, cxClient, nVscrollMax, nVscrollPos;
             ghwndZoom = NULL;
 				}
 						giZoomWndCnt--;		// decrement zoom window count and display it
-						wsprintf(szTempBuff," Zoom Views: %d",giZoomWndCnt);
+						wsprintf(szTempBuff,"Zoom Views: %d",giZoomWndCnt);
 						ShowTBZoomWinCnt(szTempBuff);				
 
 		//      FALL THRU
