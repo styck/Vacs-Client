@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Mix Files.c        $
-// $Revision:: 24                                 $
+// $Revision:: 25                                 $
 //
 
 #include "SAMM.H"
@@ -19,7 +19,11 @@
 extern int	g_CueMasterSystem;
 extern int  g_iMasterModuleIdx;
 extern int	g_inputCueActiveCounter;
-extern char	g_sequence_file_name[MAX_PATH];
+
+// NOT USED extern char	g_sequence_file_name[MAX_PATH];
+
+static char	g_szSequenceFileName[MAX_PATH];	// This is THE place for the sequence file name
+
 extern LPDLROOTPTR g_pdlrSequence;
 extern DWORD g_dwCurrentSeqSelection;
 extern HWND		ghwndTBSeqSceneNumber;	// see CREATEMAIN.C
@@ -36,6 +40,7 @@ BOOL		OpenSequenceFiles (LPSTR  lpstrFName);
 void		CloseSequenceFiles (void);
 void		UpdateSeqSceneNumber(void);
 LPSTR		GetMixerTypeName(enum MIXER_TYPES iMixType );
+LPSTR	GetSequenceFileName(void);
 
 
 extern DWORD SeqSelectionIndex(void);
@@ -67,7 +72,7 @@ int	iRet;
 	static LPCTSTR szRegValue; 
 	DWORD dwType;
 	DWORD rc;
-	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
+	DWORD dwBufferSize = sizeof( g_szSequenceFileName );  
 	char								szTempSeq[MAX_PATH];
 
 	char                szProgDir[MAX_PATH];
@@ -139,6 +144,10 @@ int	iRet;
 
 	if(GetOpenFileName(&ofn))
   {
+		////////////////////////////////////////////////////////////////////////
+		// If mixer state was changed then ask if they  want to save the changes
+		// before loading another mix file 
+
 		if (g_mixer_state_changed)
 		{	
 			if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
@@ -147,7 +156,7 @@ int	iRet;
 
 		g_mixer_state_changed = FALSE;
 		g_monitor_mix_file_changes = FALSE;
-		wsprintf(g_sequence_file_name, "%s", ofn.lpstrFile);
+		wsprintf(g_szSequenceFileName, "%s", ofn.lpstrFile);	// Get filename 
 
     CloseAllMDI();
 		ShowSeqWindow(FALSE);
@@ -232,29 +241,29 @@ int     SaveMixFile(void)
 
 	// assemble the new sequence file names and copy the old ones over
 	wsprintf (new_sequence_files, "%s.ctek", szFile);
-	wsprintf (old_sequence_files, "%s.ctek", g_sequence_file_name);
+	wsprintf (old_sequence_files, "%s.ctek", g_szSequenceFileName);
 	CopyFile (old_sequence_files, new_sequence_files, FALSE);
 
 	CloseDataFile();
 
 	wsprintf (new_sequence_files, "%s.data", szFile);
-	wsprintf (old_sequence_files, "%s.data", g_sequence_file_name);
+	wsprintf (old_sequence_files, "%s.data", g_szSequenceFileName);
 	CopyFile (old_sequence_files, new_sequence_files, FALSE);
 
 	// cool ... now set the compression on this file
 
-//		wsprintf (szBuff, "%s.ctek", g_sequence_file_name);
+//		wsprintf (szBuff, "%s.ctek", g_szSequenceFileName);
 //		wsprintf (szBuff, "%s.ctek", szFile);
 //    g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szBuff);
-//    wsprintf(szBuff, "%s.data",g_sequence_file_name);
+//    wsprintf(szBuff, "%s.data",g_szSequenceFileName);
 
   wsprintf(szBuff, "%s.data",szFile);
 
 	wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
-	wsprintf(g_sequence_file_name, "%s", szFile);
+	wsprintf(g_szSequenceFileName, "%s", szFile);
 
   if(OpenDataFile(szBuff))
-		OpenSequenceFiles (g_sequence_file_name);
+		OpenSequenceFiles (g_szSequenceFileName);
   
 	}
 	else
@@ -311,7 +320,7 @@ char								szBuff[MAX_PATH];
 	
 	DWORD dwType;
 	DWORD rc;
-	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
+	DWORD dwBufferSize = sizeof( g_szSequenceFileName );  
 	char								szTempSeq[MAX_PATH];
 
 /////////////////
@@ -325,7 +334,7 @@ char								szBuff[MAX_PATH];
 
 	wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
 
-	wsprintf(g_sequence_file_name, "%s", szFile);
+	wsprintf(g_szSequenceFileName, "%s", szFile);
 	wsprintf(szBuff, "%smix\\%s", gszProgDir, "LA$T.mix");
 
 	/////////////////////////////////////
@@ -379,7 +388,7 @@ char								szBuff[MAX_PATH];
 	// If we are loading the LAS$T.mix file then try to get the SEQUENCE FILE
 	// of the last loaded MIX FILE
 
-	if(lstrcmp(szBuff, g_sequence_file_name) == 0)
+	if(lstrcmp(szBuff, g_szSequenceFileName) == 0)
 	{
 
 		lnResult = RegCreateKeyEx(
@@ -405,7 +414,7 @@ char								szBuff[MAX_PATH];
 		  // Set our global sequence name to the last loaded mix file
 
 		if(rc == ERROR_SUCCESS)
-			wsprintf(g_sequence_file_name, "%s", szTempSeq);
+			wsprintf(g_szSequenceFileName, "%s", szTempSeq);
 
 	}
 
@@ -1326,7 +1335,7 @@ DWORD               dwBRead;
 	static LPCTSTR szRegValue; 
 	DWORD dwType;
 	DWORD rc;
-	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
+	DWORD dwBufferSize = sizeof( g_szSequenceFileName );  
 
 	wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
 
@@ -1384,7 +1393,7 @@ DWORD               dwBRead;
 	// If we are loading the LAS$T.mix file then try to get the sequence
 	// of the last loaded mix file
 
-	if(lstrcmp(szBuff, g_sequence_file_name) == 0)
+	if(lstrcmp(szBuff, g_szSequenceFileName) == 0)
 	{
 
 		lnResult = RegCreateKeyEx(
@@ -1408,7 +1417,7 @@ DWORD               dwBRead;
 					&dwBufferSize ); 
 
 		if(rc == ERROR_SUCCESS)	// Only set if it was a success
-			wsprintf(g_sequence_file_name, "%s", szTempSeq);	// Set it to the last .mix file in registry.
+			wsprintf(g_szSequenceFileName, "%s", szTempSeq);	// Set it to the last .mix file in registry.
 
 	}
 
@@ -1525,4 +1534,14 @@ LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType )
 	return &szText[0];
 
 }
+
+///////////////////////////////////////////////////////
+// Sequence file name resides in this module
+// if other places need it then it gets it from here
+
+LPSTR	GetSequenceFileName(void)
+{
+		return &g_szSequenceFileName[0];
+}
+
 
