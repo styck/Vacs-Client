@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Labels and Groups. $
-// $Revision:: 22                                 $
+// $Revision:: 23                                 $
 //
 
 //=================================================
@@ -24,6 +24,9 @@
 
 extern int                 g_aiAux[MAX_MATRIX_COUNT];
 extern int                 g_aiMatrix[MAX_MATRIX_COUNT];
+
+void GroupedStatus(BOOL);						// SEE CREATEMAIN.C
+BOOL IsAnyGrouped(void);						// SEE GROUPS.C
 
 LPSTR   GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan);
 
@@ -155,24 +158,46 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 		break;
 
 		//////////////////////////////////////////////////////////////
+		// Grouping a channel
+
 		case WM_LBUTTONDOWN:
 			iXVal = LOWORD(lParam);
 			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
 			{
 				if(GroupChannel(iXVal, 1))
 				{
+					///////////////////////////////////////////
+					// If there are ANY channels grouped
+					// then update our toolbar to indicate
+
+					if(IsAnyGrouped())
+						GroupedStatus(TRUE);
+					else
+						GroupedStatus(FALSE);
+
 					RefreshAllLblWindows();
 				}
 			}
 			break;
 
 		//////////////////////////////////////////////////////////////
+		// Ungrouping a channel
+
 		case WM_RBUTTONDOWN:
 			iXVal = LOWORD(lParam);
 			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
 			{
 				if(UnGroupChannel(iXVal))
 				{
+					///////////////////////////////////////////
+					// If there are ANY channels grouped
+					// then update our toolbar to indicate
+
+					if(IsAnyGrouped())
+						GroupedStatus(TRUE);
+					else
+						GroupedStatus(FALSE);
+
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
 					RefreshAllLblWindows();
