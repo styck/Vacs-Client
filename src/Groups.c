@@ -1,14 +1,15 @@
 //=================================================
-// Copyright 1998 - 2001, CorTek Softawre, Inc.
+// Copyright 1998 - 2002, CorTek Softawre, Inc.
 //=================================================
 //
 //
-// $Author::													$
-// $Archive::													$
-// $Revision::												$
+// $Author: Styck $
+// $Archive: /Vacs Client/src/Groups.c $
+// $Revision: 34 $
 //
 
-// Purpose handle all General Group assignments
+//////////////////////////////////////////////////
+// Handle all General Group assignments
 // and cotrol routines
 //
 //
@@ -111,7 +112,7 @@ return 0;
 //=================================================
 //function: ShowGroupWindow
 //
-// Create and show the Group WIndow
+// Create and show the Group Window
 //=================================================
 
 int     ShowGroupWindow(BOOL bShow)
@@ -161,8 +162,6 @@ DWORD										style;
 
     SetWindowLong(ghwndGroup, 0, (LONG)pGroupWF);
 
-
-
   }
 
   if(bShow && ghwndGroup)
@@ -193,13 +192,6 @@ MINMAXINFO  *lpMMI;
 
 	switch(uiMsg)
   {
-    ////////////////////////////////////////////
-//    case WM_MDIACTIVATE:
-//        if((HWND)lParam == hwnd)
-//            SetActiveWindow(ghwndGroupDlg);
-            //SetFocus(ghwndGroupDlg);
-//        break;
-    ////////////////////////////////////////////
     case WM_CREATE:
 
         ghwndGroupsDlg = CreateDialog(ghInstStrRes, MAKEINTRESOURCE(IDD_GROUPS), hwnd, GroupsProc);
@@ -213,11 +205,10 @@ MINMAXINFO  *lpMMI;
 				
 				// Set the initial position of the Group dialog box
 
-        SetWindowPos(hwnd, NULL, 0, 300, 
+        SetWindowPos(hwnd, NULL, 0, 400, 
                         rect.right + GetSystemMetrics(SM_CYDLGFRAME)*4, 
                         rect.bottom + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYDLGFRAME)*4, 
                         SWP_NOZORDER);
-
 
         ShowWindow(ghwndGroupsDlg, SW_SHOW);
         return DefMDIChildProc(hwnd, uiMsg, wParam, lParam);
@@ -376,7 +367,6 @@ return;
 }
 
 
-
 //================================================
 //function: GroupsProc
 //
@@ -465,7 +455,7 @@ BOOL CALLBACK   GroupsProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 					DeactivateGroup();
 					break;
 				//
-							//--------------------------------------------
+				//--------------------------------------------
 				// Handle RENAME pop-up menu item
 				case MENU_LVN_RENAME:
 					GroupRenameItem();
@@ -988,12 +978,20 @@ int    InitGroups(void)
 
 	//////////////////////////////////
   // OK ... Set them all to nothing
+	//
+	// When searching through this table UpdateStereoControls() will
+	// continue until left=right for the g_StereoGroups[]
 
   for(iCount = 0; iCount < MAX_GROUPS_COUNT; iCount ++)
   {
-    gpGroupStoreFaders[iCount].Count = 0;
+    gpGroupStoreFaders[iCount].Count = 0;		// CURRENTLY NOT USED, USE FOR VCA????
     gpGroupStoreMutes[iCount].Count = 0;
     gpGroupStoreGeneral[iCount].Count = 0;
+
+		g_StereoGroups[0].iModuleType = 0;		// This breaks us out of searching for groups
+		g_StereoGroups[0].wLeft = 0;
+		g_StereoGroups[0].wRight = 0;
+
   }
 
 	////////////////////////////////////////////
@@ -1410,11 +1408,17 @@ int    InitGroups(void)
 //  Attempt to get FULL VIEW Matrix Mute to work
 //  correctly so it is stereo linked - fds
 //
-//  g_StereoGroups[94].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
-//  g_StereoGroups[94].wLeft = CTRL_NUM_MATRIXLT_MUTE;
-//  g_StereoGroups[94].wRight = CTRL_NUM_MATRIXLT_MUTE;
+  g_StereoGroups[94].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[94].wLeft = CTRL_NUM_MATRIXLT_MUTE;
+  g_StereoGroups[94].wRight = CTRL_NUM_MATRIXRT_MUTE;
 
+  g_StereoGroups[95].iModuleType = DCX_DEVMAP_MODULE_CUE;		//<<<=== WHY CUE AND NOT MASTER??? FDS
+  g_StereoGroups[95].wLeft = CTRL_NUM_MASTER_TB_LT;
+  g_StereoGroups[95].wRight = CTRL_NUM_MASTER_TB_RT;
 
+  g_StereoGroups[96].iModuleType = DCX_DEVMAP_MODULE_CUE;
+  g_StereoGroups[96].wLeft = CTRL_NUM_MATRIX_MASTERLT_PRE;
+  g_StereoGroups[96].wRight = CTRL_NUM_MATRIX_MASTERRT_POST;
 
   return 0;
 }
@@ -1860,7 +1864,7 @@ void   UpdateGroupedMutes(LPCTRLZONEMAP pctrlzm, LPMIXERWNDDATA lpmwd)
   WORD            wChannel;
 
   // Check if the Grouping function is disabled for the moment...
-  if(lpmwd->wKeyFlags & MK_SHIFT)
+   if(lpmwd->wKeyFlags & MK_SHIFT)
     return;
   
   if(IsMuteFilter(pctrlzm) == FALSE)
@@ -1888,92 +1892,140 @@ void   UpdateGroupedMutes(LPCTRLZONEMAP pctrlzm, LPMIXERWNDDATA lpmwd)
   }
 };
 
+//=============================================
+// FUNCTION: FindStereoPair
+// 
+// Purpose: 
+//
+// This routine searches through the g_StereoGroups[] array until we find a 
+// stereo link to the current control type number passed or until we reach end of table
+// Looking to see if the current control channel position (iCtrlChanPos) is
+// in our table and thus stereo linked.
+//
+//	Returns: WORD - the stereo linked CONTROL number for example
+//
+//			if we	enter with pctrlzm->iCtrlChanPos == CTRL_NUM_MATRIX_LT_FADER  (29)
+//		  then we will return CTRL_NUM_MATRIX_RT_FADER  (30)
 
+
+
+WORD FindStereoPair(LPCTRLZONEMAP pctrlzm)
+{
+  LPSTEREOGROUP       pSG;
+  int                 iModuleType;
+  WORD                wUpdate=0;
+
+	pSG = g_StereoGroups;	// Point to our array of grouped controls
+	iModuleType  = gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber];	// Get current module type
+
+	if(pctrlzm != NULL)
+	{
+		while(pSG->wLeft != pSG->wRight)	// Groups table is terminated with 0's
+		{
+			// make sure we have the same channel type !!! Then do the rest.
+			if(pSG->iModuleType == iModuleType)
+			{
+				if((pSG->wLeft == pctrlzm->iCtrlChanPos) || (pSG->wRight == pctrlzm->iCtrlChanPos))
+				{
+					// good .. we have a stereo control. Now lets update its counterpart
+					// but which one is it?!
+					if(pSG->wLeft == pctrlzm->iCtrlChanPos)
+						wUpdate = pSG->wRight;
+					else
+						wUpdate = pSG->wLeft;
+
+					break;	// get out of the while loop, no need to keep searching
+				}
+
+			}
+			pSG++;
+		}
+	}
+			return wUpdate;
+}
 //=============================================
 // FUNCTION: UpdateStereoControls
 // 
 // Purpose: 
 //
-//
+// This routine searches updates the stereo conterpart control
+// and sends its value out to the mixer.
 //
 //
 void   UpdateStereoControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm, 
                             int iDelta, LPMIXERWNDDATA lpmwd)
 {
-  // loop through all predefined stereo groups and adjust the controls if needed
-  //
-  LPSTEREOGROUP       pSG = g_StereoGroups;
-  int                 iModuleType  = gDeviceSetup.iaChannelTypes[pCtrlData->wChannel];
-  WORD                wUpdate;
+
   CTRLZONEMAP         *pctrl;
   int                 iV;
   int                 iModule;
+  WORD                wUpdate;
 
   if( (lpmwd == NULL) || (pctrlzm == NULL) )
     return;
+     
+  // Send the data value to the Device
+  // and then update the controls 
+  //  
+	// First get the zone map for the conterpart CONTROL using FindStereoPair()
 
-  while(pSG->wLeft != pSG->wRight)
-  {
-    // make sure we have the same channel type !!! Then do the rest.
-    if(pSG->iModuleType == iModuleType)
-		{
-      if((pSG->wLeft == pctrlzm->iCtrlChanPos) || (pSG->wRight == pctrlzm->iCtrlChanPos))
-      {
-        // good .. we have a stereo control. Now lets update its counterpart
-        // but which one is it?!
-        if(pSG->wLeft == pctrlzm->iCtrlChanPos)
-          wUpdate = pSG->wRight;
-        else
-          wUpdate = pSG->wLeft;
-      
-        // Send the data value to the Device
-        // and then update the controls 
-        //                                        
-        iModule = lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan];
-        pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iModule].lpZoneMap, 
-                                wUpdate);
+	wUpdate = FindStereoPair(pctrlzm);
+	if(wUpdate == 0)
+		return;					// No Stereo Pair Found
+
+  iModule = lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan];
+  pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iModule].lpZoneMap, wUpdate);
+
+  pCtrlData->wCtrl = pctrl->iCtrlNumAbs;	// SET CONTROL NUMBER TO STEREO PAIR
+
+	// g_bReversDirection is set when the ALT key 
+	// is held down while moving a stereo linked fader.
+	// The linked fader will move in the opposite direction
+	// of the fader being moved. Set in main.c - WinMain()
+
+  if(g_bReversDirection)
+    iDelta = -iDelta;
+
+	// Get the index into the lookup table for the current setting of the mixer
+	//
+	// THIS MIGHT BE WRONG FOR TRICKING STEREO LINKING
+	// I THINK WE ARE GETTING THE PHYSICAL VALUE OF THE OTHER
+	// CONTROL AND USING IT. WE PROBABLY SHOULD USE THE VALUE
+	// THAT IS PASSED IN pCtrlData->wVal SINCE THAT IS WHAT THE
+	// OTHER CONTROL IS USING (ADJUST FOR g_bReversDirection)
+	// .... ONLY WORKS IF THEY ARE AT THE SAME LOCATION!!!
+	//
+
+		iV = GETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos) + iDelta;	// ORIGINAL
+
+		// Validate the index so that it is not less that zero and not greater than
+		// the number of value entries
+
+    if(iV < 0)
+      iV = 0;
+    if(iV >= pctrl->iNumValues)
+      iV = pctrl->iNumValues - 1;
+
+    pCtrlData->wVal = (WORD)iV;	// Ok, use it now.
+
+    if(CheckFilter(pctrl) == NO_FILTER)
+    {
+      // Check if it is a software control and 
+      // deal with it in a special way ... 
+			CDef_SendData(pCtrlData); // Send the data only if not filtered
+			UpdateExternalInterface(pCtrlData);
+    }
+    else
+    {
+      SETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos, (WORD)iV);
+    }
 
 
-        pCtrlData->wCtrl = pctrl->iCtrlNumAbs;
-
-				// g_bReversDirection is set when the ALT key 
-				// is held down while moving a stereo linked fader.
-				// The linked fader will move in the opposite direction
-				// of the fader being moved. Set in main.c - WinMain()
-
-        if(g_bReversDirection)
-          iDelta = -iDelta;
-
-        iV = GETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos) + iDelta;
-
-        if(iV < 0)
-          iV = 0;
-        if(iV >= pctrl->iNumValues)
-          iV = pctrl->iNumValues - 1;
-
-        pCtrlData->wVal = (WORD)iV;
-
-        if(CheckFilter(pctrl) == NO_FILTER)
-        {
-          // Check if it is a software control and 
-          // deal with it in a special way ... 
-					CDef_SendData(pCtrlData); // Send the data only if not filtered
-					UpdateExternalInterface(pCtrlData);
-        }
-        else
-        {
-          SETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos, (WORD)iV);
-        }
-
-        if(iModule == g_iMasterModuleIdx)
-          UpdateControlFromNetwork((WORD)iModule, (WORD)pctrl->iCtrlChanPos, (int)pCtrlData->wVal, FALSE);
-        else
-          UpdateControlFromNetwork(pCtrlData->wChannel, (WORD)pctrl->iCtrlChanPos, (int)pCtrlData->wVal, FALSE);
-      }
-		}
-    pSG ++;
-  }
-
+		if(iModule == g_iMasterModuleIdx)
+			UpdateControlFromNetwork((WORD)iModule, (WORD)pctrl->iCtrlChanPos, (int)pCtrlData->wVal, FALSE);
+		else
+			UpdateControlFromNetwork(pCtrlData->wChannel, (WORD)pctrl->iCtrlChanPos, (int)pCtrlData->wVal, FALSE);
+  
 };
 
 
@@ -2007,8 +2059,7 @@ BOOL                bIsOn;
 	//-------------------------
 	lpctrlZM = pctrlzm;
 
-	ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
-
+	ivalue = 0;
 	iVal = GETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos);
 
 	if(iVal != ivalue)
@@ -2057,7 +2108,8 @@ BOOL                bIsOn;
 		// ok we need to go up to max value
 
 		ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
-		iVal   = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+
+		iVal   = 0;
 		iVal++;// skip this value since the control is already there
 
 		if((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE) 
@@ -2091,7 +2143,7 @@ BOOL                bIsOn;
 	//----------------------------
 	SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
 
-	if(iVal == CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs))
+	if(iVal == 0)
 	{
 		UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
 	}
