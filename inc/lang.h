@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by D:\work\Vacs Client\usengl\usengl.rc
+// Used by D:\Work\styck\Vacs Client\usengl\usengl.rc
 //
 #define IDD_SEQUENCE_WINDOW             101
 #define IDD_PRF_MIDI                    102
@@ -89,6 +89,7 @@
 #define IDS_ERR_MAX_WINDOW              2050
 #define IDS_ERR_GET_SERVER_DATA         2051
 #define IDS_ERR_EVENT_HANDLE            2052
+#define IDS_CHANGES_MESSAGE             2052
 #define IDS_FULL_VIEW_640               2100
 #define IDS_FULL_VIEW_800               2101
 #define IDS_FULL_VIEW_1024              2102
@@ -121,6 +122,7 @@
 #define IDS_SEQCOLUMN2                  4001
 #define IDS_SEQCOLUMN3                  4002
 #define IDS_SEQCOLUMN4                  4003
+#define IDS_RECALL_ALL_CONTROLS         4004
 #define IDS_CDEF_CONTROLNAME_NOTFOUND   5000
 #define IDS_DCX32_LOADED                5001
 #define IDS_MULTIPLE_APPLICATIONS_RUNNING 5001
@@ -147,6 +149,7 @@
 #define IDS_MIXFILE_NOTSAVED            40006
 #define IDS_INCOMP_MIX_FILE             40007
 #define MENU_TVN_ADD                    40007
+#define IDS_DELETE_SEQUENCE_ENTRY       40007
 #define MENU_TVN_UPDATE                 40008
 #define MENU_TVN_PROPERTIES             40011
 #define ID_RECALL                       40012
@@ -176,6 +179,7 @@
 #define IDM_S_GOTO_LAST                 40038
 #define IDM_F_SAVE_FILE_AS              40039
 #define IDM_RESETBUS                    40040
+#define IDM_H_INFO                      40041
 #define IDM_GENERATE_DLLIST             40100
 
 // Next default values for new objects
@@ -184,7 +188,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        109
-#define _APS_NEXT_COMMAND_VALUE         40041
+#define _APS_NEXT_COMMAND_VALUE         40042
 #define _APS_NEXT_CONTROL_VALUE         1037
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
