@@ -13,8 +13,6 @@
 //
 //=================================================
 
-//#include <windows.h>
-
 #include "SAMM.h"
 #include "SAMMEXT.h"
 #include "MACRO.h"
@@ -276,6 +274,7 @@ BOOL    MakeModulesArraySameType(LPMIXERWNDDATA lpmwd, int iType, int iType2)
       lpmwd->lZMCount ++;
     }
   }
+
   if(iType2 != NULL_MODULE_TYPE)
   {
     for(iScrCount = 0; iScrCount < giMax_CHANNELS; iScrCount++)
@@ -392,7 +391,9 @@ switch(iMode)
               UpDownControl(NULL, lpmwd->lpCtrlZM, 0, lpmwd, (BYTE)LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan])); 
               lpmwd->iCtrlMode = CTRL_TYPE_UPDOWNSCROLL;
               lpmwd->iCurMode = CTRL_TYPE_UPDOWNSCROLL;
-              g_CtrlTimer = SetTimer(hwnd, 77, 50, NULL);
+							// Create time for the up/down scrolling of values
+							// Changed to 500ms for the touchscreen
+              g_CtrlTimer = SetTimer(hwnd, 77, 500, NULL);		//50
               break;
 
             //----------------------------------------
@@ -423,7 +424,7 @@ switch(iMode)
         SetCursor(LoadCursor(ghInstConsoleDef, MAKEINTRESOURCE(SAMMVSCROLLCURSOR)));
         break;
     case MW_SCROLL_RELATIVE:
-        lpmwd->iCurMode = MW_SCROLL_RELATIVE;
+// fds it is already this value        lpmwd->iCurMode = MW_SCROLL_RELATIVE;
         ShowScrollWindow(hwnd, lpmwd);
         ClipZone(hwnd, &lpmwd->rVisible);
         ScrollImgWindowRelative(hwnd, lpmwd);
