@@ -1,0 +1,238 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "..\..\inc\samm_rc.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "ver.h"
+#include <windows.h>
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+SAMMMainIcon            ICON    DISCARDABLE     "SAMMMAIN.ICO"
+IDI_GROUP_LIST          ICON    DISCARDABLE     "icon1.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DEBUG DIALOG DISCARDABLE  10, 10, 186, 125
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Debug"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LISTBOX         IDC_EDIT_DEBUG_OUTPUT,3,4,179,118,NOT LBS_NOTIFY | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_ABOUT DIALOGEX 0, 0, 283, 236
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Virtual Audio Console System"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,219,210,50,14
+    CONTROL         136,IDC_STATIC,"Static",SS_BITMAP,27,81,173,55,
+                    WS_EX_TRANSPARENT
+    LTEXT           "",IDC_STATIC,24,78,180,60,SS_SUNKEN | WS_BORDER | NOT 
+                    WS_GROUP
+    LTEXT           "CompanyName",IDT_COMPANY_NAME,21,9,198,12
+    LTEXT           "FileDescription",IDT_FILE_DESC,21,33,87,15
+    LTEXT           "LegalCopyright",IDT_COPYRIGHT,21,57,201,15
+    LTEXT           "ProductVersion",IDT_PROD_VER,132,33,87,15
+    LTEXT           "LegalTrademarks",IDT_TRADEMARKS,21,156,231,24
+    LTEXT           "www.corteksoft.com      sales@corteksoft.com",
+                    IDC_STATIC,16,209,169,14
+END
+
+IDD_SPLASH DIALOG DISCARDABLE  0, 0, 246, 122
+STYLE WS_POPUP
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "",IDC_SPLASH_BMP,"Static",SS_BITMAP,0,0,15,13
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "..\\..\\inc\\samm_rc.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""ver.h""\r\n"
+    "#include <windows.h>\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 276
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 229
+    END
+
+    IDD_SPLASH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 239
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 115
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "by Hristo Doichev\0"
+            VALUE "CompanyName", "CorTek Software Inc.  www.corteksoft.com\0"
+            VALUE "FileDescription", "VACS® Client Workstation\0"
+            VALUE "FileVersion", "Version 11/25/99\0"
+            VALUE "InternalName", "VACS® Client Workstation\0"
+            VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 1999\0"
+            VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc.\0"
+            VALUE "OriginalFilename", "VACS.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "CorTek Software VACS\0"
+            VALUE "ProductVersion", "rev 2.37\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_UPDOWN_SCROLLER     BITMAP  DISCARDABLE     "bitmap1.bmp"
+IDB_PLAYTOOL            BITMAP  DISCARDABLE     "playbar_bw2.bmp"
+IDB_GENERALTOOL         BITMAP  DISCARDABLE     "bmp00001.bmp"
+IDB_CORTEK_LOGO         BITMAP  DISCARDABLE     "CorTek260x89@72ppi-rgb-indexedcolor.BMP"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDCUR_UPDOWN_SCROLLER   CURSOR  DISCARDABLE     "cursor1.cur"
+IDCUR_UPDOWN_CTRL       CURSOR  DISCARDABLE     "idcur.cur"
+IDCUR_UPDOWN_UP         CURSOR  DISCARDABLE     "cur00001.cur"
+IDCUR_UPDOWN_DOWN       CURSOR  DISCARDABLE     "idcur_up.cur"
+IDCUR_BLUE_HAND         CURSOR  DISCARDABLE     "cur00003.cur"
+IDCUR_RED_HAND          CURSOR  DISCARDABLE     "cur00002.cur"
+IDCUR_BLUE_HAND_2       CURSOR  DISCARDABLE     "cur00004.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ONLY_ONE_INSTANCE   "VACS Is Already Active!"
+    IDS_INIT_ERR            "Initialization Error... Application Can Not Run!"
+    IDS_PALETTE_ERR         "VACS Needs A Min Of 256 Colors To Run. Adjust Your Video Resolution."
+    IDS_MEMORY_ERR          "Not Enough Memory To Construct Graphic Images! Try Using Less Color Resolution."
+    IDS_ERR_SCREEN_SIZE     "Screen Resolution Must Be 800 x 600 x 256 Or Greater!"
+    IDS_ERR_PROG_DIR        "Couldn't find the Program Directory!"
+    IDS_NO_RES_FILE         "Couldn't load the  usengl.DLL!"
+    IDS_NO_RES2_FILE        "Couldn't find the ConsoleDefenition.DLL!"
+    IDS_ERR_IN_RES_FILE     "Error in loading main menu"
+    IDS_ERR_IN_RES2_FILE    "Error loading background bitmap for the Client Window : IDB_CLIENT_BACKGROUND"
+    IDS_ERR_IN_RES3_FILE    "Error loading VU bitmap : IDB_VU_ON_VERTICAL"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERR_IN_RES4_FILE    "Error load bitmap for numbers : IDB_NUMBERS_200_40"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

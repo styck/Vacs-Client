@@ -1,0 +1,77 @@
+// This file contains the Zonemaps for the
+// General Information about the DCX unit
+//-----------------------------------------
+
+#include "ctrl.h"
+/////////////////////////////////////////////////////////////////
+//
+// Phisical mixer description
+//---------------------------
+//typedef struct MIXERDESCtag
+//    {
+//    SHORT           iID;
+//    SHORT           iMaxMixers;
+//    SHORT           iMaxChannels; // in this case this indicates
+//                                  // maximum types of modules...like
+//                                  // input, aux, master .. !!!!
+//    SHORT           iMaxControls;
+//    char            szMixerName[40];
+//    }MIXERDESC;
+MIXER_PHIS_DESC RT_MIXER_PHIS_DESC MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    100, 1, 3, 256,
+    "Gamble DCX console                    \0",
+END
+
+
+
+
+
+/////////////////////////////////////////////////////////////////
+// Structure:
+//          WORD    w1; is the actual zone map
+//          WORD    w2; is the bitmap that is to be used
+//
+
+// Zone Descriptor for the full view
+//----------------------------------
+IDZD_FULL_ZONEMAP ZONEMAPDESCRIPTOR MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    IDZM_INPUT_FULL, IDB_I_FULL,      " I  ",
+    IDZM_SA_FULL, IDB_SA_FULL,      " S  ",
+    IDZM_INPUT_FULL, IDB_I_FULL,      " M  ",
+    0xffff, 0xffff, 0x0000, 0x0000,
+END
+
+// Zone Descriptor for the zoom view
+//----------------------------------
+IDZD_ZOOM_ZONEMAP ZONEMAPDESCRIPTOR MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    IDZM_INPUT_ZOOM, IDB_I_ZOOM,      " 1  ",
+    IDZM_SUBMATRIX_ZOOM, IDB_SM_ZOOM, " 2  ",
+    IDZM_MASTER_ZOOM,    IDB_MASTER_ZOOM, " 3  ",
+
+    0xffff, 0xffff, 0x0000, 0x0000,
+END
+
+//////////////////////////////////////////////////////////////////
+
+// Table of all of the zonemap descriptors for the Full View
+//----------------------------------------------------------
+IDTAZ_FULL   TABLE_OF_ALL_ZONEMAPS MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    IDZD_FULL_ZONEMAP, IDS_FULL_VIEW_640,
+    IDZD_FULL_ZONEMAP, IDS_FULL_VIEW_800,
+    IDZD_FULL_ZONEMAP, IDS_FULL_VIEW_1024,
+    0xffff, 0xffff,
+END
+
+// Table of all of the zonemap descriptors for the Zoom View
+//----------------------------------------------------------
+IDTAZ_ZOOM   TABLE_OF_ALL_ZONEMAPS MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    IDZD_ZOOM_ZONEMAP, IDS_ZOOM_VIEW_640,
+    IDZD_ZOOM_ZONEMAP, IDS_ZOOM_VIEW_800,
+    IDZD_ZOOM_ZONEMAP, IDS_ZOOM_VIEW_1024,
+    0xffff, 0xffff,
+END

@@ -1,0 +1,248 @@
+// This filw contains the Zonemaps for the
+// Full Input module
+//-----------------------------------------
+#include "ctrl.h"
+
+/////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+// Used to read the Control Zone map Resources
+//--------------------------------------------
+//typedef struct CTRLZONEMAPRESOURCEtag
+//    {
+//    SMALL_RECT      rZone;
+//    USHORT          uCtrlType;
+//    USHORT          uDispType;
+//    char            chControlName[25];
+//    char            chControlNameAlt1[25];
+//    USHORT          uRdOutType;
+//    USHORT          iCtrlBmp[3]; // three bitmaps max per control
+//    }CTRLZONEMAPRESOURCE;
+//typedef CTRLZONEMAPRESOURCE  * LPCTRLZONEMAPRESOURCE;
+//
+
+
+// Zone maps -> for the full view
+//-------------------------------
+IDZM_INPUT_FULL	ZONEMAP	MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+
+    // Explode Compressors Section
+    1, 82,     13, 127,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_ZOOM_CCOMP, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // Explode Gates Section
+    1, 82,     13, 127,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_ZOOM_CCOMP, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // Explode Aux Section
+    1, 1,     13, 46,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_ZOOM_IAUX, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // Explode EQ Section
+    1, 48,     13, 80,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_ZOOM_EQ, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // Explode SUB Section
+    1, 129,     13, 174,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_ZOOM_SUB, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // The name Section
+    1, 214,     13, 401,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_FADER, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // The Label Display
+    1, 213,     13, 402,
+    250, CTRL_TYPE_CHANNEL_NAME_DISPLAY_VERTICAL, DISP_TYPE_NORMAL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // The Label Display
+    1, 177,     13, 212,
+    250, CTRL_TYPE_CHANNEL_NUMBER_DISPLAY_VERTICAL, DISP_TYPE_NORMAL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // Input Fader
+    2, 433,    13, 579,
+    CTRL_NUM_INPUT_VOL_FADER, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"Input Fader\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_SMALLKNOB, 0x0000, 0x0000,
+/*
+    // Input Mute Button ########################		
+    //------------------
+    2, 490,   12, 500,
+    CTRL_NUM_INPUT_MUTE, CTRL_TYPE_BTN_INPUTMUTE_FILTER, DISP_TYPE_NORMAL,
+	"MUTE THE GATE\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_FULL_I_MUTE_DOWN, 0x0000,
+
+	// Input PRE Fad Cue Button  -aux01########################		
+    //------------------
+    2, 503,   12, 513,
+     CTRL_NUM_INPUT_CUE_FAD_PRE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "CUE A PRE MUTE\0           ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_FULL_I_SOLO_DOWN, 0x0000,
+
+    // The Gate Feed Thru (Depth) Section ######################
+    //------------------------
+    43, 2049,     59,2069,
+    CTRL_NUM_INPUT_GATE_FEED_THRU, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"GATE FEEDTHRU\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Key Level Inout
+    //----------------------------
+    62, 2159,  92, 2173,
+    CTRL_NUM_INPUT_GATE_FEEDTHRUINOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"GATE FEEDTHRU INOUT\0      ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_GATE_IN, 0x0000,
+*/
+    0x0000, 0x0000, 0x0000, 0x0000,
+    CTRL_NUM_NULL, CTRL_TYPE_NULL, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+END
+
+
+// Zone maps -> for the full view
+//-------------------------------
+IDZM_SA_FULL	ZONEMAP	MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+
+    // Explode EQ Section
+    1, 1,     13, 33,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_MATRIX_EQ, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // Explode Aux Section
+    1, 35,     13, 80,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_MATRIX_AUX, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // Explode Sub Section
+    1, 82,     13, 127,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_MATRIX_SUB, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // The Fader Section
+    1, 213,     33, 402,
+    CTRL_NUM_NULL, CTRL_TYPE_OPEN_FADER, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // The Fader Section
+    1, 213,     13, 402,
+    250, CTRL_TYPE_CHANNEL_NAME_DISPLAY_VERTICAL, DISP_TYPE_NORMAL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // The Label Display
+    1, 177,     13, 212,
+    250, CTRL_TYPE_CHANNEL_NUMBER_DISPLAY_VERTICAL, DISP_TYPE_NORMAL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB VOL LT Fader
+    2, 433,    13, 579,
+    CTRL_NUM_MATRIX_SUB_VOL_LT, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"SUB LT FADER\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_FDR_BLUE_SMALL, 0x0000, 0x0000,
+
+    // The SUB VOL RT Fader
+	//---------------------
+    2, 433,    13, 579,
+    CTRL_NUM_MATRIX_SUB_VOL_RT, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"SUB RT FADER\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_FDR_BLUE_SMALL, 0x0000, 0x0000,
+
+    // The SUB MATRIX LT Fader
+    2, 130,    13, 176,
+    CTRL_NUM_MATRIX_LT_FADER, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"MATRIX LT FADER\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_FDR_WHITE_TINY, 0x0000, 0x0000,
+
+    // The SUB VOL RT Fader
+	//---------------------
+    2, 130,    13, 176,
+    CTRL_NUM_MATRIX_RT_FADER, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"MATRIX RT FADER\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_FDR_WHITE_TINY, 0x0000, 0x0000,
+
+
+
+
+
+
+	// terminator ....
+    0x0000, 0x0000, 0x0000, 0x0000,
+    CTRL_NUM_NULL, CTRL_TYPE_NULL, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+END

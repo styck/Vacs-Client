@@ -1,0 +1,35 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: usengl - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"..\wasteRelease\usengl/usengl.res" /i "..\SAMMPlus\inc" /d "NDEBUG" "D:\work\Vacs Client\usengl\usengl.rc"" 
+Creating temporary file "C:\TEMP\RSP24.tmp" with contents
+[
+/nologo /Gz /MT /W3 /GX /O2 /I "..\inc" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"..\wasteRelease\usengl/usengl.pch" /YX /Fo"..\wasteRelease\usengl/" /Fd"..\wasteRelease\usengl/" /FD /c 
+"D:\work\Vacs Client\usengl\DLL_Main.c"
+]
+Creating command line "cl.exe @C:\TEMP\RSP24.tmp" 
+Creating temporary file "C:\TEMP\RSP25.tmp" with contents
+[
+version.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"..\binR/usengl.pdb" /machine:I386 /out:"..\binR/usengl.dll" /implib:"..\binR/usengl.lib" 
+"\work\Vacs Client\wasteRelease\usengl\DLL_Main.obj"
+"\work\Vacs Client\wasteRelease\usengl\usengl.res"
+]
+Creating command line "link.exe @C:\TEMP\RSP25.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+DLL_Main.c
+Linking...
+
+
+
+<h3>Results</h3>
+usengl.dll - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

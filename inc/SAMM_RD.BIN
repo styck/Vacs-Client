@@ -1,0 +1,594 @@
+
+// needed includes
+//----------------
+//#include "samm_rd.h"
+#include "ctrl.h"
+//#include "SAMMRES00.h"
+
+
+
+//   The Input Volume fader Normal
+// There is no RdOut for this Control
+// so we will not have a String table
+// Structures
+//-----------
+//typedef struct RDOUTTABLEtag
+//    {
+//    int             iMin;
+//    int             iMax;
+//    int             iDefault;
+//    int             iTotVals;
+//    int             iScaleInto;
+//    }RDOUTTABLE;
+//-----------------------------------
+RDOUT_I_FADER_VOL_N_FULL RT_RDOUTTABLE MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 87, 128, 100
+    "End\0            "
+END
+
+//  The Compresor Threshold
+// This is for the Zoom View
+// so there is a RdOut Zone and we
+// need the String table
+//--------------------------------
+RDOUT_COMP_THRESH RT_RDOUTTABLE MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 41, 128, 128,
+
+    "-50.00\0         ",    "-49.18\0         ",    "-48.63\0         ",
+    "-48.09\0         ",    "-47.54\0         ",    "-46.99\0         ",
+    "-46.45\0         ",    "-45.90\0         ",    "-45.36\0         ",
+    "-44.81\0         ",    "-44.26\0         ",    "-43.72\0         ",
+    "-43.17\0         ",    "-42.62\0         ",    "-42.08\0         ",
+    "-41.53\0         ",    "-40.98\0         ",    "-40.44\0         ",
+    "-39.89\0         ",    "-39.34\0         ",    "-38.80\0         ",
+    "-38.25\0         ",    "-37.70\0         ",    "-37.16\0         ",
+    "-36.61\0         ",    "-36.07\0         ",    "-35.52\0         ",
+    "-34.97\0         ",    "-34.43\0         ",    "-33.88\0         ",
+
+    "-33.33\0         ",    "-32.79\0         ",    "-32.24\0         ",
+    "-31.69\0         ",    "-31.15\0         ",    "-30.60\0         ",
+    "-30.05\0         ",    "-29.51\0         ",    "-28.96\0         ",
+    "-28.42\0         ",    "-27.87\0         ",    "-27.32\0         ",
+    "-26.78\0         ",    "-26.23\0         ",    "-25.68\0         ",
+    "-25.14\0         ",    "-24.59\0         ",    "-24.04\0         ",
+    "-23.50\0         ",    "-22.95\0         ",    "-22.40\0         ",
+    "-21.86\0         ",    "-21.31\0         ",    "-20.77\0         ",
+    "-20.22\0         ",    "-19.67\0         ",    "-19.13\0         ",
+    "-18.58\0         ",    "-18.03\0         ",    "-17.49\0         ",
+
+    "-16.94\0         ",    "-16.39\0         ",    "-15.85\0         ",
+    "-15.30\0         ",    "-14.75\0         ",    "-14.21\0         ",
+    "-13.66\0         ",    "-13.11\0         ",    "-12.57\0         ",
+    "-12.02\0         ",    "-11.48\0         ",    "-10.93\0         ",
+    "-10.38\0         ",    "-9.84\0          ",    "-9.29\0          ",
+    "-8.74\0          ",    "-8.20\0          ",    "-7.65\0          ",
+    "-7.10\0          ",    "-6.56\0          ",    "-6.01\0          ",
+    "-5.46\0          ",    "-4.92\0          ",    "-4.37\0          ",
+    "-3.83\0          ",    "-3.28\0          ",    "-2.73\0          ",
+    "-2.19\0          ",    "-1.64\0          ",    "-1.09\0          ",
+
+    "-0.55\0          ",    "-0.00\0          ",    "0.55\0           ",
+    "1.09\0           ",    "1.64\0           ",    "2.19\0           ",
+    "2.73\0           ",    "3.28\0           ",    "3.83\0           ",
+    "4.37\0           ",    "4.92\0           ",    "5.46\0           ",
+    "6.01\0           ",    "6.56\0           ",    "7.10\0           ",
+    "7.65\0           ",    "8.20\0           ",    "8.74\0           ",
+    "9.29\0           ",    "9.84\0           ",    "10.38\0          ",
+    "10.93\0          ",    "11.48\0          ",    "12.02\0          ",
+    "12.57\0          ",    "13.11\0          ",    "13.66\0          ",
+    "14.21\0          ",    "14.75\0          ",    "15.30\0          ",
+
+    "15.85\0          ",    "16.39\0          ",    "16.94\0          ",
+    "17.49\0          ",    "18.03\0          ",    "18.58\0          ",
+    "19.13\0          ",    "19.67\0          "
+END
+
+//  The Compresor Ratio
+// This is for the Zoom View
+// so there is a RdOut Zone and we
+// need the String table
+//--------------------------------
+RDOUT_COMP_RATIO RT_RDOUTTABLE MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 41, 128, 128,
+
+    "1.00\0           ",    "1.01\0           ",    "1.02\0           ",
+    "1.03\0           ",    "1.04\0           ",    "1.04\0           ",
+    "1.05\0           ",    "1.06\0           ",    "1.07\0           ",
+    "1.08\0           ",    "1.09\0           ",    "1.10\0           ",
+    "1.11\0           ",    "1.12\0           ",    "1.13\0           ",
+    "1.14\0           ",    "1.15\0           ",    "1.16\0           ",
+    "1.17\0           ",    "1.18\0           ",    "1.19\0           ",
+    "1.20\0           ",    "1.21\0           ",    "1.22\0           ",
+    "1.24\0           ",    "1.25\0           ",    "1.26\0           ",
+    "1.27\0           ",    "1.29\0           ",    "1.30\0           ",
+
+    "1.31\0           ",    "1.33\0           ",    "1.34\0           ",
+    "1.35\0           ",    "1.37\0           ",    "1.38\0           ",
+    "1.40\0           ",    "1.41\0           ",    "1.43\0           ",
+    "1.45\0           ",    "1.46\0           ",    "1.48\0           ",
+    "1.50\0           ",    "1.51\0           ",    "1.53\0           ",
+    "1.55\0           ",    "1.57\0           ",    "1.59\0           ",
+    "1.61\0           ",    "1.63\0           ",    "1.65\0           ",
+    "1.67\0           ",    "1.70\0           ",    "1.72\0           ",
+    "1.74\0           ",    "1.77\0           ",    "1.79\0           ",
+    "1.82\0           ",    "1.84\0           ",    "1.87\0           ",
+
+    "1.90\0           ",    "1.92\0           ",    "1.95\0           ",
+    "1.98\0           ",    "2.02\0           ",    "2.05\0           ",
+    "2.08\0           ",    "2.12\0           ",    "2.15\0           ",
+    "2.19\0           ",    "2.23\0           ",    "2.27\0           ",
+    "2.31\0           ",    "2.35\0           ",    "2.39\0           ",
+    "2.44\0           ",    "2.49\0           ",    "2.53\0           ",
+    "2.59\0           ",    "2.64\0           ",    "2.69\0           ",
+    "2.75\0           ",    "2.81\0           ",    "2.88\0           ",
+    "2.94\0           ",    "3.01\0           ",    "3.08\0           ",
+    "3.16\0           ",    "3.24\0           ",    "3.32\0           ",
+
+    "3.41\0           ",    "3.51\0           ",    "3.61\0           ",
+    "3.71\0           ",    "3.82\0           ",    "3.94\0           ",
+    "4.06\0           ",    "4.20\0           ",    "4.34\0           ",
+    "4.49\0           ",    "4.65\0           ",    "4.83\0           ",
+    "5.02\0           ",    "5.22\0           ",    "5.45\0           ",
+    "5.69\0           ",    "5.95\0           ",    "6.24\0           ",
+    "6.56\0           ",    "6.92\0           ",    "7.31\0           ",
+    "7.76\0           ",    "8.26\0           ",    "8.83\0           ",
+    "9.48\0           ",    "10.24\0          ",    "11.13\0          ",
+    "12.19\0          ",    "13.47\0          ",    "15.06\0          ",
+
+    "17.07\0          ",    "19.69\0          ",    "Limit\0          ",
+    "Limit\0          ",    "Limit\0          ",    "Limit\0          ",
+    "Limit\0          ",    "Limit\0          "
+END
+
+//  The Gate Threshold
+// This is for the Zoom View
+// so there is a RdOut Zone and we
+// need the String table
+//--------------------------------
+RDOUT_GATE_THRESH RT_RDOUTTABLE MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 41, 128, 128,
+
+    "-90.00\0         ",    "-70.75\0         ",    "-61.80\0         ",
+    "-55.90\0         ",    "-51.50\0         ",    "-47.98\0         ",
+    "-45.05\0         ",    "-42.54\0         ",    "-40.35\0         ",
+    "-38.40\0         ",    "-36.65\0         ",    "-35.05\0         ",
+    "-33.59\0         ",    "-32.24\0         ",    "-30.99\0         ",
+    "-29.82\0         ",    "-28.73\0         ",    "-27.70\0         ",
+    "-26.72\0         ",    "-25.80\0         ",    "-24.92\0         ",
+    "-24.09\0         ",    "-23.29\0         ",    "-22.53\0         ",
+    "-21.80\0         ",    "-21.10\0         ",    "-20.42\0         ",
+    "-19.78\0         ",    "-19.15\0         ",    "-18.55\0         ",
+
+    "-17.96\0         ",    "-17.40\0         ",    "-16.85\0         ",
+    "-16.32\0         ",    "-15.80\0         ",    "-15.30\0         ",
+    "-14.81\0         ",    "-14.34\0         ",    "-13.88\0         ",
+    "-13.43\0         ",    "-12.99\0         ",    "-12.56\0         ",
+    "-12.15\0         ",    "-11.74\0         ",    "-11.34\0         ",
+    "-10.95\0         ",    "-10.57\0         ",    "-10.20\0         ",
+    "-9.83\0          ",    "-9.47\0          ",    "-9.12\0          ",
+    "-8.78\0          ",    "-8.44\0          ",    "-8.11\0          ",
+    "-7.79\0          ",    "-7.47\0          ",    "-7.16\0          ",
+    "-6.85\0          ",    "-6.55\0          ",    "-6.25\0          ",
+
+    "-5.96\0          ",    "-5.67\0          ",    "-5.39\0          ",
+    "-5.11\0          ",    "-4.84\0          ",    "-4.57\0          ",
+    "-4.30\0          ",    "-4.04\0          ",    "-3.78\0          ",
+    "-3.53\0          ",    "-3.28\0          ",    "-3.03\0          ",
+    "-2.79\0          ",    "-2.55\0          ",    "-2.31\0          ",
+    "-2.08\0          ",    "-1.85\0          ",    "-1.62\0          ",
+    "-1.39\0          ",    "-1.17\0          ",    "-0.95\0          ",
+    "-0.74\0          ",    "-0.52\0          ",    "-0.31\0          ",
+    "-0.10\0          ",    "0.10\0           ",    "0.31\0           ",
+    "0.52\0           ",    "0.74\0           ",    "0.95\0           ",
+
+    "1.17\0           ",    "1.39\0           ",    "1.62\0           ",
+    "1.85\0           ",    "2.08\0           ",    "2.31\0           ",
+    "2.55\0           ",    "2.79\0           ",    "3.03\0           ",
+    "3.28\0           ",    "3.53\0           ",    "3.78\0           ",
+    "4.04\0           ",    "4.30\0           ",    "4.57\0           ",
+    "4.84\0           ",    "5.11\0           ",    "5.39\0           ",
+    "5.67\0           ",    "5.96\0           ",    "6.25\0           ",
+    "6.55\0           ",    "6.85\0           ",    "7.16\0           ",
+    "7.47\0           ",    "7.79\0           ",    "8.11\0           ",
+    "8.44\0           ",    "8.78\0           ",    "9.12\0           ",
+
+    "9.47\0           ",    "9.83\0           ",    "10.66\0          ",
+    "12.04\0          ",    "13.54\0          ",    "15.18\0          ",
+    "16.98\0          ",    "19.00\0          "
+END
+
+
+//   The Input Volume fader Normal
+// This is for the Zoom view
+// so there is RdOut Zone and we
+// need the String Table
+//--------------------------------
+RDOUT_I_FADER_VOL_N_ZOOM RT_RDOUTTABLE MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 41, 128, 256,
+
+    "-85.00\0         ",    "-66.94\0         ",
+    "-58.54\0         ",    "-53.01\0         ",    "-48.88\0         ",
+    "-45.58\0         ",    "-42.83\0         ",    "-40.48\0         ",
+
+    "-38.42\0         ",    "-36.59\0         ",    "-34.95\0         ",
+    "-33.45\0         ",    "-32.08\0         ",    "-30.82\0         ",
+    "-29.64\0         ",    "-28.55\0         ",    "-27.52\0         ",
+    "-26.55\0         ",    "-25.64\0         ",    "-24.77\0         ",
+    "-23.95\0         ",    "-23.17\0         ",    "-22.42\0         ",
+    "-21.71\0         ",    "-21.02\0         ",    "-20.36\0         ",
+    "-19.73\0         ",    "-19.12\0         ",    "-18.53\0         ",
+    "-17.97\0         ",    "-17.42\0         ",    "-16.89\0         ",
+    "-16.38\0         ",    "-15.88\0         ",    "-15.39\0         ",
+    "-14.92\0         ",    "-14.47\0         ",    "-14.02\0         ",
+
+    "-13.59\0         ",    "-13.17\0         ",    "-12.76\0         ",
+    "-12.36\0         ",    "-11.97\0         ",    "-11.58\0         ",
+    "-11.21\0         ",    "-10.84\0         ",    "-10.49\0         ",
+    "-10.14\0         ",    "-9.79\0          ",    "-9.46\0          ",
+    "-9.13\0          ",    "-8.81\0          ",    "-8.49\0          ",
+    "-8.18\0          ",    "-7.88\0          ",    "-7.58\0          ",
+    "-7.28\0          ",    "-7.00\0          ",    "-6.71\0          ",
+    "-6.43\0          ",    "-6.16\0          ",    "-5.89\0          ",
+    "-5.63\0          ",    "-5.36\0          ",    "-5.11\0          ",
+    "-4.85\0          ",    "-4.61\0          ",    "-4.36\0          ",
+
+    "-4.12\0          ",    "-3.88\0          ",    "-3.65\0          ",
+    "-3.41\0          ",    "-3.19\0          ",    "-2.96\0          ",
+    "-2.74\0          ",    "-2.52\0          ",    "-2.30\0          ",
+    "-2.09\0          ",    "-1.88\0          ",    "-1.67\0          ",
+    "-1.46\0          ",    "-1.26\0          ",    "-1.06\0          ",
+    "-0.86\0          ",    "-0.67\0          ",    "-0.47\0          ",
+    "-0.28\0          ",    "-0.09\0          ",    "0.09\0           ",
+    "0.28\0           ",    "0.47\0           ",    "0.67\0           ",
+    "0.86\0           ",    "1.06\0           ",    "1.26\0           ",
+    "1.46\0           ",    "1.67\0           ",    "1.88\0           ",
+
+    "2.09\0           ",    "2.30\0           ",    "2.52\0           ",
+    "2.74\0           ",    "2.96\0           ",    "3.19\0           ",
+    "3.41\0           ",    "3.65\0           ",    "3.88\0           ",
+    "4.12\0           ",    "4.36\0           ",    "4.61\0           ",
+    "4.85\0           ",    "5.11\0           ",    "5.36\0           ",
+    "5.63\0           ",    "5.89\0           ",    "6.16\0           ",
+    "6.43\0           ",    "6.71\0           ",    "7.00\0           ",
+    "7.28\0           ",    "7.58\0           ",    "7.88\0           ",
+    "8.18\0           ",    "8.49\0           ",    "8.81\0           ",
+    "9.13\0           ",    "9.46\0           ",    "9.79\0           "
+END
+
+// Jump Table definition for Compressor Section
+// no actual ReadOut
+// iDefault is set to the Jump Y Offset
+//---------------------------------------------------
+JUMP_ZOOMCOMPRESSOR RT_RDOUTTABLE MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 0, 86, 0, 1,
+    "End\0            "
+END
+// Jump Table definition for Gates Section
+// no actual ReadOut
+// iDefault is set to the Jump Y Offset
+//---------------------------------------------------
+JUMP_ZOOMGATES RT_RDOUTTABLE MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 0, 369, 0, 1,
+    "End\0            "
+END
+
+
+// No RdOut definition for all of the zones that have
+// no ReadOut
+//---------------------------------------------------
+RDOUT_NORDOUT RT_RDOUTTABLE MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 0, 0, 0, 1,
+    "End\0            "
+END
+
+
+//   The Input Volume fader Normal
+// This is for the Value map
+// The entries themself represent the
+// pixel position, the data is the one that
+// has to go out.
+//--------------------------------
+RT_SCRTOMIDI_VFADER_INPUT RT_REMAP_SCREENTOMIDI MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 255, 161, 256, 256,
+    127, 127, 126, 126, 125, 125,
+    124, 124, 123, 123, 122, 122, 121, 121, 120, 120,
+    119, 119, 118, 118, 117, 117, 116, 116, 115, 115,
+    114, 114, 113, 113, 112, 112, 111, 111, 110, 110,
+    109, 109, 108, 108, 107, 107, 106, 106, 105, 105,
+    104, 104, 103, 103, 102, 102, 101, 101, 100, 100,
+     99,  99,  98,  98,  97,  97,  96,  96,  95,  95,
+     94,  94,  93,  93,  92,  92,  91,  91,  90,  90,
+     89,  89,  88,  88,  87,  87,  86,  86,  85,  85,
+     84,  84,  83,  83,  82,  82,  81,  81,  80,  80,
+     79,  79,  78,  78,  77,  77,  76,  76,  75,  75,
+     74,  74,  73,  73,  72,  72,  71,  71,  70,  70,
+     69,  69,  68,  68,  67,  67,  66,  66,  65,  65,
+     64,  64,  63,  63,  62,  62,  61,  61,  60,  60,
+     59,  59,  58,  58,  57,  57,  56,  56,  55,  55,
+     54,  54,  53,  53,  52,  52,  51,  51,  50,  50,
+     49,  49,  48,  48,  47,  47,  46,  46,  45,  45,
+     44,  44,  43,  43,  42,  42,  41,  41,  40,  40,
+     39,  39,  38,  38,  37,  37,  36,  36,  35,  35,
+     34,  34,  33,  33,  32,  32,  31,  31,  30,  30,
+     29,  29,  28,  28,  27,  27,  26,  26,  25,  25,
+     24,  24,  23,  23,  22,  22,  21,  21,  20,  20,
+     19,  19,  18,  18,  17,  17,  16,  16,  15,  15,
+     14,  14,  13,  13,  12,  12,  11,  11,  10,  10,
+      9,   9,   8,   8,   7,   7,   6,   6,   5,   5,
+      4,   4,   3,   3,   2,   2,   1,   1,   0,   0
+
+END
+
+//   The Input Volume fader Normal
+// This is for the Value map when
+// interpreting the MIDI value
+// to the Screen Position(the ZOOM View)
+//--------------------------------------
+RT_MIDITOSCR_VFADER_INPUT RT_REMAP_MIDITOSCREEN MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 88, 128, 0,
+    // the Control Phisical number(offset) used in some cases
+    24, // this is the offset for these controls
+    // the format of the output BEGIN
+    0x00b0, MIDIF_SKIP, MIDIF_CUR_P_CTRL, MIDIF_SKIP, MIDIF_CUR,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    // the format of the output END
+    254, 252, 250, 248, 246, 244, 242, 240, 238, 236,
+    234, 232, 230, 228, 226, 224, 222, 220, 218, 216,
+    214, 212, 210, 208, 206, 204, 202, 200, 198, 196,
+    194, 192, 190, 188, 186, 184, 182, 180, 178, 176,
+    174, 172, 170, 168, 166, 164, 162, 160, 158, 156,
+    154, 152, 150, 148, 146, 144, 142, 140, 138, 136,
+    134, 132, 130, 128, 126, 124, 122, 120, 118, 116,
+    114, 112, 110, 108, 106, 104, 102, 100,  98,  96,
+     94,  92,  90,  88,  86,  84,  82,  80,  78,  76,
+     74,  72,  70,  68,  66,  64,  62,  60,  58,  56,
+     54,  52,  50,  48,  46,  44,  42,  40,  38,  36,
+     34,  32,  30,  28,  26,  24,  22,  20,  18,  16,
+     14,  12,  10,   8,   6,   4,   2,   0
+END
+
+//   The Input Volume fader Normal
+// This is for the Value map when
+// interpreting the MIDI value
+// to the Screen Position(the Full View)
+//--------------------------------------
+RT_MIDITOSCR_VFADER_INPUT_FULL RT_REMAP_MIDITOSCREEN MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 40, 128, 0,
+    // the Control Phisical number(offset) used in some cases
+    24, // this is the offset for these controls
+    // the format of the output BEGIN
+    0x00b0, MIDIF_SKIP, MIDIF_CUR_P_CTRL, MIDIF_SKIP, MIDIF_CUR,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    // the format of the output END
+     99,  98,  97,  97,  96,  95,  94,  93,  93,  92,
+     91,  90,  89,  89,  88,  87,  86,  86,  85,  84,
+     83,  82,  82,  81,  80,  79,  78,  78,  77,  76,
+     75,  75,  74,  73,  72,  71,  71,  70,  69,  68,
+     67,  67,  66,  65,  64,  63,  63,  62,  61,  60,
+     59,  58,  57,  56,  56,  55,  54,  53,  52,  52,
+     51,  50,  49,  49,  48,  47,  46,  45,  45,  44,
+     43,  42,  41,  41,  40,  39,  38,  38,  37,  36,
+     35,  34,  34,  33,  32,  31,  30,  30,  29,  28,
+     27,  26,  26,  25,  24,  24,  23,  22,  21,  20,
+     20,  19,  18,  17,  16,  15,  15,  14,  13,  13,
+     12,  11,  10,   9,   9,   8,   7,   6,   5,   5,
+      4,   3,   2,   2,   1,   1,   0,   0,
+
+END
+
+//   The Input Volume fader Normal
+// This is for the Value map
+// The entries themself represent the
+// pixel position, the data is the one that
+// has to go out.(for the Full View)
+//--------------------------------------
+RT_SCRTOMIDI_VFADER_INPUT_FULL RT_REMAP_SCREENTOMIDI MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 100, 41, 100, 0,
+
+    127, 125, 124, 123, 121, 120, 119, 118, 116, 115,
+    114, 113, 111, 110, 109, 107, 106, 105, 104, 102,
+    101, 100,  99,  97,  96,  95,  93,  92,  91,  90,
+     88,  87,  86,  85,  83,  82,  81,  80,  78,  77,
+     76,  74,  73,  72,  71,  69,  68,  67,  66,  64,
+     63,  62,  60,  59,  58,  57,  55,  54,  53,  52,
+     50,  49,  48,  46,  45,  44,  43,  41,  40,  39,
+     38,  36,  35,  34,  33,  31,  30,  29,  27,  26,
+     25,  24,  22,  21,  20,  19,  17,  16,  15,  13,
+     12,  11,  10,   8,   7,   6,   5,   3,   1,   0
+
+END
+
+//   The Compressor threshold
+// This is for the Value map when
+// interpreting the MIDI value
+// to the Screen Position(the ZOOM View)
+//--------------------------------------
+RT_MIDITOSCR_COMP_THRESH RT_REMAP_MIDITOSCREEN MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 88, 128, 0,
+    // the Control Phisical number(offset) used in some cases
+    0, // this is the offset for these controls
+    // the format of the output BEGIN
+    0x00b0, MIDIF_SKIP, MIDIF_CUR_P_CTRL, MIDIF_SKIP, MIDIF_CUR,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    // the format of the output END
+
+    127, 126, 125, 124, 123, 122, 121, 120, 119, 118,
+    117, 116, 115, 114, 113, 112, 111, 110, 109, 108,
+    107, 106, 105, 104, 103, 102, 101, 100,  99,  98,
+     97,  96,  95,  94,  93,  92,  91,  90,  89,  88,
+     87,  86,  85,  84,  83,  82,  81,  80,  79,  78,
+     77,  76,  75,  74,  73,  72,  71,  70,  69,  68,
+     67,  66,  65,  64,  63,  62,  61,  60,  59,  58,
+     57,  56,  55,  54,  53,  52,  51,  50,  49,  48,
+     47,  46,  45,  44,  43,  42,  41,  40,  39,  38,
+     37,  36,  35,  34,  33,  32,  31,  30,  29,  28,
+     27,  26,  25,  24,  23,  22,  21,  20,  19,  18,
+     17,  16,  15,  14,  13,  12,  11,  10,   9,   8,
+      7,   6,   5,   4,   3,   2,   1,   0
+
+END
+
+//   The Compressor ratio
+// This is for the Value map when
+// interpreting the MIDI value
+// to the Screen Position(the ZOOM View)
+//--------------------------------------
+RT_MIDITOSCR_COMP_RATIO RT_REMAP_MIDITOSCREEN MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 88, 128, 0,
+    // the Control Phisical number(offset) used in some cases
+    8, // this is the offset for these controls
+    // the format of the output BEGIN
+    0x00b0, MIDIF_SKIP, MIDIF_CUR_P_CTRL, MIDIF_SKIP, MIDIF_CUR,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    // the format of the output END
+
+    127, 126, 125, 124, 123, 122, 121, 120, 119, 118,
+    117, 116, 115, 114, 113, 112, 111, 110, 109, 108,
+    107, 106, 105, 104, 103, 102, 101, 100,  99,  98,
+     97,  96,  95,  94,  93,  92,  91,  90,  89,  88,
+     87,  86,  85,  84,  83,  82,  81,  80,  79,  78,
+     77,  76,  75,  74,  73,  72,  71,  70,  69,  68,
+     67,  66,  65,  64,  63,  62,  61,  60,  59,  58,
+     57,  56,  55,  54,  53,  52,  51,  50,  49,  48,
+     47,  46,  45,  44,  43,  42,  41,  40,  39,  38,
+     37,  36,  35,  34,  33,  32,  31,  30,  29,  28,
+     27,  26,  25,  24,  23,  22,  21,  20,  19,  18,
+     17,  16,  15,  14,  13,  12,  11,  10,   9,   8,
+      7,   6,   5,   4,   3,   2,   1,   0
+
+END
+
+//   The Gate threshold
+// This is for the Value map when
+// interpreting the MIDI value
+// to the Screen Position(the ZOOM View)
+//--------------------------------------
+RT_MIDITOSCR_GATE_THRESH RT_REMAP_MIDITOSCREEN MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 88, 128, 0,
+    // the Control Phisical number(offset) used in some cases
+    16, // this is the offset for these controls
+    // the format of the output BEGIN
+    0x00b0, MIDIF_SKIP, MIDIF_CUR_P_CTRL, MIDIF_SKIP, MIDIF_CUR,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    // the format of the output END
+
+    127, 126, 125, 124, 123, 122, 121, 120, 119, 118,
+    117, 116, 115, 114, 113, 112, 111, 110, 109, 108,
+    107, 106, 105, 104, 103, 102, 101, 100,  99,  98,
+     97,  96,  95,  94,  93,  92,  91,  90,  89,  88,
+     87,  86,  85,  84,  83,  82,  81,  80,  79,  78,
+     77,  76,  75,  74,  73,  72,  71,  70,  69,  68,
+     67,  66,  65,  64,  63,  62,  61,  60,  59,  58,
+     57,  56,  55,  54,  53,  52,  51,  50,  49,  48,
+     47,  46,  45,  44,  43,  42,  41,  40,  39,  38,
+     37,  36,  35,  34,  33,  32,  31,  30,  29,  28,
+     27,  26,  25,  24,  23,  22,  21,  20,  19,  18,
+     17,  16,  15,  14,  13,  12,  11,  10,   9,   8,
+      7,   6,   5,   4,   3,   2,   1,   0
+
+END
+
+
+//   The Direct map of the
+//  Screen to Midi Commands
+// This is for the Value map
+// The entries themself represent the
+// pixel position, the data is the one that
+// has to go out.
+//------------------------------------------
+RT_SCRTOMIDI_DIRECT RT_REMAP_SCREENTOMIDI MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 127, 80, 128, 128,
+    127, 126, 125, 124, 123, 122, 121, 120, 119, 118,
+    117, 116, 115, 114, 113, 112, 111, 110, 109, 108,
+    107, 106, 105, 104, 103, 102, 101, 100,  99,  98,
+     97,  96,  95,  94,  93,  92,  91,  90,  89,  88,
+     87,  86,  85,  84,  83,  82,  81,  80,  79,  78,
+     77,  76,  75,  74,  73,  72,  71,  70,  69,  68,
+     67,  66,  65,  64,  63,  62,  61,  60,  59,  58,
+     57,  56,  55,  54,  53,  52,  51,  50,  49,  48,
+     47,  46,  45,  44,  43,  42,  41,  40,  39,  38,
+     37,  36,  35,  34,  33,  32,  31,  30,  29,  28,
+     27,  26,  25,  24,  23,  22,  21,  20,  19,  18,
+     17,  16,  15,  14,  13,  12,  11,  10,   9,   8,
+      7,   6,   5,   4,   3,   2,   1,   0
+
+END
+
+
+
+// The SOLO Button Remap Tables
+//-----------------------------
+RT_MIDITOSCR_SOLO_INPUT RT_REMAP_MIDITOSCREEN MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 0, 0, 2, 0,
+    // the Control Phisical number(offset) used in some cases
+    0, // this is the offset for these controls
+    // the format of the output BEGIN
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    // the format of the output END
+    0, 1
+END
+
+// The SOLO Button Remap Tables
+//-----------------------------
+RT_SCRTOMIDI_SOLO_INPUT RT_REMAP_SCREENTOMIDI MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 0, 0, 2, 0,
+    0, 1
+END
+
+// The MUTE Button Remap Tables
+//-----------------------------
+RT_MIDITOSCR_MUTE_INPUT RT_REMAP_MIDITOSCREEN MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 0, 0, 2, 0,
+    // the Control Phisical number(offset) used in some cases
+    0, // this is the offset for these controls
+    // the format of the output BEGIN
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT, MIDIF_ENDFORMAT,
+    // the format of the output END
+    0, 1
+END
+
+// The MUTE Button Remap Tables
+//-----------------------------
+RT_SCRTOMIDI_MUTE_INPUT RT_REMAP_SCREENTOMIDI MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+    0, 0, 0, 2, 0,
+    0, 1
+END
+
+
+

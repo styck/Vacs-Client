@@ -1,0 +1,514 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "..\inc\lang.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "..\\inc\\lang.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+SAC_MAIN_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Load Mix",                   IDM_F_OPEN_FILE
+        MENUITEM "&Save Mix",                   IDM_F_SAVE_FILE
+        MENUITEM "Save Mix as ...",             IDM_F_SAVE_FILE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Update Mix",                 IDM_F_UPDATE_FILE
+        MENUITEM SEPARATOR
+        MENUITEM "&Preferences",                IDM_F_SAVEPREFERENCES
+        MENUITEM "&Console Definition",         IDM_F_CONDEF_PREFERENCES
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       IDM_F_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Full Console",               IDM_V_FULLCONSOLE, GRAYED
+        MENUITEM "Zoom &Input",                 IDM_V_FULLZOOM, GRAYED
+        MENUITEM "Zoom &Master",                IDM_V_FULLZOOM_MASTER
+        , GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Sequence",                   IDM_V_SEQUENCE
+        MENUITEM "&Groups",                     IDM_V_GROUP
+        MENUITEM SEPARATOR
+        MENUITEM "&Propagate Filter",           IDM_V_PROP_FILTER
+    END
+    POPUP "&Automation"
+    BEGIN
+        MENUITEM "Slave to SMPTE",              IDM_A_RECEIVE_SMPTE
+        MENUITEM "Stamp SMPTE",                 IDM_A_UPDATEMIDIMANUAL
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "Recall All Mixer Controls",   IDM_RECAL_ALL_CONTROLS
+        MENUITEM SEPARATOR
+        MENUITEM "Reset All Mixer Controls",    IDM_RESET_ALL_CONTROLS
+        MENUITEM SEPARATOR
+        MENUITEM "Start Tracking &Window",      IDM_START_TRACKING_WINDOW
+        MENUITEM SEPARATOR
+        MENUITEM "&Start VU Read",              IDM_START_VU_READ
+        MENUITEM "S&top VU Read",               IDM_STOP_VU_READ
+        MENUITEM SEPARATOR
+        MENUITEM "Reset DCX bus",               IDM_RESETBUS
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&Tile",                       IDM_WINDOWTILE
+        MENUITEM "&Cascade",                    IDM_WINDOWCASCADE
+        MENUITEM "Arrange &Icons",              IDM_WINDOWICONS
+        MENUITEM "Close &All",                  IDM_WINDOWCLOSEALL
+    END
+    POPUP "&Info"
+    BEGIN
+        MENUITEM "&About",                      IDM_H_ABOUT
+    END
+END
+
+MENU_TVN_POPUP MENU DISCARDABLE 
+BEGIN
+    MENUITEM "Play",                        ID_RECALL
+    MENUITEM "Add",                         MENU_TVN_ADD
+    MENUITEM "Update",                      MENU_TVN_UPDATE
+    MENUITEM SEPARATOR
+    MENUITEM "Delete",                      MENU_TVN_DELELTE
+    MENUITEM SEPARATOR
+    POPUP "Find"
+    BEGIN
+        MENUITEM "SMPTE time",                  MENU_TVN_FINDSMPTE
+        MENUITEM "Name",                        MENU_TVN_FINDNAME
+        MENUITEM "Event",                       MENU_TVN_FINDEVENT
+    END
+    MENUITEM "Properties",                  MENU_TVN_PROPERTIES
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PRF_ACTIONS DIALOG DISCARDABLE  0, 0, 186, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Actions"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Auto Execute Cues",IDC__PRF_AUTOEXEC_CUES,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,7,172,10
+    CONTROL         "Activet On First Click",IDC_PRF_ACTIVATEONFIRST,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,18,172,10
+    CONTROL         "Show Sequence View On Go",IDC_PRF_SHOWSEQVIEW_ONGO,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,29,172,10
+    CONTROL         "Enable Keyboard Navigation fo the Sequence",
+                    IDC_PRF_ENABLE_KBOARD_NAVIGATION,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,40,172,10
+    LTEXT           "SMPTE/MTC Latency Time(60...1000)",IDC_STATIC,7,55,128,
+                    8
+    EDITTEXT        IDE_PRF_SMPTE_MTC,142,52,32,14,ES_AUTOHSCROLL
+END
+
+IDD_PRF_GENERAL DIALOG DISCARDABLE  0, 0, 135, 79
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "General"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Save State On Exit",IDC__PRF_SAVESTATE_EXIT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,7,121,10
+    CONTROL         "Auto Save Mode",IDC_PRF_AUTOSAVE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,19,121,10
+    CONTROL         "Save Windows Position On Exit",IDC_PRF_SAVEWINDOWPOS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,31,121,10
+    CONTROL         "Tracking Window On",IDC_PRF_TRACKINGWINDOWON,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,42,121,10
+END
+
+IDD_PRF_MIDI DIALOG DISCARDABLE  0, 0, 181, 98
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MIDI"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "MIDI In Device",IDC_STATIC,7,7,167,34
+    COMBOBOX        IDC_PRF_MIDI_IN,7,19,167,44,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "MIDI Out Device",IDC_STATIC,7,45,167,34
+    COMBOBOX        IDC_PRF_MIDI_OUT,7,57,167,40,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_PRF_MIXER_CHANNELPORT DIALOG DISCARDABLE  0, 0, 172, 119
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Mixer -> Port"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "Sequentual Channels",IDC_PRF_SEQCHANNELS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,7,158,10
+    GROUPBOX        "Mixer IN Channel and Port",IDC_STATIC,7,20,158,37
+    COMBOBOX        IDC_MIXER_IN,9,39,88,42,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Channel",IDC_STATIC,101,28,29,8
+    LTEXT           "Port",IDC_STATIC,144,29,14,8
+    EDITTEXT        IDC_PRF_MIXERIN_CHANNEL,101,38,27,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PRF_MIXERIN_PORT,136,38,27,14,ES_AUTOHSCROLL
+    GROUPBOX        "Mixer OUT Channel and Port",IDC_STATIC,7,60,158,37
+    COMBOBOX        IDC_MIXER_OUT,9,78,88,40,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Channel",IDC_STATIC,101,68,29,8
+    LTEXT           "Port",IDC_STATIC,145,70,14,8
+    EDITTEXT        IDC_PRF_MIXEROUT_CHANNEL,101,78,27,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PRF_MIXEROUT_PORT,136,78,27,14,ES_AUTOHSCROLL
+END
+
+IDD_PRF_VIEWS DIALOGEX 0, 0, 181, 105
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Views"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Full View Options",IDC_STATIC,7,7,167,34
+    COMBOBOX        IDC_PRF_FULLVIEW,7,19,167,48,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP,WS_EX_CLIENTEDGE
+    GROUPBOX        "Zoom View Options",IDC_STATIC,7,45,167,34
+    COMBOBOX        IDC_PRF_ZOOMVIEW,7,57,167,53,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP,WS_EX_CLIENTEDGE
+END
+
+IDD_SMPTE_DISPLAY DIALOG DISCARDABLE  10, 10, 92, 26
+STYLE WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SMPTE"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "00:00:00:00",IDSS_TEXT_1,44,2,46,10
+    CTEXT           "00:00:00:00",IDSS_TEXT_2,44,14,46,9
+    LTEXT           "Current",IDC_STATIC,3,2,33,10
+    LTEXT           "Waiting",IDC_STATIC,3,15,34,9
+END
+
+IDD_PRF_MTC DIALOG DISCARDABLE  0, 0, 181, 98
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MTC\\SMPTE"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "MTC\\SMPTE In Device",IDC_STATIC,7,7,167,34
+    COMBOBOX        IDC_PRF_MTC_IN,7,19,167,44,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    GROUPBOX        "MTC\\SMPTE Out Device",IDC_STATIC,7,45,167,34
+    COMBOBOX        IDC_PRF_MTC_OUT,7,57,167,40,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_SEQUENCE_WINDOW DIALOGEX 0, 0, 281, 129
+STYLE WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
+FONT 8, "Arial", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "&Add",IDBTN_SEQ_ADD,0,0,45,15,0,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "&Update",IDBTN_SEQ_UPDATE,45,0,40,15,0,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "&Delete",IDBTN_SEQ_DELETE,85,0,40,15,0,WS_EX_CLIENTEDGE
+    CONTROL         "Slider1",IDSLIDER_SEQ_MORPH,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_VERT,0,30,25,95,WS_EX_DLGMODALFRAME | 
+                    WS_EX_CLIENTEDGE
+    PUSHBUTTON      "&Expand",IDBTN_SEQ_EXPAND,125,0,40,15,BS_MULTILINE,
+                    WS_EX_CLIENTEDGE
+    PUSHBUTTON      "&Next",IDBTN_SEQ_NEXT,95,15,35,15,BS_FLAT
+    PUSHBUTTON      "&Prev",IDBTN_SEQ_PREV,35,15,35,15,BS_FLAT
+    PUSHBUTTON      "&Top",IDBTN_SEQ_TOP,0,15,35,15,BS_FLAT
+    PUSHBUTTON      "&Bottom",IDBTN_SEQ_BOTTOM,130,15,35,15,BS_FLAT
+    DEFPUSHBUTTON   "&Play",IDBTN_SEQ_PLAY,69,15,25,15,BS_FLAT,
+                    WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    CONTROL         "Tree1",IDTREE_SEQUENCE,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_EDITLABELS | TVS_SHOWSELALWAYS | 
+                    WS_TABSTOP,30,30,135,95,WS_EX_DLGMODALFRAME | 
+                    WS_EX_LEFTSCROLLBAR
+    CONTROL         "List1",IDLIST_SEQ_EVENTS,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_EDITLABELS | WS_TABSTOP,165,30,115,
+                    95,WS_EX_DLGMODALFRAME
+    CONTROL         "",IDC_MTC_READOUT,"Static",SS_BITMAP | SS_CENTERIMAGE,
+                    166,0,115,29,WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE
+END
+
+IDD_GROUPS DIALOGEX 0, 0, 129, 140
+STYLE WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC,0,0,129,21,0,WS_EX_DLGMODALFRAME | 
+                    WS_EX_CLIENTEDGE
+    PUSHBUTTON      "Add",IDC_GROUP_ADD,6,3,39,15,0,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "Update",IDC_GROUP_UPADTE,45,3,39,15,0,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "Delete",IDC_GROUP_DELETE,84,3,39,15,0,WS_EX_CLIENTEDGE
+    CONTROL         "Hide Controls",IDC_GROUP_HIDECONTROLS,"Button",
+                    BS_AUTOCHECKBOX | BS_PUSHLIKE | WS_TABSTOP,0,21,57,12
+    CONTROL         "List1",IDC_GROUP_LIST,"SysListView32",LVS_SINGLESEL | 
+                    LVS_SHOWSELALWAYS | LVS_EDITLABELS | LVS_ALIGNLEFT | 
+                    LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,0,33,129,105,
+                    WS_EX_DLGMODALFRAME
+    DEFPUSHBUTTON   "Cancel Group",IDC_CANCEL_GROUP,60,21,66,12
+END
+
+IDD_SEQ_UPDATE_PROP DIALOGEX 0, 0, 255, 144
+STYLE DS_ABSALIGN | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Update"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Done",IDOK,7,123,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,61,123,50,14
+    GROUPBOX        "Custom Propagate Filter",IDC_STATIC,7,37,241,68,
+                    BS_CENTER
+    CONTROL         "Do not propagate changes to the subsequent Cues.",
+                    IDC_DONOT_PROP,"Button",BS_AUTORADIOBUTTON,7,7,169,10
+    CONTROL         "Propagate all changes to the subsequent Cues.",
+                    IDC_PROP_ALL,"Button",BS_AUTORADIOBUTTON,7,17,157,10
+    CONTROL         "Propagate Custom.",IDC_PROP_CUSTOM,"Button",
+                    BS_AUTORADIOBUTTON,7,27,74,10
+    CONTROL         "Input Volume",IDC_INP_VOLUME,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,50,55,10
+    CONTROL         "Input Mute",IDC_INP_MUTE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,60,46,10
+    CONTROL         "Input Eq",IDC_INP_EQ,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,69,40,10
+    CONTROL         "Input Gate",IDC_INP_GATE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,78,46,10
+    CONTROL         "Input Comp",IDC_INP_COMP,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,87,50,10
+    PUSHBUTTON      "Show changes",IDC_SHOW_CHANGES,198,123,50,14
+    CONTROL         "Use these settings and do not prompt again.",
+                    IDC_USE_AUTO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,109,
+                    147,10,WS_EX_STATICEDGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_SEQUENCE_WINDOW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 274
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 122
+    END
+
+    IDD_GROUPS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 122
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 133
+    END
+
+    IDD_SEQ_UPDATE_PROP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 248
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 137
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_QUIT_MESSAGE        "Do You Want To Quit VACS?"
+    IDS_DCXBIN_FILE_FAILED  "Couldn't load DCX.bin file!"
+    IDS_ERR_LOAD_BITMAP     "Error loading bitmap!"
+    IDS_ERR_RESOURCE_ZONES  "Error Loading Resource Zones!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERR_ALLOCATE_MEMORY "Error Allocating Memory!"
+    IDS_ERR_OPEN_MIDI_IN    "Error opening Midi In Device!"
+    IDS_ERR_OPEN_MIDI_OUT   "Error opening Midi Out Device!"
+    IDS_ERR_MIDI_DEV_OUT    "Invalid Midi Out Device!"
+    IDS_ERR_MIDI_DEV_IN     "Invalid Midi In Device!"
+    IDS_ERR_CREATING_FILE   "Trouble Creating a File!"
+    IDS_ERR_OPENING_FILE    "Trouble Opening a File!"
+    IDS_WRONG_VIEWSET       "Wrong Viewset selected. Using Default."
+    IDS_ERR_RESOURCE_DESCRIPTOR "Error in the Resource descriptor!"
+    IDS_ERR_ZONE_MAP_COUNT  "Error in the Zonemap Count!"
+    IDS_ERR_ZONEMAP_RESOURCE "Error in the Zonemap Resource!"
+    IDS_ERR_ADD_MIDI_IN_BUFFER "Error Adding MidiIn Buffer!"
+    IDS_ERR_CREATING_PALETTE "Error Creating Palette!"
+    IDS_ERR_CREATE_WINDOW   "Couldn't Create Window!"
+    IDS_ERR_INVALID_CONTROL "Invalid Control Type in the Resource!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERR_LOCATING_RESOURCE "Couldn't Locate Resource!"
+    IDS_ERR_LOADING_RESOURCE "Couldn't Load the Resource!"
+    IDS_ERR_MAX_WINDOW      "Maximum Window Opened!"
+    IDS_ERR_GET_SERVER_DATA "Error getting Server Data!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_FULL_VIEW_640       "Full View at resolution 640 by 480."
+    IDS_FULL_VIEW_800       "Full View at resolution 800 by 600."
+    IDS_FULL_VIEW_1024      "Full View at resolution 1024 by 768."
+    IDS_ZOOM_VIEW_640       "Zoom View at resolution 640 by 480."
+    IDS_ZOOM_VIEW_800       "Zoom View at resolution 800 by 600."
+    IDS_ZOOM_VIEW_1024      "Zoom View at resolution 1024 by 768."
+    IDS_PREF_SAVED          "Preferences have been saved."
+    IDS_INCOMP_PREF_FILE    "Incompatible Preferences file."
+    IDS_NEW_VER_PRF_FILE    "Old Preferences version. Please resave Preferences."
+    IDS_NONE                "NONE"
+    IDS_DEVICENOTFOUND      "Device not Found!"
+    IDS_PREF_NOTSAVED       "Preferences have not been saved!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERR_REGISTER_CLASS  "Error Register Class."
+    IDS_ERR_APPLY_PREF      "Error Initializing Prefferences!"
+    IDS_ERR_READING_FILE    "Error Reading File!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDM_F_OPEN_FILE         "Load Mix File"
+    IDM_F_SAVE_FILE         "Save Mix File"
+    IDM_F_UPDATE_FILE       "Update Mix File"
+    IDS_MIXFILE_SAVED       "Mix File Saved."
+    IDS_MIXFILE_NOTSAVED    "Mix File NOT Saved!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_FILE_DEFEXT         "mix"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_FIRSTSEQCOLUMN      "Name"
+    IDS_SEQCOLUMN2          "SMPTE In"
+    IDS_SEQCOLUMN3          "SMPTE Out"
+    IDS_SEQCOLUMN4          "Flags"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_CDEF_CONTROLNAME_NOTFOUND "Control Name Not Found !"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_DEFINITION_FAILED   "Console Definition Failed : CDef_SetGlobalData()"
+    IDS_DEFINITION_FAILED2  "Console Definition Failed : CDEF_GetCSData()"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_SEQUENCE_WINDOW_TITLE "Sequence View"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ERR_NO_SUPPORT_DIRECTORIES 
+                            "Error: Can not open Aplication support folders!"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDM_V_FULLCONSOLE       "Full Console View"
+    IDM_V_FULLZOOM          "Zoom Console View"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDM_V_FULLZOOM_MASTER   "Zoom Master View"
+    IDM_START_TRACKING_WINDOW "Start Tracking Window"
+    IDM_V_PROP_FILTER       "Display the Propagate filter"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_GROUP_WINDOW_TITLE  "Groups View"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_INVALID_DEVICE_MAP  "Invalid Device Setup! Check Server Setup for Master/Cue and          \n Sub-Aux/Matrix settings"
+    IDS_INVALID_DEVICE_MASTER_MANY 
+                            "Invalid Device Setup!\nMore than one Master Module Specified!\nCheck Server Setup!"
+    IDS_INVALID_DEVICE_CUE_MANY 
+                            "Invalid Device Setup!\nMore than one Cue Module Specified!\nCheck Server Setup!"
+    IDS_INVLAID_DEVICE_AUX_COMBO 
+                            "Invalid Device Setup!\nThe Aux and Matrix Modules must be the same count!\nCheck Server Setup!"
+    IDS_INVALID_DEVICE_MAP_AUX_MANY 
+                            "Invalid Device Setup!\nMaximum  Aux Modules exeeded !\nCheck Server Setup!"
+    IDS_INVALID_DEVICE_MAP_MATRIX_MANY 
+                            "Invalid Device Setup!\nMaximum  Matrix Modules exeeded !\nCheck Server Setup!"
+    IDS_INVALID_DEVICE_NO_MASTER 
+                            "Invalid Device Setup!\nNo Master Module!\nCheck Server Setup!"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

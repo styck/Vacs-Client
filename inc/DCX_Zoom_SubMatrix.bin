@@ -1,0 +1,3218 @@
+// This file contains the Zonemaps for the
+// Zoom SubMatrix module
+//-----------------------------------------
+#include "ctrl.h"
+							   
+/////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+// Used to read the Control Zone map Resources
+//--------------------------------------------
+//typedef struct CTRLZONEMAPRESOURCEtag
+//    {
+//    SMALL_RECT      rZone;
+//    USHORT          uCtrlType;
+//    USHORT          uDispType;
+//    char            chControlName[25];
+//    char            chControlNameAlt1[25];
+//    USHORT          uRdOutType;
+//    USHORT          iCtrlBmp[3]; // three bitmaps max per control
+//    }CTRLZONEMAPRESOURCE;
+//typedef CTRLZONEMAPRESOURCE  * LPCTRLZONEMAPRESOURCE;
+//
+
+// the Zoom Zone map for the SubMatrix Module
+//===========================================
+IDZM_SUBMATRIX_ZOOM	ZONEMAP	MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+
+    // The VU meter Left   ######################
+    //-------------------
+    10, 3648,   21, 3910,
+    CTRL_NUM_MATRIX_VU_METER, CTRL_TYPE_VU_DISPLAY, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_VU_ON_VERTICAL, 0x0000, 0x0000,
+
+    // The VU meter Right   ######################
+    //-------------------
+    92, 3648,   103, 3910,
+    CTRL_NUM_MATRIX_VU_METER, CTRL_TYPE_VU_DISPLAY2, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_VU_ON_VERTICAL, 0x0000, 0x0000,
+
+    // The VU meter Left   ######################
+    //-------------------
+    10, 2940,   21, 3202,
+    CTRL_NUM_MATRIX2_VU_METER, CTRL_TYPE_VU_DISPLAY8, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_VU_ON_VERTICAL, 0x0000, 0x0000,
+
+    // The VU meter Right   ######################
+    //-------------------
+    92, 2940,   103, 3202,
+    CTRL_NUM_MATRIX2_VU_METER, CTRL_TYPE_VU_DISPLAY10, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_VU_ON_VERTICAL, 0x0000, 0x0000,
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+    // The EQ High Section ######################
+    //------------------------
+    39, 22,     55,42,
+    CTRL_NUM_MATRIX_HI_FREQ_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT HI FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High UpDown Scroller
+    //----------------------------
+    5, 24,     36, 39,
+    CTRL_NUM_MATRIX_HI_FREQ_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT HI FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High ReadOut
+    //----------------------------
+    5, 24,     27, 39,
+    CTRL_NUM_MATRIX_HI_FREQ_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT HI FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High updown RT
+    //----------------------------
+    57, 22,    73, 42,
+    CTRL_NUM_MATRIX_HI_FREQ_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT HI FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High UpDown Scroller
+    //----------------------------
+    76, 24,    107,39,
+    CTRL_NUM_MATRIX_HI_FREQ_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT HI FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High ReadOut
+    //----------------------------
+    76, 24,    98,39,
+    CTRL_NUM_MATRIX_HI_FREQ_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT HI FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The EQ HFBW Section ######################
+    //------------------------
+    39, 61,    55,81,
+    CTRL_NUM_MATRIX_HF_BW_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT HF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBW freq  UpDown Scroller
+    //----------------------------
+    5, 64,  36,79
+    CTRL_NUM_MATRIX_HF_BW_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT HF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBW freq  ReadOut
+    //----------------------------
+    5, 64,  29,79
+    CTRL_NUM_MATRIX_HF_BW_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT HF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBW freq  updown RT
+    //----------------------------
+    57, 61,    73, 81,
+    CTRL_NUM_MATRIX_HF_BW_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT HF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBW freq  UpDown Scroller
+    //----------------------------
+    76, 64  , 100,79
+    CTRL_NUM_MATRIX_HF_BW_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT HF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBW freq  ReadOut
+    //----------------------------
+    76, 64  , 100,79
+    CTRL_NUM_MATRIX_HF_BW_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT HF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC Section ######################
+    //------------------------
+    39, 102,    55,122,
+    CTRL_NUM_MATRIX_HF_BC_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT HF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC freq  UpDown Scroller
+    //----------------------------
+    5, 104,  36, 119,
+    CTRL_NUM_MATRIX_HF_BC_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT HF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC freq  ReadOut
+    //----------------------------
+    5, 104,  28, 119,
+    CTRL_NUM_MATRIX_HF_BC_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT HF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC freq  updown RT
+    //----------------------------
+    57,102,    73,122,
+    CTRL_NUM_MATRIX_HF_BC_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT HF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC freq  UpDown Scroller
+    //----------------------------
+    76, 105,  107,120,
+    CTRL_NUM_MATRIX_HF_BC_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT HF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC freq  ReadOut
+    //----------------------------
+    76, 105,  99,120,
+    CTRL_NUM_MATRIX_HF_BC_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT HF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC freq  Inout
+    //----------------------------
+    4, 143,  30,157,
+    CTRL_NUM_MATRIX_HF_PK_SHELF_LT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"MATRIX LT HF PEAK-SHELF\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_EQ_HI_SHELF, 0x0000,
+
+
+    // The EQ HFBC freq  Inout
+    //----------------------------
+    83,143,  108,157,
+    CTRL_NUM_MATRIX_HF_PK_SHELF_RT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"MATRIX RT HF PEAK-SHELF\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_EQ_HI_SHELF, 0x0000,
+
+
+
+    // The EQ High Mid Section ######################
+    //------------------------
+    39,181,     55,201,
+    CTRL_NUM_MATRIX_HM_FREQ_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT HM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High Mid UpDown Scroller
+    //----------------------------
+    5,183,  36,198,
+    CTRL_NUM_MATRIX_HM_FREQ_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT HM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High Mid ReadOut
+    //----------------------------
+    5,183,  27,198,
+    CTRL_NUM_MATRIX_HM_FREQ_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT HM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ High Mid Section ######################
+    //------------------------
+    57,181,     73,201,
+    CTRL_NUM_MATRIX_HM_FREQ_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT HM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High Mid UpDown Scroller
+    //----------------------------
+    76,183,  107,198,
+    CTRL_NUM_MATRIX_HM_FREQ_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT HM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High Mid ReadOut
+    //----------------------------
+    76,183,  98,198,
+    CTRL_NUM_MATRIX_HM_FREQ_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT HM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The EQ HMBW Section ######################
+    //------------------------
+    39,220,     55,240,
+    CTRL_NUM_MATRIX_HM_BW_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT HM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBW freq  UpDown Scroller
+    //----------------------------
+    5,223,  36,238,
+    CTRL_NUM_MATRIX_HM_BW_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT HM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBW freq  ReadOut
+    //----------------------------
+    5,223,  29,238,
+    CTRL_NUM_MATRIX_HM_BW_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT HM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBW Section ######################
+    //------------------------
+    57,220,     73,240,
+    CTRL_NUM_MATRIX_HM_BW_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT HM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBW freq  UpDown Scroller
+    //----------------------------
+    76,223,  107,238,
+    CTRL_NUM_MATRIX_HM_BW_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT HM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBW freq  ReadOut
+    //----------------------------
+    76,223,  100,238,
+    CTRL_NUM_MATRIX_HM_BW_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT HM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBC Section ######################
+    //------------------------
+    39,261,    55,281,
+    CTRL_NUM_MATRIX_HM_BC_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT HM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBC freq  UpDown Scroller
+    //----------------------------
+    5,263,  36,278,
+    CTRL_NUM_MATRIX_HM_BC_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT HM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBC freq  ReadOut
+    //----------------------------
+    5,263,  28,278,
+    CTRL_NUM_MATRIX_HM_BC_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT HM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBC Section ######################
+    //------------------------
+    57,261,    73,281,
+    CTRL_NUM_MATRIX_HM_BC_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT HM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBC freq  UpDown Scroller
+    //----------------------------
+    76,264,  107,279,
+    CTRL_NUM_MATRIX_HM_BC_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT HM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBC freq  ReadOut
+    //----------------------------
+    76,264,  99,279,
+    CTRL_NUM_MATRIX_HM_BC_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT HM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The EQ Low Mid  Section ######################
+    //------------------------
+    39, 325,     55,345,
+    CTRL_NUM_MATRIX_LM_FREQ_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT LM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low Mid UpDown Scroller
+    //----------------------------
+    5,327,  36,342,
+    CTRL_NUM_MATRIX_LM_FREQ_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT LM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low Mid ReadOut
+    //----------------------------
+    5,327,  27,342,
+    CTRL_NUM_MATRIX_LM_FREQ_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT LM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ Low Mid  Section ######################
+    //------------------------
+    57,325,     73,345,
+    CTRL_NUM_MATRIX_LM_FREQ_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT LM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low Mid UpDown Scroller
+    //----------------------------
+    76,327,  107,342,
+    CTRL_NUM_MATRIX_LM_FREQ_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT LM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low Mid ReadOut
+    //----------------------------
+    76,327,  98,342,
+    CTRL_NUM_MATRIX_LM_FREQ_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT LM FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The EQ LMBW Section ######################
+    //------------------------
+    39,364,    55,384,
+    CTRL_NUM_MATRIX_LM_BW_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT LM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBW freq  UpDown Scroller
+    //----------------------------
+    5,367,  36,382,
+    CTRL_NUM_MATRIX_LM_BW_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT LM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBW freq  ReadOut
+    //----------------------------
+    5,367,  29,382,
+    CTRL_NUM_MATRIX_LM_BW_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT LM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBW Section ######################
+    //------------------------
+    57,364,    73,384,
+    CTRL_NUM_MATRIX_LM_BW_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT LM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBW freq  UpDown Scroller
+    //----------------------------
+    76,367,  107,382,
+    CTRL_NUM_MATRIX_LM_BW_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT LM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBW freq  ReadOut
+    //----------------------------
+    76,367,  99,382,
+    CTRL_NUM_MATRIX_LM_BW_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT LM BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBC Section ######################
+    //------------------------
+    39,405,    55,425,
+    CTRL_NUM_MATRIX_LM_BC_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT LM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBC freq  UpDown Scroller
+    //----------------------------
+    5,407,  36,422,
+    CTRL_NUM_MATRIX_LM_BC_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT LM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBC freq  ReadOut
+    //----------------------------
+    5,407,  28,422,
+    CTRL_NUM_MATRIX_LM_BC_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT LM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBC Section ######################
+    //------------------------
+    57,405,    73,425,
+    CTRL_NUM_MATRIX_LM_BC_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT LM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBC freq  UpDown Scroller
+    //----------------------------
+    76,408,  107,423,
+    CTRL_NUM_MATRIX_LM_BC_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT LM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBC freq  ReadOut
+    //----------------------------
+    76,408,  99,423,
+    CTRL_NUM_MATRIX_LM_BC_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT LM BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The EQ Low Section ######################
+    //------------------------
+    39,470,    55,490,
+    CTRL_NUM_MATRIX_LO_FREQ_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT LO FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low UpDown Scroller
+    //----------------------------
+    5,472,  36,487,
+    CTRL_NUM_MATRIX_LO_FREQ_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT LO FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low ReadOut
+    //----------------------------
+    5,472,  27,487,
+    CTRL_NUM_MATRIX_LO_FREQ_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT LO FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ Low Section ######################
+    //------------------------
+    57,470,    73,490,
+    CTRL_NUM_MATRIX_LO_FREQ_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT LO FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low UpDown Scroller
+    //----------------------------
+    76,472,  107,487,
+    CTRL_NUM_MATRIX_LO_FREQ_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT LO FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low ReadOut
+    //----------------------------
+    76,472,  99,487,
+    CTRL_NUM_MATRIX_LO_FREQ_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT LO FREQ\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The EQ LFBW Section ######################
+    //------------------------
+    39,509,    55,529,
+    CTRL_NUM_MATRIX_LF_BW_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT LF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBW freq  UpdownScroller
+    //----------------------------
+    5,512,  36,527,
+    CTRL_NUM_MATRIX_LF_BW_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT LF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBW freq  ReadOut
+    //----------------------------
+    5,512,  29,527,
+    CTRL_NUM_MATRIX_LF_BW_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT LF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBW Section ######################
+    //------------------------
+    57,509,    73,529,
+    CTRL_NUM_MATRIX_LF_BW_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT LF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBW freq  UpdownScroller
+    //----------------------------
+    76,512,  107,527,
+    CTRL_NUM_MATRIX_LF_BW_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT LF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBW freq  ReadOut
+    //----------------------------
+    76,512,  100,527,
+    CTRL_NUM_MATRIX_LF_BW_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT LF BW\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The EQ LFBC Section ######################
+    //------------------------
+    39,550,    55,570,
+    CTRL_NUM_MATRIX_LF_BC_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT LF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBC freq  UpDownScroller
+    //----------------------------
+    5,552,  36,567,
+    CTRL_NUM_MATRIX_LF_BC_LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT LF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBC freq  ReadOut
+    //----------------------------
+    5,552,  28,567,
+    CTRL_NUM_MATRIX_LF_BC_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT LF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBC Section ######################
+    //------------------------
+    57,550,    73,570,
+    CTRL_NUM_MATRIX_LF_BC_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT LF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBC freq  UpDownScroller
+    //----------------------------
+    76,553,  107,568,
+    CTRL_NUM_MATRIX_LF_BC_RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT LF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBC freq  ReadOut
+    //----------------------------
+    76,553,  99,568,
+    CTRL_NUM_MATRIX_LF_BC_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT LF BC\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The EQ LFBC freq  Inout	  
+    //----------------------------
+    4,591,  30,605,
+    CTRL_NUM_MATRIX_LF_PK_SHELF_LT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"MATRIX LF PEAK-SHELF\0     ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_EQ_LO_SHELF, 0x0000,
+
+    // The EQ LFBC freq  Inout
+    //----------------------------
+    83,591,  108,605,
+    CTRL_NUM_MATRIX_LF_PK_SHELF_RT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"MATRIX RT LF PEAK-SHELF\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_EQ_LO_SHELF, 0x0000,
+
+	// The Matrix EQ Inout LT	  
+    //-----------------------
+    6,711,  36,725,
+    CTRL_NUM_MATRIX_LT_INOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"MATRIX LT EQ IN-OUT\0      ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_EQ_IN, 0x0000,
+
+    // The Matrix EQ Inout RT 
+    //-----------------------
+    77,711,  107,725,
+    CTRL_NUM_MATRIX_RT_INOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"MATRIX RT EQ IN-OUT\0      ",  // the control name ....  
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_EQ_IN, 0x0000,
+
+// END OF EQ Section
+
+
+// The SUB VOL LT ReadOut #############################################
+    //----------------------------
+    10,3596,  44,3613,
+    CTRL_NUM_MATRIX_SUB_VOL_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB LT FADER\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The SUB VOL LT Fader
+    26, 3635,    45,3929,
+    CTRL_NUM_MATRIX_SUB_VOL_LT, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"SUB LT FADER\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_MEDKNOB_BLUE, 0x0000, 0x0000,
+
+    // The LT-SUB SUM IN Fader UpDown
+    //----------------------------
+    44,3706,	60,3726,
+    CTRL_NUM_MATRIX_SUB_VOL_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB LT FADER\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+	RDOUT_STRING_TABLE,
+	0x0000, 0x0000, 0x0000,
+
+	// The SUB VOL RT ReadOut #############################################
+    //----------------------------
+    59,3596,  92,3613,
+    CTRL_NUM_MATRIX_SUB_VOL_RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB RT FADER\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The SUB VOL RT Fader
+	//---------------------
+    69, 3635,    88,3929,
+    CTRL_NUM_MATRIX_SUB_VOL_RT, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"SUB RT FADER\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_MEDKNOB_BLUE, 0x0000, 0x0000,
+
+    // The RT-SUB SUM IN Fader UpDown
+    //----------------------------
+    44,3706,	60,3726,
+    CTRL_NUM_MATRIX_SUB_VOL_RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB RT FADER\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB MATRIX LT ReadOut #############################################
+    //----------------------------
+    10,2888,  44,2905,
+    CTRL_NUM_MATRIX_LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT FADER\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The SUB MATRIX LT Fader
+    26, 2926,    45,3218,
+    CTRL_NUM_MATRIX_LT_FADER, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"MATRIX LT FADER\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_MEDKNOB, 0x0000, 0x0000,
+
+    // The SUB MATRIX LT Fader UpDown
+    //----------------------------
+    44,2998,	60,3018,
+    CTRL_NUM_MATRIX_LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT FADER\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB MATRIX RT ReadOut #############################################
+    //----------------------------
+    59,2888,  92,2905,
+    CTRL_NUM_MATRIX_RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT FADER\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The SUB VOL RT Fader
+	//---------------------
+    69, 2926,    88,3218,
+    CTRL_NUM_MATRIX_RT_FADER, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"MATRIX RT FADER\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_MEDKNOB, 0x0000, 0x0000,
+
+    // The SUB MATRIX RT Fader UpDown
+    //----------------------------
+    44,2998,	60,3018,
+    CTRL_NUM_MATRIX_RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT FADER\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+
+/////////////////////////////////////////////////////////////
+// Beggining of AUX SECTION
+
+// The AUX 16 LT Section ######################
+    //------------------------
+    39,789,    55,809, 
+    CTRL_NUM_MATRIX_AUX16LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 16 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 16 LT  UpDownScroller
+    //----------------------------
+    5,792, 34,807,
+    CTRL_NUM_MATRIX_AUX16LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 16 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 16 LT ReadOut 
+    //----------------------------
+    5,792, 26,807,
+    CTRL_NUM_MATRIX_AUX16LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 16 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 16 RT Section ######################
+    //------------------------
+    57,789,    73,809,
+    CTRL_NUM_MATRIX_AUX16RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 16 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 16 RT  UpDownScroller
+    //----------------------------
+    78,792, 107,807,
+    CTRL_NUM_MATRIX_AUX16RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 16 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 16 RT ReadOut 
+    //----------------------------
+    78,792, 99,807,
+    CTRL_NUM_MATRIX_AUX16RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 16 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 15 LT Section ######################
+    //------------------------
+    39,855,    55,875,
+    CTRL_NUM_MATRIX_AUX15LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 15 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 15 LT  UpDownScroller
+    //----------------------------
+    5,858, 34,873,
+    CTRL_NUM_MATRIX_AUX15LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 15 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 15 LT ReadOut 
+    //----------------------------
+    5,858, 26,873,
+    CTRL_NUM_MATRIX_AUX15LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 15 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 15 RT Section ######################
+    //------------------------
+    57, 855,    73,875,
+    CTRL_NUM_MATRIX_AUX15RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 15 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 15 RT  UpDownScroller
+    //----------------------------
+    78,858, 107,873,
+    CTRL_NUM_MATRIX_AUX15RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 15 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 15 RT ReadOut 
+    //----------------------------
+    78,858, 99,873,
+    CTRL_NUM_MATRIX_AUX15RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 15 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 14 LT Section ######################
+    //------------------------
+    39,921,    55,941,
+    CTRL_NUM_MATRIX_AUX14LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 14 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 14 LT  UpDownScroller
+    //----------------------------
+    5,924, 34,939,
+    CTRL_NUM_MATRIX_AUX14LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 14 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 14 LT ReadOut 
+    //----------------------------
+    5,924, 26,939,
+    CTRL_NUM_MATRIX_AUX14LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 14 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 14 RT Section ######################
+    //------------------------
+    57,921,    73,941,
+    CTRL_NUM_MATRIX_AUX14RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 14 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 14 RT  UpDownScroller
+    //----------------------------
+    78,924, 107,939,
+    CTRL_NUM_MATRIX_AUX14RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 14 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 14 RT ReadOut 
+    //----------------------------
+    78,924, 99,939,
+    CTRL_NUM_MATRIX_AUX14RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 14 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 13 LT Section ######################
+    //------------------------
+    39,987,    55,1007,
+    CTRL_NUM_MATRIX_AUX13LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 13 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 13 LT  UpDownScroller
+    //----------------------------
+    5,990, 34,1005,
+    CTRL_NUM_MATRIX_AUX13LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 13 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 13 LT ReadOut 
+    //----------------------------
+    5,990, 26,1005,
+    CTRL_NUM_MATRIX_AUX13LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 13 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 13 RT Section ######################
+    //------------------------
+    57,987,    73,1007,
+    CTRL_NUM_MATRIX_AUX13RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 13 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 13 RT  UpDownScroller
+    //----------------------------
+    78,990, 107,1005,
+    CTRL_NUM_MATRIX_AUX13RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 13 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 13 RT ReadOut 
+    //----------------------------
+    78,990, 99,1005,
+    CTRL_NUM_MATRIX_AUX13RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 13 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 12 LT Section ######################
+    //------------------------
+    39,1072,    55,1092,
+    CTRL_NUM_MATRIX_AUX12LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 12 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 12 LT  UpDownScroller
+    //----------------------------
+    5,1075, 34,1090,
+    CTRL_NUM_MATRIX_AUX12LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 12 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 12 LT ReadOut 
+    //----------------------------
+    5,1075, 26,1090,
+    CTRL_NUM_MATRIX_AUX12LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 12 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 12 RT Section ######################
+    //------------------------
+    57,1072,    73,1092,
+    CTRL_NUM_MATRIX_AUX12RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 12 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 12 RT  UpDownScroller
+    //----------------------------
+    78,1075, 107,1090,
+    CTRL_NUM_MATRIX_AUX12RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 12 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 12 RT ReadOut 
+    //----------------------------
+    78,1075, 99,1090,
+    CTRL_NUM_MATRIX_AUX12RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 12 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 11 LT Section ######################
+    //------------------------
+    39,1138,    55,1158,
+    CTRL_NUM_MATRIX_AUX11LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 11 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 11 LT  UpDownScroller
+    //----------------------------
+    5,1141, 34,1156,
+    CTRL_NUM_MATRIX_AUX11LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 11 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 11 LT ReadOut 
+    //----------------------------
+    5,1141, 26,1156,
+    CTRL_NUM_MATRIX_AUX11LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 11 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 11 RT Section ######################
+    //------------------------
+    57,1138,    73,1158,
+    CTRL_NUM_MATRIX_AUX11RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 11 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 11 RT  UpDownScroller
+    //----------------------------
+    78,1141, 107,1156,
+    CTRL_NUM_MATRIX_AUX11RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 11 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 11 RT ReadOut 
+    //----------------------------
+    78,1141, 99,1156,
+    CTRL_NUM_MATRIX_AUX11RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 11 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+	
+
+// The AUX 10 LT Section ######################
+    //------------------------
+    39,1204,    55,1224,
+    CTRL_NUM_MATRIX_AUX10LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 10 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 10 LT  UpDownScroller
+    //----------------------------
+    5,1207, 34,1222,
+    CTRL_NUM_MATRIX_AUX10LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 10 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 10 LT ReadOut 
+    //----------------------------
+    5,1207, 26,1222,
+    CTRL_NUM_MATRIX_AUX10LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 10 LT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 10 RT Section ######################
+    //------------------------
+    57,1204,    73,1224,
+    CTRL_NUM_MATRIX_AUX10RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 10 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 10 RT  UpDownScroller
+    //----------------------------
+    78,1207, 107,1222,
+    CTRL_NUM_MATRIX_AUX10RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 10 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 10 RT ReadOut 
+    //----------------------------
+    78,1207, 99,1222,
+    CTRL_NUM_MATRIX_AUX10RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 10 RT MATRIX\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 9 LT Section ######################
+    //------------------------
+    39,1270,   55,1290,
+    CTRL_NUM_MATRIX_AUX09LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 9 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 9 LT  UpDownScroller
+    //----------------------------
+    5,1273, 34,1288,
+    CTRL_NUM_MATRIX_AUX09LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 9 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 9 LT ReadOut 
+    //----------------------------
+    5,1273, 26,1288,
+    CTRL_NUM_MATRIX_AUX09LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 9 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 9 RT Section ######################
+    //------------------------
+    57,1270,    73,1290,
+    CTRL_NUM_MATRIX_AUX09RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 9 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 9 RT  UpDownScroller
+    //----------------------------
+    77,1273, 107,1288,
+    CTRL_NUM_MATRIX_AUX09RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 9 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 9 RT ReadOut 
+    //----------------------------
+    77,1273, 99,1288,
+    CTRL_NUM_MATRIX_AUX09RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 9 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 8 LT Section ######################
+    //------------------------
+    39,1355,    55,1375,
+    CTRL_NUM_MATRIX_AUX08LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 8 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 8 LT  UpDownScroller
+    //----------------------------
+    5,1358, 34,1373,
+    CTRL_NUM_MATRIX_AUX08LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 8 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 8 LT ReadOut 
+    //----------------------------
+    5,1358, 26,1373,
+    CTRL_NUM_MATRIX_AUX08LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 8 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 8 RT Section ######################
+    //------------------------
+    57,1355,    73,1375,
+    CTRL_NUM_MATRIX_AUX08RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 8 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 8 RT  UpDownScroller
+    //----------------------------
+    78,1358, 107,1373,
+    CTRL_NUM_MATRIX_AUX08RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 8 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 8 RT ReadOut 
+    //----------------------------
+    78,1358, 99,1373,
+    CTRL_NUM_MATRIX_AUX08RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 8 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 7 LT Section ######################
+    //------------------------
+    39,1421,    55,1441,
+    CTRL_NUM_MATRIX_AUX07LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 7 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 7 LT  UpDownScroller
+    //----------------------------
+    5,1424, 34,1439,
+    CTRL_NUM_MATRIX_AUX07LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 7 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 7 LT ReadOut 
+    //----------------------------
+    5,1424, 26,1439,
+    CTRL_NUM_MATRIX_AUX07LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 7 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 7 RT Section ######################
+    //------------------------
+    57,1421,    73,1441,
+    CTRL_NUM_MATRIX_AUX07RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 7 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 7 RT  UpDownScroller
+    //----------------------------
+    78,1424, 107,1439,
+    CTRL_NUM_MATRIX_AUX07RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 7 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 7 RT ReadOut 
+    //----------------------------
+    78,1424, 99,1439,
+    CTRL_NUM_MATRIX_AUX07RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 7 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 6 LT Section ######################
+    //------------------------
+    39,1487,    55,1507,
+    CTRL_NUM_MATRIX_AUX06LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 6 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 6 LT  UpDownScroller
+    //----------------------------
+    5,1490, 34,1505,
+    CTRL_NUM_MATRIX_AUX06LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 6 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 6 LT ReadOut 
+    //----------------------------
+    5,1490, 26,1505,
+    CTRL_NUM_MATRIX_AUX06LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 6 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 6 RT Section ######################
+    //------------------------
+    57,1487,    73,1507,
+    CTRL_NUM_MATRIX_AUX06RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 6 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 6 RT  UpDownScroller
+    //----------------------------
+    78,1490, 107,1505,
+    CTRL_NUM_MATRIX_AUX06RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 6 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 6 RT ReadOut 
+    //----------------------------
+    78,1490, 99,1505,
+    CTRL_NUM_MATRIX_AUX06RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 6 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 5 LT Section ######################
+    //------------------------
+    39,1553,    55,1573,
+    CTRL_NUM_MATRIX_AUX05LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 5 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 5 LT  UpDownScroller
+    //----------------------------
+    5,1556, 34,1571,
+    CTRL_NUM_MATRIX_AUX05LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 5 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 5 LT ReadOut 
+    //----------------------------
+    5,1556, 26,1571,
+    CTRL_NUM_MATRIX_AUX05LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 5 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 5 RT Section ######################
+    //------------------------
+    57,1553,    73,1573,
+    CTRL_NUM_MATRIX_AUX05RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 5 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 5 RT  UpDownScroller
+    //----------------------------
+    78,1556, 107,1571,
+    CTRL_NUM_MATRIX_AUX05RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 5 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 5 RT ReadOut 
+    //----------------------------
+    78,1556, 99,1571,
+    CTRL_NUM_MATRIX_AUX05RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 5 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 4 LT Section ######################
+    //------------------------
+    39,1638,    55,1658,
+    CTRL_NUM_MATRIX_AUX04LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 4 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 4 LT  UpDownScroller
+    //----------------------------
+    5,1641, 34,1656,
+    CTRL_NUM_MATRIX_AUX04LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 4 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 4 LT ReadOut 
+    //----------------------------
+    5,1641, 26,1656,
+    CTRL_NUM_MATRIX_AUX04LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 4 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 4 RT Section ######################
+    //------------------------
+    57,1638,    73,1658,
+    CTRL_NUM_MATRIX_AUX04RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 4 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 4 RT  UpDownScroller
+    //----------------------------
+    78,1641, 107,1656,
+    CTRL_NUM_MATRIX_AUX04RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 4 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 4 RT ReadOut 
+    //----------------------------
+    78,1641, 99,1656,
+    CTRL_NUM_MATRIX_AUX04RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 4 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 3 LT Section ######################
+    //------------------------
+    39,1704,    55,1724,
+    CTRL_NUM_MATRIX_AUX03LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 3 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 3 LT  UpDownScroller
+    //----------------------------
+    5,1707, 34,1722,
+    CTRL_NUM_MATRIX_AUX03LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 3 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 3 LT ReadOut 
+    //----------------------------
+    5,1707, 26,1722,
+    CTRL_NUM_MATRIX_AUX03LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 3 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 3 RT Section ######################
+    //------------------------
+    57,1704,    73,1724,
+    CTRL_NUM_MATRIX_AUX03RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 3 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 3 RT  UpDownScroller
+    //----------------------------
+    78,1707, 107,1722,
+    CTRL_NUM_MATRIX_AUX03RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 3 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 3 RT ReadOut 
+    //----------------------------
+    78,1707, 99,1722,
+    CTRL_NUM_MATRIX_AUX03RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 3 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 2 LT Section ######################
+    //------------------------
+    39,1770,    55,1790,
+    CTRL_NUM_MATRIX_AUX02LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 2 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 2 LT  UpDownScroller
+    //----------------------------
+    5,1773, 34,1788,
+    CTRL_NUM_MATRIX_AUX02LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 2 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 2 LT ReadOut 
+    //----------------------------
+    5,1773, 26,1788,
+    CTRL_NUM_MATRIX_AUX02LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 2 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+	
+	
+// The AUX 2 RT Section ######################
+    //------------------------
+    57,1770,    73,1790,
+    CTRL_NUM_MATRIX_AUX02RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 2 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 2 RT  UpDownScroller
+    //----------------------------
+    78,1773, 107,1788,
+    CTRL_NUM_MATRIX_AUX02RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 2 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 2 RT ReadOut 
+    //----------------------------
+    78,1773, 99,1788,
+    CTRL_NUM_MATRIX_AUX02RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 2 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 1 LT Section ######################
+    //------------------------
+    39,1836,    55,1856,
+    CTRL_NUM_MATRIX_AUX01LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 1 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 1 LT  UpDownScroller
+    //----------------------------
+    5,1839, 34,1854,
+    CTRL_NUM_MATRIX_AUX01LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 1 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 1 LT ReadOut 
+    //----------------------------
+    5,1839, 26,1854,
+    CTRL_NUM_MATRIX_AUX01LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 1 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The AUX 1 RT Section ######################
+    //------------------------
+    57,1836,    73,1856,
+    CTRL_NUM_MATRIX_AUX01RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX 1 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 1 RT  UpDownScroller
+    //----------------------------
+    78,1839, 107,1854,
+    CTRL_NUM_MATRIX_AUX01RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX 1 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 1 RT ReadOut   
+    //----------------------------
+    78,1839, 99,1854,
+    CTRL_NUM_MATRIX_AUX01RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX 1 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+/////////////////////////////////////////////////////////////
+// Beggining of SUB SECTION
+/////////////////////////////////////////////////////////////////////////
+// This SECTION for DAVE
+
+
+
+// The SUB 8 LT Section ######################
+    //------------------------
+    39,1921,    55,1941,
+    CTRL_NUM_MATRIX_SUB08LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 8 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 8 LT  UpDownScroller
+    //----------------------------
+    5,1924, 34,1939,
+    CTRL_NUM_MATRIX_SUB08LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 8 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 8 LT ReadOut 
+    //----------------------------
+    5,1924, 26,1939,
+    CTRL_NUM_MATRIX_SUB08LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 8 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 8 RT Section ######################
+    //------------------------
+    57,1921,    73,1941,
+    CTRL_NUM_MATRIX_SUB08RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 8 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 8 RT  UpDownScroller
+    //----------------------------
+    78,1924, 107,1939,
+    CTRL_NUM_MATRIX_SUB08RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 8 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 8 RT ReadOut 
+    //----------------------------
+    78,1924, 99,1939,
+    CTRL_NUM_MATRIX_SUB08RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 8 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 7 LT Section ######################
+    //------------------------
+    39,1987,    55,2007,
+    CTRL_NUM_MATRIX_SUB07LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 7 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 7 LT  UpDownScroller
+    //----------------------------
+    5,1990, 34,2005,
+    CTRL_NUM_MATRIX_SUB07LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 7 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 7 LT ReadOut 
+    //----------------------------
+    5,1990, 26,2005,
+    CTRL_NUM_MATRIX_SUB07LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 7 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 7 RT Section ######################
+    //------------------------
+    57,1987,    73,2007,
+    CTRL_NUM_MATRIX_SUB07RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 7 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 7 RT  UpDownScroller
+    //----------------------------
+    78,1990, 107,2005,
+    CTRL_NUM_MATRIX_SUB07RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 7 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 7 RT ReadOut 
+    //----------------------------
+    78,1990, 99,2005,
+    CTRL_NUM_MATRIX_SUB07RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 7 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 6 LT Section ######################
+    //------------------------
+    39,2053,    55,2073,
+    CTRL_NUM_MATRIX_SUB06LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 6 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 6 LT  UpDownScroller
+    //----------------------------
+    5,2056, 34,2071,
+    CTRL_NUM_MATRIX_SUB06LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 6 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 6 LT ReadOut 
+    //----------------------------
+    5,2056, 26,2071,
+    CTRL_NUM_MATRIX_SUB06LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 6 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 6 RT Section ######################
+    //------------------------
+    57,2053,    73,2073,
+    CTRL_NUM_MATRIX_SUB06RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 6 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 6 RT  UpDownScroller
+    //----------------------------
+    78,2056, 107,2071,
+    CTRL_NUM_MATRIX_SUB06RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 6 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 6 RT ReadOut 
+    //----------------------------
+    78,2056, 99,2071,
+    CTRL_NUM_MATRIX_SUB06RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 6 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 5 LT Section ######################
+    //------------------------
+    39,2119,    55,2139,
+    CTRL_NUM_MATRIX_SUB05LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 5 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 5 LT  UpDownScroller
+    //----------------------------
+    5,2122, 34,2137,
+    CTRL_NUM_MATRIX_SUB05LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 5 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 5 LT ReadOut 
+    //----------------------------
+    5,2122, 26,2137,
+    CTRL_NUM_MATRIX_SUB05LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 5 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 5 RT Section ######################
+    //------------------------
+    57,2119,    73,2139,
+    CTRL_NUM_MATRIX_SUB05RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 5 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 5 RT  UpDownScroller
+    //----------------------------
+    78,2122, 107,2137,
+    CTRL_NUM_MATRIX_SUB05RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 5 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 5 RT ReadOut 
+    //----------------------------
+    78,2122, 99,2137,
+    CTRL_NUM_MATRIX_SUB05RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 5 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 4 LT Section ######################
+    //------------------------
+    39,2204,    55,2224,
+    CTRL_NUM_MATRIX_SUB04LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 4 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 4 LT  UpDownScroller
+    //----------------------------
+    5,2207, 34,2222,
+    CTRL_NUM_MATRIX_SUB04LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 4 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 4 LT ReadOut 
+    //----------------------------
+    5,2207, 26,2222,
+    CTRL_NUM_MATRIX_SUB04LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 4 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 4 RT Section ######################
+    //------------------------
+    57,2204,    73,2224,
+    CTRL_NUM_MATRIX_SUB04RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 4 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 4 RT  UpDownScroller
+    //----------------------------
+    78,2207, 107,2222,
+    CTRL_NUM_MATRIX_SUB04RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 4 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 4 RT ReadOut 
+    //----------------------------
+    78,2207, 99,2222,
+    CTRL_NUM_MATRIX_SUB04RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 4 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 3 LT Section ######################
+    //------------------------
+    39,2270,    55,2290,
+    CTRL_NUM_MATRIX_SUB03LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 3 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 3 LT  UpDownScroller
+    //----------------------------
+    5,2273, 34,2288,
+    CTRL_NUM_MATRIX_SUB03LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 3 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 3 LT ReadOut 
+    //----------------------------
+    5,2273, 26,2288,
+    CTRL_NUM_MATRIX_SUB03LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 3 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 3 RT Section ######################
+    //------------------------
+    57,2270,    73,2290,
+    CTRL_NUM_MATRIX_SUB03RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 3 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 3 RT  UpDownScroller
+    //----------------------------
+    78,2273, 107,2288,
+    CTRL_NUM_MATRIX_SUB03RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 3 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 3 RT ReadOut 
+    //----------------------------
+    78,2273, 99,2288,
+    CTRL_NUM_MATRIX_SUB03RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 3 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 2 LT Section ######################
+    //------------------------
+    39,2336,    55,2356,
+    CTRL_NUM_MATRIX_SUB02LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 2 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 2 LT  UpDownScroller
+    //----------------------------
+    5,2339, 34,2354,
+    CTRL_NUM_MATRIX_SUB02LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 2 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 2 LT ReadOut 
+    //----------------------------
+    5,2339, 26,2354,
+    CTRL_NUM_MATRIX_SUB02LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 2 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+	
+	
+// The SUB 2 RT Section ######################
+    //------------------------
+    57,2336,    73,2356,
+    CTRL_NUM_MATRIX_SUB02RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 2 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 2 RT  UpDownScroller
+    //----------------------------
+    78,2339, 107,2354,
+    CTRL_NUM_MATRIX_SUB02RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 2 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 2 RT ReadOut 
+    //----------------------------
+    78,2339, 99,2354,
+    CTRL_NUM_MATRIX_SUB02RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 2 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 1 LT Section ######################
+    //------------------------
+    39,2402,    55,2422,
+    CTRL_NUM_MATRIX_SUB01LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 1 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 1 LT  UpDownScroller
+    //----------------------------
+    5,2405, 34,2420,
+    CTRL_NUM_MATRIX_SUB01LT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 1 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 1 LT ReadOut 
+    //----------------------------
+    5,2405, 26,2420,
+    CTRL_NUM_MATRIX_SUB01LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 1 LT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The SUB 1 RT Section ######################
+    //------------------------
+    57,2402,    73,2422,
+    CTRL_NUM_MATRIX_SUB01RT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB 1 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 1 RT  UpDownScroller
+    //----------------------------
+    78,2405, 107,2420,
+    CTRL_NUM_MATRIX_SUB01RT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB 1 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB 1 RT ReadOut  
+    //----------------------------
+    78,2405, 99,2420,
+    CTRL_NUM_MATRIX_SUB01RT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB 1 RT MATRIX\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+/////////////////////////////////////////////////////////////////////////
+// The MASTER PRE LT Section ######################
+    //------------------------
+    39,2469,    55,2489,
+    CTRL_NUM_MATRIX_MASTER_PRELT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MASTER LT PRE MATRIX\0     ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MASTER PRE LT  UpDownScroller
+    //----------------------------
+    5,2472, 34,2487,
+    CTRL_NUM_MATRIX_MASTER_PRELT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MASTER LT PRE MATRIX\0     ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MASTER PRE LT ReadOut 
+    //----------------------------
+    5,2472, 26,2487,
+    CTRL_NUM_MATRIX_MASTER_PRELT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MASTER LT PRE MATRIX\0     ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// The MASTER PRE RT Section ######################
+    //------------------------
+    57,2469,    73,2489,
+    CTRL_NUM_MATRIX_MASTER_PRERT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MASTER RT PRE MATRIX\0     ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MASTER PRE RT  UpDownScroller
+    //----------------------------
+    78,2472, 107,2487,
+    CTRL_NUM_MATRIX_MASTER_PRERT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MASTER RT PRE MATRIX\0     ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MASTER PRE RT ReadOut  
+    //----------------------------
+    78,2472, 99,2487,
+    CTRL_NUM_MATRIX_MASTER_PRERT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MASTER RT PRE MATRIX\0     ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+///////////////////////////////////////////////
+// The MONO MATRIX Section ######################
+    //------------------------
+    39,2546,    55,2566,
+    CTRL_NUM_MATRIX_MONO_MATRIX, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MONO MATRIX\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MONO MATRIX  UpDownScroller
+    //----------------------------
+    5,2549, 34,2564,
+    CTRL_NUM_MATRIX_MONO_MATRIX, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MONO MATRIX\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MONO MATRIX ReadOut 
+    //----------------------------
+    5,2549, 26,2564,
+    CTRL_NUM_MATRIX_MONO_MATRIX, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MONO MATRIX\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    ////////////////////////////////////////////////////////
+    // The SUM IN LT Section ######################
+    //------------------------
+    39,2627,    55,2647,
+    CTRL_NUM_MATRIX_SUMINLT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX LT SUM-IN\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUM IN LT  UpDownScroller
+    //----------------------------
+    5,2630, 34,2645,
+    CTRL_NUM_MATRIX_SUMINLT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX LT SUM-IN\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUM IN LT ReadOut 
+    //----------------------------
+    5,2630, 26,2645,
+    CTRL_NUM_MATRIX_SUMINLT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX LT SUM-IN\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUM IN RT Section ######################
+    //------------------------
+    57,2627,    73,2647,
+    CTRL_NUM_MATRIX_SUMINRT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MATRIX RT SUM-IN\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUM IN RT  UpDownScroller
+    //----------------------------
+    78,2630, 107,2645,
+    CTRL_NUM_MATRIX_SUMINRT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MATRIX RT SUM-IN\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUM IN RT ReadOut  
+    //----------------------------
+    78,2630, 99,2645,
+    CTRL_NUM_MATRIX_SUMINRT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MATRIX RT SUM-IN\0         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+/////////////////////////////////////////////////////////
+// The CENTER MATRIX Section ######################
+    //------------------------
+    39,2586,    55,2606,
+    CTRL_NUM_MATRIX_CENTER_MATRIX, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"CENTER MATRIX\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MASTER PRE LT  UpDownScroller
+    //----------------------------
+    5,2589, 34,2604,
+    CTRL_NUM_MATRIX_CENTER_MATRIX, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"CENTER MATRIX\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MASTER PRE LT ReadOut 
+    //----------------------------
+    5,2589, 26,2604,
+    CTRL_NUM_MATRIX_CENTER_MATRIX, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"CENTER MATRIX\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+///////////////////////////////////////////////////
+// The LT-SUB SUM IN Section ######################
+    //------------------------
+    10, 3282, 26,3302,
+    CTRL_NUM_MATRIX_SUB_LT_SUM_IN, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB LT SUM-IN\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The LT-SUB SUM IN Updown Scroller
+    //-----------------------
+    22,3244, 51,3259,
+    CTRL_NUM_MATRIX_SUB_LT_SUM_IN, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB LT SUM-IN\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The LT-SUB SUM IN ReadOut
+    //-----------------------
+    22,3244, 43,3259,
+    CTRL_NUM_MATRIX_SUB_LT_SUM_IN, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB LT SUM-IN\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+	// LT-SUB SUM IN Fader
+	//------------
+    29,3264,    46,3353,
+    CTRL_NUM_MATRIX_SUB_LT_SUM_IN, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"SUB LT SUM-IN\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_SMALLKNOB, 0x0000, 0x0000,
+
+
+// The RT-SUB SUM IN Section ######################
+    //------------------------
+    86, 3282, 102,3302,
+    CTRL_NUM_MATRIX_SUB_RT_SUM_IN, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"SUB RT SUM-IN\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The RT-SUB SUM IN Updown Scroller
+    //-----------------------
+    62,3244, 91,3259,
+    CTRL_NUM_MATRIX_SUB_RT_SUM_IN, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"SUB RT SUM-IN\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The RT-SUB SUM IN ReadOut
+    //-----------------------
+    62,3244, 83,3259,
+    CTRL_NUM_MATRIX_SUB_RT_SUM_IN, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"SUB RT SUM-IN\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+	// RT-SUB SUM IN Fader
+	//------------
+    70,3264,    86,3353,
+    CTRL_NUM_MATRIX_SUB_RT_SUM_IN, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"SUB RT SUM-IN\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_SMALLKNOB, 0x0000, 0x0000,
+
+    //------------------
+	5, 3344,   23, 3353,
+    CTRL_NUM_SUB_SUMIN_LT_MUTE, CTRL_SUB_SUMIN_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_TINNY_REDBTN, 0x0000,
+	
+    //------------------
+	89, 3344,   107, 3353,
+    CTRL_NUM_SUB_SUMIN_RT_MUTE, CTRL_SUB_SUMIN_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_TINNY_REDBTN, 0x0000,
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+//Matrix Module aux Mutes
+//////////////////////////////////////////////////////////////////////////////
+
+///// Matrix Mute Button  -aux16LT########################		
+    //------------------
+	32, 765,   52, 782,
+    CTRL_NUM_MATRIX_AUX16LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux16RT########################		
+    //------------------
+	59, 765,   79, 782,
+    CTRL_NUM_MATRIX_AUX16RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux15LT########################		
+    //------------------
+	32, 831,   52, 848,
+    CTRL_NUM_MATRIX_AUX15LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux15RT########################		
+    //------------------
+	59, 831,   79, 848,
+    CTRL_NUM_MATRIX_AUX15RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux14LT########################		
+    //------------------
+	32, 897,   52, 914,
+    CTRL_NUM_MATRIX_AUX14LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux14RT########################		
+    //------------------
+	59, 897,   79, 914,
+    CTRL_NUM_MATRIX_AUX14RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux13LT########################		
+    //------------------
+	32, 963,   52, 980,
+    CTRL_NUM_MATRIX_AUX13LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux13RT########################		
+    //------------------
+	59, 963,   79, 980,
+    CTRL_NUM_MATRIX_AUX13RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux12LT########################		
+    //------------------
+	32, 1048,   52, 1065,
+    CTRL_NUM_MATRIX_AUX12LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux12RT########################		
+    //------------------
+	59, 1048,   79, 1065,
+    CTRL_NUM_MATRIX_AUX12RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux11LT########################		
+    //------------------
+	32, 1114,   52, 1131,
+    CTRL_NUM_MATRIX_AUX11LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux11RT########################		
+    //------------------
+	59, 1114,   79, 1131,
+    CTRL_NUM_MATRIX_AUX11RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux10LT########################		
+    //------------------
+	32, 1180,   52, 1197,
+    CTRL_NUM_MATRIX_AUX10LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux10RT########################		
+    //------------------
+	59, 1180,   79, 1197,
+    CTRL_NUM_MATRIX_AUX10RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux09LT########################		
+    //------------------
+	32, 1246,   52, 1263,
+    CTRL_NUM_MATRIX_AUX09LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux09RT########################		
+    //------------------
+	59, 1246,   79, 1263,
+    CTRL_NUM_MATRIX_AUX09RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux08LT########################		
+    //------------------
+	32, 1331,   52, 1348,
+    CTRL_NUM_MATRIX_AUX08LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux08RT########################		
+    //------------------
+	59, 1331,   79, 1348,
+    CTRL_NUM_MATRIX_AUX08RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux07LT########################		
+    //------------------
+	32, 1397,   52, 1414,
+    CTRL_NUM_MATRIX_AUX07LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux07RT########################		
+    //------------------
+	59, 1397,   79, 1414,
+    CTRL_NUM_MATRIX_AUX07RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux06LT########################		
+    //------------------
+	32, 1463,   52, 1480,
+    CTRL_NUM_MATRIX_AUX06LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux06RT########################		
+    //------------------
+	59, 1463,   79, 1480,
+    CTRL_NUM_MATRIX_AUX06RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux05LT########################		
+    //------------------
+	32, 1529,   52, 1546,
+    CTRL_NUM_MATRIX_AUX05LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux05RT########################		
+    //------------------
+	59, 1529,   79, 1546,
+    CTRL_NUM_MATRIX_AUX05RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux04LT########################		
+    //------------------
+	32, 1614,   52, 1631,
+    CTRL_NUM_MATRIX_AUX04LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000, 
+
+	// Matrix Mute Button  -aux04RT########################		
+    //------------------
+	59, 1614,   79, 1631,
+    CTRL_NUM_MATRIX_AUX04RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux03LT########################		
+    //------------------
+	32, 1680,   52, 1697,
+    CTRL_NUM_MATRIX_AUX03LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux03RT########################		
+    //------------------
+	59, 1680,   79, 1697,
+    CTRL_NUM_MATRIX_AUX03RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux02LT########################		
+    //------------------
+	32, 1746,   52, 1763,
+    CTRL_NUM_MATRIX_AUX02LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux02RT########################		
+    //------------------
+	59, 1746,   79, 1763,
+    CTRL_NUM_MATRIX_AUX02RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux01LT########################		
+    //------------------
+	32, 1812,   52, 1829,
+    CTRL_NUM_MATRIX_AUX01LT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -aux01RT########################		
+    //------------------
+	59, 1812,   79, 1829,
+    CTRL_NUM_MATRIX_AUX01RT_MUTE, CTRL_MATRIX_AUX_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+//////////////////////////////////////////////////////////////////////////////
+// Matrix Module Sub Mutes
+//////////////////////////////////////////////////////////////////////////////
+
+	// Matrix Mute Button  -sub08LT########################		
+    //------------------
+	32, 1897,   52, 1914,
+    CTRL_NUM_MATRIX_SUB08LT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -sub08RT########################		
+    //------------------
+	59, 1897,   79, 1914,
+    CTRL_NUM_MATRIX_SUB08RT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB07LT########################		
+    //------------------
+	32, 1963,   52, 1980,
+    CTRL_NUM_MATRIX_SUB07LT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB07RT########################		
+    //------------------
+	59, 1963,   79, 1980,
+    CTRL_NUM_MATRIX_SUB07RT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB06LT########################		
+    //------------------
+	32, 2029,   52, 2047,
+    CTRL_NUM_MATRIX_SUB06LT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB06RT########################		
+    //------------------
+	59, 2029,   79, 2047,
+    CTRL_NUM_MATRIX_SUB06RT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB05LT########################		
+    //------------------
+	32, 2095,   52, 2112,
+    CTRL_NUM_MATRIX_SUB05LT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB05RT########################		
+    //------------------
+	59, 2095,   79, 2112,
+    CTRL_NUM_MATRIX_SUB05RT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB04LT########################		
+    //------------------
+	32, 2180,   52, 2197,
+    CTRL_NUM_MATRIX_SUB04LT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB04RT########################		
+    //------------------
+	59, 2180,   79, 2197,
+    CTRL_NUM_MATRIX_SUB04RT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB03LT########################		
+    //------------------
+	32, 2246,   52, 2263,
+    CTRL_NUM_MATRIX_SUB03LT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB03RT########################		
+    //------------------
+	59, 2246,   79, 2263,
+    CTRL_NUM_MATRIX_SUB03RT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB02LT########################		
+    //------------------
+	32, 2312,   52, 2329,
+    CTRL_NUM_MATRIX_SUB02LT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB02RT########################		
+    //------------------
+	59, 2312,   79, 2329,
+    CTRL_NUM_MATRIX_SUB02RT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB01LT########################		
+    //------------------
+	32, 2378,   52, 2395,
+    CTRL_NUM_MATRIX_SUB01LT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -SUB01RT########################		
+    //------------------
+	59, 2378,   79, 2395,
+    CTRL_NUM_MATRIX_SUB01RT_MUTE, CTRL_MATRIX_SUB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+
+
+
+////// Matrix Mute Button  -MASTERLT########################		
+    //------------------
+	32, 2445,   52, 2462,
+    CTRL_NUM_MATRIX_MASTERLT_MUTE, CTRL_MATRIX_MASTER_LT_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -MASTERRT########################		
+    //------------------
+	59, 2445,   79, 2462,
+    CTRL_NUM_MATRIX_MASTERRT_MUTE, CTRL_MATRIX_MASTER_RT_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_AUX_AUX_MUTE, 0x0000,
+
+////// Matrix Pre Button  -MASTERLT########################		
+    //------------------
+	31, 2507,   52, 2518,
+    CTRL_NUM_MATRIX_MASTERLT_PRE, CTRL_TYPE_BTN_AUX_MMATRIX_LT_POST_FILTER, DISP_TYPE_NORMAL,
+	  "MASTER LT PRE MATRIX\0     ",  // the control name ....
+	  "MASTER LT POST MATRIX\0    ",  // the control name ....
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_GREENBTN, 0x0000,
+
+	// Matrix Post Button  -MASTERRT########################		
+    //------------------
+	59, 2507,   80, 2518,
+    CTRL_NUM_MATRIX_MASTERRT_POST, CTRL_TYPE_BTN_AUX_MMATRIX_RT_POST_FILTER, DISP_TYPE_NORMAL,
+	  "MASTER RT PRE MATRIX\0     ",  // the control name ....
+	  "MASTER RT POST MATRIX\0    ",  // the control name ....
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_GREENBTN, 0x0000,
+
+	// Matrix Mute Button  -MONO MUTE########################		
+    //------------------
+	59, 2562,   79, 2575,
+    CTRL_NUM_MATRIX_MONO_MUTE, CTRL_MATRIX_MONO_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_MATRIX_MUTE_CENTER, 0x0000,
+
+	// Matrix Mute Button  -CENTER MUTE########################		
+    //------------------
+	59, 2602,   79, 2615,
+    CTRL_NUM_MATRIX_CENTER_MUTE, CTRL_MATRIX_CENTER_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_MATRIX_MUTE_CENTER, 0x0000,
+
+    //Matrix Insert LT######################################		
+    //------------------
+	19, 2670,   51, 2691,
+    CTRL_NUM_MATRIXLT_INSERT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "MATRIX LT INSERT IN-OUT\0  ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SUBINSERT, 0x0000,
+
+    //Matrix Insert RT######################################		
+    //------------------
+	59, 2670,   91, 2691,
+    CTRL_NUM_MATRIXRT_INSERT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "MATRIX RT INSERT IN-OUT\0  ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SUBINSERT, 0x0000,
+
+	//Matrix Cue Pre######################################		
+    //------------------
+	25, 2765,   51, 2793,
+    CTRL_NUM_MATRIX_CUE_PRE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "MATRIX CUE A PRE\0         ",  // the control name ....
+	  "MATRIX CUE B PRE\0         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_CUEA_PRE, 0x0000,
+
+    //Matrix Cue Post######################################		
+    //------------------
+	58, 2765,   84, 2793,
+    CTRL_NUM_MATRIX_CUE_POST, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "MATRIX CUE A POST\0        ",  // the control name ....
+	  "MATRIX CUE B POST\0        ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_CUEA_POST_PAN, 0x0000,
+
+	// Matrix Mute Button  -MATRIXLT########################		
+    //------------------
+	19, 2714,   51, 2742,
+    CTRL_NUM_MATRIXLT_MUTE, CTRL_MARIXLT_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SUBMATRIX_MUTE, 0x0000,
+
+	// Matrix Mute Button  -MATRIXRT########################		
+    //------------------
+	59, 2714,   91, 2742,
+    CTRL_NUM_MATRIXRT_MUTE, CTRL_MARIXRT_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SUBMATRIX_MUTE, 0x0000,
+
+
+	//Matrix Sub Insert LT######################################		
+    //------------------
+	19, 3378,   51, 3399,
+    CTRL_NUM_MATRIXLT_INSERT_SUB, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "SUB LT INSERT IN-OUT\0     ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SUBINSERT, 0x0000,
+
+    //Matrix Sub Insert RT######################################		
+    //------------------
+	59, 3378,   91, 3399,
+    CTRL_NUM_MATRIXRT_INSERT_SUB, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "SUB RT INSERT IN-OUT\0     ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SUBINSERT, 0x0000,
+
+	//Matrix Sterio Cue Pre######################################		
+    //------------------
+	25, 3473,   51, 3501,
+    CTRL_NUM_MATRIX_STERIO_CUE_PRE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "SUB CUE A PRE\0            ",  // the control name ....
+	  "SUB CUE B PRE\0            ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_CUEA_PRE, 0x0000,
+
+    //Matrix Sterio Cue Post######################################		
+    //------------------
+	58, 3473,   84, 3501,
+    CTRL_NUM_MATRIX_STERIO_CUE_POST, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "SUB CUE A POST\0           ",  // the control name ....
+	  "SUB CUE B POST\0           ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_CUEA_POST_PAN, 0x0000,
+
+	// Matrix Sub Mute Button  -MATRIXLT########################		
+    //------------------
+	19, 3422,   51, 3450,
+    CTRL_NUM_MATRIXLT_MUTE_SUB, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"SUB LT TO MASTER MUTE\0    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SUBMATRIX_MUTE, 0x0000,
+
+	// Matrix Sub Mute Button  -MATRIXRT########################		
+    //------------------
+	59, 3422,   91, 3450,
+    CTRL_NUM_MATRIXRT_MUTE_SUB, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"SUB RT TO MASTER MUTE\0    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SUBMATRIX_MUTE, 0x0000,
+
+
+	// Matrix Mono ####################		
+    //------------------
+	99, 2746,   109, 2755,
+    CTRL_NUM_MATRIX_MONO, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"MATRIX MONO\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_MATRIX_MONO_MUTE_IN, 0x0000,
+
+	// LABEL for this module
+	//-------------------------------------
+    9,3543,  104,3561,
+    CTRL_NUM_AUX_LABEL, CTRL_TYPE_LABEL, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+
+/////////////////////////////////
+/////////////////////////////////
+    // Matrix VU left Post Switch
+	//---------------------------
+    8, 2910,  29, 2921,
+	CTRL_NUM_MATRIX_POST_LT_VU, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_MASTER_VU_POST, 0x0000,
+
+    // Matrix VU right Post Switch
+	//---------------------------
+    84, 2910,  105, 2921,
+	CTRL_NUM_MATRIX_POST_RT_VU, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_MASTER_VU_POST, 0x0000,
+
+
+    // Sub VU left Post Switch
+	//---------------------------
+    8, 3618,  29, 3629,
+	CTRL_NUM_SUB_POST_LT_VU, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_MASTER_VU_POST, 0x0000,
+
+    // Sub VU right Post Switch
+	//---------------------------
+    84, 3618,  105, 3629,
+	CTRL_NUM_SUB_POST_RT_VU, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_MASTER_VU_POST, 0x0000,
+
+	// LABEL for this module
+	//-------------------------------------
+    9, 2835,  104, 2853,
+    CTRL_NUM_MATRIX_LABEL, CTRL_TYPE_LABEL, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+
+/////////////////////////////////
+/////////////////////////////////
+
+	// The EQ Left-Right Selector ...
+	//-------------------------------	
+    25, 625,  103, 630,
+    CTRL_NUM_MATRIX_EQ_LEFTRIGHT_SELECTOR, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, IDB_EQ_RIGHT, 0x0000,
+
+	// The EqDisplay ....... Special stuff
+	//------------------------------------
+    27, 632,  102, 689,
+    CTRL_NUM_AUX_LABEL, CTRL_TYPE_DISP_SUB_EQ_FILTER, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+
+//////////////////////////////////////////////////////////////////////////////
+	// Terminator .....
+    0x0000, 0x0000, 0x0000, 0x0000,
+    CTRL_NUM_NULL, CTRL_TYPE_NULL, DISP_TYPE_NULL,
+	"\0                         ",  // no control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+END

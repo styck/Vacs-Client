@@ -1,0 +1,3465 @@
+// This filw contains the Zonemaps for the
+// Zoom Input module
+//-----------------------------------------
+#include "ctrl.h"
+
+/////////////////////////////////////////////////////////////////
+//
+//
+//
+//
+// Used to read the Control Zone map Resources
+//--------------------------------------------
+//typedef struct CTRLZONEMAPRESOURCEtag
+//    {
+//    SMALL_RECT      rZone;
+//    USHORT          uCtrlType;
+//    USHORT          uDispType;
+//    char            chControlName[25];
+//    char            chControlNameAlt1[25];
+//    USHORT          uRdOutType;
+//    USHORT          iCtrlBmp[3]; // three bitmaps max per control
+//    }CTRLZONEMAPRESOURCE;
+//typedef CTRLZONEMAPRESOURCE  * LPCTRLZONEMAPRESOURCE;
+//
+
+// Zone maps -> for the zoom view
+//-------------------------------
+IDZM_INPUT_ZOOM	ZONEMAP	MOVEABLE IMPURE LOADONCALL DISCARDABLE
+BEGIN
+	//*****************************************
+	// Do not change he order of these controls
+	//  START			!!!!!!!!!!!!!!
+
+    // The VU meter      ######################
+    //-------------------
+    28, 3648,   39, 3910,
+    CTRL_NUM_INPUT_VU_METER, CTRL_TYPE_VU_DISPLAY, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_VU_ON_VERTICAL, 0x0000, 0x0000,
+
+    // The VU meter      ######################
+    //-------------------
+    8, 2217,   104,	2226,	 
+    CTRL_NUM_INPUT_COMP_VU, CTRL_TYPE_VU_DISPLAY4, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_VU_ON_HORIZONTAL, 0x0000, 0x0000,
+
+    // The VU meter      ######################
+    //-------------------
+    8, 2016,   104,	2025,
+    CTRL_NUM_INPUT_GATE_VU, CTRL_TYPE_VU_DISPLAY6, DISP_TYPE_NORMAL,
+    "\0                         ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_VU_ON_HORIZONTAL, 0x0000, 0x0000,
+
+ 
+    // The FADER Section ######################
+    //------------------
+    48, 3630,    86, 3932,
+    CTRL_NUM_INPUT_VOL_FADER, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+    "Input Fader\0              ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_I_VOL_FADER, 0x0000, 0x0000,
+
+
+	//  END          !!!!!!!!!!!!!!
+	// Do not change he order of these controls
+	//*****************************************
+
+    // The FADER Updown duda
+    //------------------
+    85, 3706,    101, 3726
+    CTRL_NUM_INPUT_VOL_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+    "Input Fader\0              ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The FADER ReadOut			  
+    //------------------
+    27, 3596,    92, 3614,
+    CTRL_NUM_INPUT_VOL_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NORMAL,
+	  "Input Fader\0              ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The FADER ReadOut
+    //------------------
+    27, 3596,    92, 3614,
+    CTRL_NUM_INPUT_VOL_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"Input Fader\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // Input Mute Button ########################		
+    //------------------
+    41, 3422,   102, 3449,
+    CTRL_NUM_INPUT_MUTE, CTRL_TYPE_BTN_INPUTMUTE_FILTER, DISP_TYPE_NORMAL,
+	"MUTE THE GATE\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+	//"GATE FEEDTHRU\0            ",  // the control name ....
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_MUTE, 0x0000,
+
+
+
+    // The Pan Section ########################		
+    //----------------
+    10, 3375,    102, 3387,
+    CTRL_NUM_INPUT_PAN, CTRL_TYPE_FADER_HORZ, DISP_TYPE_NORMAL,
+	  "LCR Pan\0                  ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_PAN_INDICATOR, 0x0000, 0x0000,
+
+	// The Sideways Scroller
+	//----------------------
+	24, 3398,		88, 3413,
+    CTRL_NUM_INPUT_PAN, CTRL_TYPE_LEFTRIGHT, DISP_TYPE_NORMAL,
+	"LCR Pan\0                  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The MONO Level Section ######################
+    //------------------------
+    43, 3257,    58, 3275,
+    CTRL_NUM_INPUT_MONO_LEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	  "MONO LEVEL\0               ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MONO Level UpDownScroll
+    //-----------------------
+    8, 3257   29, 3272,
+    CTRL_NUM_INPUT_MONO_LEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	  "MONO LEVEL\0               ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+ 
+    // The MONO Level ReadOut
+    //-----------------------
+    8, 3257   29, 3272,
+    CTRL_NUM_INPUT_MONO_LEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MONO LEVEL\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The CENTER Level Section ######################
+    //------------------------
+    42, 3286,    57, 3306,
+    CTRL_NUM_INPUT_CENTER_LEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	  "CENTER LEVEL\0             ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The CENTER Level UpDownScroll
+    //------------------------------
+    8, 3289,    29, 3303,
+    CTRL_NUM_INPUT_CENTER_LEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	  "CENTER LEVEL\0             ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The CENTER Level ReadOut
+    //-------------------------
+    8, 3289,    29, 3303,
+    CTRL_NUM_INPUT_CENTER_LEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	  "CENTER LEVEL\0             ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The PAN DEPTH Section ######################
+    //------------------------
+    42, 3319,    58, 3337,
+    CTRL_NUM_INPUT_PAN_DEPTH, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"PAN DEPTH\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The PanDepth Level UpDownScroll
+    //----------------------------
+    8, 3321,    29, 3335,
+    CTRL_NUM_INPUT_PAN_DEPTH, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"PAN DEPTH\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The PanDepth Level ReadOut
+    //----------------------------
+    8, 3321,    29, 3335,
+    CTRL_NUM_INPUT_PAN_DEPTH, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"PAN DEPTH\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+    // The Comp Section ######################
+    //------------------------
+    43, 2250,    59, 2270,
+    CTRL_NUM_INPUT_COMP_THLD, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"COMP THLD\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp thld UpdownScroller
+    //----------------------------
+    6, 2253,    38, 2268,
+    CTRL_NUM_INPUT_COMP_THLD, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"COMP THLD\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp thld ReadOut
+    //----------------------------
+    6, 2253,    30, 2268,
+    CTRL_NUM_INPUT_COMP_THLD, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"COMP THLD\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Ratio Section ######################
+    //------------------------
+    43, 2278,    59, 2298,
+    CTRL_NUM_INPUT_COMP_RATIO, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"COMP RATIO\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Ratio UpdownScroller
+    //----------------------------
+    6, 2280,     38, 2295,
+    CTRL_NUM_INPUT_COMP_RATIO, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"COMP RATIO\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Ratio ReadOut
+    //----------------------------
+    6, 2280,     38, 2295,
+    CTRL_NUM_INPUT_COMP_RATIO, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"COMP RATIO\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Attack Section ######################
+    //------------------------
+    43, 2304,    59,2324,
+    CTRL_NUM_INPUT_COMP_ATTACK, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"COMP ATTACK\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Attack UpdownScroller
+    //----------------------------
+    6, 2307,      38, 2322,
+    CTRL_NUM_INPUT_COMP_ATTACK, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"COMP ATTACK\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Attack ReadOut
+    //----------------------------
+    6, 2307,      25, 2322,
+    CTRL_NUM_INPUT_COMP_ATTACK, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"COMP ATTACK\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Release Section ######################
+    //------------------------
+    43, 2332,    59, 2352,
+    CTRL_NUM_INPUT_COMP_RELEASE, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"COMP RELEASE\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Release UpdownScroller
+    //----------------------------
+    6, 2334,      38, 2349,
+    CTRL_NUM_INPUT_COMP_RELEASE, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"COMP RELEASE\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Release ReadOut
+    //----------------------------
+    6, 2334,      25, 2349,
+    CTRL_NUM_INPUT_COMP_RELEASE, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"COMP RELEASE\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Output Level Section ######################
+    //------------------------
+    43, 2358,    59, 2378,
+    CTRL_NUM_INPUT_COMP_OUTPUTLEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"COMP OUTPUT LEVEL\0        "  // the control name ....
+	"\0                         "  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Output Level UpdownScroller
+    //----------------------------
+    6, 2361,      38,2376,
+    CTRL_NUM_INPUT_COMP_OUTPUTLEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"COMP OUTPUT LEVEL\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp Output Level ReadOut
+    //----------------------------
+    6, 2361,      30,2376,
+    CTRL_NUM_INPUT_COMP_OUTPUTLEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"COMP OUTPUT LEVEL\0        ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Comp InOut
+    //----------------------------
+    62, 2387,  92, 2401,
+    CTRL_NUM_INPUT_COMP_INOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"COMP IN-OUT\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_COMP_IN, 0x0000,
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+    // The Gate EQ Freq Section ######################
+    //------------------------
+    43, 1848,    59, 1868,
+    CTRL_NUM_INPUT_GATE_EQ_FRQ, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"GATE EQ FREQ\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate EQ Freq UpdownScroll
+    //----------------------------
+    6, 1850,  38, 1865,
+    CTRL_NUM_INPUT_GATE_EQ_FRQ, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"GATE EQ FREQ\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate EQ Freq ReadOut
+    //----------------------------
+    6, 1850,  29, 1865,
+    CTRL_NUM_INPUT_GATE_EQ_FRQ, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"GATE EQ FREQ\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate EQ BW Section ######################
+    //------------------------
+    43, 1874,     59, 1894,
+    CTRL_NUM_INPUT_GATE_EQ_BW, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"GATE EQ BW\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate EQ BW UpdaownScroller
+    //----------------------------
+    6, 1877,  38, 1892,
+    CTRL_NUM_INPUT_GATE_EQ_BW, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"GATE EQ BW\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate EQ BW ReadOut
+    //----------------------------
+    6, 1877,  30, 1892,
+    CTRL_NUM_INPUT_GATE_EQ_BW, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"GATE EQ BW\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate EQ BC Section ######################
+    //------------------------
+    43, 1902,     59, 1922,
+    CTRL_NUM_INPUT_GATE_EQ_BC, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"GATE EQ BC\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate EQ BC UpDown Scroller
+    //----------------------------
+    6, 1904,  38, 1919,
+    CTRL_NUM_INPUT_GATE_EQ_BC, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"GATE EQ BC\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate EQ BC ReadOut
+    //----------------------------
+    6, 1904,  30, 1919,
+    CTRL_NUM_INPUT_GATE_EQ_BC, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"GATE EQ BC\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Eq InOut
+    //----------------------------
+	62, 1929, 92, 1943, 
+    CTRL_NUM_INPUT_GATE_INOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"GATE EQ IN-OUT\0           ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_GATE_IN, 0x0000,
+
+    // The Gate Key Level Section ######################
+    //------------------------
+    43, 1950,     59, 1970,
+    CTRL_NUM_INPUT_GATE_KEYLEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"GATE KEY LEVEL\0           ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Key Level UpDown Scroller
+    //----------------------------
+    6, 1953,  38, 1968
+    CTRL_NUM_INPUT_GATE_KEYLEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"GATE KEY LEVEL\0           ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Key Level ReadOut
+    //----------------------------
+    6, 1953,  30, 1968
+    CTRL_NUM_INPUT_GATE_KEYLEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"GATE KEY LEVEL\0           ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Key Level Inout
+    //----------------------------
+    57,1978,  78, 1993,
+    CTRL_NUM_INPUT_GATE_KEY_CUE_A, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"GATE KEY IN-OUT\0          ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_KEY_IN, 0x0000,
+
+    // The Gate Ext Key VU InOut #######################
+    //----------------------------
+    31,1978,  52, 1993,
+    CTRL_NUM_INPUT_GATE_KEY_INOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"GATE KEY-CUE A\0           ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_KEY_EXT, 0x0000,
+
+    // The Gate Feed Thru (Depth) Section ######################
+    //------------------------
+    43, 2049,     59,2069,
+    CTRL_NUM_INPUT_GATE_FEED_THRU, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"GATE FEEDTHRU\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Feed Thru (Depth) UpDown Scroller
+    //----------------------------
+    6,2052,  38,2067,
+    CTRL_NUM_INPUT_GATE_FEED_THRU, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"GATE FEEDTHRU\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Feed Thru ReadOut
+    //----------------------------
+    6,2052,  30,2067,
+    CTRL_NUM_INPUT_GATE_FEED_THRU, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"GATE FEEDTHRU\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Feed Thld Section ######################
+    //------------------------
+    43, 2077,     59, 2097,
+    CTRL_NUM_INPUT_GATE_THLD, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"GATE THLD\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Feed Thld UpDown Scroller
+    //----------------------------
+    6,2079,    38, 2094,
+    CTRL_NUM_INPUT_GATE_THLD, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"GATE THLD\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Feed Thld ReadOut
+    //----------------------------
+    6,2079,    30, 2094,
+    CTRL_NUM_INPUT_GATE_THLD, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"GATE THLD\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Attack Section ######################
+    //------------------------
+    43, 2103,     59, 2123,
+    CTRL_NUM_INPUT_GATE_ATTACK, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"GATE ATTACK\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Attack UpDown Scroller
+    //----------------------------
+    6, 2106,    38, 2121,
+    CTRL_NUM_INPUT_GATE_ATTACK, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"GATE ATTACK\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Attack ReadOut
+    //----------------------------
+    6, 2106,    25, 2121,
+    CTRL_NUM_INPUT_GATE_ATTACK, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"GATE ATTACK\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Release Section ######################
+    //------------------------
+    43, 2131,     59, 2151,
+    CTRL_NUM_INPUT_GATE_RELEASE, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"GATE RELEASE\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Attack UpDown Scroler
+    //----------------------------
+    6, 2133,    38, 2148,
+    CTRL_NUM_INPUT_GATE_RELEASE, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"GATE RELEASE\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Attack ReadOut
+    //----------------------------
+    6, 2133,    25, 2148,
+    CTRL_NUM_INPUT_GATE_RELEASE, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"GATE RELEASE\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Gate Key Level Inout
+    //----------------------------
+    62, 2159,  92, 2173,
+    CTRL_NUM_INPUT_GATE_FEEDTHRUINOUT, CTRL_TYPE_INPUT_GATE_IN_BTN_FILTER, DISP_TYPE_NORMAL,
+	"GATE FEEDTHRU INOUT\0      ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_GATE_IN, 0x0000,
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+    // The EQ High Section ######################
+    //------------------------
+    43,1307,    59,1326,
+    CTRL_NUM_INPUT_HIGHFREQ, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"HIGH FREQ\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High UpDown Scroller
+    //----------------------------
+    6,1308,  38, 1323,
+    CTRL_NUM_INPUT_HIGHFREQ, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"HIGH FREQ\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High ReadOut
+    //----------------------------
+    6, 1308,  29, 1323,
+    CTRL_NUM_INPUT_HIGHFREQ, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"HIGH FREQ\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBW Section ######################
+    //------------------------
+    43,1332,    59,1352
+    CTRL_NUM_INPUT_HF_BW, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"HF BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBW freq  UpDown Scroller
+    //----------------------------
+    6, 1335,  38, 1350,
+    CTRL_NUM_INPUT_HF_BW, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"HF BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBW freq  ReadOut
+    //----------------------------
+    6, 1335,  31, 1350,
+    CTRL_NUM_INPUT_HF_BW, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"HF BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC Section ######################
+    //------------------------
+    43,1360,    59,1380,
+    CTRL_NUM_INPUT_HF_BC, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"HF BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC freq  UpDown Scroller
+    //----------------------------
+    6, 1362,  38, 1377,
+    CTRL_NUM_INPUT_HF_BC, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"HF BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC freq  ReadOut
+    //----------------------------
+    6, 1362,  30, 1377,
+    CTRL_NUM_INPUT_HF_BC, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"HF BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HFBC freq  Inout
+    //----------------------------
+    61,1387,  91, 1401,
+    CTRL_NUM_INPUT_HF_PEAKSHELF, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"HF PEAK-SHELF\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_HF_PEAKSHELF, 0x0000,
+
+    // The EQ High Mid Section ######################
+    //------------------------
+    43, 1412,    59, 1432,
+    CTRL_NUM_INPUT_HIMIDFREQ, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"HIMID FREQ\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High Mid UpDown Scroller
+    //----------------------------
+    6, 1414,  38, 1429,
+    CTRL_NUM_INPUT_HIMIDFREQ, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"HIMID FREQ\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq High Mid ReadOut
+    //----------------------------
+    6, 1414,  29, 1429,
+    CTRL_NUM_INPUT_HIMIDFREQ, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"HIMID FREQ\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBW Section ######################
+    //------------------------
+    43, 1438,    59,1458,
+    CTRL_NUM_INPUT_HM_BW, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"HM BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBW freq  UpDown Scroller
+    //----------------------------
+    6, 1441,  38, 1456,
+    CTRL_NUM_INPUT_HM_BW, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"HM BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBW freq  ReadOut
+    //----------------------------
+    6, 1441,  30, 1456,
+    CTRL_NUM_INPUT_HM_BW, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"HM BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBC Section ######################
+    //------------------------
+    43, 1466,    59, 1486,
+    CTRL_NUM_INPUT_HM_BC, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"HM BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBC freq  UpDown Scroller
+    //----------------------------
+    6, 1468,  38, 1483,
+    CTRL_NUM_INPUT_HM_BC, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"HM BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ HMBC freq  ReadOut
+    //----------------------------
+    6, 1468,  30, 1483,
+    CTRL_NUM_INPUT_HM_BC, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"HM BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ Low Mid  Section ######################
+    //------------------------
+    43, 1510,    59, 1530,
+    CTRL_NUM_INPUT_LOMIDFREQ, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LOMID FREQ\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low Mid UpDown Scroller
+    //----------------------------
+    6, 1512,  38, 1527,
+    CTRL_NUM_INPUT_LOMIDFREQ, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LOMID FREQ\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low Mid ReadOut
+    //----------------------------
+    6, 1512,  29, 1527,
+    CTRL_NUM_INPUT_LOMIDFREQ, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LOMID FREQ\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBW Section ######################
+    //------------------------
+    43, 1536,    59, 1556,
+    CTRL_NUM_INPUT_LM_BW, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LM BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBW freq  UpDown Scroller
+    //----------------------------
+    6, 1539,  38, 1554,
+    CTRL_NUM_INPUT_LM_BW, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LM BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBW freq  ReadOut
+    //----------------------------
+    6, 1539,  30, 1554,
+    CTRL_NUM_INPUT_LM_BW, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LM BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBC Section ######################
+    //------------------------
+    43, 1564,    59, 1584,
+    CTRL_NUM_INPUT_LM_BC, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LM BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBC freq  UpDown Scroller
+    //----------------------------
+    6, 1566,  38, 1581,
+    CTRL_NUM_INPUT_LM_BC, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LM BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LMBC freq  ReadOut
+    //----------------------------
+    6, 1566,  30, 1581,
+    CTRL_NUM_INPUT_LM_BC, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LM BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ Low Section ######################
+    //------------------------
+    43, 1608,    59, 1628,
+    CTRL_NUM_INPUT_LOWFREQ, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LOW FREQ\0                 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low UpDown Scroller
+    //----------------------------
+    6, 1610,  38, 1625,
+    CTRL_NUM_INPUT_LOWFREQ, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LOW FREQ\0                 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Eq Low ReadOut
+    //----------------------------
+    6, 1610,  29, 1625,
+    CTRL_NUM_INPUT_LOWFREQ, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LOW FREQ\0                 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBW Section ######################
+    //------------------------
+    43, 1634,    59, 1654,
+    CTRL_NUM_INPUT_LF_BW, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LF BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBW freq  UpdownScroller
+    //----------------------------
+    6, 1637,  38, 1652,
+    CTRL_NUM_INPUT_LF_BW, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LF BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBW freq  ReadOut
+    //----------------------------
+    6, 1637,  30, 1652,
+    CTRL_NUM_INPUT_LF_BW, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LF BW\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBC Section ######################
+    //------------------------
+    43, 1662,    59, 1682,
+    CTRL_NUM_INPUT_LF_BC, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LF BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBC freq  UpDownScroller
+    //----------------------------
+    6, 1664,  38, 1679,
+    CTRL_NUM_INPUT_LF_BC, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LF BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBC freq  ReadOut
+    //----------------------------
+    6, 1664,  30, 1679,
+    CTRL_NUM_INPUT_LF_BC, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LF BC\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The EQ LFBC freq  Inout
+    //----------------------------
+    61, 1689,  91, 1703,
+    CTRL_NUM_INPUT_LF_PEAKSHELF, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"LF PEAK-SHELF\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_LO_FREQ_SHELF, 0x0000,
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+    // The EQ  Inout
+    //----------------------------
+    6, 1795,  36,1810,
+    CTRL_NUM_INPUT_EQ_INOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"EQ IN-OUT\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_EQ_IN, 0x0000,
+
+    // The POSTINSERT  Inout
+    //----------------------------
+    62, 1795,  92, 1810,
+    CTRL_NUM_INPUT_POSTINSERTINOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"POST INSERT IN-OUT\0       ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INSERT_INOUT, 0x0000,
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+    // The Lowcut Section ######################
+    //------------------------
+    40,2788,    56,2808,
+    CTRL_NUM_INPUT_LOWCUT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LOWCUT\0                   ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Lowcut freq  UpDown Scroller
+    //----------------------------
+    6,2791,  35,2806,
+    CTRL_NUM_INPUT_LOWCUT, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LOWCUT\0                   ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Lowcut freq  ReadOut
+    //----------------------------
+    6,2791,  26,2806,
+    CTRL_NUM_INPUT_LOWCUT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LOWCUT\0                   ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Lowcut freq  InOut
+    //----------------------------
+    62,2791,  92,2805,
+    CTRL_NUM_INPUT_LOWCUT_INOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+    "LOWCUT IN-OUT\0            ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_LOWCUT_IN, 0x0000,
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// SUB section !!!!! BEGIN
+
+    // The SUB8 LT UpDown Scroller
+    //----------------------------
+    40,2881,  56,2901,
+    CTRL_NUM_INPUT_SUB8LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 8 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB8 LT
+    //----------------------------
+    5, 2883,    27, 2897,
+    CTRL_NUM_INPUT_SUB8LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 8 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB8 LT
+    //----------------------------
+    5, 2883,    27, 2897,
+    CTRL_NUM_INPUT_SUB8LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 8 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB8 RT UpDown Scroller
+    //----------------------------
+    58,2881,  74,2901,
+    CTRL_NUM_INPUT_SUB8RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 8 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB8 RT
+    //----------------------------
+    78, 2883,    100, 2898,
+    CTRL_NUM_INPUT_SUB8RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 8 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB8 RT
+    //----------------------------
+    78, 2883,    100, 2898,
+    CTRL_NUM_INPUT_SUB8RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 8 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The SUB7 LT UpDown Scroller
+    //----------------------------
+    40,2917,  56,2937,
+    CTRL_NUM_INPUT_SUB7LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 7 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB7 LT
+    //----------------------------
+    5, 2919,    27, 2934,
+    CTRL_NUM_INPUT_SUB7LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 7 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB7 LT
+    //----------------------------
+    5, 2919,    27, 2934,
+    CTRL_NUM_INPUT_SUB7LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 7 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB7 RT UpDown Scroller
+    //----------------------------
+    58,2917,  74,2937,
+    CTRL_NUM_INPUT_SUB7RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 7 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB7 RT
+    //----------------------------
+    78, 2919,    100, 2934,
+    CTRL_NUM_INPUT_SUB7RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 7 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB7 RT
+    //----------------------------
+    78, 2919,    100, 2934,
+    CTRL_NUM_INPUT_SUB7RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 7 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB6 LT UpDown Scroller
+    //----------------------------
+    40,2953,  56,2973,
+    CTRL_NUM_INPUT_SUB6LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 6 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB6 LT
+    //----------------------------
+    5, 2955,    27, 2969,
+    CTRL_NUM_INPUT_SUB6LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 6 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB6 LT
+    //----------------------------
+    5, 2955,    27, 2969,
+    CTRL_NUM_INPUT_SUB6LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 6 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB6 RT UpDown Scroller
+    //----------------------------
+    58,2953,  74,2973,
+    CTRL_NUM_INPUT_SUB6RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 6 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB6 RT
+    //----------------------------
+    78, 2955,    100, 2969,
+    CTRL_NUM_INPUT_SUB6RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 6 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB6 RT
+    //----------------------------
+    78, 2955,    100, 2969,
+    CTRL_NUM_INPUT_SUB6RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 6 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB5 LT UpDown Scroller
+    //----------------------------
+    40,2989,  56,3009,
+    CTRL_NUM_INPUT_SUB5LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 5 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB5 LT
+    //----------------------------
+    5, 2991,    27, 3006,
+    CTRL_NUM_INPUT_SUB5LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 5 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB5 LT
+    //----------------------------
+    5, 2991,    27, 3006,
+    CTRL_NUM_INPUT_SUB5LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 5 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB5 RT UpDown Scroller
+    //----------------------------
+    58,2989,  74,3009,
+    CTRL_NUM_INPUT_SUB5RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 5 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB5 RT
+    //----------------------------
+    78, 2991,    100, 3006,
+    CTRL_NUM_INPUT_SUB5RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 5 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB5 RT
+    //----------------------------
+    78, 2991,    100, 3006,
+    CTRL_NUM_INPUT_SUB5RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 5 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB4 LT UpDown Scroller
+    //----------------------------
+    40,3047,  56,3067,
+    CTRL_NUM_INPUT_SUB4LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 4 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB4 LT
+    //----------------------------
+    5, 3049,    27, 3064,
+    CTRL_NUM_INPUT_SUB4LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 4 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB4 LT
+    //----------------------------
+    5, 3049,    27, 3064,
+    CTRL_NUM_INPUT_SUB4LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 4 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB4 RT UpDown Scroller
+    //----------------------------
+    58,3047,  74,3067,
+    CTRL_NUM_INPUT_SUB4RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 4 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB4 RT
+    //----------------------------
+    78, 3049,    100, 3064,
+    CTRL_NUM_INPUT_SUB4RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 4 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB4 RT
+    //----------------------------
+    78, 3049,    100, 3064,
+    CTRL_NUM_INPUT_SUB4RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 4 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB3 LT UpDown Scroller
+    //----------------------------
+    40,3083,  56,3103,
+    CTRL_NUM_INPUT_SUB3LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 3 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB3 LT
+    //----------------------------
+    5, 3085,    27, 3100,
+    CTRL_NUM_INPUT_SUB3LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 3 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB3 LT
+    //----------------------------
+    5, 3085,    27, 3100,
+    CTRL_NUM_INPUT_SUB3LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 3 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB3 RT UpDown Scroller
+    //----------------------------
+    58,3083,  74,3103,
+    CTRL_NUM_INPUT_SUB3RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 3 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB3 RT
+    //----------------------------
+    78, 3085,    100, 3100,
+    CTRL_NUM_INPUT_SUB3RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 3 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB3 RT
+    //----------------------------
+    78, 3085,    100, 3100,
+    CTRL_NUM_INPUT_SUB3RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 3 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB2 LT UpDown Scroller
+    //----------------------------
+    40,3119,  56,3139,
+    CTRL_NUM_INPUT_SUB2LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 2 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB2 LT
+    //----------------------------
+    5, 3121,    27, 3136,
+    CTRL_NUM_INPUT_SUB2LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 2 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB2 LT
+    //----------------------------
+    5, 3121,    27, 3136,
+    CTRL_NUM_INPUT_SUB2LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 2 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB2 RT UpDown Scroller
+    //----------------------------
+    58,3119,  74,3139,
+    CTRL_NUM_INPUT_SUB2RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 2 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB2 RT
+    //----------------------------
+    78, 3121,    100, 3136,
+    CTRL_NUM_INPUT_SUB2RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 2 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB2 RT
+    //----------------------------
+    78, 3121,    100, 3136,
+    CTRL_NUM_INPUT_SUB2RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 2 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB1 LT UpDown Scroller
+    //----------------------------
+    40,3155,  56,3175,
+    CTRL_NUM_INPUT_SUB1LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 1 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB1 LT
+    //----------------------------
+    5, 3157,    27, 3172,
+    CTRL_NUM_INPUT_SUB1LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 1 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB1 LT
+    //----------------------------
+    5, 3157,    27, 3172,
+    CTRL_NUM_INPUT_SUB1LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 1 LT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB1 RT UpDown Scroller
+    //----------------------------
+    58,3155,  74,3175,
+    CTRL_NUM_INPUT_SUB1RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "SUB 1 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB1 RT
+    //----------------------------
+    78, 3157,    100, 3172,
+    CTRL_NUM_INPUT_SUB1RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "SUB 1 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The SUB1 RT
+    //----------------------------
+    78, 3157,    100, 3172,
+    CTRL_NUM_INPUT_SUB1RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "SUB 1 RT LEVEL\0           ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+
+    // The Master LT Level UpDown Scroller
+    //------------------------------------
+    40,3194,  56,3214,
+    CTRL_NUM_INPUT_MASTERLT_LEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "MASTER LT LEVEL\0          ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Master LT Level 
+    //--------------------
+    5, 3196,    27, 3211,
+    CTRL_NUM_INPUT_MASTERLT_LEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "MASTER LT LEVEL\0          ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Master LT Level 
+    //--------------------
+    5, 3196,    27, 3211,
+    CTRL_NUM_INPUT_MASTERLT_LEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "MASTER LT LEVEL\0          ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Master RT Level UpDown Scroller
+    //------------------------------------
+    58,3194,  74,3214,
+    CTRL_NUM_INPUT_MASTERRT_LEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL
+    "MASTER RT LEVEL\0          ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Master RT Level 
+    //--------------------
+    78, 3196,    100, 3211,
+    CTRL_NUM_INPUT_MASTERRT_LEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "MASTER RT LEVEL\0          ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Master RT Level 
+    //--------------------
+    78, 3196,    100, 3211,
+    CTRL_NUM_INPUT_MASTERRT_LEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+    "MASTER RT LEVEL\0          ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+// SUB section !!!!! END
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// AUX section !!!!! BEGIN
+//SIGNAL PATH LINE B######################
+    83, 72,   107, 83,
+    CTRL_NUM_INPUT_SIGPATH_LINE_B, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	 "SIGPATH LINE B\0           ",  // the control name ....
+     "\0                         ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_LINE_B_AUX_16, 0x0000,
+
+
+ // The AUX 16 LT LINE B Section ######################
+    //------------------------
+    39,37,55,57,
+    CTRL_NUM_INPUT_AUX16LT_LINEB_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+    "LINE B LT TO AUX 16\0      ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX16 LINE B UpDown Scroller
+    //----------------------------
+    3,38,36,57,
+    CTRL_NUM_INPUT_AUX16LT_LINEB_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "LINE B LT TO AUX 16\0      ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX16 LINE B freq  ReadOut
+    //----------------------------
+    5,40,26,55,
+    CTRL_NUM_INPUT_AUX16LT_LINEB_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LINE B LT TO AUX 16\0      ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The AUX 16 LINE B RT Section ######################
+    //------------------------
+    57,37,73,57,
+    CTRL_NUM_INPUT_AUX16RT_LINEB_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LINE B RT TO AUX 16\0      ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX16 LINE B UpDown Scroller
+    //----------------------------
+    78,39,107,75,
+    CTRL_NUM_INPUT_AUX16RT_LINEB_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LINE B RT TO AUX 16\0      ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX16 LINE B freq  ReadOut
+    //----------------------------
+    78,39,99,55,
+    CTRL_NUM_INPUT_AUX16RT_LINEB_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LINE B RT TO AUX 16\0      ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 16 LT Section ######################
+    //------------------------
+    39,108,55,128,
+    CTRL_NUM_INPUT_AUX16LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+    "AUX16 LT PRE FADER LEVEL\0 ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX16 UpDown Scroller
+    //----------------------------
+    5,111,34,126,
+    CTRL_NUM_INPUT_AUX16LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+    "AUX16 LT PRE FADER LEVEL\0 ",  // the control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX16 freq  ReadOut
+    //----------------------------
+    5,111,26,126,
+    CTRL_NUM_INPUT_AUX16LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX16 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The AUX 16 RT Section ######################
+    //------------------------
+    57,108,73,128,
+    CTRL_NUM_INPUT_AUX16RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX16 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX16 UpDown Scroller
+    //----------------------------
+    78,111,107,126,
+    CTRL_NUM_INPUT_AUX16RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX16 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX16 freq  ReadOut
+    //----------------------------
+    78,111,99,126,
+    CTRL_NUM_INPUT_AUX16RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX16 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 15 LT Section ######################
+    //------------------------
+    39,179,55,199,
+    CTRL_NUM_INPUT_AUX15LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX15 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX15 UpDown Scroller
+    //----------------------------
+    5,182,34,197,
+    CTRL_NUM_INPUT_AUX15LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX15 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX15 freq  ReadOut
+    //----------------------------
+    5,182,26,197,
+    CTRL_NUM_INPUT_AUX15LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX15 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 15 RT Section ######################
+    //------------------------
+    57,179,73,199,
+    CTRL_NUM_INPUT_AUX15RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX15 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX15 UpDown Scroller
+    //----------------------------
+    78,182,107,197,
+    CTRL_NUM_INPUT_AUX15RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX15 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX15 freq  ReadOut
+    //----------------------------
+    78,182,99,197,
+    CTRL_NUM_INPUT_AUX15RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX15 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 14 Section ######################
+    //------------------------
+    39,250,55,270,
+    CTRL_NUM_INPUT_AUX14LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX14 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX14 UpDown Scroller
+    //----------------------------
+    5,253,34,268,
+    CTRL_NUM_INPUT_AUX14LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX14 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX14 freq  ReadOut
+    //----------------------------
+    5,253,26,268,
+    CTRL_NUM_INPUT_AUX14LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX14 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 14 RT Section ######################
+    //------------------------
+    57,250,73,270,
+    CTRL_NUM_INPUT_AUX14RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX14 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX14 UpDown Scroller
+    //----------------------------
+    78,253,107,268,
+    CTRL_NUM_INPUT_AUX14RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX14 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX14 freq  ReadOut
+    //----------------------------
+    78,253,99,268,
+    CTRL_NUM_INPUT_AUX14RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX14 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 13 LT Section ######################
+    //------------------------
+    39,321,55,341,
+    CTRL_NUM_INPUT_AUX13LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX13 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX13 UpDown Scroller
+    //----------------------------
+    5,324,34,339,
+    CTRL_NUM_INPUT_AUX13LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX13 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX13 freq  ReadOut
+    //----------------------------
+    5,324,26,339,
+    CTRL_NUM_INPUT_AUX13LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX13 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 13 RT Section ######################
+    //------------------------
+    57,321,73,341,
+    CTRL_NUM_INPUT_AUX13RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX13 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX13 UpDown Scroller
+    //----------------------------
+    78,324,107,339,
+    CTRL_NUM_INPUT_AUX13RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX13 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+												 
+    // The AUX13 freq  ReadOut
+    //----------------------------
+    78,324,99,339,
+    CTRL_NUM_INPUT_AUX13RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX13 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 12 LT Section ######################
+    //------------------------
+    39,411,55,431,
+    CTRL_NUM_INPUT_AUX12LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX12 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX12 UpDown Scroller
+    //----------------------------
+    5,414,34,429,
+    CTRL_NUM_INPUT_AUX12LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX12 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX12 freq  ReadOut
+    //----------------------------
+    5,414,26,429,
+    CTRL_NUM_INPUT_AUX12LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX12 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The AUX 12 RT Section ######################
+    //------------------------
+    57,411,73,431,
+    CTRL_NUM_INPUT_AUX12RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX12 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX12 UpDown Scroller
+    //----------------------------
+    78,414,107,429,
+    CTRL_NUM_INPUT_AUX12RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX12 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX12 freq  ReadOut
+    //----------------------------
+    78,414,99,429,
+    CTRL_NUM_INPUT_AUX12RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX12 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 11 LT Section ######################
+    //------------------------
+    39,482,55,502,
+    CTRL_NUM_INPUT_AUX11LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX11 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX11 UpDown Scroller
+    //----------------------------
+    5,485,34,500,
+    CTRL_NUM_INPUT_AUX11LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX11 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX11 freq  ReadOut
+    //----------------------------
+    5,485,26,500,
+    CTRL_NUM_INPUT_AUX11LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX11 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 11 RT Section ######################
+    //------------------------
+    57,482,73,502,
+    CTRL_NUM_INPUT_AUX11RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX11 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX11 UpDown Scroller
+    //----------------------------
+    78,485,107,500,
+    CTRL_NUM_INPUT_AUX11RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX11 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX11 freq  ReadOut
+    //----------------------------
+    78,485,99,500,
+    CTRL_NUM_INPUT_AUX11RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX11 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // The AUX 10 LT Section ######################
+    //------------------------
+    39,553,55,573,
+    CTRL_NUM_INPUT_AUX10LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX10 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX10 UpDown Scroller
+    //----------------------------
+    5,556,34,571,
+    CTRL_NUM_INPUT_AUX10LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX10 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX10 freq  ReadOut
+    //----------------------------
+    5,556,26,571,
+    CTRL_NUM_INPUT_AUX10LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX10 LT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 10 RT Section ######################
+    //------------------------
+    57,553,73,573,
+    CTRL_NUM_INPUT_AUX10RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX10 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX10 UpDown Scroller
+    //----------------------------
+    78,556,107,571,
+    CTRL_NUM_INPUT_AUX10RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX10 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX10 freq  ReadOut
+    //----------------------------
+    78,556,99,571,
+    CTRL_NUM_INPUT_AUX10RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX10 RT PRE FADER LEVEL\0 ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 9 LT Section ######################
+    //------------------------
+    39,624,55,644,
+    CTRL_NUM_INPUT_AUX9LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX9 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX9 UpDown Scroller
+    //----------------------------
+    5,627,34,642,
+    CTRL_NUM_INPUT_AUX9LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX9 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX9 freq  ReadOut
+    //----------------------------
+    5,627,26,642,
+    CTRL_NUM_INPUT_AUX9LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX9 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 9 RT Section ######################
+    //------------------------
+    57,624,73,644,
+    CTRL_NUM_INPUT_AUX9RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX9 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX9 UpDown Scroller
+    //----------------------------
+    78,627,107,642,
+    CTRL_NUM_INPUT_AUX9RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX9 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX9 freq  ReadOut
+    //----------------------------
+    78,627,99,642,
+    CTRL_NUM_INPUT_AUX9RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX9 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 8 LT Section ######################
+    //------------------------
+    39,714,55,734,
+    CTRL_NUM_INPUT_AUX8LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX8 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX8 UpDown Scroller
+    //----------------------------
+    5,717,34,732,
+    CTRL_NUM_INPUT_AUX8LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX8 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX8 freq  ReadOut
+    //----------------------------
+    5,717,26,732,
+    CTRL_NUM_INPUT_AUX8LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX8 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX8 RT Section ######################
+    //------------------------
+    57,714,73,734,
+    CTRL_NUM_INPUT_AUX8RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX8 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX8 UpDown Scroller
+    //----------------------------
+    78,717,107,732,
+    CTRL_NUM_INPUT_AUX8RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX8 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX8 freq  ReadOut
+    //----------------------------
+    78,717,99,732,
+    CTRL_NUM_INPUT_AUX8RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX8 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 7 LT Section ######################
+    //------------------------
+    39,785,55,805,
+    CTRL_NUM_INPUT_AUX7LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX7 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX7 UpDown Scroller
+    //----------------------------
+    5,788,34,803,
+    CTRL_NUM_INPUT_AUX7LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX7 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX7 freq  ReadOut
+    //----------------------------
+    5,788,26,803,
+    CTRL_NUM_INPUT_AUX7LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX7 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX7 RT Section ######################
+    //------------------------
+    57,785,73,805,
+    CTRL_NUM_INPUT_AUX7RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX7 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX7 UpDown Scroller
+    //----------------------------
+    78,788,107,803,
+    CTRL_NUM_INPUT_AUX7RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX7 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX7 freq  ReadOut
+    //----------------------------
+    78,788,99,803,
+    CTRL_NUM_INPUT_AUX7RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX7 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 6 LT Section ######################
+    //------------------------
+    39,856,55,876,
+    CTRL_NUM_INPUT_AUX6LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX6 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX6 UpDown Scroller
+    //----------------------------
+    5,859,34,874,
+    CTRL_NUM_INPUT_AUX6LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX6 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX6 freq  ReadOut
+    //----------------------------
+    5,859,26,874,
+    CTRL_NUM_INPUT_AUX6LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX6 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX6 RT Section ######################
+    //------------------------
+    57,856,73,876,
+    CTRL_NUM_INPUT_AUX6RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX6 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX6 UpDown Scroller
+    //----------------------------
+    78,859,107,874,
+    CTRL_NUM_INPUT_AUX6RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX6 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX6 freq  ReadOut
+    //----------------------------
+    78,859,99,874,
+    CTRL_NUM_INPUT_AUX6RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX6 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 5 LT Section ######################
+    //------------------------
+    39,927,55,947,
+    CTRL_NUM_INPUT_AUX5LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX5 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX5 UpDown Scroller
+    //----------------------------
+    5,930,34,945,
+    CTRL_NUM_INPUT_AUX5LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX5 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX5 freq  ReadOut
+    //----------------------------
+    5,930,26,945,
+    CTRL_NUM_INPUT_AUX5LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX5 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX5 RT Section ######################
+    //------------------------
+    57,927,73,947,
+    CTRL_NUM_INPUT_AUX5RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX5 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX5 UpDown Scroller
+    //----------------------------
+    78,930,107,945,
+    CTRL_NUM_INPUT_AUX5RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX5 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX5 freq  ReadOut
+    //----------------------------
+    78,930,99,945,
+    CTRL_NUM_INPUT_AUX5RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX5 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 4 LT Section ######################
+    //------------------------
+    39,1017,55,1037,
+    CTRL_NUM_INPUT_AUX4LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX4 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX4 UpDown Scroller
+    //----------------------------
+    5,1021,34,1036,
+    CTRL_NUM_INPUT_AUX4LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX4 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX4 freq  ReadOut
+    //----------------------------
+    5,1021,26,1036,
+    CTRL_NUM_INPUT_AUX4LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX4 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,			 
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX4 RT Section ######################
+    //------------------------
+    57,1017,73,1037,
+    CTRL_NUM_INPUT_AUX4RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX4 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX4 UpDown Scroller
+    //----------------------------
+    78,1021,107,1036,
+    CTRL_NUM_INPUT_AUX4RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX4 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX4 freq  ReadOut
+    //----------------------------
+    78,1021,99,1036,
+    CTRL_NUM_INPUT_AUX4RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX4 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 3 LT Section ######################
+    //------------------------
+    39,1088,55,1108,
+    CTRL_NUM_INPUT_AUX3LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX3 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX3 UpDown Scroller
+    //----------------------------
+    5,1092,34,1107,
+    CTRL_NUM_INPUT_AUX3LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX3 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX3 freq  ReadOut
+    //----------------------------
+    5,1092,26,1107,
+    CTRL_NUM_INPUT_AUX3LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX3 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX3 RT Section ######################
+    //------------------------
+    57,1088,73,1108,
+    CTRL_NUM_INPUT_AUX3RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX3 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX3 UpDown Scroller
+    //----------------------------
+    78,1092,107,1107,
+    CTRL_NUM_INPUT_AUX3RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX3 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX3 freq  ReadOut
+    //----------------------------
+    78,1092,99,1107,
+    CTRL_NUM_INPUT_AUX3RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX3 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 2 LT Section ######################
+    //------------------------
+    39,1159,55,1179,
+    CTRL_NUM_INPUT_AUX2LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX2 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX2 UpDown Scroller
+    //----------------------------
+    5,1163,34,1178,
+    CTRL_NUM_INPUT_AUX2LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX2 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX2 freq  ReadOut
+    //----------------------------
+    5,1163,26,1178,
+    CTRL_NUM_INPUT_AUX2LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX2 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX2 RT Section ######################
+    //------------------------
+    57,1159,73,1179,
+    CTRL_NUM_INPUT_AUX2RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX2 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX2 UpDown Scroller
+    //----------------------------
+    78,1163,107,1178,
+    CTRL_NUM_INPUT_AUX2RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX2 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX2 freq  ReadOut
+    //----------------------------
+    78,1163,99,1178,
+    CTRL_NUM_INPUT_AUX2RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX2 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX 1 LT Section ######################
+    //------------------------
+    39,1230,55,1250,
+    CTRL_NUM_INPUT_AUX1LT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX1 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX1 UpDown Scroller
+    //----------------------------
+    5,1234,34,1249,
+    CTRL_NUM_INPUT_AUX1LT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX1 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX1 freq  ReadOut
+    //----------------------------
+    5,1234,26,1249,
+    CTRL_NUM_INPUT_AUX1LT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX1 LT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,			 
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX1 RT Section ######################
+    //------------------------
+    57,1230,73,1250,
+    CTRL_NUM_INPUT_AUX1RT_FADER, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"AUX1 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX1 UpDown Scroller
+    //----------------------------
+    78,1234,107,1249,
+    CTRL_NUM_INPUT_AUX1RT_FADER, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"AUX1 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The AUX1 freq  ReadOut
+    //----------------------------
+    78,1234,99,1249,
+    CTRL_NUM_INPUT_AUX1RT_FADER, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"AUX1 RT PRE FADER LEVEL\0  ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+
+
+// AUX section !!!!! END
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+    // The Line B Level Section ######################
+    //------------------------
+    86, 2517,102, 2537,
+    CTRL_NUM_INPUT_LINE_B_LEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LINE B LEVEL\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Line B Level UpDown Scroller
+    //-----------------------
+    62, 2479, 91,2494,
+    CTRL_NUM_INPUT_LINE_B_LEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LINE B LEVEL\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Line B Level ReadOut
+    //-----------------------
+    62, 2479, 83,2494,
+    CTRL_NUM_INPUT_LINE_B_LEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LINE B LEVEL\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+ // Line B Level Fader
+    69,2499,    85,2588,
+    CTRL_NUM_INPUT_LINE_B_LEVEL, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"LINE B LEVEL\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_SMALLKNOB, 0x0000, 0x0000,
+
+
+
+
+
+
+
+    // The Mic B Level Section ######################
+    //------------------------
+    10, 2517, 26,2537,
+    CTRL_NUM_INPUT_MIC_B_LEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MIC B LEVEL\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MIC B Level Updown Scroller
+    //-----------------------
+    22,2479, 51,2494,
+    CTRL_NUM_INPUT_MIC_B_LEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MIC B LEVEL\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MIC B Level ReadOut
+    //-----------------------
+    22,2479, 43,2494,
+    CTRL_NUM_INPUT_MIC_B_LEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MIC B LEVEL\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+	// MIC B Fader
+	//------------
+    28,2499,    44,2588,
+    CTRL_NUM_INPUT_MIC_B_LEVEL, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"MIC B LEVEL\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_SMALLKNOB, 0x0000, 0x0000,
+
+
+
+    // The Mic B trim Section ######################
+    //------------------------
+    43, 2430,59, 2450,
+    CTRL_NUM_INPUT_MIC_B_TRIM, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MIC B TRIM\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MIC B trim  UpDown Scroller
+    //-----------------------
+    9, 2431, 38,2447,
+    CTRL_NUM_INPUT_MIC_B_TRIM, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MIC B TRIM\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MIC B trim  ReadOut
+    //-----------------------
+    9, 2433, 30,2449,
+    CTRL_NUM_INPUT_MIC_B_TRIM, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MIC B TRIM\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Mic B PPwr Button #######################
+    //----------------------------
+    7, 2455, 22,2469,
+    CTRL_NUM_INPUT_MIC_B_PPWR, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"P POWER B\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_PPWR_IN, 0x0000,
+
+    // The Mic B Cue Button #######################
+    //----------------------------
+    62, 2455, 83,2470,
+    CTRL_NUM_INPUT_MIC_B_CUE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"GROUP B-CUE A\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_CUE_01, 0x0000,
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+    // The Line A Level Section ######################
+    //------------------------
+    86,2696, 102,2716,
+    CTRL_NUM_INPUT_LINE_A_LEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"LINE A LEVEL\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Line A Level UpDown Scroller
+    //-----------------------
+    62,2658, 91,2673,
+    CTRL_NUM_INPUT_LINE_A_LEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"LINE A LEVEL\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Line A Level ReadOut
+    //-----------------------
+    62,2658, 83,2673,
+    CTRL_NUM_INPUT_LINE_A_LEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"LINE A LEVEL\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // Line A Level Fader
+	//-------------------
+    69,2678,    85,2767,
+    CTRL_NUM_INPUT_LINE_A_LEVEL, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"LINE A LEVEL\0             ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_SMALLKNOB, 0x0000, 0x0000,
+
+
+    // The Mic A Level Section ######################
+    //------------------------
+    10,2696,26,2716,
+    CTRL_NUM_INPUT_MIC_A_LEVEL, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MIC A LEVEL\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MIC A Level Updown Scroller
+    //-----------------------
+    22,2658,51,2673,
+    CTRL_NUM_INPUT_MIC_A_LEVEL, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MIC A LEVEL\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MIC A Level ReadOut
+    //-----------------------
+    22,2658,43,2673,
+    CTRL_NUM_INPUT_MIC_A_LEVEL, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MIC A LEVEL\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+
+    // MIC A Fader
+	//------------
+    28,2678,    44,2767,
+    CTRL_NUM_INPUT_MIC_A_LEVEL, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+	"MIC A LEVEL\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    IDB_ZOOM_SMALLKNOB, 0x0000, 0x0000,
+
+
+    // The Mic A trim Section ######################
+    //------------------------
+    43,2609, 59,2629,
+    CTRL_NUM_INPUT_MIC_A_TRIM, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+	"MIC A TRIM\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MIC A trim  UpDown Scroller
+    //-----------------------
+    9,2612, 38,2627,
+    CTRL_NUM_INPUT_MIC_A_TRIM, CTRL_TYPE_UPDOWNSCROLL, DISP_TYPE_NULL,
+	"MIC A TRIM\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The MIC A trim  ReadOut
+    //-----------------------
+    9,2612, 30,2627,
+    CTRL_NUM_INPUT_MIC_A_TRIM, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	"MIC A TRIM\0               ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, 0x0000, 0x0000,
+
+    // The Mic A PPwr Button #######################
+    //----------------------------
+    7,2634, 22,2648,
+    CTRL_NUM_INPUT_MIC_A_PPWR, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"P POWER A\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_PPWR_IN, 0x0000,
+    
+    // The Mic A Cue Button #######################
+    //----------------------------
+    62,2634, 83,2649,
+    CTRL_NUM_INPUT_MIC_A_CUE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"GROUP A-CUE A\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_CUE_01, 0x0000,
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+    // The Insert InOut #######################
+    //----------------------------
+    62,2829,  92,2843,
+    CTRL_NUM_INPUT_INSERT_INOUT, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"INSERT IN-OUT\0            ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INSERT_INOUT, 0x0000,
+
+    // The Insert InOut #######################
+    //----------------------------
+    4,2829,  29,2843,
+    CTRL_NUM_INPUT_REV_PHASE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"PHASE\0                    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_PHASE_REVERSE, 0x0000,
+
+///////////////////////////////////////////////////////////////
+//  Mute buttons -Dave 3-30-98
+///////////////////////////////////////////////////////////////
+
+    // Input Mute Button -aux16###################		
+    //------------------
+    31, 92,  52, 103,
+     CTRL_NUM_INPUT_AUX16LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+    // Input Mute Button -aux16########################		
+    //------------------
+    59, 92,   80, 103,
+     CTRL_NUM_INPUT_AUX16RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+    // Input Mute Button  -aux15########################		
+    //------------------
+    31, 163,  52, 174,
+     CTRL_NUM_INPUT_AUX15LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+    
+	// Input Mute Button  -aux15########################		
+    //------------------
+	59, 163,   80, 174,
+     CTRL_NUM_INPUT_AUX15RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux14########################		
+    //------------------
+	31, 234,   52, 245,
+     CTRL_NUM_INPUT_AUX14LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux14########################		
+    //------------------
+    59, 234,   80, 245,
+     CTRL_NUM_INPUT_AUX14RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux13########################		
+    //------------------
+	31, 305,  52, 316,
+     CTRL_NUM_INPUT_AUX13LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux13########################		
+    //------------------
+    59, 305,  80, 316,
+     CTRL_NUM_INPUT_AUX13RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux12########################		
+    //------------------
+	31, 395,   52, 406,
+     CTRL_NUM_INPUT_AUX12LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux12########################		
+    //------------------
+    59, 395,   80, 406,
+     CTRL_NUM_INPUT_AUX12RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux11########################		
+    //------------------
+	31, 466,   52, 477,
+     CTRL_NUM_INPUT_AUX11LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux11########################		
+    //------------------
+    59, 466,   80, 477,
+     CTRL_NUM_INPUT_AUX11RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux10########################		
+    //------------------
+	31, 537,   52, 548,
+     CTRL_NUM_INPUT_AUX10LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux10########################		
+    //------------------
+    59, 537,   80, 548,
+     CTRL_NUM_INPUT_AUX10RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux09########################		
+    //------------------
+	31, 608,   52, 619,
+     CTRL_NUM_INPUT_AUX09LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux09########################		
+    //------------------
+    59, 608,   80, 619,
+     CTRL_NUM_INPUT_AUX09RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux08########################		
+    //------------------
+	31, 698,   52, 709,
+     CTRL_NUM_INPUT_AUX08LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux08########################		
+    //------------------
+    59, 698,   80, 709,
+     CTRL_NUM_INPUT_AUX08RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux07########################		
+    //------------------
+	31, 769,   52, 780,
+     CTRL_NUM_INPUT_AUX07LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux07########################		
+    //------------------
+    59, 769,   80, 780,
+     CTRL_NUM_INPUT_AUX07RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux06########################		
+    //------------------
+    31, 840,   52, 851,
+     CTRL_NUM_INPUT_AUX06LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux06########################		
+    //------------------
+	59, 840,   80, 851,
+     CTRL_NUM_INPUT_AUX06RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux05########################		
+    //------------------
+    31, 911,   52, 922,
+     CTRL_NUM_INPUT_AUX05LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux05########################		
+    //------------------
+	59, 911,   80, 922,
+     CTRL_NUM_INPUT_AUX05RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux04########################		
+    //------------------
+    31, 1002,   52, 1013,
+     CTRL_NUM_INPUT_AUX04LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux04########################		
+    //------------------
+	59, 1002,   80, 1013,
+     CTRL_NUM_INPUT_AUX04RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux03########################		
+    //------------------
+    31, 1073,   52, 1084,
+     CTRL_NUM_INPUT_AUX03LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux03########################		
+    //------------------
+	59, 1073,   80, 1084,
+     CTRL_NUM_INPUT_AUX03RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux02########################		
+	//------------------
+    31, 1144,   52, 1155,
+     CTRL_NUM_INPUT_AUX02LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux02########################		
+    //------------------
+	59, 1144,   80, 1155,
+     CTRL_NUM_INPUT_AUX02RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux01########################		
+    //------------------
+    31, 1215,   52, 1226,
+     CTRL_NUM_INPUT_AUX01LT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button  -aux01########################		
+    //------------------
+	59, 1215,   80, 1226,
+     CTRL_NUM_INPUT_AUX01RT_MUTE, CTRL_TYPE_BTN_AUXMUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+/////////////////////////////
+//
+////////////////////////////
+	// Input Mute Button lineBLT -aux16 ########################		
+    //------------------
+    31, 21,   52, 32,
+     CTRL_NUM_INPUT_AUX16BLT_MUTE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+	// Input Mute Button lineBRT -aux16 ########################		
+    //------------------
+	59, 21,   80, 32,
+     CTRL_NUM_INPUT_AUX16BRT_MUTE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SMALL_REDBTN, 0x0000,
+
+///////////////////////////////////////////////////////////////
+//Post controlls Dave 4/1/98
+///////////////////////////////////////////////////////////////
+ // Input Post Button  -aux16##########################		
+    //------------------
+    31, 143,  52, 154,
+    CTRL_NUM_INPUT_AUX16LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	  "AUX16 LT PRE FADER LEVEL\0 ",  // the control name ....
+    "AUX16 LT POST FADER LEVE\0 ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+                        
+    // Input Post Button -aux16########################		
+    //------------------
+    59, 143,   80, 154,
+    CTRL_NUM_INPUT_AUX16RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	  "AUX16 RT PRE FADER LEVEL\0 ",  // the control name ....
+    "AUX16 RT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+    // Input Post Button  -aux15########################		
+    //------------------
+    31, 214,  52, 225,
+    CTRL_NUM_INPUT_AUX15LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	  "AUX15 LT PRE FADER LEVEL\0 ",  // the control name ....
+    "AUX15 LT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+    
+	  // Input Post Button  -aux15########################		
+    //------------------
+	  59, 214,   80, 225,
+    CTRL_NUM_INPUT_AUX15RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX15 RT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX15 RT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux14########################		
+    //------------------
+	  31, 285,   52, 296,
+    CTRL_NUM_INPUT_AUX14LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX14 LT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX14 LT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux14########################		
+    //------------------
+    59, 285,   80, 296,
+    CTRL_NUM_INPUT_AUX14RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX14 RT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX14 RT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux13########################		
+    //------------------
+	31, 356,  52, 367,
+    CTRL_NUM_INPUT_AUX13LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX13 LT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX13 LT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux13########################		
+    //------------------
+    59, 356,  80, 367,
+    CTRL_NUM_INPUT_AUX13RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX13 RT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX13 RT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux12########################		
+    //------------------
+	  31, 446,   52, 457,
+    CTRL_NUM_INPUT_AUX12LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX12 LT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX12 LT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux12########################		
+    //------------------
+    59, 446,   80, 457,
+    CTRL_NUM_INPUT_AUX12RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX12 RT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX12 RT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux11########################		
+    //------------------
+	  31, 517,   52, 528,
+    CTRL_NUM_INPUT_AUX11LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX11 LT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX11 LT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux11########################		
+    //------------------
+    59, 517,   80, 528,
+    CTRL_NUM_INPUT_AUX11RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX11 RT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX11 RT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux10########################		
+    //------------------
+  	31, 588,   52, 599,
+    CTRL_NUM_INPUT_AUX10LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX10 LT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX10 LT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux10########################		
+    //------------------
+    59, 588,   80, 599,
+    CTRL_NUM_INPUT_AUX10RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX10 RT PRE FADER LEVEL\0 ",  // the control name ....
+     "AUX10 RT POST FADER LEVE\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux09########################		
+    //------------------
+  	31, 659,   52, 670,
+    CTRL_NUM_INPUT_AUX09LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX9 LT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX9 LT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux09########################		
+    //------------------
+    59, 659,   80, 670,
+    CTRL_NUM_INPUT_AUX09RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX9 RT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX9 RT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux08########################		
+    //------------------
+  	31, 749,   52, 760,
+    CTRL_NUM_INPUT_AUX08LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX8 LT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX8 LT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux08########################		
+    //------------------
+    59, 749,   80, 760,
+    CTRL_NUM_INPUT_AUX08RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX8 RT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX8 RT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux07########################		
+    //------------------
+	  31, 820,   52, 831,
+    CTRL_NUM_INPUT_AUX07LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX7 LT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX7 LT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux07########################		
+    //------------------
+    59, 820,   80, 831,
+    CTRL_NUM_INPUT_AUX07RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX7 RT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX7 RT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux06########################		
+    //------------------
+    31, 891,   52, 902,
+    CTRL_NUM_INPUT_AUX06LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX6 LT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX6 LT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux06########################		
+    //------------------
+	  59, 891,   80, 902,
+    CTRL_NUM_INPUT_AUX06RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX6 RT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX6 RT POST FADER LEVEL\0 ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux05########################		
+    //------------------
+    31, 962,   52, 973,
+    CTRL_NUM_INPUT_AUX05LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX5 LT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX5 LT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux05########################		
+    //------------------
+	  59, 962,   80, 973,
+    CTRL_NUM_INPUT_AUX05RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX5 RT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX5 RT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux04########################		
+    //------------------
+    31, 1053,   52, 1064,
+    CTRL_NUM_INPUT_AUX04LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX4 LT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX4 LT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux04########################		
+    //------------------
+	  59, 1053,   80, 1064,
+    CTRL_NUM_INPUT_AUX04RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX4 RT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX4 RT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux03########################		
+    //------------------
+    31, 1124,   52, 1135,
+    CTRL_NUM_INPUT_AUX03LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX3 LT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX3 LT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux03########################		
+    //------------------
+	  59, 1124,   80, 1135,
+    CTRL_NUM_INPUT_AUX03RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX3 RT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX3 RT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux02########################		
+	//------------------
+    31, 1195,   52, 1206,
+    CTRL_NUM_INPUT_AUX02LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX2 LT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX2 LT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	  // Input Post Button  -aux02########################		
+    //------------------
+	  59, 1195,   80, 1206,
+    CTRL_NUM_INPUT_AUX02RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	 "AUX2 RT PRE FADER LEVEL\0  ",  // the control name ....
+     "AUX2 RT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	  // Input Post Button  -aux01########################		
+    //------------------
+    31, 1266,   52, 1277,
+    CTRL_NUM_INPUT_AUX01LT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	"AUX1 LT PRE FADER LEVEL\0  ",  // the control name ....
+    "AUX1 LT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+	// Input Post Button  -aux01########################		
+    //------------------
+	59, 1266,   80, 1277,
+    CTRL_NUM_INPUT_AUX01RT_POST, CTRL_TYPE_BTN_INPUT_AUXPOST_FILTER, DISP_TYPE_NORMAL,
+	"AUX1 RT PRE FADER LEVEL\0  ",  // the control name ....
+    "AUX1 RT POST FADER LEVEL\0 ",   // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_AUX_POST_IN, 0x0000,
+
+/////////////////////////////////////////////////////////////////
+	// Input PRE Fad Cue Button  -aux01########################		
+    //------------------
+    25, 3473,   51, 3501,
+     CTRL_NUM_INPUT_CUE_FAD_PRE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "CUE A PRE MUTE\0           ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_CUEA_PRE, 0x0000,
+
+	  // Input Post pan Cue Button  -aux01########################		
+    //------------------
+	  58, 3473,   84, 3501,
+    CTRL_NUM_INPUT_CUE_FAD_POST, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "CUE A POST PAN\0           ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_CUEA_POST_PAN, 0x0000,
+	
+/////////////////////////////////////////////////////////////////
+//End of post code Dave
+
+    /////////////////////////////////////////////////////////////////
+    //MIC LEVEL MIC/LINE A&B
+    // Input Mute Button  MIC B LEVEL########################		
+    //------------------
+    5, 2579,   23, 2588,
+     CTRL_NUM_INPUT_MICB_LEVEL, CTRL_INPUT_MICB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_TINNY_REDBTN, 0x0000,
+
+    // Input Mute Button  LINE B LEVEL########################		
+    //------------------
+    89, 2579,   107, 2588,
+     CTRL_NUM_INPUT_LINEB_LEVEL, CTRL_INPUT_LINEB_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_TINNY_REDBTN, 0x0000,
+
+    // Input Mute Button  MIC A LEVEL########################		
+    //------------------
+	  5, 2758,   23, 2767,
+     CTRL_NUM_INPUT_MICA_LEVEL, CTRL_INPUT_MICA_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_TINNY_REDBTN, 0x0000,
+
+    // Input Mute Button  LINE A LEVEL########################		
+    //------------------
+    89, 2758,   107, 2767,
+     CTRL_NUM_INPUT_LINEA_LEVEL, CTRL_INPUT_LINEA_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_TINNY_REDBTN, 0x0000,
+
+ // The DIRECT OUT POST #######################
+    //----------------------------
+    6,3422,  33,3437,
+    CTRL_NUM_INPUT_DIRECT_OUTPOST, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"DIRECT OUT PRE-POST\0      ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_INPUT_DIRECT_OUT, 0x0000,
+
+
+	// Line B 
+	//--------
+    4,3605,  22,3614,
+    CTRL_NUM_INPUT_LINE_B_VU, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"LINE B VU\0                ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_VU_SELECT_IN, 0x0000,
+
+
+    // The Gate Key VU #######################
+	//-----------------
+    4,3628,  22,3637,
+    CTRL_NUM_INPUT_GATE_KEY_VU, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"GATE KEY VU\0              ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_VU_SELECT_IN, 0x0000,
+
+
+	// Pre-Post Fader Vu data -- SOFTWARE CONTROL
+	//-------------------------------------
+    4,3583,  22,3592,
+    CTRL_NUM_INPUT_PREPOST_FADER_VU, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_VU_SELECT_IN, 0x0000,
+
+
+	// LABEL for this module
+	//-------------------------------------
+    9,3543,  104,3561,
+    CTRL_NUM_INPUT_LABEL, CTRL_TYPE_LABEL, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+		
+	// SAFE Button
+	//------------
+    19, 3925,  38, 3935,
+    CTRL_NUM_INPUT_SAFE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_SAFE, 0x0000,
+
+	
+  // The EqDisplay ....... Special stuff
+  //------------------------------------
+    27, 1719,  102, 1776,
+    CTRL_NUM_INPUT_LABEL, CTRL_TYPE_DISP_INPUT_EQ_FILTER, DISP_TYPE_NORMAL,
+	"\0                         ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+  
+
+
+
+    // the Terminator of this Zonemap
+    //-------------------------------
+    0x0000, 0x0000, 0x0000, 0x0000,
+    CTRL_NUM_NULL, CTRL_TYPE_NULL, DISP_TYPE_NULL,
+    "\0                         ",  // no control name ....
+    "\0                         ",  // the control name .... Alternative
+    RDOUT_NORDOUT,
+    0x0000, 0x0000, 0x0000,
+
+END
+

@@ -1,0 +1,321 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "..\..\inc\ConsoleDefinitionRC.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "..\..\inc\ctrl.h"
+#include "..\..\inc\lang.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "Definition for DCX(Gamble)\0"
+            VALUE "CompanyName", "CorTek Software, Inc.\0"
+            VALUE "FileDescription", "ConsoleDefinition\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "ConsoleDefinition\0"
+            VALUE "LegalCopyright", "Copyright © 1998, CorTek Software, Inc.\0"
+            VALUE "OriginalFilename", "ConsoleDefinition.dll\0"
+            VALUE "ProductName", "CorTek Software, Inc.: ConsoleDefinition\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "..\\..\\inc\\ConsoleDefinitionRC.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""..\\..\\inc\\ctrl.h""\r\n"
+    "#include ""..\\..\\inc\\lang.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""..\\..\\inc\\SAMM_RC.BIN""\r\n"
+    "#include ""..\\..\\inc\\SAMM_RD.BIN""\r\n"
+    "#include ""..\\..\\inc\\DCX_Full_Input.bin""\r\n"
+    "#include ""..\\..\\inc\\DCX_Zoom_Input.bin""\r\n"
+    "#include ""..\\..\\inc\\DCX_Zoom_SubMatrix.bin""\r\n"
+    "#include ""..\\..\\inc\\DCX_Zoom_Master.bin""\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUT_CONSOLEDEFINITION DIALOG DISCARDABLE  0, 0, 186, 77
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "About"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CTEXT           "Copyright 1998, CorTek Software, Inc.",IDC_STATIC,33,53,
+                    117,8
+    CTEXT           "Console Definition DLL",IDC_STATIC,33,22,117,8
+END
+
+IDD_CONFIGURATION DIALOGEX 0, 0, 210, 119
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "TCP/IP Settings"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_IP_ADDR,46,9,70,12,ES_AUTOHSCROLL
+    LTEXT           "IP Address",IDC_STATIC,4,12,35,8
+    LTEXT           "Port",IDC_STATIC,4,26,14,8
+    EDITTEXT        IDC_PORT,46,23,40,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Test Connection",IDC_BTN_TEST_CONNECTION,120,8,50,28,
+                    BS_MULTILINE,WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE
+    LTEXT           "...",IDC_STAT_1,2,60,170,8
+    LTEXT           "...",IDC_STAT_2,2,70,170,8
+END
+
+IDD_TABLE DIALOG DISCARDABLE  0, 0, 230, 114
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "DCX Table"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_FILENAME,76,0,120,14,ES_AUTOHSCROLL
+    LTEXT           "DCX Table File Name",IDC_STATIC,2,3,69,8
+    LISTBOX         IDC_LIST_TABLE,4,18,222,74,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Load",IDC_BTN_LOADTABLE,198,0,29,14
+    LTEXT           "...",IDC_STAT_1,4,94,126,8
+    LTEXT           "...",IDC_STAT_3,4,104,126,8
+END
+
+IDD_CLIENTSERVER_SETUP DIALOGEX 0, 0, 251, 95
+STYLE DS_ABSALIGN | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "VACS Client/Server Setup"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CTEXT           "",IDC_STAT_1,7,7,237,42,0,WS_EX_DLGMODALFRAME
+    CTEXT           "",IDC_ADDMESSAGE,7,72,237,16,SS_CENTERIMAGE,
+                    WS_EX_CLIENTEDGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUT_CONSOLEDEFINITION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 70
+    END
+
+    IDD_CONFIGURATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 203
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 112
+    END
+
+    IDD_TABLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 223
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 107
+    END
+
+    IDD_CLIENTSERVER_SETUP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 244
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_RD                  ICON    DISCARDABLE     "rd.ico"
+FullViewIcon            ICON    DISCARDABLE     "ICON1.ICO"
+IDICON_SEQUENCE         ICON    DISCARDABLE     "dcp8/idicon_s.ico"
+ZoomViewIcon            ICON    DISCARDABLE     "ZOOMVIEW.ICO"
+IDICON_GROUP            ICON    DISCARDABLE     "dcp8/idicon_g.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_CLIENT_BACKGROUND   BITMAP  DISCARDABLE     "CLIENT_B.BMP"
+IDB_FULL_I_MUTE_UP      BITMAP  DISCARDABLE     "fswu_2.BMP"
+IDB_FULL_I_SOLO_UP      BITMAP  DISCARDABLE     "fswu_1.BMP"
+IDB_FULL_I_VOL_FADER    BITMAP  DISCARDABLE     "dcp8/fknb_fdr.BMP"
+IDB_IQS_PALETTE         BITMAP  DISCARDABLE     "IQS_PAL.bmp"
+IDB_NUMBERS_200_40      BITMAP  DISCARDABLE     "dcp8/bmp00001.bmp"
+IDB_SEQ_CLOSE           BITMAP  DISCARDABLE     "dcp8/seq_clos.bmp"
+IDB_SEQ_DOCUMENT        BITMAP  DISCARDABLE     "dcp8/bitmap1.bmp"
+IDB_SEQ_OPEN            BITMAP  DISCARDABLE     "dcp8/seq_open.bmp"
+IDB_I_ZOOM              BITMAP  DISCARDABLE     "dcx\\input_a_module.bmp"
+IDB_SM_ZOOM             BITMAP  DISCARDABLE     "dcx\\submatrix_module.BMP"
+IDB_ZOOM_I_PAN_KNOB     BITMAP  DISCARDABLE     "dcx\\PanKnob.bmp"
+IDB_CDEF_LOGO           BITMAP  DISCARDABLE     "dcx\\corTekLogo.BMP"
+IDB_MASTER_ZOOM         BITMAP  DISCARDABLE     "dcx\\MasterCue_Module.BMP"
+IDB_VU_ON_VERTICAL      BITMAP  DISCARDABLE     "dcx\\VUMeterActive.bmp"
+IDB_CUE_01              BITMAP  DISCARDABLE     "dcx\\Cue_Middle.BMP"
+IDB_PPWR_IN             BITMAP  DISCARDABLE     "dcx\\PPower.BMP"
+IDB_EQ_IN               BITMAP  DISCARDABLE     "dcx\\IDB_EQ_IN.bmp"
+IDB_INSERT_INOUT        BITMAP  DISCARDABLE     "dcx\\IDB_INSERT_INOUT.bmp"
+IDB_LF_PEAKSHELF        BITMAP  DISCARDABLE     "dcx\\IDB_LF_PEAKSHELF.bmp"
+IDB_HF_PEAKSHELF        BITMAP  DISCARDABLE     "dcx\\IDB_HF_PEAKSHELF.BMP"
+IDB_COMPGATE_IN         BITMAP  DISCARDABLE     "dcx\\IDB_COMPGATE_IN.BMP"
+IDB_INPUT_MUTE          BITMAP  DISCARDABLE     "dcx\\IDB_INPUT_MUTE.BMP"
+IDB_CUEA_PRE            BITMAP  DISCARDABLE     "dcx\\Cuea_pre.bmp"
+IDB_CUEA_POST_PAN       BITMAP  DISCARDABLE     "dcx\\Cue_A_PostPan.BMP"
+IDB_TINNY_REDBTN        BITMAP  DISCARDABLE     "dcx\\tinny_mute.BMP"
+IDB_SMALL_REDBTN        BITMAP  DISCARDABLE     "dcx\\small_mute.BMP"
+IDB_SMALL_GREENBTN      BITMAP  DISCARDABLE     "dcx\\small_post.BMP"
+IDB_SUBINSERT           BITMAP  DISCARDABLE     "dcx\\IDB_SUBINSERT.BMP"
+IDB_INPUT_DIRECT_OUT    BITMAP  DISCARDABLE     "dcx\\btn_input_direct_out.bmp"
+IDB_AUX_EQ_IN           BITMAP  DISCARDABLE     "dcx\\btn_subaux_eq_in.bmp"
+IDB_AUX_EQ_LO_SHELF     BITMAP  DISCARDABLE     "dcx\\btn_subaux_eq_lo_shelf.bmp"
+IDB_AUX_EQ_HI_SHELF     BITMAP  DISCARDABLE     "dcx\\btn_subaux_eq_hi_shelf.bmp"
+IDB_SUBMATRIX_MUTE      BITMAP  DISCARDABLE     "dcx\\btn_submatrix_mute.bmp"
+IDB_MATRIX_MUTE_CENTER  BITMAP  DISCARDABLE     "dcx\\btn_aux_mono_center.bmp"
+IDB_AUX_AUX_MUTE        BITMAP  DISCARDABLE     "dcx\\btn_aux_aux_mute.bmp"
+IDB_ZOOM_I_VOL_FADER    BITMAP  DISCARDABLE     "dcx\\fdr_white_big.bmp"
+IDB_ZOOM_SMALLKNOB      BITMAP  DISCARDABLE     "dcx\\fdr_white_small.bmp"
+IDB_ZOOM_MEDKNOB        BITMAP  DISCARDABLE     "dcx\\fdr_white_medium.bmp"
+IDB_ZOOM_MEDKNOB_YELLOW BITMAP  DISCARDABLE     "dcx\\fdr_yellow_medium.bmp"
+IDB_ZOOM_MEDKNOB_BLUE   BITMAP  DISCARDABLE     "dcx\\fdr_blue_medium.bmp"
+IDB_ZOOM_MEDKNOB_RED    BITMAP  DISCARDABLE     "dcx\\fdr_red_medium.bmp"
+IDB_MASTER_TINY_BLUE    BITMAP  DISCARDABLE     "dcx\\btn_tiny_blue.bmp"
+IDB_MASTER_TINY_GREEN   BITMAP  DISCARDABLE     "dcx\\btn_tiny_green.bmp"
+IDB_MASTER_YELLOW_SMALL BITMAP  DISCARDABLE     "dcx\\btn_yellow_small.bmp"
+IDB_MASTER_RED_MED      BITMAP  DISCARDABLE     "dcx\\btn_master_aux_red.bmp"
+IDB_MASTER_ORANGE_SMALL BITMAP  DISCARDABLE     "dcx\\btn_master_orange_medium.bmp"
+IDB_MASTER_YELLOW_MED   BITMAP  DISCARDABLE     "dcx\\btn_master_yellow_medium.bmp"
+IDB_MASTER_YELLOW_TINY  BITMAP  DISCARDABLE     "dcx\\btn_master_yellow_tiny.bmp"
+IDB_MASTER_PPWR         BITMAP  DISCARDABLE     "dcx\\btn_master_ppwr.bmp"
+IDB_MASTER_BLUE_MED     BITMAP  DISCARDABLE     "dcx\\btn_master_blue_medium.bmp"
+IDB_MASTER_GREEN_MED    BITMAP  DISCARDABLE     "dcx\\btn_master_green_medium.bmp"
+IDB_KEY_EXT             BITMAP  DISCARDABLE     "dcx\\btn_input_keycue.bmp"
+IDB_KEY_IN              BITMAP  DISCARDABLE     "dcx\\btn_input_extkey.bmp"
+IDB_LOWCUT_IN           BITMAP  DISCARDABLE     "dcx\\btn_input_locut.bmp"
+IDB_PAN_INDICATOR       BITMAP  DISCARDABLE     "dcx\\pan_indicator.bmp"
+IDB_VU_ON_HORIZONTAL    BITMAP  DISCARDABLE     "dcx\\VUMeterActive_Horizontal.bmp"
+IDB_VU_SELECT_IN        BITMAP  DISCARDABLE     "dcx\\btn_vu_select_in.BMP"
+IDB_INPUT_COMP_IN       BITMAP  DISCARDABLE     "dcx\\btn_comp_in.BMP"
+IDB_INPUT_GATE_IN       BITMAP  DISCARDABLE     "dcx\\btn_gate_in.BMP"
+IDB_LO_FREQ_SHELF       BITMAP  DISCARDABLE     "dcx\\btn_lofreq_shelf_in.BMP"
+IDB_INPUT_AUX_POST_IN   BITMAP  DISCARDABLE     "dcx\\btn_input_aux_post_in.BMP"
+IDB_LINE_B_AUX_16       BITMAP  DISCARDABLE     "dcx\\btn_line_b_aux_16_in.BMP"
+IDB_MATRIX_MONO_MUTE_IN BITMAP  DISCARDABLE     "dcx\\btn_matrix_mute_mono_in.BMP"
+IDB_PHASE_REVERSE       BITMAP  DISCARDABLE     "dcx\\Phase Rev.BMP"
+IDB_MASTER_VU_POST      BITMAP  DISCARDABLE     "dcx\\Master-Post-on.BMP"
+IDB_EQ_RIGHT            BITMAP  DISCARDABLE     "dcx\\btn_eq_right.BMP"
+IDB_SAFE                BITMAP  DISCARDABLE     "dcx\\btn_Safe.bmp"
+IDB_I_FULL              BITMAP  DISCARDABLE     "dcx\\full_input_module.bmp"
+IDB_FULL_I_MUTE_DOWN    BITMAP  DISCARDABLE     "dcx\\btn_full_mute.bmp"
+IDB_FULL_I_SOLO_DOWN    BITMAP  DISCARDABLE     "dcx\\btn_full_cue.bmp"
+IDB_SA_FULL             BITMAP  DISCARDABLE     "dcx\\full_subaux_module.bmp"
+IDB_FDR_BLUE_SMALL      BITMAP  DISCARDABLE     "dcx\\fdr_blue_small.bmp"
+IDB_FDR_WHITE_TINY      BITMAP  DISCARDABLE     "dcx\\bitmap1.bmp"
+IDB_STEREO_CUE_METERS   BITMAP  DISCARDABLE     "dcx\\Stereo Cue Meters.BMP"
+IDB_VU_DISPLAY2         BITMAP  DISCARDABLE     "dcx\\vu_displ.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+SAMMGRAPHCURSOR         CURSOR  DISCARDABLE     "SAMMGRAP.CUR"
+SAMMHANDCURSOR          CURSOR  DISCARDABLE     "SAMMHAND.CUR"
+SAMMVSCROLLCURSOR       CURSOR  DISCARDABLE     "SAMMVSCR.CUR"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "..\..\inc\SAMM_RC.BIN"
+#include "..\..\inc\SAMM_RD.BIN"
+#include "..\..\inc\DCX_Full_Input.bin"
+#include "..\..\inc\DCX_Zoom_Input.bin"
+#include "..\..\inc\DCX_Zoom_SubMatrix.bin"
+#include "..\..\inc\DCX_Zoom_Master.bin"
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,110 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "ConsoleDefinition"=".\ConsoleDefinition\ConsoleDefinition.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Vacs Client for DCX/ConsoleDefinition", ELAAAAAA
+    .\consoledefinition
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "DLList32"=".\DLList32\DLList32.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Vacs Client for DCX/DLList32", VOAAAAAA
+    .\dllist32
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Vacs"=".\Vacs.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Vacs Client for DCX", CLAAAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ConsoleDefinition
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name DLList32
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name commport
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "commport"=".\commport\commport.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Vacs Client for DCX/commport", CBEAAAAA
+    .\commport
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "usengl"=".\usengl\usengl.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Vacs Client for DCX/usengl", TQAAAAAA
+    .\usengl
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+    begin source code control
+    "$/Vacs Client for DCX", CLAAAAAA
+    .
+    end source code control
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
