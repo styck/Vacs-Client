@@ -175,6 +175,79 @@ BEGIN
     RDOUT_NORDOUT,
     0x0000, 0x0000, 0x0000,
 
+/////////////////////////////
+// Matrix Mutes (both sub LT & RT)
+// Matrix Cue (Pre Cue) (two top buttons in full view)
+// Must define LT and RT
+// Stereo linking is defined in groups.c (InitGroups())
+
+	// Matrix Mute Button  -MATRIX LT ########################		
+    //------------------
+	2, 101,   12, 111,
+    CTRL_NUM_MATRIXLT_MUTE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_FULL_I_MUTE_DOWN, 0x0000,
+
+	// Matrix Mute Button  -MATRIX RT ########################		
+    //------------------
+	2, 101,   12, 111,
+    CTRL_NUM_MATRIXRT_MUTE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	  "\0                         ",  // the control name ....
+	  "\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_FULL_I_MUTE_DOWN, 0x0000,
+
+
+	//Matrix Cue Pre######################################		
+    //------------------
+	2, 114,   12, 124,
+    CTRL_NUM_MATRIX_CUE_PRE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+    "MATRIX CUE A PRE\0         ",  // the control name ....
+    "MATRIX CUE B PRE\0         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_FULL_I_SOLO_DOWN, 0x0000,
+
+
+
+//////////////////////////////////////////////////////
+// Subgroup Mutes (both sub LT & RT)
+// Subgroup Cue (Pre Cue) (two bottom buttons)
+// Must define LT and RT
+// Stereo linking is defined in groups.c (InitGroups())
+
+    // Subgroup Mutes Button LT ########################		
+    //------------------
+    2, 405,   12, 415,
+    CTRL_NUM_MATRIXLT_MUTE_SUB, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"SUB LT TO MASTER MUTE\0    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_FULL_I_MUTE_DOWN, 0x0000,
+
+    // Subgroup Mutes Button RT ########################		
+    //------------------
+    2, 405,   12, 415,
+    CTRL_NUM_MATRIXRT_MUTE_SUB, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"SUB RT TO MASTER MUTE\0    ",  // the control name ....
+	"\0                         ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_FULL_I_MUTE_DOWN, 0x0000,
+
+	// Input PRE Fad Cue Button ########################		
+    //------------------
+    2, 418,   12, 428,
+    CTRL_NUM_MATRIX_STERIO_CUE_PRE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+	"SUB CUE A PRE\0            ",  // the control name ....
+	"SUB CUE B PRE\0            ",  // the control name .... Alternative
+    RDOUT_STRING_TABLE,
+    0x0000, IDB_FULL_I_SOLO_DOWN, 0x0000,
+
+
+
+/////////////////////////////
+
     // The Fader Section
     1, 213,     33, 402,
     CTRL_NUM_NULL, CTRL_TYPE_OPEN_FADER, DISP_TYPE_NULL,
