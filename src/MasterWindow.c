@@ -1,20 +1,22 @@
 //=================================================
-// Copyright 1998, CorTek Software, Inc.
+// Copyright 1998 - 2001, CorTek Softawre, Inc.
 //=================================================
+//
+//
+// $Author: $
+// $Archive:$
+// $Revision:$
+//
 
 //=================================================
 // The Zoom View Window
 //
 //=================================================
 
-//#include <windows.h>
 
 #include "SAMM.h"
 #include "SAMMEXT.h"
 #include "MACRO.h"
-
-
-
 
 // Local definitions
 //------------------
@@ -33,25 +35,25 @@ int         iReturn;
 WNDCLASS    wc;
 
 
-// Register Zoom View Class
-//--------------------------
-ZeroMemory(&wc,  sizeof(WNDCLASS));      // Clear wndclass structure
+	// Register Zoom View Class
+	//--------------------------
+	ZeroMemory(&wc,  sizeof(WNDCLASS));      // Clear wndclass structure
 
-wc.style = CS_HREDRAW | CS_VREDRAW;
-wc.lpfnWndProc = (WNDPROC)MasterViewProc;
-wc.cbClsExtra = 0;
-wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
-wc.hInstance = ghInstMain;
-wc.hIcon = LoadIcon(ghInstConsoleDef, MAKEINTRESOURCE(ZoomViewIcon));// this might leak memory
-wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-wc.hbrBackground = GetStockObject(BLACK_BRUSH);
-wc.lpszMenuName = NULL;
-wc.lpszClassName = gszMasterViewClass;
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = (WNDPROC)MasterViewProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
+	wc.hInstance = ghInstMain;
+	wc.hIcon = LoadIcon(ghInstConsoleDef, MAKEINTRESOURCE(ZoomViewIcon));// this might leak memory
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = GetStockObject(BLACK_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = gszMasterViewClass;
 
-iReturn = RegisterClass(&wc);
+	iReturn = RegisterClass(&wc);
 
-if(iReturn == 0)
-	 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+	if(iReturn == 0)
+		 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
 return 0;
 }
@@ -60,25 +62,30 @@ return 0;
 // CreateMasterViewWindow
 //
 //
+//
+
 HWND  CreateMasterViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 {
   HWND                hWnd;
   RECT                rect;
   LPMIXERWNDDATA      lpmwd;
+	DWORD								style;
+	int									nWidth;
 
   if(pMWD == NULL)
-    {
+  {
     lpmwd = MixerWindowDataAlloc(gwActiveMixer,
                                  gpZoneMaps_Zoom,
                                  MAX_CHANNELS,
-                                 5);
+                                 DCX_DEVMAP_MODULE_MASTER);
 
     if(lpmwd == NULL)
-        {
+    {
         ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
         return NULL;
-        }
+    }
 
+		///////////////////////////////////////////////////////////
     // here is the trick of displaying only the master channel
     // Set the Master channel to be the first visible module
     // and then limit the size of the window to a single module.
@@ -94,24 +101,15 @@ HWND  CreateMasterViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
     // store the Window title
     //-----------------------
     lstrcpy(lpmwd->szTitle, szTitle);
-    // make some room for the label Window
-    // after all we want this window to appear
-    // in it's full size
-    //----------------------------------------
-    //lpmwd->rWndPos.bottom += HEIGHT_FULL_LABEL_WND;
-    }
+
+  }
   else
-    {
+  {
     lpmwd = pMWD;
     //lpmwd->rWndPos.bottom += HEIGHT_FULL_LABEL_WND;
-    }
+  }
 
-  // give some room for the label stuff
-  //------------------------------------------------
-  //lpmwd->rMaxWndPos.bottom += HEIGHT_FULL_LABEL_WND;
-  //lpmwd->rWndPos.bottom += HEIGHT_FULL_LABEL_WND;
-
-
+	//////////////////////////////////////////////////
   // get some information about where are we in the 
   // Client Window
   //
@@ -122,15 +120,28 @@ HWND  CreateMasterViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 
   lpmwd->rWndPos.right = MASTER_MODULE_WIDTH + MAX_BORDER_WIDTH;
 
+
+	style = WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE;
+
+#ifdef SCROLLBARS
+	style = style | WS_VSCROLL;
+	lpmwd->rWndPos.right += GetSystemMetrics(SM_CYVTHUMB);	// allow space for scroll bar
+#endif
+
+	nWidth = lpmwd->rWndPos.right;	
+
+
+	/////////////////////////////////////////////////
+	// CREATE THE MASTER VIEW WINDOW
+
   hWnd = CreateWindow (
                         gszMasterViewClass, // class name
                         szTitle,            // title
-                        WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, // style
+                        style, // style
                         rect.right - lpmwd->rWndPos.right, // x
-                        //rect.left, // x
                         rect.top,  // y
-                        lpmwd->rWndPos.right,// cX
-                        lpmwd->rWndPos.bottom,// cY
+                        lpmwd->rWndPos.right,	// Width of master window
+                        lpmwd->rWndPos.bottom,// Height of master window
 
                         ghwndMain ,           // parent
                         NULL,                 // menu
@@ -145,6 +156,7 @@ HWND  CreateMasterViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
   //---------------------------
   SetWindowLong(hWnd, 0, (LPARAM)lpmwd);
 
+	/////////////////////////////////
   // adjust the MDI Client Window
   // so we can see this window
   //-----------------------------
@@ -157,14 +169,14 @@ HWND  CreateMasterViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
   rect.left = rect.top = 0;
   rect.right = lpmwd->rMaxSize.right;
   rect.bottom = HEIGHT_FULL_LABEL_WND;
-  lpmwd->wWndType = WND_GROUPLBL_ZOOM;//WND_GROUPLBL_FULL;
+  lpmwd->wWndType = WND_GROUPLBL_ZOOM;	//WND_GROUPLBL_FULL;
 
   if(CreateLblGroupWnd(&rect, hWnd, lpmwd) == NULL)
-    {
+  {
     ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
     DestroyMasterViewWindow(hWnd);
     return NULL;//IDS_ERR_CREATE_WINDOW;
-    }
+  }
 
 
   lpmwd->rVisible.bottom -= HEIGHT_FULL_LABEL_WND;
@@ -176,11 +188,22 @@ HWND  CreateMasterViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 
   lpmwd->rVisible.right = MASTER_MODULE_WIDTH;
 
+#ifdef SCROLLBARS
+  lpmwd->rVisible.right += GetSystemMetrics(SM_CYVTHUMB);
+#endif
+
   CreateFullViewImageWindow(hWnd, (LPARAM)lpmwd);
   
   ShowWindow(hWnd, SW_SHOW);
   InvalidateRect(hWnd, NULL, FALSE);
   UpdateWindow(hWnd);
+
+	// Setup the Scroll bars
+
+	SetScrollRange(hWnd, SB_VERT, 0, 3950, FALSE);             
+	SetScrollPos(hWnd, SB_VERT, 1975, TRUE); 
+
+
   return hWnd;
 }
 
@@ -240,19 +263,113 @@ void  DrawWindowBorder(HWND hwnd, PAINTSTRUCT *pPs)
 //===============================
 //FUNCTION:MasterViewProc
 //
+//
+//
+//
+//
 //===============================
+
+//#define	PAGEUPDOWN_OFFSET	765	// Number of pixels to pageup/down
+//#define	LINEUPDOWN_OFFSET	5		// Number of pixels to lineup/down
+
+#define	PAGEUPDOWN_OFFSET	rect.bottom - rect.top - HEIGHT_FULL_LABEL_WND;	//  765	// Number of pixels to pageup/down
+#define	LINEUPDOWN_OFFSET	5		// Number of pixels to lineup/down
+
 LRESULT CALLBACK  MasterViewProc(HWND hWnd, UINT wMessage, 
                                  WPARAM wParam, LPARAM lParam)
 {
-MINMAXINFO FAR      *lpMMI;
-LPMIXERWNDDATA      lpmwd;
-PAINTSTRUCT         ps;
-RECT                rect;
+	MINMAXINFO FAR      *lpMMI;
+	LPMIXERWNDDATA      lpmwd;
+	PAINTSTRUCT         ps;
+	RECT                rect;
+	int nVscrollInc;	// Dummy variable
 
-lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
+	lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
-switch (wMessage)
+	switch (wMessage)
 	{
+
+#ifdef SCROLLBARS
+
+
+		case WM_VSCROLL: 
+			/* Determine how much to scroll vertically. 
+			*/ 
+
+      GetWindowRect(hWnd, &rect);
+
+			switch (LOWORD(wParam)) 
+			{ 
+
+				case SB_TOP: 
+				nVscrollInc = 1; 
+				break; 
+
+				case SB_BOTTOM: 
+				nVscrollInc = 2; 
+				break; 
+
+				case SB_LINEUP: 
+					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+					{
+						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+							lpmwd->pntMouseCur.y -= LINEUPDOWN_OFFSET;	// Change the current mouse position
+					
+						ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
+						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+					}
+				break; 
+
+				case SB_LINEDOWN: 
+					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+					{
+						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+						lpmwd->pntMouseCur.y += LINEUPDOWN_OFFSET;	// this is the number of pixels we move down
+						
+						ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
+						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+					}
+				break; 
+
+				case SB_PAGEUP:
+
+					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+					{
+						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+						lpmwd->pntMouseCur.y -= PAGEUPDOWN_OFFSET;	// Change the current mouse position
+					
+						ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
+						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+					}
+
+				break; 
+
+				case SB_PAGEDOWN: 
+
+					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+					{
+						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+						lpmwd->pntMouseCur.y += PAGEUPDOWN_OFFSET;	// this is the number of pixels we move down
+						
+						ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
+						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+					}
+
+				break; 
+
+				case SB_THUMBTRACK: 
+				nVscrollInc = 7; 
+				break; 
+
+				default: 
+					g_iYSpeed = 0;
+					nVscrollInc = 0; 
+
+			} 
+			break;
+
+#endif	 // SCROLLBARS
+
     //////////////////////////////////////////////////////////////
     case WM_ERASEBKGND: // to reduce flashing on the screen
         break;
@@ -265,10 +382,10 @@ switch (wMessage)
     //////////////////////////////////////////////////////////////
     case WM_COMMAND:
 	    switch (LOWORD(wParam))
-		    {
+		   {
             default:
                 return DefWindowProc(hWnd, wMessage, wParam, lParam);
-			  }
+			 }
         break;
     //////////////////////////////////////////////////////////////
     case WM_SIZE:
@@ -276,26 +393,26 @@ switch (wMessage)
         break;
     //////////////////////////////////////////////////////////////
     case WM_GETMINMAXINFO:
-            lpMMI = (MINMAXINFO FAR*)lParam;
-            // get the information for this window
-            //------------------------------------
-            if(lpmwd)
-                {
-                lpMMI->ptMinTrackSize.x = lpmwd->rMaxWndPos.left;
-                lpMMI->ptMinTrackSize.y = lpmwd->rMaxWndPos.top;
-                lpMMI->ptMaxTrackSize.x = lpmwd->rMaxWndPos.right;
-                lpMMI->ptMaxTrackSize.y = lpmwd->rMaxWndPos.bottom;
-                }
-            break;
+        lpMMI = (MINMAXINFO FAR*)lParam;
+        // get the information for this window
+        //------------------------------------
+        if(lpmwd)
+        {
+            lpMMI->ptMinTrackSize.x = lpmwd->rMaxWndPos.left;
+            lpMMI->ptMinTrackSize.y = lpmwd->rMaxWndPos.top;
+            lpMMI->ptMaxTrackSize.x = lpmwd->rMaxWndPos.right;
+            lpMMI->ptMaxTrackSize.y = lpmwd->rMaxWndPos.bottom;
+        }
+        break;
     //////////////////////////////////////////////////////////////
     case WM_MOVE:
         if(lpmwd)
-            {
+        {
             GetWindowRect(hWnd, &rect);
             ScreenToClient(ghwndMDIClient, (LPPOINT)&rect.left);
             lpmwd->rWndPos.left = rect.left;
             lpmwd->rWndPos.top  = rect.top;
-            }
+        }
 
         break;
 
@@ -304,7 +421,8 @@ switch (wMessage)
         if(ghwndZoom == hWnd)
             ghwndZoom = NULL;
             
-//      break;
+//      FALL TRHU
+
     default:
         return DefWindowProc(hWnd, wMessage, wParam, lParam);
 
