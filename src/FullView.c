@@ -1,7 +1,12 @@
 //=================================================
 // Copyright 1998 - 2001, CorTek Softawre, Inc.
 //=================================================
-
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
 //=================================================
 // The Full View Window
 //
@@ -740,7 +745,7 @@ RECT            rAct;
 				///////////////////////////////////////////////////
         // Update - Draw the Control only if it is visible
         //------------------------------------------------
-        if((iScrBottom > rZone.top) && ((lpctrlZM->rZone.bottom - lpmwd->iYOffset) > 0))
+        if((iScrBottom > lpctrlZM->rZone.top) && ((lpctrlZM->rZone.bottom - lpmwd->iYOffset) > 0))
         {
             iPhisDataValue = GETPHISDATAVALUE(iMixer, lpctrlZM, iCtrlNum);
 
