@@ -432,7 +432,12 @@ switch(uiMsg)
 #endif
 
 			wsprintf(szBuff, "%s", g_sequence_file_name);
-      OpenSequenceFiles (szBuff);
+      if(OpenSequenceFiles (szBuff) == FALSE)
+			{
+				CloseSequenceFiles ();
+        DestroyWindow(ghwndSeqDlg);
+        return FALSE;
+			}
 	     
       // init the Tree and the List View
       //--------------------------------
