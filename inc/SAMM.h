@@ -309,7 +309,7 @@ void            StopDragTimer(void);
 void            HandleDragTimer(void);
 
 
-void            GetSeqUpdateProps(SEQENTRY  *pSeqentry);
+int            GetSeqUpdateProps(SEQENTRY  *pSeqentry);
 
 
 void            PrepareMTCReadout(void);

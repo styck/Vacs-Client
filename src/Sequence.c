@@ -849,7 +849,7 @@ BOOL  SeqGoToLast(void)
 //
 BOOL CALLBACK   SeqUpdatePropProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
-static BOOL bPropogate;
+static BOOL bPropogateAll;
 
   switch(uiMsg)
   {
@@ -857,20 +857,17 @@ static BOOL bPropogate;
     switch(LOWORD(wParam))
     {
     case IDC_PROP_ALL:
-		bPropogate=TRUE;
-//      DisableSeqUpdateAllProps(hwnd, TRUE);
-//      SetSeqUpdateAllProps(hwnd, TRUE);
+		bPropogateAll=TRUE;
       break;
     case IDC_PROP_CUSTOM:
-//      DisableSeqUpdateAllProps(hwnd, FALSE);
       break;
     case IDC_DONOT_PROP:
-		bPropogate=FALSE;
-//      DisableSeqUpdateAllProps(hwnd, TRUE);
-//      SetSeqUpdateAllProps(hwnd, FALSE);
+		bPropogateAll=FALSE;
       break;
     case IDOK:
-		if(bPropogate)
+
+
+		if(bPropogateAll)
 		{
 		  DisableSeqUpdateAllProps(hwnd, TRUE);
 		  SetSeqUpdateAllProps(hwnd, TRUE);
@@ -882,7 +879,7 @@ static BOOL bPropogate;
 		}
 
       g_SeqPropagate.bUseCurrent = IsDlgButtonChecked(hwnd, IDC_USE_AUTO);
-			if(IsDlgButtonChecked(hwnd, IDC_PROP_ALL))
+			if(bPropogateAll)
 				g_SeqPropagate.iPropWhat = PROP_ALL;
 			else
 				g_SeqPropagate.iPropWhat = PROP_NONE;
@@ -898,8 +895,10 @@ static BOOL bPropogate;
   case WM_INITDIALOG:
     DisableSeqUpdateAllProps(hwnd, TRUE);
     SetSeqUpdateAllProps(hwnd, TRUE);
-    CheckDlgButton(hwnd, IDC_PROP_ALL, BST_CHECKED); 
 
+		// Default to propogate all
+    CheckDlgButton(hwnd, IDC_PROP_ALL, BST_CHECKED); 
+		bPropogateAll = TRUE;
 
     return FALSE;        
     break;
@@ -961,11 +960,20 @@ void  DisableSeqUpdateAllProps(HWND hwnd, BOOL bDisable)
 //FUNCTION: GetSeqUpdateProps
 //
 //
-void  GetSeqUpdateProps(SEQENTRY  *pSeqentry)
+int  GetSeqUpdateProps(SEQENTRY  *pSeqentry)
 {
+int retval;
+
   if(g_SeqPropagate.bUseCurrent == FALSE || pSeqentry == NULL)
-    DialogBox(ghInstStrRes, MAKEINTRESOURCE(IDD_SEQ_UPDATE_PROP), 
+	{
+    retval = DialogBox(ghInstStrRes, MAKEINTRESOURCE(IDD_SEQ_UPDATE_PROP), 
               ghwndMain, SeqUpdatePropProc);
+	}
+	else
+	{
+		retval = 1;	// if user wants to always usecurrent propogate settings
+	}
+	return(retval);		// if 0 then we canceled
 };
 
 
@@ -1049,7 +1057,7 @@ BOOL    RecallEntry(void)
 /////////////////////////////////////////////////////////////////////
 //  MEMBER FUNCTION: UpdateEntry
 //
-//
+// Handle updating a sequence entry
 //
 BOOL    UpdateEntry(void)
 {
@@ -1071,13 +1079,16 @@ BOOL    UpdateEntry(void)
 
     if(pSeqentry)
     {
-      GetSeqUpdateProps(pSeqentry);
-
-
-      if(UpdateDataFile(pSeqentry->dwOffset, lItemCur))
-      {
-        //MessageBeep(0xFFFFFFFF);
-      }
+			// Ask if we wish to propogate these changes
+			// do NOT update if user presses CANCEL in
+			// this dialog box
+			if(GetSeqUpdateProps(pSeqentry))	// Returns 0 if CANCEL is pressed in propogate box
+			{
+				if(UpdateDataFile(pSeqentry->dwOffset, lItemCur))
+				{
+					//MessageBeep(0xFFFFFFFF);
+				}
+			}
     }
 
   }
