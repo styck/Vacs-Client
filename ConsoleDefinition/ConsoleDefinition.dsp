@@ -262,6 +262,18 @@ SOURCE=.\Resource\CLIENT_B.BMP
 # End Source File
 # Begin Source File
 
+SOURCE=.\Resource\dcx\clip_light_big.bmp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Resource\dcx\clip_light_medium.bmp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Resource\dcx\clip_light_small.bmp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Resource\dcx\compgate_in.bmp
 # End Source File
 # Begin Source File
