@@ -5,7 +5,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/Events interface.c $
-// $Revision: 37 $
+// $Revision: 38 $
 //
 
 //=================================================
@@ -1594,6 +1594,8 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD wCtrlVal, int iVal, BOOL 
   // Check for the  Matrix modules and flip them to the Aux modules
   // Since the program *thinks* they reside on the same Module
   //
+	// I DON'T THINK THIS DOES ANYTHING  - FDS
+
   if( (iPhisChannel == g_iCueModuleIdx)  )
   {
     iPhisChannel = g_iMasterModuleIdx;
@@ -1620,10 +1622,14 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD wCtrlVal, int iVal, BOOL 
 	// else we are passing the iCtrlChanPos and need
 	// to use the Num() routine instead
 
-  if(bIsAbsVal)
+  if(bIsAbsVal)	
+	{
     lpctrlZM = ScanCtrlZonesAbs(gpZoneMaps_Zoom[iPhisChannel].lpZoneMap, wCtrlVal);
+	}
   else
+	{
     lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[iPhisChannel].lpZoneMap, wCtrlVal);
+	}
 
   // Force a search in the Master module if we couldn't find the Control Zone
   // it better be there
@@ -1637,14 +1643,64 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD wCtrlVal, int iVal, BOOL 
 		// else we are passing the iCtrlChanPos and need
 		// to use the Num() routine instead
 
-    if(bIsAbsVal)	
-      lpctrlZM = ScanCtrlZonesAbs(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, wCtrlVal);
-    else
-      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, wCtrlVal);
-  }
-	else	/// if(lpctrlZM != NULL)
-  {
+    if(bIsAbsVal)		// for here it just means we are called by the network reciever
+		{
 
+			// Loop throught the matrix count and find if this channel is an AUX, if so
+			// then we use the count to index into our controls to find the correct one
+			// on the Master module
+			 
+			for(iCount=0; iCount < MAX_MATRIX_COUNT; iCount ++)
+			{
+
+				if(g_aiMatrix[iCount] != 0)		// Make sure there is a Matrix module at this position
+				{
+					if(iPhisChannel == g_aiAux[iCount])	// Get the corresponding AUX module channel number
+						break;
+				}
+			}
+
+			// We got the iCount offset from the controls so we can find the one we are looking for.
+			// we need to distinguish the correct control by using the wCtrlVal that is passed
+			// over the network.
+
+      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX1LT_FADER - iCount*4);
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX1RT_FADER - iCount*4);
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX2LT_FADER - iCount*4);
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX2RT_FADER - iCount*4);
+			// SUM IN
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+	      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_SUMIN1 - iCount*2);
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_SUMIN2 - iCount*2);
+			// Master Pre-post
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+	      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX01PRE - iCount*4);
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX01POST - iCount*4);
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+	      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX02PRE - iCount*4);
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX02POST - iCount*4);
+    // Master Aux mutes
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+	      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_CUE_AUX01_MUTE - iCount*2);
+			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_CUE_AUX02_MUTE - iCount*2);
+
+			// now force to master module so that UpdateSameMixWndByCtrlNum() can update control values
+			iPhisChannel = g_iMasterModuleIdx;
+
+		}
+    else
+		{
+      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, wCtrlVal);
+		}
+
+  }
 		///////////////////////////////////////////////////////////////////
 		// We are filtering some controls so they don't update another
 		// client over the network.  UpdateFromNetwork will return
@@ -1662,6 +1718,7 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD wCtrlVal, int iVal, BOOL 
 				SETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
 
 			r = lpctrlZM->rZone;
+
 			// Select the appropriate bitmap into the buffer
 			//
 			hdcBuffer = CreateCompatibleDC(ghdc256);
@@ -1679,7 +1736,7 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD wCtrlVal, int iVal, BOOL 
 			DeleteDC(hdcBuffer);
 
 
-			// This actually displays the entire movement of the faders
+			// This actually displays the entire movement of the faders (and other controls)
 			// Without this line the faders will 'jump' into their final position
 
 			// now update all of the other mixers
@@ -1689,13 +1746,17 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD wCtrlVal, int iVal, BOOL 
 
 			// THIS really slows things down
 			// Doesn't seem to be needed????
+			// This updates the visual of the controls, ie values
 			//
 			// without this line Group Faders do NOT work
 
+			// This updates the iPhisChannel, if we want to update a virtual module
+			// then need to pass that address instead.
+
 			UpdateSameMixWndByCtrlNum(NULL, 0, iPhisChannel, lpctrlZM, iVal, NULL);
+
 
 		}
 
-  }
 }
 
