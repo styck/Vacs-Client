@@ -17,7 +17,7 @@
 extern HWND			g_stereoCueMetersWindow;
 extern char	g_sequence_file_name[MAX_PATH];
 
-BOOL		OpenSequenceFiles (void);
+BOOL		OpenSequenceFiles (LPSTR  lpstrFName);
 
 BOOL    g_bReversDirection = FALSE;
 int			FindConsecutiveGroupIndex(int iNum, int iType);
@@ -37,6 +37,7 @@ FILESTRUCT	fsTemp;
 UINT				timerID;
 int					shift_key;	 
 WORD	wKeyFlags=0;
+char	szBuff[MAX_PATH];
 
 ghInstMain = hInstance;
 
@@ -91,10 +92,9 @@ else
 {
 
 	CloseAllMDI();
-	ShowSeqWindow(FALSE);
 
 	// go to the right directory and Load the LA$T state of the mixer....			
-	wsprintf(fsTemp.szFileDir, "%s\\mix\\", gszProgDir);
+	wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 	wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
 	if(LoadMixFile(&fsTemp, FALSE) != 0)
 	{
@@ -105,8 +105,11 @@ else
 		// If this isn't done then when they try to add a sequence
 		// to the sequence window it will create an exception
 
-	  wsprintf(g_sequence_file_name,"%s%s",gszProgDir, fsTemp.szFileName);
-	 	OpenSequenceFiles ();
+	  wsprintf(g_sequence_file_name,"%smix\\%s",gszProgDir, fsTemp.szFileName);
+	 	OpenSequenceFiles (g_sequence_file_name);
+
+	ShowSeqWindow(FALSE);
+
 	}
 }
 
@@ -252,10 +255,15 @@ while((ghwndMain != NULL) && GetMessage(&msg, NULL/*ghwndMain*/, 0, 0) == TRUE)
 				g_bReversDirection = FALSE; 
 			}
 
-			if(msg.message == WM_QUIT || msg.message == WM_CLOSE || msg.message == WM_DESTROY){
+			/////////////////////////////////////////////////////////////////////////////////////////
+			// We are quiting or exiting, kill the mix file update timer and write the LA$T.mis file
+			/////////////////////////////////////////////////////////////////////////////////////////
+			if(msg.message == WM_QUIT || msg.message == WM_CLOSE || msg.message == WM_DESTROY)
+
+			{
 				// go to the right directory and store the current state of the mixer....			
 				KillTimer(ghwndMain, timerID);
-				wsprintf(fsTemp.szFileDir, "%s\\mix\\", gszProgDir);
+				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
 				WriteMixFile(&fsTemp, FALSE);
 
@@ -309,6 +317,16 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
   //RECT    TempDesktopRect, TempMainRect;
   int     iRet;
 	BOOL bResult;
+
+
+	// Registry variables 
+
+	LONG lnResult;
+	HKEY hKey = NULL;
+	DWORD dwDisposition;
+	static LPCTSTR szRegKey = "Software\\CorTek\\VACS"; 
+	char            szBuff[MAX_PATH];
+
 
   switch (wMessage)
 	{
@@ -431,8 +449,13 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 				{	
 					if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
 						SaveMixFile ();
-				}								  
-				wsprintf(fsTemp.szFileDir, "%s\\mix\\", gszProgDir);
+				}
+
+			///////////////////////////////////////////
+			// We are exiting, write the LA$T.mis file
+			///////////////////////////////////////////
+
+				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
 				WriteMixFile(&fsTemp, FALSE);
 
@@ -654,7 +677,10 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
       break;
 		///////////////////////////////////////////////////////////////
 		case WM_TIMER:
-			wsprintf(fsTemp.szFileDir, "%s\\mix\\", gszProgDir);
+			
+			// Our timer to update the LA$T.mix file
+
+			wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 			wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
 			WriteMixFile(&fsTemp, FALSE);
 
@@ -672,7 +698,48 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 					SaveMixFile ();
 			}								  
 			
-			wsprintf(fsTemp.szFileDir, "%s\\mix\\", gszProgDir);
+
+			/////////////////////////////////////////////////////////////
+			// Store the last loaded mix file into the registry so that
+			// we can load the associated sequence file for that mix file
+
+
+//			wsprintf(szBuff, "%smix\\", gszProgDir);
+//			wsprintf(szBuff, "%s", "LA$T.mix");
+
+			wsprintf(szBuff, "%smix\\%s", gszProgDir, "LA$T.mix");
+
+			if(lstrcmp(szBuff, g_sequence_file_name) != 0)
+			{
+				lnResult = RegCreateKeyEx(
+										HKEY_CURRENT_USER,
+										szRegKey,
+										0, 
+										REG_NONE, 
+										0, 
+										KEY_ALL_ACCESS, 
+										NULL, 
+										&hKey,
+										&dwDisposition );
+
+				// Save the mix file name in the registry if it isn't the LA$T.mix file
+
+				lnResult = RegSetValueEx(
+										 hKey, 
+										 "MRUmix",
+										 REG_OPTION_RESERVED,
+										 REG_SZ,
+										 g_sequence_file_name,
+										 sizeof(g_sequence_file_name) );
+
+				RegCloseKey(hKey);
+			}
+
+			///////////////////////////////////////////
+			// We are exiting, write the LA$T.mis file
+			///////////////////////////////////////////
+
+			wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 			wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
 			WriteMixFile(&fsTemp, FALSE);
 

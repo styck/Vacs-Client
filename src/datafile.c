@@ -119,10 +119,58 @@ ON_EXIT:
 }
 
 /////////////////////////////////////////////////////////////////////
+//  MEMBER FUNCTION: CreateDataFile
+//
+//
+//
+
+
+BOOL    CreateDataFile(LPSTR  lpstrFName)
+{
+  BOOL                  bRet = FALSE;
+  VACS_DATA_FILE_HEADER dfHeader = {0};
+  DWORD                 dwRead;
+  DWORD                 dwWrite;
+  DWORD                 dwHiSize;
+	USHORT								compression;
+
+
+	// Lets make sure it is closed
+
+	CloseDataFile();
+
+  g_hDataFile = CreateFile(lpstrFName, GENERIC_WRITE | GENERIC_READ, 
+                            0, NULL, OPEN_ALWAYS, 
+                            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+                            NULL);
+  
+		compression = COMPRESSION_FORMAT_LZNT1;
+		DeviceIoControl (g_hDataFile, FSCTL_SET_COMPRESSION, &compression, sizeof (compression), 0, 0, 
+										 &dwWrite, 0);
+
+		dfHeader.dwID = VACS_DATA_FILE_HEADER_ID_def;
+		dfHeader.dwSize = sizeof(VACS_DATA_FILE_HEADER);
+		dfHeader.dwVersion = VACS_DATA_FILE_HEADER_def;
+		CopyMemory((void*)&dfHeader.DeviceSetup, &gDeviceSetup, sizeof(DEVICE_SETUP_DATA));
+
+
+		SetFilePointer(g_hDataFile, 0, 0, FILE_BEGIN);
+		WriteFile(g_hDataFile, &dfHeader, sizeof(VACS_DATA_FILE_HEADER), &dwWrite, NULL);
+		SetEndOfFile(g_hDataFile); // make the file size correct
+		g_dwDataFileWOffset = GetFileSize(g_hDataFile, &dwHiSize);
+		bRet = TRUE;
+
+  return bRet;
+}
+
+
+
+/////////////////////////////////////////////////////////////////////
 //  MEMBER FUNCTION: OpenDataFile
 //
 //
 //
+
 
 BOOL    OpenDataFile(LPSTR  lpstrFName)
 {
@@ -138,56 +186,52 @@ BOOL    OpenDataFile(LPSTR  lpstrFName)
                             0, NULL, OPEN_ALWAYS, 
                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
                             NULL);
+
   if(g_hDataFile != INVALID_HANDLE_VALUE)
   {
     ReadFile(g_hDataFile, &dfHeader, sizeof(VACS_DATA_FILE_HEADER), &dwRead, NULL);
+
     // validate the header ...
     //
-    if(dwRead != sizeof(VACS_DATA_FILE_HEADER))
-      goto ON_CREATE_FILE;
-    if((dfHeader.dwID != VACS_DATA_FILE_HEADER_ID_def) || 
-       (dfHeader.dwSize != sizeof(VACS_DATA_FILE_HEADER)))
-      goto ON_CREATE_FILE;
+    if((dfHeader.dwID == VACS_DATA_FILE_HEADER_ID_def) && 
+       (dfHeader.dwSize == sizeof(VACS_DATA_FILE_HEADER)) &&
+			 dwRead == sizeof(VACS_DATA_FILE_HEADER))
+		{
+			// validate the Device setup data ...
+			// before setting global offset
+			if(!CompareDeviceSetup(&gDeviceSetup , &dfHeader.DeviceSetup))
+			{
+				g_dwDataFileWOffset = GetFileSize(g_hDataFile, &dwHiSize);
+			}
+			else
+			{
+				// Overwrite file and file header
+				//
+//				CreateDataFile(lpstrFName);
+    bRet = FALSE;
+			}
+		}
+		else
+		{
+				// Overwrite file and file header
+				//
+//				CreateDataFile(lpstrFName);
+    bRet = FALSE;
 
-    // vaidate the Device setup data ...
-    //
-    if(CompareDeviceSetup(&gDeviceSetup , &dfHeader.DeviceSetup))
-    {
-      // Overwrite file and file header
-      //
-      goto ON_CREATE_FILE;
-    };
-
-    
-    g_dwDataFileWOffset = GetFileSize(g_hDataFile, &dwHiSize);
+		}
+  }
+	else
+	{
+    bRet = FALSE;
+	}
 
     // Everything is OK so lets get ready to work !!!
     //
     bRet = TRUE;
-  }
-  goto ON_EXIT;
 
-
-ON_CREATE_FILE:
-	compression = COMPRESSION_FORMAT_LZNT1;
-	DeviceIoControl (g_hDataFile, FSCTL_SET_COMPRESSION, &compression, sizeof (compression), 0, 0, 
-									 &dwWrite, 0);
-
-  dfHeader.dwID = VACS_DATA_FILE_HEADER_ID_def;
-  dfHeader.dwSize = sizeof(VACS_DATA_FILE_HEADER);
-  dfHeader.dwVersion = VACS_DATA_FILE_HEADER_def;
-  CopyMemory((void*)&dfHeader.DeviceSetup, &gDeviceSetup, sizeof(DEVICE_SETUP_DATA));
-
-
-  SetFilePointer(g_hDataFile, 0, 0, FILE_BEGIN);
-  WriteFile(g_hDataFile, &dfHeader, sizeof(VACS_DATA_FILE_HEADER), &dwWrite, NULL);
-  SetEndOfFile(g_hDataFile); // make the file size correct
-  g_dwDataFileWOffset = GetFileSize(g_hDataFile, &dwHiSize);
-  bRet = TRUE;
-
-ON_EXIT:
   return bRet;
 }
+
 
 
 /////////////////////////////////////////////////////////////////////

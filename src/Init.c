@@ -400,7 +400,8 @@ int     Init_MixerData(void)
   // initialize the Memory Map
   //--------------------------
   SetMemoryMapDefaults();
-  ShowSeqWindow(FALSE);  // Make sure we have all index tables initialized ...
+
+// FDS NOT NEEDED HERE  ShowSeqWindow(FALSE);  // Make sure we have all index tables initialized ...
   
   // Show the Master Window
   CreateMasterViewWindow("Zoom Master View", NULL); 

@@ -56,7 +56,7 @@ HTREEITEM g_current_item_before_next = NULL;
 void  SetSeqUpdateAllProps(HWND hwnd, BOOL bSet);
 void  DisableSeqUpdateAllProps(HWND hwnd, BOOL bDisable);
 void	CloseSequenceFiles (void);
-BOOL	OpenSequenceFiles (void);
+BOOL	OpenSequenceFiles (LPSTR  lpstrFName);
 
 //=================================================
 //function: RegisterSeqWindowClass
@@ -176,7 +176,11 @@ BOOL CALLBACK   SeqProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
 HWND            hwndCtrl;
 RECT            rect, rectCtrl;
-//char            szBuff[MAX_PATH];
+char            szBuff[MAX_PATH];
+
+HTREEITEM       htItem;  // handle of target item 
+TV_HITTESTINFO  tvht;  // hit test information 
+
 
 switch(uiMsg)
     {
@@ -201,16 +205,23 @@ switch(uiMsg)
             case TVN_ITEMEXPANDED:
                 HandleSeqTVNExpand(((LPNM_TREEVIEW)lParam));
                 break;
+
             //----------------
             case TVN_BEGINDRAG:
                 HandleSeqTVNBeginDrag((LPNM_TREEVIEW)lParam);
                 break;
+
+#ifdef NOTUSED
             //----------------
             case NM_RCLICK:		// Handle Right Click pop-up menu
                 if(((LPNMHDR) lParam)->idFrom == IDTREE_SEQUENCE)
-                    DisplayTVNPopupMenu(hwnd);
+								{
+                  DisplayTVNPopupMenu(hwnd);
+							}
                 break;
             //----------------
+#endif
+
       case NM_SETFOCUS:
           SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
           break;
@@ -218,6 +229,24 @@ switch(uiMsg)
             }
         break;
 
+
+				// Handle the right-click and POPUP menu HERE
+				// This will set the selection to the item that
+				// the user right clicked on.
+
+        case WM_CONTEXTMENU:
+            tvht.pt.x = LOWORD(lParam);
+            tvht.pt.y = HIWORD(lParam);
+            ScreenToClient(g_hwndTV, &tvht.pt);
+            htItem = TreeView_HitTest(g_hwndTV, &tvht);
+            if (htItem) {
+
+                TreeView_SelectItem(g_hwndTV, htItem);
+                DisplayTVNPopupMenu(hwnd);
+
+            }
+            break;
+        
     /////////////////////////////////////////////////////////////
     case WM_MOUSEMOVE:
         HandleSeqTVN_OnMouseMove(hwnd, LOWORD(lParam), HIWORD(lParam));
@@ -226,7 +255,6 @@ switch(uiMsg)
     /////////////////////////////////////////////////////////////
     case WM_LBUTTONUP:
         HandleSeqTVNStopDrag();
-
         break;
 
     /////////////////////////////////////////////////////////////
@@ -266,7 +294,7 @@ switch(uiMsg)
                 break;
 
             //--------------------------------------------
-						// Handle ADD pop-up menu item and BUTTON item
+						// Handle DELETE pop-up menu item and BUTTON item
             case MENU_TVN_DELELTE:
             case IDBTN_SEQ_DELETE:
 								if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_DELETE_SEQUENCE_ENTRY) == IDYES)
@@ -280,7 +308,7 @@ switch(uiMsg)
 							break;
 
             //--------------------------------------------
-						// Handle ADD pop-up menu item and BUTTON item
+						// Handle UPDATE pop-up menu item and BUTTON item
             case MENU_TVN_UPDATE:
             case IDBTN_SEQ_UPDATE:
               UpdateEntry();
@@ -379,8 +407,6 @@ switch(uiMsg)
         return FALSE;
       }
 
-
-      //wsprintf(szBuff, "%s\\data\\vacs_device.data",gszProgDir);      
       wsprintf(szBuff, "%s.data",g_sequence_file_name);
       if(OpenDataFile(szBuff))
       {
@@ -397,20 +423,34 @@ switch(uiMsg)
       if(hwndCtrl)
           InitSeqList(hwndCtrl);
 
-      if(OpenSequenceFiles () == FALSE){
+			wsprintf(szBuff, "%s", g_sequence_file_name);
+      if(OpenSequenceFiles (szBuff) == FALSE){
 				CloseSequenceFiles ();
         DestroyWindow(ghwndSeqDlg);
         return FALSE;
       }
 #endif
+
+			wsprintf(szBuff, "%s", g_sequence_file_name);
+      OpenSequenceFiles (szBuff);
 	     
+      // init the Tree and the List View
+      //--------------------------------
+      hwndCtrl = GetDlgItem(hwnd, IDTREE_SEQUENCE);
+      if(hwndCtrl)
+          FillSeqTree(hwndCtrl);
+
+      hwndCtrl = GetDlgItem(hwnd, IDLIST_SEQ_EVENTS);
+      if(hwndCtrl)
+          InitSeqList(hwndCtrl);
+
       g_hwndMTCReadout = GetDlgItem(hwnd, IDC_MTC_READOUT);
       if(g_hwndMTCReadout) {
           GetClientRect(g_hwndMTCReadout, &g_rMTCReadout);
           PrepareMTCReadout();
           }
 
-//      return FALSE;        
+      return FALSE;        
       break;
     ////////////////////////////////////////////////////
     case WM_DESTROY:
@@ -929,7 +969,7 @@ BOOL    RecallEntry(void)
   BOOL                bRet = FALSE;
   HTREEITEM           htreeitem;
   TV_ITEM             tvi;
-  long                lItemCur;
+  long                lItemCurActive, lItemCurNext;
   SEQENTRY            *pSeqentry = NULL;
 
 
@@ -943,8 +983,8 @@ BOOL    RecallEntry(void)
     tvi.mask = TVIF_PARAM;
     tvi.hItem = htreeitem;
     TreeView_GetItem(g_hwndTV, &tvi);
-    lItemCur = (long)tvi.lParam;
-    pSeqentry = GetEntryData(g_pdlrSequence, lItemCur);
+    lItemCurActive = (long)tvi.lParam;
+    pSeqentry = GetEntryData(g_pdlrSequence, lItemCurActive);
 
     if(pSeqentry)
     {
@@ -955,19 +995,18 @@ BOOL    RecallEntry(void)
       }
     }
   }
-
+//#ifdef NOTUSED
 	////////////////////////////////////////////
 	// Show NEXT SEQUENCE if there is one
 	////////////////////////////////////////////
-
   htreeitem = TreeView_GetNextItem(g_hwndTV,htreeitem, TVGN_NEXT);
   if(htreeitem != NULL)
   {
     tvi.mask = TVIF_PARAM;
     tvi.hItem = htreeitem;
     TreeView_GetItem(g_hwndTV, &tvi);
-    lItemCur = (long)tvi.lParam;
-    pSeqentry = GetEntryData(g_pdlrSequence, lItemCur);
+    lItemCurNext = (long)tvi.lParam;
+    pSeqentry = GetEntryData(g_pdlrSequence, lItemCurNext);
 
     if(pSeqentry)
     {
@@ -976,13 +1015,21 @@ BOOL    RecallEntry(void)
 				ShowTBNextSeqName(pSeqentry->szName);
       }
     }
+
+		// Now put our pointers back to the active sequence
+    pSeqentry = GetEntryData(g_pdlrSequence, lItemCurActive);
+
+    if(pSeqentry)
+    {
+      ReadDataFile(pSeqentry->dwOffset);
+		}
+
   }
 	else
 	{
 		ShowTBNextSeqName("END of Sequence");
 	}
-
-
+//#endif
 
   return bRet;
 }
@@ -2107,17 +2154,18 @@ void	CloseSequenceFiles (void){
 /////////////////////////////////////////////////////
 //
 //
-BOOL	OpenSequenceFiles (void){
+BOOL	OpenSequenceFiles (LPSTR  lpstrFName){
 	HWND						hwndCtrl;
-	char            szBuff[MAX_PATH];
+
+	
+	char						szBuff[MAX_PATH];
 
 	CloseSequenceFiles ();
 
    // Prepare the Critical Section
   // for the MTC Emulate
   //-----------------------------
-  wsprintf(szBuff, "%s.ctek", g_sequence_file_name);
-  //wsprintf(szBuff, "%s\\data\\sequence.ctek",gszProgDir);      
+  wsprintf(szBuff, "%s.ctek", lpstrFName);
   g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szBuff);
   
   if(g_pdlrSequence == NULL)
@@ -2125,8 +2173,7 @@ BOOL	OpenSequenceFiles (void){
     return FALSE;
   }
 
-  //wsprintf(szBuff, "%s\\data\\vacs_device.data",gszProgDir);      
-  wsprintf(szBuff, "%s.data",g_sequence_file_name);
+  wsprintf(szBuff, "%s.data",lpstrFName);
   if(OpenDataFile(szBuff))
   {
 

@@ -19,6 +19,7 @@ extern int	g_CueMasterSystem;
 extern int  g_iMasterModuleIdx;
 extern int	g_inputCueActiveCounter;
 extern char	g_sequence_file_name[MAX_PATH];
+extern LPDLROOTPTR g_pdlrSequence;
 
 void	UpdateTBGroupButtons(); // external 
 void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd, 
@@ -28,7 +29,7 @@ int     WriteGroupWndDataToFile(HWND hwnd, HANDLE hFile);
 void		HadleCueMasterSystem (void);
 int			countInputCuesOn (void);
 void		handleInputCuePriority (LPMIXERWNDDATA lpmwd, BOOL	input_cue_on);
-BOOL		OpenSequenceFiles (void);
+BOOL		OpenSequenceFiles (LPSTR  lpstrFName);
 void		CloseSequenceFiles (void);
 
 
@@ -100,12 +101,14 @@ return 0;
 int     SaveMixFile(void)
 {
 OPENFILENAME    ofn;
-	char						new_sequence_files [MAX_PATH];
-	char						old_sequence_files [MAX_PATH];
+//	char						new_sequence_files [MAX_PATH];
+//	char						old_sequence_files [MAX_PATH];
 	char						szFile [MAX_PATH];
 	USHORT					compression;
 	HANDLE          hf;
 	DWORD						dwBWrite;
+	char						szBuff[MAX_PATH];
+
 
 if (gfsMix.szFileDir[0] == 0)
 	sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
@@ -129,45 +132,43 @@ ofn.Flags = OFN_CREATEPROMPT | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATH
 ofn.lpstrDefExt = ".mix";//(LPSTR)szDefExt;
 
 
-if(GetSaveFileName(&ofn))
-    {
-		CloseSequenceFiles ();	
-    wsprintf(gfsMix.szFileName, "%s", &gfsTemp.szFileName[ofn.nFileOffset]);
-    gfsTemp.szFileName[ofn.nFileOffset] = 0;
-    wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
-    WriteMixFile(&gfsMix, TRUE);
+		if(GetSaveFileName(&ofn))
+		{
+		// FDS		CloseSequenceFiles ();	
+				wsprintf(gfsMix.szFileName, "%s", &gfsTemp.szFileName[ofn.nFileOffset]);
+				gfsTemp.szFileName[ofn.nFileOffset] = 0;
+				wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
+				WriteMixFile(&gfsMix, TRUE);
 
-		wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
+				wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
+				wsprintf(g_sequence_file_name, "%s", szFile);
+
+
 		// close the old files and the sequence window
 		//SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)ghwndSeq, 0L);
 		//DestroyWindow (ghwndSeq);
 		//ghwndSeq = NULL;
 		// assemble the new sequence file names and copy the old ones over
-		wsprintf (new_sequence_files, "%s.ctek", szFile);
-		wsprintf (old_sequence_files, "%s.ctek", g_sequence_file_name);
-		CopyFile (old_sequence_files, new_sequence_files, FALSE);
+//fds		wsprintf (new_sequence_files, "%s.ctek", szFile);
+//fds		wsprintf (old_sequence_files, "%s.ctek", g_sequence_file_name);
+//fds		CopyFile (old_sequence_files, new_sequence_files, FALSE);
 
-		wsprintf (new_sequence_files, "%s.data", szFile);
-		wsprintf (old_sequence_files, "%s.data", g_sequence_file_name);
-		CopyFile (old_sequence_files, new_sequence_files, FALSE);
+//fds		wsprintf (new_sequence_files, "%s.data", szFile);
+//fds		wsprintf (old_sequence_files, "%s.data", g_sequence_file_name);
+//fds		CopyFile (old_sequence_files, new_sequence_files, FALSE);
 		// cool ... now set the compression on this file
-		hf = CreateFile(new_sequence_files, GENERIC_WRITE, 
-										0, NULL, OPEN_EXISTING, 
-										FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
-										NULL);
 
-		if (hf != INVALID_HANDLE_VALUE){
-			compression = COMPRESSION_FORMAT_LZNT1;
-			DeviceIoControl (hf, FSCTL_SET_COMPRESSION, &compression, sizeof (compression), 0, 0, 
-											 &dwBWrite, 0);
-			CloseHandle(hf);
-    }
+		wsprintf (szBuff, "%s.ctek", g_sequence_file_name);
+    g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szFile);
 
-		wsprintf(g_sequence_file_name, "%s", szFile);
-		OpenSequenceFiles ();
+    wsprintf(szBuff, "%s.data",g_sequence_file_name);
+    if(CreateDataFile(szBuff))
+
+
+		OpenSequenceFiles (g_sequence_file_name);
 		//ShowSeqWindow(TRUE);
-    }
-
+    
+		}
 return 0;
 }
 
@@ -204,10 +205,30 @@ char                szFile[1024];
 BOOL                bResult;
 BOOL                bRecallFromMemBuffer = FALSE;
 DWORD               dwBRead;
+char								szBuff[MAX_PATH];
+
+	// Registry variables 
+
+	LONG lnResult;
+	HKEY hKey = NULL;
+	DWORD dwDisposition;
+	static LPCTSTR szRegKey = "Software\\CorTek\\VACS";
+	static LPCTSTR szRegValue; 
+	
+	DWORD dwType;
+	DWORD rc;
+	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
+	char								szTempSeq[MAX_PATH];
+
+
 //LPMIXERWNDDATA			lpmwd; // temp memory for the Mixer Window data
 //int									CueActiveCountTemp;
 
-wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
+	wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
+
+	wsprintf(g_sequence_file_name, "%s", szFile);
+	wsprintf(szBuff, "%smix\\%s", gszProgDir, "LA$T.mix");
+
 
 hf = CreateFile(szFile, GENERIC_READ, 
                 0, NULL, OPEN_EXISTING, 
@@ -366,9 +387,44 @@ if(g_CueMasterSystem == 0){
 	//SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)ghwndSeq, 0L);
 	//DestroyWindow (ghwndSeq);
 	//ghwndSeq = NULL;
-	wsprintf(g_sequence_file_name, "%s", szFile);
-	OpenSequenceFiles ();
-	//ShowSeqWindow(TRUE);
+
+	// If we are loading the LAS$T.mix file then try to get the sequence
+	// of the last loaded mix file
+
+	if(lstrcmp(szBuff, g_sequence_file_name) == 0)
+	{
+
+		lnResult = RegCreateKeyEx(
+								HKEY_CURRENT_USER,
+								szRegKey,
+								0, 
+								REG_NONE, 
+								0, 
+								KEY_ALL_ACCESS, 
+								NULL, 
+								&hKey,
+								&dwDisposition );
+
+		szRegValue = "MRUmix";
+		rc = RegQueryValueEx( 
+					hKey, 
+					szRegValue, 
+					NULL, 
+					&dwType, 
+					&szTempSeq, 
+					&dwBufferSize ); 
+
+			wsprintf(szBuff, "%s", szTempSeq);
+
+	}
+	else
+	{
+			wsprintf(szBuff, "%s", g_sequence_file_name);
+	}
+
+	OpenSequenceFiles (szBuff);
+
+	ShowSeqWindow(TRUE);
 
 
 return 0;
@@ -459,7 +515,7 @@ if(hf == INVALID_HANDLE_VALUE)
 compression = COMPRESSION_FORMAT_LZNT1;
 DeviceIoControl (hf, FSCTL_SET_COMPRESSION, &compression, sizeof (compression), 0, 0, 
 								 &dwBWrite, 0);
-
+////////////////////////////////////////////
 // Write the File header
 //----------------------
 gmfhMix.dwID   = SAMMPLUS_ID;
@@ -477,6 +533,7 @@ if(bResult == FALSE || dwBWrite == 0)
     goto ON_ERROR_EXIT;
 
 
+	////////////////////////////////////////////
   // Save the Groups
   //----------------
   ZeroMemory(&fsh, sizeof(fsh));
@@ -490,7 +547,8 @@ if(bResult == FALSE || dwBWrite == 0)
   WriteFile(hf, gpGroupStoreFaders, sizeof(GROUPSTORE)*MAX_GROUPS_COUNT, &dwBWrite, NULL);  
     
 
-  // Save the Labels.
+  ////////////////////////////////////////////
+	// Save the Labels.
   //-----------------
   if(gpLabels)
   {
@@ -531,7 +589,8 @@ if(bResult == FALSE || dwBWrite == 0)
     WriteFile(hf, g_pMatrixLabels, MAX_AUX_CHANNELS*MAX_LABEL_SIZE, &dwBWrite, NULL);  
   }
 
-  // Write this section .. so we know that tha master window was visible
+  ////////////////////////////////////////////
+	// Write this section .. so we know that tha master window was visible
   // before we start creating the other windows
   if(ghwndMaster)
   {
@@ -542,11 +601,12 @@ if(bResult == FALSE || dwBWrite == 0)
   }
 
 
-// Save all of the Open Windows
-//-----------------------------
-hwnd = GetTopWindow(ghwndMDIClient);
-if(GetWindow(hwnd, GW_HWNDLAST))
-    hwnd = GetWindow(hwnd, GW_HWNDLAST);
+	////////////////////////////////////////////
+	// Save all of the Open Windows
+	//-----------------------------
+	hwnd = GetTopWindow(ghwndMDIClient);
+	if(GetWindow(hwnd, GW_HWNDLAST))
+			hwnd = GetWindow(hwnd, GW_HWNDLAST);
 
   while(hwnd)
   {
@@ -575,6 +635,7 @@ if(GetWindow(hwnd, GW_HWNDLAST))
   }
 
 
+	////////////////////////////////////////////
   // Write the Device memory Image ..
   //
   fsh.dwID = DEV_CONTROLS_IMAGE_FILE_ID;
@@ -585,26 +646,27 @@ if(GetWindow(hwnd, GW_HWNDLAST))
   WriteFile(hf, gpwMemMapMixer, fsh.lSize, &dwBWrite, NULL);  
 
 
-// Save the Memory State
-//----------------------
+	////////////////////////////////////////////
+	// Save the Memory State
+	//----------------------
 
-// Set the End-Of-File
-// Close the file
-//--------------------
-SetEndOfFile(hf);
-CloseHandle(hf);
-if(showName)
-{
-	wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
-	SetWindowText(ghwndMain, gszTitleBuffer);
-}
-return 0;
+	// Set the End-Of-File
+	// Close the file
+	//--------------------
+	SetEndOfFile(hf);
+	CloseHandle(hf);
+	if(showName)
+	{
+		wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
+		SetWindowText(ghwndMain, gszTitleBuffer);
+	}
+	return 0;
 
-ON_ERROR_EXIT:
-ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATING_FILE);
+	ON_ERROR_EXIT:
+	ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATING_FILE);
 
-SetEndOfFile(hf);
-CloseHandle(hf);
+	SetEndOfFile(hf);
+	CloseHandle(hf);
 
 return 1;
 }
