@@ -5,7 +5,7 @@
 //
 // $Author:: Styck       $
 // $Archive:: /Vacs Clien $
-// $Revision:: 37         $
+// $Revision:: 38         $
 //
 //=================================================
 // Handle the FULL VIEW
@@ -23,7 +23,7 @@
 #include "SAMMEXT.h"
 #include "MACRO.h"
 
-#include <zmouse.h>			// IntelliMouse wheel support
+//FDS 6/13/04 #include <zmouse.h>			// IntelliMouse wheel support
 
 extern int                 g_aiAux[MAX_MATRIX_COUNT];
 extern int                 g_aiMatrix[MAX_MATRIX_COUNT];
@@ -679,6 +679,7 @@ int         iBMPIndexLast = -1;
 int         iPhisChannel;
 int         iMixer;
   
+DWORD dw; 
 
 	hbmpOld = NULL;
 	hbmpBuff = NULL;
@@ -715,12 +716,29 @@ int         iMixer;
         {
             hbmpBuff = CreateCompatibleBitmap(hdc, iCX, iCY);
             hbmpMemOld = SelectObject(hdcMem, hbmpBuff);
+
+						// This is were the black flickering of the screen happens.
+						// One of these calls where we are checking for an error fails 
+						// for some unknown reason.
+
+						if(!hbmpMemOld)		// <==== sometimes bad
+								dw = GetLastError(); 
         }
   
         hbmpOld = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
-        BitBlt(hdcMem, 0, 0, iCX, iCY,
-               g_hdcBuffer, 0, 0, SRCCOPY );
-        SelectObject(g_hdcBuffer, hbmpOld)  ;
+				if(!hbmpOld)		// <==== sometimes bad
+						dw = GetLastError(); 
+
+				if(hbmpOld)
+				{
+					if(BitBlt(hdcMem, 0, 0, iCX, iCY,
+								 g_hdcBuffer, 0, 0, SRCCOPY ) == 0)
+					{
+							dw = GetLastError(); 
+					}
+
+					SelectObject(g_hdcBuffer, hbmpOld)  ;
+				}
         iBMPIndexLast = iBMPIndex;
     }
 
@@ -740,7 +758,8 @@ int         iMixer;
 
 	// restore the old bitmap for this DC
 	//-----------------------------------
-	SelectObject(hdcMem, hbmpMemOld);
+ 	if(hbmpOld)
+		SelectObject(hdcMem, hbmpMemOld);
 	DeleteDC(hdcMem);
 	DeleteObject(hbmpBuff);
 
