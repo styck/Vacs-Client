@@ -1,10 +1,17 @@
 //=================================================
-// Copyright 1998, CorTek Software, Inc.
+// Copyright 1998-2001, CorTek Software, Inc.
 //=================================================
+//
+//
+// $Author: $
+// $Archive: $
+// $Revision: $
+//
 
 //=================================================
-//Mouse releated Routines
-//
+// Mouse releated Routines
+// Button handling - updating all windows
+//                   and sending over network
 //=================================================
 //#include <windows.h>
 
@@ -21,23 +28,43 @@ extern int                 g_iCueModuleIdx;
 extern int                 g_iAuxIdx;
 extern int                 g_iMasterModuleIdx;
 
+extern BOOL									g_bIsSoloCueMode; // see MAIN.C
+
+
 
 void HandleMasterCueSwitch(LPMIXERWNDDATA lpmwd, WORD wVal);
 
 void TurnOffAllVUforMixerWindow(LPMIXERWNDDATA lpmwd);
 void  CheckForSpecialFilters(/*LPMIXERWNDDATA lpwmd, */LPCTRLZONEMAP pctrlzm);
 void	syncInputPriority (LPCTRLZONEMAP pctrlzm, int	icount, LPMIXERWNDDATA lpmwd);
+void	CancelAllCues (HWND);	// see ControlDataFilters.c
+BOOL IsCancellingCues(void);	// see ControlDataFilters.c
+
+BOOL  IsCtrlCueButton(int,int);
+BOOL  IsCtrlPrePostFilter(int);
 
 //================================================
 //FUNCTION: HandleMouseMove
 //
+// Whenever the mouse is over a Window, this
+// routine is called.  It checkes lpmwd->iCurMode
+// to determine what to do. The following are
+// valid modes:
+//
+//    MW_NOTHING_MODE               Nothing
+//    MW_DRAGDROP_MODE              Dragging/Dropping
+//    MW_CONTROL_ACTIVE             Active control - button, etc.
+//    MW_SCROLL                     Scrolling 
+//    MW_SCROLL_RELATIVE            Scrolling Relative within the zoom/full view windows
+
 //================================================
+
 void    HandleMouseMove(HWND hwnd,POINTS pnts, WPARAM wKeyFlags,
                         LPMIXERWNDDATA lpmwd)
 {
 int     iChan;
-int     iCtrlMode;
 POINT   pnt;
+int iCtrlMode;
 
 	WaitForSingleObject(gDisplayEvent, 90);
 
@@ -49,42 +76,45 @@ POINT   pnt;
 
 	lpmwd->wKeyFlags = wKeyFlags;
 
-	if(lpmwd->iCurMode == MW_SCROLL)
-  {
-		//WaitForSingleObject(gDisplayEvent, 90);
-    lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-    lpmwd->pntMouseCur = pnt;
-    ScrollImgWindow(hwnd, lpmwd);
-		SetEvent(gDisplayEvent);
-    return;
-  }
+		if(lpmwd->iCurMode == MW_SCROLL)
+		{
+			lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+			lpmwd->pntMouseCur = pnt;
+			ScrollImgWindow(hwnd, lpmwd);
+			SetEvent(gDisplayEvent);
+			return;
+		}
 
-	if(lpmwd->iCurMode == MW_SCROLL_RELATIVE)
-  {
-		//WaitForSingleObject(gDisplayEvent, 90);
-    lpmwd->pntMouseLast = pnt;
-    ScrollImgWindowRelative(hwnd, lpmwd);
-		SetEvent(gDisplayEvent);
-    return;
-  }
+		////////////////////////////////////////
+		// Right mouse button is down and user
+		// is scrolling up/down in the zoom/full
+		// view windows.
 
-	// If we are in some sort of mode
-	// then call the function that
-	// handles this mode
-	//-------------------------------
+		if(lpmwd->iCurMode == MW_SCROLL_RELATIVE)
+		{
+			lpmwd->pntMouseLast = pnt;
+			ScrollImgWindowRelative(hwnd, lpmwd);
+			SetEvent(gDisplayEvent);
+			return;
+		}
+
+		// If we are in some sort of mode
+		// then call the function that
+		// handles this mode
+		//-------------------------------
+
 	iCtrlMode = lpmwd->iCtrlMode;
 	if(iCtrlMode != MW_NOTHING_MODE)
-  {
-		//WaitForSingleObject(gDisplayEvent, 90);
-		switch(iCtrlMode)
-		{
-			case    CTRL_TYPE_FADER_VERT:
-				HandleFaderMoveVert(hwnd, pnt, wKeyFlags, lpmwd);
-				break;
-			case    CTRL_TYPE_FADER_HORZ:
-				HandleFaderMoveHorz(hwnd, pnt, wKeyFlags, lpmwd);
-				break;
-		}
+	{
+			switch(iCtrlMode)
+			{
+				case    CTRL_TYPE_FADER_VERT:
+					HandleFaderMoveVert(hwnd, pnt, wKeyFlags, lpmwd);
+					break;
+				case    CTRL_TYPE_FADER_HORZ:
+					HandleFaderMoveHorz(hwnd, pnt, wKeyFlags, lpmwd);
+					break;
+			}
 
 	////////////////////////////////
   // save the last mouse position
@@ -125,7 +155,15 @@ return;
 //================================================
 //FUNCTION: HandleLBDown
 //
+// When the left mouse button is pressed down this
+// routine is called to scan our zonemapping to 
+// determine if a control is being activated. If
+// the control is being activated then the iCurMode
+// is set to MW_CONTROL_ACTIVE to signal further
+// processing else where depending on the type
+// of control (fader, button, etc)
 //================================================
+
 void    HandleLBDown(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
                              LPMIXERWNDDATA lpmwd)
 {
@@ -141,6 +179,7 @@ LPCTRLZONEMAP				lpczmChan;
 
 	if(lpmwd->iCurMode != MW_NOTHING_MODE)
 			return;
+
 
 	pnt.x = pnts.x;
 	pnt.y = pnts.y;
@@ -173,15 +212,24 @@ LPCTRLZONEMAP				lpczmChan;
 			lpmwd->iCurMode = MW_DRAGDROP_MODE;
 		}
 		else
+		{
 			if(lpczm)
-					{
+			{
 					lpmwd->lpCtrlZM = lpczm;
-					lpmwd->iCurMode = MW_CONTROL_ACTIVE;
-					}
+					lpmwd->iCurMode = MW_CONTROL_ACTIVE;	// If its part of our zonemapping then set as ACTIVE
+			}
 			else
-					return;
+			{
+					// If last button pressed was a CUE button then leaving this out will force
+				  // the call to the Cancel Cue routine. This will only happen in the Solo CUE mode
+					// and might be a feature to remove the cue
 
-		ActivateMWMode(hwnd, lpmwd);
+//					lpmwd->lpCtrlZM->iCtrlChanPos = -1;		// Clear previous channel position
+					return;	// lpczm MUST be NULL, need to check elsewhere before using
+			}
+		}
+
+//FDS		ActivateMWMode(hwnd, lpmwd);	// Now done seperatly in fullview.c
 
 	}
 
@@ -191,7 +239,11 @@ return;
 //================================================
 //FUNCTION: HandleMBDown
 //
+// Handle the Middle Mouse button down.
+// If this is the Intelli Mouse then it will
+// be when the wheel is pressed down.  
 //================================================
+
 void    HandleMBDown(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
                              LPMIXERWNDDATA lpmwd)
 {
@@ -223,7 +275,9 @@ return;
 //================================================
 //FUNCTION: HandleRBDown
 //
+// Handle when the Right mouse button is pressed
 //================================================
+
 void    HandleRBDown(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
                                 LPMIXERWNDDATA lpmwd)
 {
@@ -256,6 +310,7 @@ return;
 //================================================
 //FUNCTION: HandleLBUp
 //
+// Left mouse button UP
 //================================================
 void     HandleLBUp(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
                                 LPMIXERWNDDATA lpmwd)
@@ -280,7 +335,9 @@ return;
 //================================================
 //FUNCTION: HandleMBUp
 //
+// Middle mouse button UP
 //================================================
+
 void     HandleMBUp(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
                                 LPMIXERWNDDATA lpmwd)
 {
@@ -303,7 +360,9 @@ return;
 //================================================
 //FUNCTION: HandleRBUp
 //
+// Right mouse button UP
 //================================================
+
 void     HandleRBUp(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
                               LPMIXERWNDDATA lpmwd)
 {
@@ -324,12 +383,16 @@ POINT           pnt;
 return;
 }
 
-//==================================================
+//====================================================
 //FUNCTION: HandleWndSize
 //
+// Whenever a window is sized this routine is called
 //
-//
-//==================================================
+// Need to handle sizing the Zoom View window so that
+// it is always on a Channel boarder and need to keep
+// track of what channels are visible
+//====================================================
+
 void     HandleWndSize(HWND hwnd, LPMIXERWNDDATA lpmwd,
                              WORD wWidth, WORD wHeight, WPARAM wFlags)
 {
@@ -351,11 +414,15 @@ int     iPrevStart, iPrevEnd;
 			return;
 
 
-		WaitForSingleObject(gDisplayEvent, 70);
+	WaitForSingleObject(gDisplayEvent, 70);
+
+	// Turn off VU data for now
 
 	TurnOffAllVUforMixerWindow(lpmwd);
 
 	iWndMinWidth = GetSystemMetrics(SM_CXMIN);
+
+	// Save current visible channels
 
 	iPrevStart = lpmwd->iStartScrChan;
 	iPrevEnd = lpmwd->iEndScrChan;
@@ -412,6 +479,7 @@ int     iPrevStart, iPrevEnd;
 	/////////////////////////////
   // store the new End channel
   //-------------------------
+
   if(iCount <= 0)
     lpmwd->iEndScrChan = iStartScrChan +1;
   else
@@ -426,6 +494,7 @@ int     iPrevStart, iPrevEnd;
 	////////////////////////////////////////////
 	// Store the new size of the visible window
 	//-----------------------------------------
+
 	lpmwd->rVisible.right = iCX;
 	lpmwd->rVisible.bottom = wHeight - HEIGHT_FULL_LABEL_WND;
 
@@ -464,7 +533,6 @@ int     iPrevStart, iPrevEnd;
 
 //    }
 
-  //RequestVisibleVU(lpmwd, iPrevStart, iPrevEnd);
 	RequestVisibleVU(lpmwd, -1, 0);
 	SetEvent(gDisplayEvent);
 
@@ -563,21 +631,26 @@ return;
 //==================================================
 // FUNCTION: HandleCtrlTimer
 //
-//
+// When the control types updown, updownscroll, and
+// leftright are active then a timer is set to control
+// how quickly they are incremented/decremented.
+// This routine is called when the timer expires so
+// that we can handle updating the control value
 //==================================================
+
 void    HandleCtrlTimer(HWND hwnd, LPMIXERWNDDATA lpmwd)
 {
 	if(lpmwd->iCtrlMode != MW_NOTHING_MODE)
   {
-  switch(lpmwd->iCtrlMode)
+	  switch(lpmwd->iCtrlMode)
     {
-    case CTRL_TYPE_UPDOWN:
-    case CTRL_TYPE_UPDOWNSCROLL:
-      UpDownControl(NULL, lpmwd->lpCtrlZM, 0, lpmwd, LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan]));
-      break;
-    case CTRL_TYPE_LEFTRIGHT:
-      LeftRightControl(NULL, lpmwd->lpCtrlZM, 0, lpmwd, LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan]));
-      break;
+			case CTRL_TYPE_UPDOWN:
+			case CTRL_TYPE_UPDOWNSCROLL:
+				UpDownControl(NULL, lpmwd->lpCtrlZM, 0, lpmwd, LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan]));
+				break;
+			case CTRL_TYPE_LEFTRIGHT:	// ie. Input PAN control
+				LeftRightControl(NULL, lpmwd->lpCtrlZM, 0, lpmwd, LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan]));
+				break;
     }
   }
 	else
@@ -596,9 +669,10 @@ return;
 //==================================================
 //FUNCTION: HandleFaderMoveVert
 //
-//
+// Handle moving the Vertical Fadres
 //
 //==================================================
+
 void      HandleFaderMoveVert(HWND hwnd, POINT pnt, WPARAM wKeyFlags, LPMIXERWNDDATA lpmwd)
 {
 HDC             hdc;
@@ -636,9 +710,9 @@ RECT            r;
 	// now calculate the value against the scaling factors
 	//----------------------------------------------------
 	if(lpctrlZM->iNumScrPos > 0)
-		{
+	{
 		CONVERTSCREENTOPHISICAL(lpctrlZM, iVal);
-		}
+	}
 	else
 		iVal = 0;
 
@@ -683,6 +757,13 @@ RECT            r;
 	// iCtrlNum and are Capable of
 	// display on this Mixer_Window
 	//-----------------------------
+
+	// NOTE: THIS IS ALSO CALLED AGAIN IN THE UpdateSameMixWndByCtrlNum() THAT FOLLOWS
+	// 
+	// When channels are GROUPED and this is commented out then the readout value of the fader that is being moved is
+	// not updated until the screen refreshes.  Instead of doing it here need to make sure that control area
+	// is invalidated
+
 	UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
 
 	// now update all of the other mixers
@@ -704,7 +785,7 @@ return;
 //==================================================
 //FUNCTION: HandleFaderMoveHorz
 //
-//
+// Handle moving Horizontal Faders
 //
 //==================================================
 void      HandleFaderMoveHorz(HWND hwnd, POINT pnt, WPARAM wKeyFlags, LPMIXERWNDDATA lpmwd)
@@ -794,6 +875,11 @@ RECT            r;
 	// iCtrlNum and are Capable of
 	// display on this Mixer_Window
 	//-----------------------------
+
+		// NOTE: THIS IS ALSO CALLED AGAIN IN THE UpdateSameMixWndByCtrlNum() THAT FOLLOWS
+		// 
+		// When removed may cause problems
+
 	UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, 
 													lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
 
@@ -840,9 +926,139 @@ BOOL  IsCtrlPrePostFilter(int iType)
 }
 
 
-/////////////////////////////////
-//FUNCTION: HandleCtrlBtnClick
+////////////////////////////////////////////////////////
+// BOOL  IsCtrlCueButton(int iType, int iModuleNumber)
 //
+// iType - control type
+// iModuleNumber - module number
+//
+// Returns TRUE if this is a CUE button
+//
+BOOL  IsCtrlCueButton(int iType, int iModuleNumber )
+{
+	int iModuleType;
+
+	// Lookup Module type based on module number
+
+	iModuleType = gDeviceSetup.iaChannelTypes[iModuleNumber];
+
+	switch(iModuleType)
+	{
+		case DCX_DEVMAP_MODULE_INPUT:
+
+		switch(iType)
+		{
+
+			// All the INPUT cues
+
+			case CTRL_NUM_INPUT_CUE_FAD_PRE:
+			case CTRL_NUM_INPUT_CUE_FAD_POST:
+			case CTRL_NUM_INPUT_MIC_B_CUE:
+			case CTRL_NUM_INPUT_MIC_A_CUE:
+			case CTRL_NUM_INPUT_GATE_KEY_INOUT:
+
+			return TRUE;
+			break;
+		}
+		break;
+
+		case	DCX_DEVMAP_MODULE_AUX:
+
+		switch(iType)
+		{
+			// All the MATRIX cues
+
+			case CTRL_NUM_MATRIX_STERIO_CUE_PRE:
+			case CTRL_NUM_MATRIX_STERIO_CUE_POST:
+			case CTRL_NUM_MATRIX_CUE_PRE:
+			case CTRL_NUM_MATRIX_CUE_POST:
+
+			case CTRL_NUM_MASTER_AUX16PRE:
+			case CTRL_NUM_MASTER_AUX15PRE:
+			case CTRL_NUM_MASTER_AUX14PRE:
+			case CTRL_NUM_MASTER_AUX13PRE:
+			case CTRL_NUM_MASTER_AUX12PRE:
+			case CTRL_NUM_MASTER_AUX11PRE:
+			case CTRL_NUM_MASTER_AUX10PRE:
+			case CTRL_NUM_MASTER_AUX09PRE:
+			case CTRL_NUM_MASTER_AUX08PRE:
+			case CTRL_NUM_MASTER_AUX07PRE:
+			case CTRL_NUM_MASTER_AUX06PRE:
+			case CTRL_NUM_MASTER_AUX05PRE:
+			case CTRL_NUM_MASTER_AUX04PRE:
+			case CTRL_NUM_MASTER_AUX03PRE:
+			case CTRL_NUM_MASTER_AUX02PRE:
+			case CTRL_NUM_MASTER_AUX01PRE:
+			case CTRL_NUM_MASTER_AUX16POST:
+			case CTRL_NUM_MASTER_AUX15POST:
+			case CTRL_NUM_MASTER_AUX14POST:
+			case CTRL_NUM_MASTER_AUX13POST:
+			case CTRL_NUM_MASTER_AUX12POST:
+			case CTRL_NUM_MASTER_AUX11POST:
+			case CTRL_NUM_MASTER_AUX10POST:
+			case CTRL_NUM_MASTER_AUX09POST:
+			case CTRL_NUM_MASTER_AUX08POST:
+			case CTRL_NUM_MASTER_AUX07POST:
+			case CTRL_NUM_MASTER_AUX06POST:
+			case CTRL_NUM_MASTER_AUX05POST:
+			case CTRL_NUM_MASTER_AUX04POST:
+			case CTRL_NUM_MASTER_AUX03POST:
+			case CTRL_NUM_MASTER_AUX02POST:
+			case CTRL_NUM_MASTER_AUX01POST:
+
+			return TRUE;
+			break;
+		}
+		break;
+
+
+		case DCX_DEVMAP_MODULE_MATRIX:
+
+		switch(iType)
+		{
+			// All the MATRIX cues
+
+			case CTRL_NUM_MATRIX_STERIO_CUE_PRE:
+			case CTRL_NUM_MATRIX_STERIO_CUE_POST:
+			case CTRL_NUM_MATRIX_CUE_PRE:
+			case CTRL_NUM_MATRIX_CUE_POST:
+
+			return TRUE;
+			break;
+		}
+		break;
+
+		case DCX_DEVMAP_MODULE_MASTER:
+
+		switch(iType)
+		{
+			// All the MASTER cues
+
+			case CTRL_NUM_MASTER_CUE_LEVEL_MONO:
+			case CTRL_NUM_MASTER_CUE_LEVEL_CENTER:
+		// fds revmoved 3/18/2001 as per gamble	CTRL_NUM_MASTER_CUE_A_SUM_IN:
+			case CTRL_NUM_MASTER_STEREO_CUE_PRE:
+			case CTRL_NUM_MASTER_STEREO_CUE_POST:
+
+			return TRUE;
+			break;
+		}
+		break;
+
+
+  }
+
+  return FALSE;
+}
+
+
+
+
+/////////////////////////////////
+// FUNCTION: HandleCtrlBtnClick
+//
+//
+// PURPOSE: Processes a mouse button click on a BUTTON control
 //
 //
 extern	int		g_inputCueActiveCounter;
@@ -870,7 +1086,6 @@ WORD								wVal;
 	// get the zone map pointer
 	//-------------------------
 	lpctrlZM = lpmwd->lpCtrlZM;
-
 
 	////////////////////////////////////////////////////
 	// Get the current value and the minimum value
@@ -990,33 +1205,44 @@ WORD								wVal;
 	r = lpctrlZM->rZone;		// THIS IS RECTANGLE FOR CHANNEL 1 !!!
 	hdc = GetDC(hwnd);
 
+	////////////////////////////////////////////////////
+	// FDS
+	//
+	// Invalidate rectangle for THIS button
+	// so that it is updated without redrawing screen
+
+	rInvalidate.left = r.left + lpmwd->iXadj;
+	rInvalidate.top  = r.top - lpmwd->iYOffset;
+	rInvalidate.right = r.right  + lpmwd->iXadj;
+	rInvalidate.bottom = (r.bottom - r.top) + rInvalidate.top;
 
 	/////////////////////////////////////////////////////////
 	// Compare current value with the minimum value
 	// If they are equal then we are turning the button ON
+	// and the button in being pressed DOWN
+	// else we are turning the button OFF and we are
+	// releasing the button
+
 
 	if(iVal == CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs))
   {
 		PushBtn(g_hdcMemory, lpctrlZM, iVal, lpmwd, iPhisChannel);
 
-		BitBlt(hdc, r.left + lpmwd->iXadj,		// iXadj IS OFFSET FOR CHANNEL WE ARE PROCESSING
-								r.top - lpmwd->iYOffset,	// iYOffset IS OFFSET FOR CHANNEL WE ARE PROCESSING
-								r.right - r.left,
-								r.bottom - r.top,
-					 g_hdcMemory, r.left, r.top,
-					 SRCCOPY);
-
-		//////////////////////////////////////
-		// now update all of the other mixers
-		// windows that represent this mixer
-		// using the iMixer, iPhisChannel
-		// and iVal
+		////////////////////////////////////////////////////////////////////////
+		// now update all of the other mixers windows that represent this mixer
+		// using the iMixer, iPhisChannel and iVal
 		//-----------------------------------
+
 		UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
 
+		// NOTE: THIS IS ALSO CALLED AGAIN IN THE UpdateSameMixWndByCtrlNum() ABOVE
 		// PASS THE iXadj FOR THIS CHANNEL BEING UPDATED
+		//
+		// When commented out the button for Input and Matrix EQ doesn't refresh!!
+
 		UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, 
 														iPhisChannel, lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
+
   }
 	else
   {
@@ -1032,33 +1258,32 @@ WORD								wVal;
 					 SRCCOPY);
 
 
-		// now update all of the other mixers
-		// windows that represent this mixer
-		// using the iMixer, iPhisChannel
-		// and iVal
+		////////////////////////////////////////////////////////////////////////
+		// now update all of the other mixers windows that represent this mixer
+		// using the iMixer, iPhisChannel and iVal
 		//-----------------------------------
+
+		// NOTE: THIS IS ALSO CALLED AGAIN IN THE UpdateSameMixWndByCtrlNum() THAT FOLLOWS
+		//
+		// When commented out the button for EQ doesn't refresh!!
+
 		UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, 
 														iPhisChannel, lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
 		UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, g_hdcBuffer);
 
 		SelectObject(g_hdcBuffer, hbmp);
+
   }
-
-	////////////////////////////////////////////////////
-	// FDS
-	//
-	// Invalidate rectangle for THIS button
-	// so that it is updated without redrawing screen
-
-	rInvalidate.left = r.left + lpmwd->iXadj;
-	rInvalidate.top  = r.top - lpmwd->iYOffset;
-	rInvalidate.right = r.right + lpmwd->iXadj;
-	rInvalidate.bottom = (r.bottom - r.top) + rInvalidate.top;
 
 	InvalidateRect(lpmwd->hwndImg,&rInvalidate,FALSE);		// FDS - MAKE SURE BUTTON GETS UPDATED BY INVALIDATING THE RECTANGLE
 
 	ReleaseDC(hwnd, hdc);
 	syncInputPriority (lpctrlZM, g_inputCueActiveCounter, lpmwd);
+
+	// Force redraw of this window
+
+	GetClientRect(hwnd, &rInvalidate);
+	InvalidateRect(hwnd,&rInvalidate,FALSE);
 
 return;
 }
@@ -1399,7 +1624,8 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD iCtrlAbs, int iVal, BOOL 
 
 		// THIS really slows things down
 		// Doesn't seem to be needed????
-
+		//
+		// without this line Group Faders do NOT work
 
     UpdateSameMixWndByCtrlNum(NULL, 0, iPhisChannel, lpctrlZM, iVal, NULL);
 
