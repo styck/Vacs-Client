@@ -35,6 +35,7 @@ void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd,
                                   LPCTRLZONEMAP lpctrlZM, BOOL bIsOn);
 
 void	DisplayStereoCueVUData(VU_READ *pVuDataBuffer);
+void	HandleRemoteSequenceControl(WORD wControl);
 
 //====================================
 // FUNCTION: RegisterFullViewClass
@@ -106,6 +107,7 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 	HWND                hWnd;
 	RECT                rect;
 	LPMIXERWNDDATA      lpmwd;
+	DWORD								style;
 
 	if (gInitialized == FALSE)
 		return NULL;
@@ -143,14 +145,22 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 	// is streched all the way to fit the entire image
 	//------------------------------------------------
 	lpmwd->rMaxWndPos.bottom += HEIGHT_FULL_LABEL_WND;
+/*
+	style	=  MDIS_ALLCHILDSTYLES;
+	style |= (WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE | WS_CHILD);
+	style &= ~WS_MAXIMIZEBOX;
+*/
 
-
+	style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE
+															| WS_THICKFRAME | WS_MINIMIZEBOX// | WS_MAXIMIZEBOX
+															| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+	style &= ~WS_MAXIMIZEBOX;
 
 	if(pMWD == NULL)
 			hWnd = CreateMDIWindow (
 															gszFullViewClass,
 															szTitle,
-															WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+															style,
 															0,
 															0,//CW_USEDEFAULT,
 															lpmwd->rWndPos.right,
@@ -163,7 +173,7 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 			hWnd = CreateMDIWindow (
 															gszFullViewClass,
 															szTitle,
-															WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+															style,
 															lpmwd->rWndPos.left,
 															lpmwd->rWndPos.top,
 															lpmwd->rWndPos.right,
@@ -253,6 +263,10 @@ LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage,
 			case VK_SHIFT:
 				lpmwd->wKeyFlags &= ~VK_SHIFT;
 				break;
+			case VK_SPACE:
+					HandleRemoteSequenceControl(IDM_S_NEXT);
+				break;
+
       }
       break;                              
 		//
@@ -288,12 +302,12 @@ LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage,
 
         break;
     //////////////////////////////////////////////////////////////
-    case WM_MDIACTIVATE:
-        if((HWND)lParam == hWnd)    
-            {
+//    case WM_MDIACTIVATE:
+//        if((HWND)lParam == hWnd)    
+//            {
             //SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSIZE);
-            }
-        break;    
+//            }
+//        break;    
     //////////////////////////////////////////////////////////////
     case WM_GETMINMAXINFO:
             lpMMI = (MINMAXINFO *)lParam;
@@ -366,6 +380,7 @@ if(g_hdcMemory == NULL)
   g_hbmpBuffer = CreateCompatibleBitmap(hdc, 120, 4000);
   g_hdcMemory = CreateCompatibleDC(hdc);
   g_hdcBuffer = CreateCompatibleDC(hdc);
+	g_hdcTempBuffer = CreateCompatibleDC(hdc);
   SelectObject(g_hdcMemory, g_hbmpBuffer);
   ReleaseDC(hwnd, hdc);
   }
@@ -458,7 +473,6 @@ switch (wMessage)
     case WM_TIMER:
       HandleCtrlTimer(hWnd, lpmwd);
       break;
-
     //////////////////////////////////////////////////////////////
 //    case WM_SIZE:
 //        MessageBox(ghwndMain, "WM_SIZE in the ImgWindow", "", MB_OK);
@@ -1020,7 +1034,7 @@ if((iYChange < 10) && (iYChange > -10))
     }
 
 iOldYSpeed = g_iYSpeed;
-g_iYSpeed = ((-iYChange) / 3) * 2;
+g_iYSpeed = ((-iYChange) / 3) * 4; // 3 * 2
 
 if(g_iYSpeed > 0)
   {
@@ -1602,12 +1616,13 @@ void      DrawVUReadOutImgWindow(LPPAINTSTRUCT lpPS,
   long        lCount;//, lZMCount;
   int         iX, iY, iCX, iCY;
   int         iBMPIndex;
-  int         iBMPIndexLast = -1;
   int         iPhisChannel;
   int         iMixer;
   int         iVUCounter;
   VU_READ     *pVuWalker;
   LPCTRLZONEMAP   pCtrlZm = NULL;
+  LPCTRLZONEMAP   pCtrlZmClip = NULL;
+	//int							tempModuleType  = 0;
   
 
 hbmpOld = NULL;
@@ -1632,16 +1647,54 @@ iX = iY = iCX = iCY = 0;
     iCY = gpBMPTable[iBMPIndex].iHeight;
 
     pVuWalker = pVuData;
-    // Walk the VU Data
+    // THIS IS ONLY FOR DEBUG !!!
+		// Check the VU packet 
     //
-    //for(iVUCounter = 0; iVUCounter < iVUCount;pVuWalker ++, iVUCounter++)
+		/*
+    if(iPhisChannel != (int)pVuWalker->wModuleIdx)
+		{
+			tempModuleType = gDeviceSetup.iaChannelTypes[pVuWalker->wModuleIdx];
+			if (tempModuleType == 3 || tempModuleType == 4)
+				tempModuleType = 5; // break point place :)
+		}
+		*/
+		// update all clip lights
+		pCtrlZmClip = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_CLIP_LIGHT);
+		while (pCtrlZmClip != NULL)
+		{
+			if(pVuWalker->wModuleIdx == pCtrlZmClip->iModuleNumber )
+			{
+				//
+				if (pVuWalker->wPeakClipValue != 0)
+				{
+					hbmpOld = SelectObject (g_hdcBuffer, gpBMPTable[pCtrlZmClip->iCtrlBmp[0]].hbmp);
+					BitBlt (hdc, pCtrlZmClip->rZone.left + iX, pCtrlZmClip->rZone.top - lpMWD->iYOffset,
+											 pCtrlZmClip->rZone.right - pCtrlZmClip->rZone.left, 
+											 pCtrlZmClip->rZone.bottom - pCtrlZmClip->rZone.top,
+									g_hdcBuffer, 0, 0, SRCCOPY);
+
+				}
+				else
+				{	
+					hbmpOld = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
+					BitBlt (hdc, pCtrlZmClip->rZone.left + iX, pCtrlZmClip->rZone.top - lpMWD->iYOffset,
+											 pCtrlZmClip->rZone.right - pCtrlZmClip->rZone.left, 
+											 pCtrlZmClip->rZone.bottom - pCtrlZmClip->rZone.top ,
+									g_hdcBuffer, pCtrlZmClip->rZone.left, pCtrlZmClip->rZone.top, SRCCOPY);
+				}
+				SelectObject (g_hdcBuffer, hbmpOld);
+			}
+			pCtrlZmClip ++;
+			pCtrlZmClip = ScanCtrlZonesType(pCtrlZmClip, CTRL_TYPE_CLIP_LIGHT);
+		}
+
+    //
     for(iVUCounter = 0; iVUCounter < 8;iVUCounter++)
     {
       // Skip channels that are not for this VU
       //
       if(iPhisChannel != (int)pVuWalker->wModuleIdx)
         continue;
-
 
       pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + iVUCounter + pVuWalker->cLock);
       //pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + (pVuData->iVUType - 1) );
@@ -1684,14 +1737,14 @@ iX = iY = iCX = iCY = 0;
              g_hdcBuffer, pCtrlZm->rZone.left, 
                           pCtrlZm->rZone.top, SRCCOPY);
 
+			//restore the content of the gdc buffer
       SelectObject(g_hdcBuffer, hbmpOld);
-      iBMPIndexLast = iBMPIndex;
 
       // Draw the VU data Display
       // into the Memory Bitmap
       //-------------------------
       DrawVUData(hdcMem, pCtrlZm,  pVuData, lpMWD, (int)pVuData->wModuleIdx, iVUCounter + pVuWalker->cLock); // !!
-      
+      // copy it to the screen
       BitBlt(hdc, pCtrlZm->rZone.left + iX, pCtrlZm->rZone.top - lpMWD->iYOffset, 
                   pCtrlZm->rZone.right - pCtrlZm->rZone.left, 
                   pCtrlZm->rZone.bottom - pCtrlZm->rZone.top ,
