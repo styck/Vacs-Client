@@ -6,6 +6,7 @@
 #include "SAMM.h"
 #include "SAMMEXT.h"
 #include "MACRO.h"
+#include <stdio.h>	// for sprintf
 
 #include "consoledefinition.h"
 
@@ -423,7 +424,7 @@ int     SetMemoryMapDefaults(void)
 
 extern	int	g_CueMasterSystem;
 
-void    RecallMemoryMapBuffer(BOOL bForce)
+void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 {
   CONTROLDATA         ctrlData;
   int                 iChannel;
@@ -435,6 +436,18 @@ void    RecallMemoryMapBuffer(BOOL bForce)
   LPMIXERWNDDATA      lpmwd;
 	int									filtered;
 	DWORD								copy_offset = 0;
+
+	DWORD								dwSystemtime, dwNowSystemTime;
+	DWORD								dwFadeDelayPerTick;
+
+  LPCTRLZONEMAP       lpctrlZMSave[128];	// <==== SET TO MAX NUMBER OF VERTICAL FADERS
+	int									iSavedZM = 0;				// start out with NO saved zone maps
+	int									iMaxFaderMovement;	// Saves the maximum of the vertical fader movements
+	int i,j;
+	int iValueCurrent, iValueSet, iDirection;
+	char		szBuff[80];
+
+	iMaxFaderMovement = -1;		// Not Valid
 
 	lpmwd = GetValidMixerWindowData();
 
@@ -453,7 +466,8 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 
 		// make sure we do not recall settings for a channel in safe mode
 		//
-		if (isChanelSafeActive (lpctrlZM) == TRUE){
+		if (isChanelSafeActive (lpctrlZM) == TRUE)
+		{
 			LPCTRLZONEMAP safecontrol = ScanCtrlZonesNum ( lpctrlZM, CTRL_NUM_INPUT_SAFE);
 
 			SETPHISDATAVALUEBUFFER (0, safecontrol, CTRL_NUM_INPUT_SAFE, 2);
@@ -465,28 +479,35 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 		//
     while(lpctrlZM->rZone.right)
     {
-    iCtrlNum = lpctrlZM->iCtrlChanPos;
-    iCtrlAbs = lpctrlZM->iCtrlNumAbs;
+				iCtrlNum = lpctrlZM->iCtrlChanPos;
+				iCtrlAbs = lpctrlZM->iCtrlNumAbs;
 
-    if(((iCtrlNum != CTRL_NUM_NULL) && (iCtrlAbs != iCtrlAbsLast) &&
-       (iCtrlAbs > -1) && (lpctrlZM->iModuleNumber < 80) && 
-       (lpctrlZM->iModuleNumber >= 0)) || IsMuteFilter(lpctrlZM))
-        {
+			if(((iCtrlNum != CTRL_NUM_NULL) && (iCtrlAbs != iCtrlAbsLast) &&
+				 (iCtrlAbs > -1) && (lpctrlZM->iModuleNumber < 80) && 
+				 (lpctrlZM->iModuleNumber >= 0)) || IsMuteFilter(lpctrlZM))
+      {
 					///////////////////////////////////////////////////////////////////////
 					// Get the value from the gpwMemMapBuffer.  This buffer is filled
 					// by the ReadDataFile() routine when reading a sequence.
 
-          iValue = GETPHISDATAVALUEBUFFER(0, lpctrlZM, iCtrlNum);
-          if(IsMuteFilter(lpctrlZM) == FALSE && IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE)
-          {
+        iValue = GETPHISDATAVALUEBUFFER(0, lpctrlZM, iCtrlNum);
 
-						///////////////////////////////////////////////////////////////////////
-						// ONLY update control if value has changed OR we are forcing an update
-						//
-            if(iValue != GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) || bForce == TRUE)
-            {
-              SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValue);
-            
+        if(IsMuteFilter(lpctrlZM) == FALSE && IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE)
+        {
+					
+					//////////////////////////////////////////////////////////////////////
+					// ONLY update control if value has changed OR we are forcing an update
+					//
+					if(iValue != GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) || bForce == TRUE)
+					{
+
+						/////////////////////////////////////////////
+						// If its NOT a fader then update immediatly
+
+						if( lpctrlZM->iCtrlType != CTRL_TYPE_FADER_VERT)
+						{
+							SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValue);
+        
 							if(lpctrlZM->iFiltered == NO_FILTER)
 							{
 								// Send the Data out
@@ -496,15 +517,41 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 								ctrlData.wCtrl    = iCtrlAbs; // we use this one since for the definition dll
 								ctrlData.wVal     = iValue;
 								SendDataToDevice(&ctrlData, FALSE, NULL, 0, NULL, FALSE); // was TRUE
-							}              
-            }
-          }
-          else
-          {
+							}
+						}
+						else	// It IS a main fader, so save info so that we can crossfade later
+						{
+
+							if(dwfadeDelay)   // But only if crossfade is set
+							{
+								lpctrlZMSave[iSavedZM++] = lpctrlZM;
+								if( abs(GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) - iValue) > iMaxFaderMovement)				// Save the largest fader movement
+									iMaxFaderMovement = abs(GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) - iValue);
+							}
+							else		// no crossfade so handle normally (need to make better logic)
+							{
+								SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValue);
+          
+								if(lpctrlZM->iFiltered == NO_FILTER)
+								{
+									// Send the Data out
+									//------------------
+									ctrlData.wMixer   = 0;
+									ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
+									ctrlData.wCtrl    = iCtrlAbs; // we use this one since for the definition dll
+									ctrlData.wVal     = iValue;
+									SendDataToDevice(&ctrlData, FALSE, NULL, 0, NULL, FALSE); // was TRUE
+								}
+
+							} // end for if(dwfadeDelay)
+						} // end for != CTRL_TYPE_FADER_VERT
+          } // end for iValue != GETPHISDATAVAULE
+        }
+        else	// IsMuteFilter() == TRUE, so its a MUTE filter, handle it if its changed
+        {
             if(iValue != GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) || bForce == TRUE)
             {
-              // Ok ... we are in forced mode ...
-              // so make sure the Buttons are inverted ...
+              // The MUTES have been changed OR we are in forced mode
               //
               if(bForce)
               {
@@ -515,13 +562,11 @@ void    RecallMemoryMapBuffer(BOOL bForce)
                   SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, 2);
               }
 
-						/*
+/************************************************************************************
 							if(iValue == CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs))
 								StartControlDataFilter(iChannel, lpmwd, lpctrlZM, TRUE, FALSE);
 							else
 								StartControlDataFilter(iChannel, lpmwd, lpctrlZM, FALSE, FALSE);
-						*/
-/*
 							if (lpctrlZM->iCtrlType == CTRL_MASTER_AUX_MUTE_FILTER){
 								if (lpctrlZM->iCtrlChanPos <= CTRL_NUM_MASTER_CUE_AUX01_MUTE &&
 									lpctrlZM->iCtrlChanPos >= CTRL_NUM_MASTER_CUE_AUX16_MUTE){
@@ -535,20 +580,25 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 								}
 							}
 							else{
-*/
+************************************************************************************/
 
+								// Press the MUTE button in since the value has changed
 
-								//  ...
 								if(lpmwd)
 									HandleCtrlBtnClickInGroup(NULL, lpmwd, lpctrlZM, iChannel);
-//							}
+
+/*********************
+							}
+**********************/
             }
-          }
+        }
 
           iCtrlAbsLast = iCtrlAbs;
-        }
+			} // end for safety check on variables
+
     lpctrlZM++;
-    }
+
+    } // end for while(lpctrlZM->rZone.right)
 
 
 		/*
@@ -630,8 +680,106 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 		copy_offset = giMax_CONTROLS*iChannel;
 		//MoveMemory ((gpwMemMapMixer+copy_offset), (gpwMemMapBuffer+copy_offset), 
 		//						 sizeof(WORD)*giMax_CONTROLS);
-  }
 
+  } // end for channel loop
+
+
+	///////////////////////////////////////////////////////////
+	// CrossFade - now move the large faders base on time
+	// selected by user
+	// This needs to be a timer event of some kind that gets
+	// called every 100 ms or so, whatever resolution decided.
+	//
+	// First time it is called it must find the largest movement
+	// and then calculate the rate of change based on the timer
+	// resolution and the sequence time selected.
+
+
+	if( (iSavedZM != 0) && (dwfadeDelay))
+	{
+
+		// Calculate delay per fader tick movement
+		// Check for zero divide
+		// iMaxFaderMovement
+		// iSavedZM
+		// dwfadeDelay
+
+		dwFadeDelayPerTick = dwfadeDelay / (iMaxFaderMovement / iSavedZM);
+    sprintf(szBuff, "             dwFadeDelayPerTick=%d   dwfadeDelay=%d ", dwFadeDelayPerTick, dwfadeDelay);//dwMoreThanOne);
+    SendMessage(ghwndStatus, SB_SETTEXT, MAKEWPARAM(0,SBT_POPOUT), (LPARAM)szBuff);
+
+		// loop to get the fader to its maximum position
+
+		for(j=0;j<iMaxFaderMovement;j++)
+		{
+
+					dwNowSystemTime = timeGetTime();
+
+		//////////////////////////////////////
+			// Loop through each fader zonemap
+
+			for(i=0;i<iSavedZM;i++)
+			{
+					lpctrlZM = lpctrlZMSave[i];		// Get the zonemap for the vertical fader
+
+					iCtrlNum = lpctrlZM->iCtrlChanPos;
+					iCtrlAbs = lpctrlZM->iCtrlNumAbs;
+
+					// MAX = 0, MIN = 113 for Vertical Faders
+					iValue = GETPHISDATAVALUEBUFFER(0, lpctrlZM, iCtrlNum);	// Get saved value (where we are going)
+					iValueCurrent = GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum);		// Get current value (where we are at)
+
+				if(iValue != iValueCurrent)	// Only increment and move if we are not there yet
+				{
+
+					if(iValue > iValueCurrent)
+						iDirection = 1;
+					else
+						iDirection = -1;
+
+						// This should only be done once so that routine can be continuously called
+						// until fader reaches destination
+
+						iValueSet = iValueCurrent;		// We start with our current value
+
+						// Move the fader to its new position
+
+						iValueSet=iValueSet+iDirection;	// Add or subtract to get NEXT value
+
+						//
+	// This is done in UpdateControlFromNetwork					SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValueSet);	// Set its value
+
+						if((iDirection *iValueSet) <= iValue)
+						{
+							// Send the Data out
+							//------------------
+							ctrlData.wMixer   = 0;
+							ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
+							ctrlData.wCtrl    = iCtrlAbs; // we use this one since for the definition dll
+							ctrlData.wVal     = iValueSet;
+							SendDataToDevice(&ctrlData, FALSE, NULL, 0, NULL, FALSE);
+
+							// This updates the visual movement of the FADER
+
+							UpdateControlFromNetwork(ctrlData.wChannel, (WORD)lpctrlZM->iCtrlChanPos, (int)ctrlData.wVal, FALSE);
+
+						// Do our sequence delay
+//#ifdef NODELAY
+							do
+							{
+								dwSystemtime = timeGetTime();
+							}
+							while(dwFadeDelayPerTick >  dwSystemtime - dwNowSystemTime);
+//#endif
+//
+						} // end for iDirection * iValueSet
+
+				} // end for iValue != iValueCurrent
+
+			} // end  for iSaveZM
+
+		} // end for iMaxFaderMovement
+	}
 
   //MoveMemory(gpwMemMapMixer, gpwMemMapBuffer, giMemMapSize);
 
