@@ -448,10 +448,16 @@ int		isCtrlValueNotEqualToDefault (LPCTRLZONEMAP   lpctrlZM, int ctrlNum)
 // CTRL_NUM_MASTER_CUE_A_MATRIX, and CTRL_NUM_MASTER_CUE_A_MASTER
 // and recall their current values.
 //
-void		handleInputCuePriority (LPMIXERWNDDATA lpmwd, BOOL	input_cue_on)
+void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
 {
   LPCTRLZONEMAP   lpctrl;
   CONTROLDATA         ctrlData;
+	LPMIXERWNDDATA			lpmwd = lpmwd_work;
+
+
+	if (lpmwd->lpZoneMap->iZonesCount < 100)
+		lpmwd = GetValidMixerWindowData ();
+
 
 	if (g_cue_priority.input > 0)
 	{
@@ -759,12 +765,17 @@ void	PrepareCueMasterSystem (void)
 // settings.
 //
 static	int		g_cue_last_count = -1;
-void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd, 
+void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd_work, 
                                   LPCTRLZONEMAP lpctrlZM, BOOL bIsOn)
 {
   CONTROLDATA         ctrlData;
   LPCTRLZONEMAP       lpctrl;
 	WORD								wVal;
+	LPMIXERWNDDATA			lpmwd = lpmwd_work;
+
+
+	if (lpmwd->lpZoneMap->iZonesCount < 100)
+		lpmwd = GetValidMixerWindowData ();
 
 	gCueActiveCount = g_cue_priority.aux + g_cue_priority.input + g_cue_priority.master +
 		                g_cue_priority.matrix + g_cue_priority.sub;
@@ -1240,14 +1251,18 @@ int   CheckFilter(LPCTRLZONEMAP pctrlzm)
 //
 //
 //
-void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP lpctrlZM, BOOL bIsOn, BOOL bCheckGroups)
+void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP lpctrlZM, BOOL bIsOn, BOOL bCheckGroups)
 {
   CONTROLDATA         ctrlData;
   LPCTRLZONEMAP       lpctrl, lpctrl2;
   int                 i_ctrl_pos;
   int                 i_temp1;
   BOOL                bUpdateCtrl = TRUE;
+	LPMIXERWNDDATA			lpmwd = lpmwd_work;
 
+
+	if (lpmwd->lpZoneMap->iZonesCount < 100)
+		lpmwd = GetValidMixerWindowData ();
 
   switch(lpctrlZM->iCtrlType)
   {
@@ -1919,11 +1934,16 @@ CHECK_FOR_GROUPS:
 //
 //
 //
-void FlipTheControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd)
+void FlipTheControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd_work)
 {
 
   CONTROLDATA         ctrlData;
   int                 iVal, ivalue;
+	LPMIXERWNDDATA			lpmwd = lpmwd_work;
+
+
+	if (lpmwd->lpZoneMap->iZonesCount < 100)
+		lpmwd = GetValidMixerWindowData ();
 
 
   ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
@@ -1942,7 +1962,8 @@ void FlipTheControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd)
       // Send the Data out
       //------------------
       ctrlData.wVal     = iVal;
-      SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE, lpctrlZM, -1, lpmwd, TRUE);
+      SendDataToDevice(&ctrlData, TRUE, lpctrlZM, -1, lpmwd, TRUE);
+      //SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE, lpctrlZM, -1, lpmwd, TRUE);
       }
     iVal = ivalue;
     }
@@ -1959,7 +1980,8 @@ void FlipTheControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd)
       // Send the Data out
       //------------------
       ctrlData.wVal     = iVal;
-      SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE, lpctrlZM, 1, lpmwd, TRUE);
+      SendDataToDevice(&ctrlData, TRUE, lpctrlZM, 1, lpmwd, TRUE);
+      //SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE, lpctrlZM, 1, lpmwd, TRUE);
       }
     }
 	iVal --;
@@ -1977,11 +1999,16 @@ void FlipTheControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd)
 //
 //
 //
-void FlipHardwareControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd)
+void FlipHardwareControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd_work)
 {
 
   CONTROLDATA         ctrlData;
   int                 iVal, ivalue;
+	LPMIXERWNDDATA			lpmwd = lpmwd_work;
+
+
+	if (lpmwd->lpZoneMap->iZonesCount < 100)
+		lpmwd = GetValidMixerWindowData ();
 
 
   ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
@@ -2003,7 +2030,7 @@ void FlipHardwareControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd)
   ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
 	ctrlData.wVal     = iVal;
 
-	if ( ! lpmwd->wKeyFlags & MK_SHIFT)
+	//if ( ! lpmwd->wKeyFlags & MK_SHIFT)
 		UpdateGroupedControls(&ctrlData, lpctrlZM, 1, NULL, TRUE);
 
   //
@@ -2016,10 +2043,15 @@ void FlipHardwareControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd)
 //////////////////////////////////////////////////////////////////
 //
 //
-void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
+void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 {
   LPCTRLZONEMAP       lpctrl;
   WORD                wVal;
+	LPMIXERWNDDATA			lpmwd = lpmwd_work;
+
+
+	if (lpmwd->lpZoneMap->iZonesCount < 100)
+		lpmwd = GetValidMixerWindowData ();
 
   switch(pctrlzm->iCtrlChanPos)
   {
@@ -2825,3 +2857,10 @@ void ResendControlData(LPCTRLZONEMAP  lpctrlZM){
   SendDataToDevice(&ctrlData, TRUE, lpctrlZM, -1, NULL, FALSE);
 }
 
+//////////////////////////////////
+//	CancelAllCues
+//
+//
+void	CancelAllCues (void){
+
+}
