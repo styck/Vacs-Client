@@ -7,6 +7,10 @@ Project: "ConsoleDefinition"=".\consoledefinition\ConsoleDefinition.dsp" - Packa
 
 Package=<5>
 {{{
+    begin source code control
+    "$/Vacs Client/ConsoleDefinition", ELAAAAAA
+    .\consoledefinition
+    end source code control
 }}}
 
 Package=<4>
@@ -19,6 +23,10 @@ Project: "DLList32"=".\DLList32\DLList32.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    "$/Vacs Client/DLList32", VOAAAAAA
+    .\dllist32
+    end source code control
 }}}
 
 Package=<4>
@@ -31,6 +39,10 @@ Project: "Vacs Client"=".\Vacs Client.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    "$/Vacs Client/src", KPAAAAAA
+    .
+    end source code control
 }}}
 
 Package=<4>
@@ -52,6 +64,10 @@ Project: "commport"=".\commport\commport.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    "$/Vacs Client/commport", CBEAAAAA
+    .\commport
+    end source code control
 }}}
 
 Package=<4>
@@ -64,6 +80,10 @@ Project: "usengl"=".\usengl\usengl.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
+    begin source code control
+    "$/Vacs Client/usengl", TQAAAAAA
+    .\usengl
+    end source code control
 }}}
 
 Package=<4>

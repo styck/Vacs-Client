@@ -3,74 +3,9 @@
 <pre>
 <h1>Build Log</h1>
 <h3>
---------------------Configuration: ConsoleDefinition - Win32 Debug--------------------
-</h3>
-<h3>Command Lines</h3>
-Creating command line "rc.exe /l 0x409 /fo"..\wasteDebug\ConsoleDefinition/ConsoleDefinition.res" /i "Resource" /d "_DEBUG" "D:\work\Vacs Client\consoledefinition\Resource\ConsoleDefinition.rc"" 
-Creating temporary file "C:\TEMP\RSPF9.tmp" with contents
-[
-kernel32.lib user32.lib gdi32.lib comdlg32.lib comctl32.lib wsock32.lib version.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"..\binD/ConsoleDefinition.pdb" /debug /machine:I386 /out:"..\binD/ConsoleDefinition.dll" /implib:"..\binD/ConsoleDefinition.lib" 
-"\work\Vacs Client\wasteDebug\ConsoleDefinition\CDef_DevCommunication.obj"
-"\work\Vacs Client\wasteDebug\ConsoleDefinition\CDef_Preferences.obj"
-"\work\Vacs Client\wasteDebug\ConsoleDefinition\dcx_parser.obj"
-"\work\Vacs Client\wasteDebug\ConsoleDefinition\DLL_Main.obj"
-"\work\Vacs Client\wasteDebug\ConsoleDefinition\implement.obj"
-"\work\Vacs Client\wasteDebug\ConsoleDefinition\ConsoleDefinition.res"
-]
-Creating command line "link.exe @C:\TEMP\RSPF9.tmp"
-<h3>Output Window</h3>
-Compiling resources...
-Linking...
-<h3>
 --------------------Configuration: Vacs Client - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating temporary file "C:\TEMP\RSPFA.tmp" with contents
-[
-/nologo /Gz /MTd /W3 /Gm /GX /ZI /Od /I ".\inc" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"WasteDebug/Vacs Client.pch" /YX /Fo"WasteDebug/" /Fd"WasteDebug/" /FD /GZ /c 
-"D:\work\Vacs Client\src\MemoryMap.c"
-]
-Creating command line "cl.exe @C:\TEMP\RSPFA.tmp" 
-Creating temporary file "C:\TEMP\RSPFB.tmp" with contents
-[
-kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib version.lib winmm.lib /nologo /subsystem:windows /incremental:yes /pdb:"bind/Vacs.pdb" /debug /machine:I386 /out:"bind/Vacs.exe" /pdbtype:sept 
-".\WasteDebug\256Colors.obj"
-".\WasteDebug\ConsoleCommunication.obj"
-".\WasteDebug\ControlDataFilters.obj"
-".\WasteDebug\Controls.obj"
-".\WasteDebug\CreateMain.obj"
-".\WasteDebug\datafile.obj"
-".\WasteDebug\eqDisplay.obj"
-".\WasteDebug\Events interface.obj"
-".\WasteDebug\FullView.obj"
-".\WasteDebug\Groups.obj"
-".\WasteDebug\Init.obj"
-".\WasteDebug\Labels and Groups.obj"
-".\WasteDebug\Main.obj"
-".\WasteDebug\MasterWindow.obj"
-".\WasteDebug\MDI_Main.obj"
-".\WasteDebug\MemoryMap.obj"
-".\WasteDebug\Misc BinRes.obj"
-".\WasteDebug\Mix Files.obj"
-".\WasteDebug\Preferences.obj"
-".\WasteDebug\Remap and Mode.obj"
-".\WasteDebug\SAMM_Globals.obj"
-".\WasteDebug\Scan CtrlZones.obj"
-".\WasteDebug\Sequence.obj"
-".\WasteDebug\Status.obj"
-".\WasteDebug\trackingwindow.obj"
-".\WasteDebug\ZoneMaps.obj"
-".\WasteDebug\ZoomView.obj"
-".\WasteDebug\SAMM.res"
-".\binD\commport.lib"
-".\binD\ConsoleDefinition.lib"
-".\binD\DLList32.lib"
-]
-Creating command line "link.exe @C:\TEMP\RSPFB.tmp"
-<h3>Output Window</h3>
-Compiling...
-MemoryMap.c
-Linking...
 
 
 
