@@ -59,10 +59,12 @@ void HandleGroupLVKeyDown(LV_KEYDOWN*);
 
 void EnableTBGroupButtons(int iLast);
 
+
+
 //=================================================
 //function: RegisterGroupWindowClass
 //
-//
+// Setup the style and type for Group Window
 //=================================================
 int RegisterGroupWindowClass(void)
 {
@@ -70,31 +72,31 @@ int         iReturn;
 WNDCLASS    wc;
 
 
-// Register Group View Class
-//--------------------------
-ZeroMemory(&wc, sizeof(WNDCLASS));      // Clear wndclass structure
+	// Register Group View Class
+	//--------------------------
+	ZeroMemory(&wc, sizeof(WNDCLASS));      // Clear wndclass structure
 
-wc.style = CS_HREDRAW | CS_VREDRAW;
-wc.lpfnWndProc = (WNDPROC)GroupWndProc;
-wc.cbClsExtra = 0;
-wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
-wc.hInstance = ghInstMain;                        
-wc.hIcon = LoadIcon(ghInstConsoleDef, MAKEINTRESOURCE(IDICON_GROUP));// this might leak memory
-wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-wc.hbrBackground = GetStockObject(GRAY_BRUSH);
-wc.lpszMenuName = NULL;
-wc.lpszClassName = gszGroupClass;
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = (WNDPROC)GroupWndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
+	wc.hInstance = ghInstMain;                        
+	wc.hIcon = LoadIcon(ghInstConsoleDef, MAKEINTRESOURCE(IDICON_GROUP));// this might leak memory
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = GetStockObject(GRAY_BRUSH);	// GRAY background
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = gszGroupClass;
 
-iReturn = RegisterClass(&wc);
+	iReturn = RegisterClass(&wc);
 
-if(iReturn == 0)
-	 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+	if(iReturn == 0)
+		 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
-// Initilize the Groups Memory Container
-//
-iReturn = InitGroups();
-if( iReturn != 0 )
-  return iReturn;
+	// Initilize the Groups Memory Container
+	//
+	iReturn = InitGroups();
+	if( iReturn != 0 )
+		return iReturn;
 
 return 0;
 }
@@ -103,8 +105,9 @@ return 0;
 //=================================================
 //function: ShowGroupWindow
 //
-//
+// Create and show the Group WIndow
 //=================================================
+
 int     ShowGroupWindow(BOOL bShow)
 {
 char                    szTitle[128];
@@ -174,14 +177,16 @@ return 0;
 //
 //the MDI child window for the Dialog Box
 //
+
+
 LRESULT CALLBACK  GroupWndProc(HWND hwnd, UINT uiMsg, 
                                WPARAM wParam, LPARAM lParam)
 {
 RECT        rect;
 MINMAXINFO  *lpMMI;
 
-switch(uiMsg)
-    {
+	switch(uiMsg)
+  {
     ////////////////////////////////////////////
 //    case WM_MDIACTIVATE:
 //        if((HWND)lParam == hwnd)
@@ -190,11 +195,14 @@ switch(uiMsg)
 //        break;
     ////////////////////////////////////////////
     case WM_CREATE:
+
         ghwndGroupsDlg = CreateDialog(ghInstStrRes, MAKEINTRESOURCE(IDD_GROUPS), hwnd, GroupsProc);
+
         if(ghwndGroupsDlg == NULL)
-            {
+        {
             return -1;
-            }
+        }
+
         GetClientRect(ghwndGroupsDlg, &rect);   
 				
 				// Set the initial position of the Group dialog box
@@ -255,13 +263,16 @@ return 0;
 
 
 //=============================================
-//FUNCTION: DisplayLVNPopupMenu
+// FUNCTION: DisplayLVNPopupMenu
 //
 //
-//Display the POPUP menu for the GROUPS box
+// Display the POPUP menu for the GROUPS box
+// when a MOUSE RIGHT click is made
 //=============================================
+
 void DisplayLVNPopupMenu(HWND hwnd)
 {
+
 HMENU   hLVNMenu = NULL;
 HMENU   hLVNPopupMenu = NULL;
 HMENU   hSubMenu = NULL;
@@ -270,67 +281,70 @@ UINT    uMenuState;
 char    szBuf[128];
 POINT   pt;
 
-hLVNMenu = LoadMenu(ghInstStrRes, MAKEINTRESOURCE(MENU_LVN_POPUP));
-if(hLVNMenu == NULL)
-    goto ON_EXIT;
+	hLVNMenu = LoadMenu(ghInstStrRes, MAKEINTRESOURCE(MENU_LVN_POPUP));
 
-hLVNPopupMenu = CreatePopupMenu();
+	if(hLVNMenu != NULL)
+	{
+		hLVNPopupMenu = CreatePopupMenu();
 
-iMenu = 0;
+		iMenu = 0;
  
-/////////////////////////////////////////////////////
-// Get menu state will return the style of the menu
-// in the lobyte of the unsigned int. Return value
-// of -1 indicates the menu does not exist, and we
-// have finished creating our pop up.
-/////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////
+		// Get menu state will return the style of the menu
+		// in the lobyte of the unsigned int. Return value
+		// of -1 indicates the menu does not exist, and we
+		// have finished creating our pop up.
+		/////////////////////////////////////////////////////
 
-while ((uMenuState = GetMenuState(hLVNMenu, iMenu, MF_BYPOSITION)) != -1)
-    {
-    if (uMenuState != -1)
-        {
-        // Get the menu string.
-        GetMenuString(hLVNMenu, iMenu, szBuf, 128, MF_BYPOSITION);
-        if (LOBYTE(uMenuState) & MF_POPUP) // It's a pop-up menu.
-            {
-            hSubMenu = GetSubMenu(hLVNMenu, iMenu);
-            AppendMenu(hLVNPopupMenu, LOBYTE(uMenuState), (UINT)hSubMenu, szBuf);
-            }
-        else  // Is a menu item, get the ID.
-            {
-            iID = GetMenuItemID(hLVNMenu, iMenu);
-            AppendMenu(hLVNPopupMenu, uMenuState, iID, szBuf);
-            }
-        }
-    iMenu++;  // Get the next item.
-    }
-
-
-// TrackPopupMenu expects screen coordinates.
-if(GetCursorPos(&pt) == FALSE)
-    {
-    pt.x = 100;
-    pt.y = 100;
-    }
-TrackPopupMenu(hLVNPopupMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x,pt.y, 0, hwnd, NULL);
-
-// Because we are using parts of the main menu in our
-// pop-up menu, we can't just delete the pop-up menu, because
-// that would also delete the main menu. So we must
-// go through the pop-up menu and remove all the items.
-while (RemoveMenu(hLVNPopupMenu, 0, MF_BYPOSITION))
-    ;
+		while ((uMenuState = GetMenuState(hLVNMenu, iMenu, MF_BYPOSITION)) != -1)
+		{
+			if (uMenuState != -1)
+			{
+					// Get the menu string.
+					GetMenuString(hLVNMenu, iMenu, szBuf, 128, MF_BYPOSITION);
+					if (LOBYTE(uMenuState) & MF_POPUP) // It's a pop-up menu.
+					{
+							hSubMenu = GetSubMenu(hLVNMenu, iMenu);
+							AppendMenu(hLVNPopupMenu, LOBYTE(uMenuState), (UINT)hSubMenu, szBuf);
+					}
+					else  // Is a menu item, get the ID.
+					{
+							iID = GetMenuItemID(hLVNMenu, iMenu);
+							AppendMenu(hLVNPopupMenu, uMenuState, iID, szBuf);
+					}
+			}
+			iMenu++;  // Get the next item.
+		}
 
 
-ON_EXIT:
-if(hLVNMenu)
-    DestroyMenu(hLVNMenu);
+		// TrackPopupMenu expects screen coordinates.
+		if(GetCursorPos(&pt) == FALSE)
+		{
+			pt.x = 100;
+			pt.y = 100;
+		}
 
-if(hLVNPopupMenu)
-    DestroyMenu(hLVNPopupMenu);
+		TrackPopupMenu(hLVNPopupMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x,pt.y, 0, hwnd, NULL);
+
+		///////////////////////////////////////////////////////////////
+		// Because we are using parts of the main menu in our
+		// pop-up menu, we can't just delete the pop-up menu, because
+		// that would also delete the main menu. So we must
+		// go through the pop-up menu and remove all the items.
+		///////////////////////////////////////////////////////////////
+
+		while (RemoveMenu(hLVNPopupMenu, 0, MF_BYPOSITION))
+				;
+	}
+
+	if(hLVNMenu)
+			DestroyMenu(hLVNMenu);
+
+	if(hLVNPopupMenu)
+			DestroyMenu(hLVNPopupMenu);
 
 return;
-};
+}
 
 
 //==================================================
@@ -340,6 +354,7 @@ return;
 //         right click pop-up from group window
 //
 //==================================================
+
 void    GroupRenameItem(void)
 {
 int iListItem;
@@ -369,11 +384,11 @@ BOOL CALLBACK   GroupsProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
   int         iCount;
 	int					iListItem;
 
-switch(uiMsg)
+	switch(uiMsg)
   {
 
-  /////////////////////////////////////////////////////////////
-  case WM_NOTIFY:
+		/////////////////////////////////////////////////////////////
+	  case WM_NOTIFY:
 			switch (((LPNM_LISTVIEW) lParam)->hdr.code)
       {
       //----------------
@@ -423,176 +438,185 @@ switch(uiMsg)
     return 0;
     break; //case WM_NOTIFY:
 
+		/////////////////////////////////////////////////
+		// Handle the right-click and POPUP menu HERE
+		// This will set the selection to the item that
+		// the user right clicked on.
 
-	// Handle the right-click and POPUP menu HERE
-	// This will set the selection to the item that
-	// the user right clicked on.
-
-  case WM_CONTEXTMENU:
+		case WM_CONTEXTMENU:
           DisplayLVNPopupMenu(hwnd);
       break;
 
   //------------------------
-  case WM_COMMAND:
-    switch(LOWORD(wParam))
-    {
-			case MENU_LVN_CANCEL:
-			case IDC_CANCEL_GROUP:
-				DeactivateGroup();
-				break;
-			//
-						//--------------------------------------------
-			// Handle RENAME pop-up menu item
-			case MENU_LVN_RENAME:
-				GroupRenameItem();
-				break;
+	  case WM_COMMAND:
+			switch(LOWORD(wParam))
+			{
+				case MENU_LVN_CANCEL:
+				case IDC_CANCEL_GROUP:
+					DeactivateGroup();
+					break;
+				//
+							//--------------------------------------------
+				// Handle RENAME pop-up menu item
+				case MENU_LVN_RENAME:
+					GroupRenameItem();
+					break;
 
-			// Adds the current group 
-			// to the list of Groups
-			//
-			case MENU_LVN_ADD:
-			case IDC_GROUP_ADD:
-				iCount = AddGroup(&g_CurrentGroup, FADERS_GROUPS);
-				if(iCount > -1)
-					AddToListControl(iCount);
-				else
-					MessageBox(ghwndMain, "Maximum number of groups reached!", "Information", MB_OK | MB_ICONEXCLAMATION);
-				break;
+				//////////////////////////
+				// Adds the current group 
+				// to the list of Groups
+				//
+				case MENU_LVN_ADD:
+				case IDC_GROUP_ADD:
+					iCount = AddGroup(&g_CurrentGroup, FADERS_GROUPS);
+					if(iCount > -1)
+						AddToListControl(iCount);
+					else
+						MessageBox(ghwndMain, "Maximum number of groups reached!", "Information", MB_OK | MB_ICONEXCLAMATION);
+					break;
 
-			//////////////////////
-			// Update a group
-			//
-			case MENU_LVN_UPDATE:
-			case IDC_GROUP_UPADTE:
-				iListItem =  GetLisControlSelection();
-				iCount = GetListItemGroupNumber(iListItem);
-				UpdateGroup( iListItem, FADERS_GROUPS, iCount);
-				break;
+				//////////////////////
+				// Update a group
+				//
+				case MENU_LVN_UPDATE:
+				case IDC_GROUP_UPADTE:
+					iListItem =  GetLisControlSelection();
+					iCount = GetListItemGroupNumber(iListItem);
+					UpdateGroup( iListItem, FADERS_GROUPS, iCount);
+					break;
 
-			/////////////////////
-			// Delete a group
-			//
-			case MENU_LVN_DELETE:
-			case IDC_GROUP_DELETE:
-				iListItem =  GetLisControlSelection();
-				iCount = GetListItemGroupNumber(iListItem);
-				DeleteGroup( iListItem, FADERS_GROUPS, iCount);
-				break;
+				/////////////////////
+				// Delete a group
+				//
+				case MENU_LVN_DELETE:
+				case IDC_GROUP_DELETE:
+					iListItem =  GetLisControlSelection();
+					iCount = GetListItemGroupNumber(iListItem);
+					DeleteGroup( iListItem, FADERS_GROUPS, iCount);
+					break;
 
-			/////////////////////
-			// Hide the button
-			// controls for the 
-			// group selection
-			//
-			case IDC_GROUP_HIDECONTROLS:
+				/////////////////////
+				// Hide the button
+				// controls for the 
+				// group selection
+				//
+				case IDC_GROUP_HIDECONTROLS:
 
-				if(IsDlgButtonChecked(hwnd, IDC_GROUP_HIDECONTROLS) == BST_CHECKED)
-				{
-					hwndItem = GetDlgItem(hwnd, IDC_GROUP_HIDECONTROLS);
-					GetWindowRect(hwndItem, &rClient);
-					ScreenToClient(hwnd, (LPPOINT)&rClient);
-					g_iGroupsDlgOffset = -(rClient.top);
+					if(IsDlgButtonChecked(hwnd, IDC_GROUP_HIDECONTROLS) == BST_CHECKED)
+					{
+						hwndItem = GetDlgItem(hwnd, IDC_GROUP_HIDECONTROLS);
+						GetWindowRect(hwndItem, &rClient);
+						ScreenToClient(hwnd, (LPPOINT)&rClient);
+						g_iGroupsDlgOffset = -(rClient.top);
         
-					hwndItem = GetParent(hwnd);
-					GetWindowRect(hwndItem, &rClient);
-					rClient.right -= rClient.left;
-					rClient.bottom -= rClient.top;
-					SendMessage(hwndItem, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rClient.right, rClient.bottom));
+						hwndItem = GetParent(hwnd);
+						GetWindowRect(hwndItem, &rClient);
+						rClient.right -= rClient.left;
+						rClient.bottom -= rClient.top;
+						SendMessage(hwndItem, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rClient.right, rClient.bottom));
+					}
+					else
+					{
+						g_iGroupsDlgOffset = 0;
+						hwndItem = GetParent(hwnd);
+						GetWindowRect(hwndItem, &rClient);
+						rClient.right -= rClient.left;
+						rClient.bottom -= rClient.top;
+						SendMessage(hwndItem, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rClient.right, rClient.bottom));
+					};
+					break;
+
+				default:
+					break;
+			}
+
+			break; //  case WM_COMMAND:
+
+		//---------------------------
+		case WM_SIZE:
+
+			if(wParam != SIZE_MINIMIZED)
+			{
+				hwndItem = GetParent(hwnd);
+				GetClientRect(hwndItem, &rScreen);
+
+				///////////////////////////////////////////////////////////////
+				// Resize the Group List View to fit perfectly inside of the
+				// Client area of the Dialog window
+
+				hwndItem = GetDlgItem(hwnd, IDC_GROUP_LIST);
+				GetWindowRect(hwndItem, &rClient);
+				ScreenToClient(hwnd, (LPPOINT)&rClient);
+
+				SetWindowPos(hwndItem, NULL, 0, 0, rScreen.right - rClient.left, 
+																					 rScreen.bottom - rClient.top - g_iGroupsDlgOffset,
+										 SWP_NOMOVE | SWP_NOZORDER);
+
+				InitGroupsImageList(hwndItem);
+
+				// insert the first column
+				//
+				GetClientRect(hwndItem, &rClient);
+
+				if(g_columnAdded == FALSE)
+				{
+
+				 DWORD dwStyle = GetWindowLong(hwndItem, GWL_STYLE);
+
+					if ((dwStyle & LVS_TYPEMASK) != LVS_REPORT)
+							SetWindowLong(hwndItem, GWL_STYLE, (dwStyle & ~LVS_TYPEMASK) | LVS_REPORT);
+
+					ZeroMemory(&lvclmn, sizeof(lvclmn));
+					lvclmn.iSubItem = 0;
+					lvclmn.mask     = LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM | LVCF_WIDTH; 
+					lvclmn.fmt      = LVCFMT_LEFT;
+					lvclmn.cx       = rClient.right;
+					lvclmn.pszText  = "Group Name";
+					ListView_InsertColumn(hwndItem, 0, &lvclmn);
+					g_columnAdded = TRUE;
+
+					ListView_SetColumnWidth(hwndItem, 0, rClient.right);
+					//
+					//lvclmn.iSubItem = 1;
+					//lvclmn.pszText  = "Dummy";
+					//ListView_InsertColumn(hwndItem, 1, &lvclmn);
+					//
+					//ListView_SetColumnWidth(hwndItem, 1, LVSCW_AUTOSIZE_USEHEADER);
+					//ListView_SetColumnWidth(hwndItem, 1, LVSCW_AUTOSIZE_USEHEADER);
+
 				}
 				else
 				{
-					g_iGroupsDlgOffset = 0;
-					hwndItem = GetParent(hwnd);
-					GetWindowRect(hwndItem, &rClient);
-					rClient.right -= rClient.left;
-					rClient.bottom -= rClient.top;
-					SendMessage(hwndItem, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rClient.right, rClient.bottom));
-				};
-				break;
-
-			default:
-				break;
-    }
-    break; //  case WM_COMMAND:
-
-  //---------------------------
-  case WM_SIZE:
-    if(wParam != SIZE_MINIMIZED)
-    {
-      hwndItem = GetParent(hwnd);
-      GetClientRect(hwndItem, &rScreen);
-
-
-      // Resize the Group List View to fit perfectly inside of the
-      // Client area of the Dialog window
-      hwndItem = GetDlgItem(hwnd, IDC_GROUP_LIST);
-      GetWindowRect(hwndItem, &rClient);
-      ScreenToClient(hwnd, (LPPOINT)&rClient);
-
-      SetWindowPos(hwndItem, NULL, 0, 0, rScreen.right - rClient.left, 
-                                         rScreen.bottom - rClient.top - g_iGroupsDlgOffset,
-                   SWP_NOMOVE | SWP_NOZORDER);
-
-      InitGroupsImageList(hwndItem);
-      // insert the first column
-      //
-      GetClientRect(hwndItem, &rClient);
-      if(g_columnAdded == FALSE)
-      {
-
-       DWORD dwStyle = GetWindowLong(hwndItem, GWL_STYLE);
-
-        if ((dwStyle & LVS_TYPEMASK) != LVS_REPORT)
-            SetWindowLong(hwndItem, GWL_STYLE, (dwStyle & ~LVS_TYPEMASK) | LVS_REPORT);
-
-        ZeroMemory(&lvclmn, sizeof(lvclmn));
-        lvclmn.iSubItem = 0;
-        lvclmn.mask     = LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM | LVCF_WIDTH; 
-        lvclmn.fmt      = LVCFMT_LEFT;
-        lvclmn.cx       = rClient.right;
-        lvclmn.pszText  = "Group Name";
-        ListView_InsertColumn(hwndItem, 0, &lvclmn);
-        g_columnAdded = TRUE;
-
-        ListView_SetColumnWidth(hwndItem, 0, rClient.right);
-        //
-        //lvclmn.iSubItem = 1;
-        //lvclmn.pszText  = "Dummy";
-        //ListView_InsertColumn(hwndItem, 1, &lvclmn);
-        //
-        //ListView_SetColumnWidth(hwndItem, 1, LVSCW_AUTOSIZE_USEHEADER);
-        //ListView_SetColumnWidth(hwndItem, 1, LVSCW_AUTOSIZE_USEHEADER);
-
-      }
-      else
-      {
-        ListView_SetColumnWidth(hwndItem, 0, rClient.right);
-        //ListView_SetColumnWidth(hwndItem, 1, rClient.right);
-        //ListView_SetColumnWidth(hwndItem, 0, LVSCW_AUTOSIZE_USEHEADER);
-        //ListView_SetColumnWidth(hwndItem, 1, LVSCW_AUTOSIZE_USEHEADER);
-      }
-    }
+					ListView_SetColumnWidth(hwndItem, 0, rClient.right);
+					//ListView_SetColumnWidth(hwndItem, 1, rClient.right);
+					//ListView_SetColumnWidth(hwndItem, 0, LVSCW_AUTOSIZE_USEHEADER);
+					//ListView_SetColumnWidth(hwndItem, 1, LVSCW_AUTOSIZE_USEHEADER);
+				}
+			}
 
     break;
 
-  /////////////////////////////////////////////////////
-  case WM_INITDIALOG:
-    ghwndGroupsDlg = hwnd;
-    FillGroupListControl(FADERS_GROUPS);
-    break;
-  case WM_DESTROY:
-      ghwndGroupsDlg = NULL;
-      g_columnAdded = FALSE;
-  default:
-      return FALSE;
+		/////////////////////////////////////////////////////
+		case WM_INITDIALOG:
+			ghwndGroupsDlg = hwnd;
+			FillGroupListControl(FADERS_GROUPS);
+			break;
+		case WM_DESTROY:
+				ghwndGroupsDlg = NULL;
+				g_columnAdded = FALSE;
+		default:
+				return FALSE;
   }
 
 return TRUE;
 }
 
-////////////////////////////////
-//
-//
+//=============================================
+// FUNCTION: HandleGroupEndLabelEdit
+// 
+// Purpose: Get the edited group text into our
+//          dispinfo variable
+
 void HandleGroupEndLabelEdit(LV_DISPINFO *pDispInfo)
 {
   if(pDispInfo->item.mask & LVIF_TEXT)  
@@ -606,9 +630,12 @@ void HandleGroupEndLabelEdit(LV_DISPINFO *pDispInfo)
 };
 
 
-////////////////////////////////
+//=============================================
+// FUNCTION: HandleGroupLVSetItemIfno
+// 
+// Purpose: 
 //
-//
+
 void HandleGroupLVSetItemIfno(LV_DISPINFO *pDispInfo)
 {
   if(pDispInfo->item.mask & LVIF_TEXT)  
@@ -619,12 +646,14 @@ void HandleGroupLVSetItemIfno(LV_DISPINFO *pDispInfo)
   }
 };
 
-////////////////////////////////
+//=============================================
+// FUNCTION: HandleGroupLVGetDispInfo
+// 
+// Purpose: 
 //
-//
+
 void HandleGroupLVGetDispInfo(LV_DISPINFO *pDispInfo)
 {
-
  
   if(pDispInfo->item.mask & LVIF_TEXT)  
   {
@@ -635,7 +664,10 @@ void HandleGroupLVGetDispInfo(LV_DISPINFO *pDispInfo)
 };
 
 
-////////////////////////////////
+//=============================================
+// FUNCTION: HandleGroupLVKeyDown
+// 
+// Purpose: 
 //
 // Handle keyboard input for the
 // Group list box
@@ -670,14 +702,15 @@ int iListItem, iCount;
 
 		break;
 	}
-	///////////////////////////////////////////////////////////////
   
 };
 
-////////////////////////////////////////////////////////////
+//=============================================
+// FUNCTION: UpdateTBGroupButtons
+// 
+// Purpose: Update the Group tool bar buttons
 //
-//
-//
+
 void	UpdateTBGroupButtons()
 {
   LPGROUPSTORE  pWalker;
@@ -692,11 +725,16 @@ void	UpdateTBGroupButtons()
     }
   }
 };
-//////////////////////////////////////////////////////////
+
+
+//=============================================
+// FUNCTION: FillGroupListControl
+// 
+// Purpose: Depending on the type, go through
+//          and insert the group names into
+//          the group list box
 //
-//
-//
-//
+
 void FillGroupListControl(int   iType)
 {
   LPGROUPSTORE  pWalker;
@@ -730,9 +768,13 @@ void FillGroupListControl(int   iType)
   g_CurrentGroup = CurrentGroupTemp;
 }
 
-/////////////////////////////////////////////
+
+//=============================================
+// FUNCTION: DeleteListControlItem
+// 
+// Purpose: 
 //
-//
+
 void  DeleteListControlItem(int item)
 {
   HWND      hwnd;
@@ -751,10 +793,12 @@ void  DeleteListControlItem(int item)
   ListView_DeleteItem(hwnd, item);
 };
 
-//////////////////////////////////////////////
+//=============================================
+// FUNCTION: GetLisControlSelection
+// 
+// Purpose: 
 //
-//
-//
+
 int   GetLisControlSelection(void)
 {
   HWND      hwnd;
@@ -774,9 +818,12 @@ int   GetLisControlSelection(void)
   return -1;
 }
 
-/////////////////////////////////////////////
+//=============================================
+// FUNCTION: GetListItemGroupNumber
+// 
+// Purpose: 
 //
-//
+
 int	GetListItemGroupNumber(int iItem)
 {
   HWND      hwnd;
@@ -784,17 +831,23 @@ int	GetListItemGroupNumber(int iItem)
 
 	if(iItem < 0)
 		return -1;
+
   hwnd = GetDlgItem(ghwndGroupsDlg, IDC_GROUP_LIST);
 	
 	lvi.mask = LVIF_PARAM;
 	lvi.iItem = iItem;
+
 	if(ListView_GetItem(hwnd, &lvi) == FALSE)
 		return -1;
+
 	return lvi.lParam;
 }
 
 
-/////////////////////////////////////////////
+//=============================================
+// FUNCTION: GetListItemGroupName
+// 
+// Purpose: 
 //
 // Used in MAIN.C to get the group name
 // to display on the tooltips
@@ -807,8 +860,10 @@ LPSTR	GetListItemGroupName(int iItem)
 
 		pWalker = gpGroupStoreFaders;
 
+		//////////////////////////////////
 		// Move to the selected item text
 		// (group name for item)
+		//////////////////////////////////
 
 		for(i = 0; i < iItem; i ++,pWalker++);
 
@@ -820,9 +875,12 @@ LPSTR	GetListItemGroupName(int iItem)
 }
 
 
-/////////////////////////////////////////////
+//=============================================
+// FUNCTION: AddToListControl
+// 
+// Purpose: 
 //
-//
+
 void  AddToListControl(int  iGroupNumber)
 {
   LV_ITEM   lvi;
@@ -861,11 +919,12 @@ void  AddToListControl(int  iGroupNumber)
 //
 
 
-/////////////////////////////////////////////////////////////////
+//=============================================
+// FUNCTION: InitGroupsImageList
+// 
+// Purpose: 
 //
-//
-//
-//
+
 BOOL    InitGroupsImageList(HWND hwndLV )
 {
   BOOL  bRet = TRUE;
@@ -889,11 +948,14 @@ BOOL    InitGroupsImageList(HWND hwndLV )
   return bRet;
 }
 
-//////////////////////////////////////////////////////////////
-// InitGroups
+
+
+//=============================================
+// FUNCTION: InitGroups
+// 
+// Purpose: 
 //
-//
-//
+
 int    InitGroups(void)
 {
   int   iCount;
@@ -915,7 +977,9 @@ int    InitGroups(void)
   if(gpGroupStoreGeneral == NULL)
     return IDS_ERR_ALLOCATE_MEMORY;
 
+	//////////////////////////////////
   // OK ... Set them all to nothing
+
   for(iCount = 0; iCount < MAX_GROUPS_COUNT; iCount ++)
   {
     gpGroupStoreFaders[iCount].Count = 0;
@@ -923,9 +987,12 @@ int    InitGroups(void)
     gpGroupStoreGeneral[iCount].Count = 0;
   }
 
+	////////////////////////////////////////////
   // Now prepare the Stereo groups
   //
   // Input channel Stereo grouped controls
+	////////////////////////////////////////////
+
   g_StereoGroups[0].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[0].wLeft = CTRL_NUM_INPUT_AUX1LT_FADER;
   g_StereoGroups[0].wRight = CTRL_NUM_INPUT_AUX1RT_FADER;
@@ -1343,11 +1410,13 @@ int    InitGroups(void)
   return 0;
 }
 
-//////////////////////////////////////////////////////////////
-// DeInitGroups
+
+//=============================================
+// FUNCTION: DeInitGroups
+// 
+// Purpose: 
 //
-//
-//
+
 void  DeInitGroups(void)
 {
   if(gpGroupStoreFaders != NULL)
@@ -1361,8 +1430,10 @@ void  DeInitGroups(void)
 
 }
 
-///////////////////////////////////////////////////////////////
-// ActivateGroup
+//=============================================
+// FUNCTION: ActivateGroup
+// 
+// Purpose: 
 //
 // parms:
 //  int     iGroup; which group is to be selected
@@ -1384,17 +1455,17 @@ BOOL    ActivateGroup(int iListItem, int iType, int iForcedGroup)
 
   switch(iType)
   {
-  case FADERS_GROUPS:
-    CopyMemory(&g_CurrentGroup,  &gpGroupStoreFaders[iGroup], sizeof(GROUPSTORE));
-    break;
+		case FADERS_GROUPS:
+			CopyMemory(&g_CurrentGroup,  &gpGroupStoreFaders[iGroup], sizeof(GROUPSTORE));
+			break;
   
-  case MUTES_GROUPS:
-    CopyMemory(&g_CurrentGroup,  &gpGroupStoreMutes[iGroup], sizeof(GROUPSTORE));
-    break;
+		case MUTES_GROUPS:
+			CopyMemory(&g_CurrentGroup,  &gpGroupStoreMutes[iGroup], sizeof(GROUPSTORE));
+			break;
 
-  case GENERAL_GROUPS:
-    CopyMemory(&g_CurrentGroup,  &gpGroupStoreGeneral[iGroup], sizeof(GROUPSTORE));
-    break;
+		case GENERAL_GROUPS:
+			CopyMemory(&g_CurrentGroup,  &gpGroupStoreGeneral[iGroup], sizeof(GROUPSTORE));
+			break;
   }
 
   RefreshAllLblWindows();
@@ -1402,11 +1473,14 @@ BOOL    ActivateGroup(int iListItem, int iType, int iForcedGroup)
 }
 
 
-///////////////////////////////////////////////////////////////
+//=============================================
+// FUNCTION: DeactivateGroup
+// 
+// Purpose: 
+//
 // Deactivate any Group that might be active
 //
-//
-//
+
 void    DeactivateGroup(void)
 {
 
@@ -1417,8 +1491,10 @@ void    DeactivateGroup(void)
 }
 
 
-///////////////////////////////////////////////////////////////
-// IsGrouped
+//=============================================
+// FUNCTION: IsGrouped
+// 
+// Purpose: 
 //
 //
 //
@@ -1427,11 +1503,16 @@ BOOL  IsGrouped(int iChannel)
   return (g_CurrentGroup.Group[iChannel].iActive > 0)? TRUE:FALSE;
 }
 
-///////////////////////////////////////////////////////////////
-// AddGroup
+
+//=============================================
+// FUNCTION: AddGroup
+// 
+// Purpose: 
 //
 //
 //
+//
+
 int AddGroup(LPGROUPSTORE pGrp, int iType)
 {
   int           iRet = -1;
@@ -1440,17 +1521,17 @@ int AddGroup(LPGROUPSTORE pGrp, int iType)
 
   switch(iType)
   {
-  case FADERS_GROUPS:
-    pWalker = gpGroupStoreFaders;
-    break;
+		case FADERS_GROUPS:
+			pWalker = gpGroupStoreFaders;
+			break;
   
-  case MUTES_GROUPS:
-    pWalker = gpGroupStoreMutes;
-    break;
+		case MUTES_GROUPS:
+			pWalker = gpGroupStoreMutes;
+			break;
 
-  case GENERAL_GROUPS:
-    pWalker = gpGroupStoreGeneral;
-    break;
+		case GENERAL_GROUPS:
+			pWalker = gpGroupStoreGeneral;
+			break;
   }
 
   for(iCount = 0; iCount < MAX_GROUPS_COUNT; iCount ++,pWalker++)
@@ -1469,14 +1550,16 @@ int AddGroup(LPGROUPSTORE pGrp, int iType)
 	// Update the Tool bar ...
 	//
 
-
   return iRet;
 }
 
 
 
-///////////////////////////////////////////////////////////////
-// FindConsecutiveGroupIndex
+//=============================================
+// FUNCTION: FindConsecutiveGroupIndex
+// 
+// Purpose: 
+//
 //
 //
 //
@@ -1492,17 +1575,17 @@ int	FindConsecutiveGroupIndex(int iNum, int iType)
 
   switch(iType)
   {
-  case FADERS_GROUPS:
-    pWalker = gpGroupStoreFaders;
-    break;
+		case FADERS_GROUPS:
+			pWalker = gpGroupStoreFaders;
+			break;
   
-  case MUTES_GROUPS:
-    pWalker = gpGroupStoreMutes;
-    break;
+		case MUTES_GROUPS:
+			pWalker = gpGroupStoreMutes;
+			break;
 
-  case GENERAL_GROUPS:
-    pWalker = gpGroupStoreGeneral;
-    break;
+		case GENERAL_GROUPS:
+			pWalker = gpGroupStoreGeneral;
+			break;
   }
 
   for(iCount = 0; iCount < MAX_GROUPS_COUNT; iCount ++,pWalker++)
@@ -1522,10 +1605,15 @@ int	FindConsecutiveGroupIndex(int iNum, int iType)
 }
 
 
-////////////////////////////////////////////
+//=============================================
+// FUNCTION: DeleteGroup
+// 
+// Purpose: 
 //
 //
 //
+//
+
 BOOL DeleteGroup(int iListItem, int iType, int iGroup)
 {
   BOOL    bRet = TRUE;
@@ -1552,7 +1640,11 @@ BOOL DeleteGroup(int iListItem, int iType, int iGroup)
   return bRet;
 }
 
-/////////////////////////////////////////////////////////////////
+
+//=============================================
+// FUNCTION: UpdateGroup
+// 
+// Purpose: 
 //
 //
 //
@@ -1565,24 +1657,30 @@ BOOL    UpdateGroup(int iListItem, int iType, int iGroup)
 
   switch(iType)
   {
-  case FADERS_GROUPS:
-		CopyMemory(g_CurrentGroup.szGroupName, gpGroupStoreFaders[iGroup].szGroupName, sizeof(g_CurrentGroup.szGroupName));
-    CopyMemory(&gpGroupStoreFaders[iGroup],  &g_CurrentGroup, sizeof(GROUPSTORE));
-    break;
+		case FADERS_GROUPS:
+			CopyMemory(g_CurrentGroup.szGroupName, gpGroupStoreFaders[iGroup].szGroupName, sizeof(g_CurrentGroup.szGroupName));
+			CopyMemory(&gpGroupStoreFaders[iGroup],  &g_CurrentGroup, sizeof(GROUPSTORE));
+			break;
   
-  case MUTES_GROUPS:
-    CopyMemory(&gpGroupStoreMutes[iGroup],  &g_CurrentGroup, sizeof(GROUPSTORE));
-    break;
+		case MUTES_GROUPS:
+			CopyMemory(&gpGroupStoreMutes[iGroup],  &g_CurrentGroup, sizeof(GROUPSTORE));
+			break;
 
-  case GENERAL_GROUPS:
-    CopyMemory(&gpGroupStoreGeneral[iGroup],  &g_CurrentGroup, sizeof(GROUPSTORE));
-    break;
+		case GENERAL_GROUPS:
+			CopyMemory(&gpGroupStoreGeneral[iGroup],  &g_CurrentGroup, sizeof(GROUPSTORE));
+			break;
   }
 
   return bRet;
 }
 
-////////////////////////////////////////////////////
+
+//=============================================
+// FUNCTION: GroupChannel
+// 
+// Purpose: 
+//
+//
 //  GroupChannel ->works only on the g_CurrentGroup 
 //
 //
@@ -1594,9 +1692,11 @@ BOOL    GroupChannel(int iChannel, int iControl)
   if(iChannel >= MAX_CHANNELS)  
     return FALSE;
 
+	///////////////////////////////////////
 	// scan for any other grouped channels
 	// and remember their type
 	//
+
 	for (i=0 ; i < MAX_CHANNELS; i ++)
 	{
 		if (g_CurrentGroup.Group[i].iActive > 0)
@@ -1619,7 +1719,13 @@ BOOL    GroupChannel(int iChannel, int iControl)
   return TRUE;
 }
 
-//////////////////////////////////////////////////////
+
+//=============================================
+// FUNCTION: UnGroupChannel
+// 
+// Purpose: 
+//
+//
 //  UnGroupChannel ->works only on the g_CurrentGroup 
 //
 //
@@ -1640,8 +1746,11 @@ BOOL    UnGroupChannel(int iChannel)
   return TRUE;
 }
 
-///////////////////////////////////////////////////////
-// Update Grouped Controls 
+
+//=============================================
+// FUNCTION: UpdateGroupedControls
+// 
+// Purpose: 
 //
 //
 //
@@ -1662,6 +1771,7 @@ void   UpdateGroupedControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
     for(iCount = 0; iCount < MAX_CHANNELS; iCount++)
     {
       if(iCount != wChannel)
+			{
         if(IsGrouped(iCount))
         {
           CtrlDataCopy = *pCtrlData;
@@ -1693,6 +1803,7 @@ void   UpdateGroupedControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
               iV = ctrlZM.iNumValues - 1;
 
             CtrlDataCopy.wVal = (WORD)iV;
+
             if(CheckFilter(&ctrlZM) == NO_FILTER && skipSendingData == FALSE && val_original != iV)
             {
               // Check if it is a software control and 
@@ -1701,6 +1812,7 @@ void   UpdateGroupedControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
 							CDef_SendData(&CtrlDataCopy); // Send the data only if not filtered
 							UpdateExternalInterface(&CtrlDataCopy);
             }
+
             UpdateControlFromNetwork((WORD)iCount, CtrlDataCopy.wCtrl, (int)CtrlDataCopy.wVal, TRUE);
 
 						if(pctrlzm->iCtrlType == CTRL_TYPE_INPUT_GATE_IN_BTN_FILTER){
@@ -1715,12 +1827,17 @@ void   UpdateGroupedControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
             UpdateStereoControls(&CtrlDataCopy, &ctrlZM, 0, lpmwd);
           }
         }
+			}
     }
   }
 };
 
-///////////////////////////////////////////////////////
-// Update Grouped Mutes 
+
+
+//=============================================
+// FUNCTION: UpdateGroupedMutes
+// 
+// Purpose: 
 //
 //
 //
@@ -1737,8 +1854,6 @@ void   UpdateGroupedMutes(LPCTRLZONEMAP pctrlzm, LPMIXERWNDDATA lpmwd)
   
   if(IsMuteFilter(pctrlzm) == FALSE)
     return;
-
-
 
   if(IsGrouped(pctrlzm->iModuleNumber))
   {
@@ -1763,8 +1878,11 @@ void   UpdateGroupedMutes(LPCTRLZONEMAP pctrlzm, LPMIXERWNDDATA lpmwd)
 };
 
 
-///////////////////////////////////////////////////////
-// Update Stereo Controls 
+//=============================================
+// FUNCTION: UpdateStereoControls
+// 
+// Purpose: 
+//
 //
 //
 //
@@ -1816,12 +1934,14 @@ void   UpdateStereoControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
           iDelta = -iDelta;
 
         iV = GETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos) + iDelta;
+
         if(iV < 0)
           iV = 0;
         if(iV >= pctrl->iNumValues)
           iV = pctrl->iNumValues - 1;
 
         pCtrlData->wVal = (WORD)iV;
+
         if(CheckFilter(pctrl) == NO_FILTER)
         {
           // Check if it is a software control and 
@@ -1833,6 +1953,7 @@ void   UpdateStereoControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
         {
           SETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos, (WORD)iV);
         }
+
         if(iModule == g_iMasterModuleIdx)
           UpdateControlFromNetwork((WORD)iModule, (WORD)pctrl->iCtrlChanPos, (int)pCtrlData->wVal, FALSE);
         else
@@ -1845,127 +1966,140 @@ void   UpdateStereoControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
 };
 
 
-/////////////////////////////////
-//FUNCTION: HandleCtrlBtnClickInGroup
+//=============================================
+// FUNCTION: HandleCtrlBtnClickInGroup
+// 
+// Purpose: 
 //
-//NOTE: This takes care of the Mute buttons ...
+// NOTE: This takes care of the Mute buttons ...
 //      Since they've got to do more things
 //      than a normal buttons
 //
 void      HandleCtrlBtnClickInGroup(HWND hwnd, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm, int phis_channel)
 {
+
 LPCTRLZONEMAP       lpctrlZM;
 CONTROLDATA         ctrlData;
 int                 iPhisChannel, iVal, ivalue;
 BOOL                bIsOn;
 
 
-if(hwnd == NULL)
-  hwnd = lpmwd->hwndImg; // Grab the image Window from the MixerWindow data
+	if(hwnd == NULL)
+		hwnd = lpmwd->hwndImg; // Grab the image Window from the MixerWindow data
 
-// Handle the button Up down
-//--------------------------
-//iPhisChannel = pctrlzm->iModuleNumber;
-iPhisChannel = phis_channel;
+	// Handle the button Up down
+	//--------------------------
+	//iPhisChannel = pctrlzm->iModuleNumber;
+	iPhisChannel = phis_channel;
 
-// get the zone map pointer
-//-------------------------
-lpctrlZM = pctrlzm;
+	// get the zone map pointer
+	//-------------------------
+	lpctrlZM = pctrlzm;
 
-ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+	ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
 
-iVal = GETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos);
+	iVal = GETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos);
 
-if(iVal != ivalue)
+	if(iVal != ivalue)
   {
-  bIsOn = TRUE;
+		bIsOn = TRUE;
 
-  // Do the Toggle stuff ..
-  //
-  //CheckForToggleSwitches(lpmwd, lpctrlZM);
+		// Do the Toggle stuff ..
+		//
+		//CheckForToggleSwitches(lpmwd, lpctrlZM);
 
-  // Handle possible Filter buttons ... like MUTE and such
-  //
-  StartControlDataFilter(iPhisChannel, lpmwd, lpctrlZM, bIsOn, FALSE);
+		// Handle possible Filter buttons ... like MUTE and such
+		//
+		StartControlDataFilter(iPhisChannel, lpmwd, lpctrlZM, bIsOn, FALSE);
 
-  ctrlData.wMixer   = lpmwd->iMixer;
-  ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-  ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
-  // ok we need to go down to the minimum value
-  iVal = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs) - 1;
-  iVal--;// skip this value since the control is already there
-  if(((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE)
-    &&  lpctrlZM->iCtrlType != CTRL_TYPE_BTN_AUXMUTE_FILTER 
-    &&  ctrlData.wCtrl < 0x8000))
-  {
-    for(iVal; iVal >= ivalue; iVal --)
-      {
-      // Send the Data out
-      //------------------
-      ctrlData.wVal     = iVal;
-      SendDataToDevice(&ctrlData, FALSE, lpctrlZM, -1, lpmwd, TRUE);
-      }
+		ctrlData.wMixer   = lpmwd->iMixer;
+		ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
+		ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
+
+		// ok we need to go down to the minimum value
+
+		iVal = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs) - 1;
+		iVal--;// skip this value since the control is already there
+
+		if(((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE)
+			&&  lpctrlZM->iCtrlType != CTRL_TYPE_BTN_AUXMUTE_FILTER 
+			&&  ctrlData.wCtrl < 0x8000))
+		{
+			for(iVal; iVal >= ivalue; iVal --)
+			{
+				// Send the Data out
+				//------------------
+				ctrlData.wVal     = iVal;
+				SendDataToDevice(&ctrlData, FALSE, lpctrlZM, -1, lpmwd, TRUE);
+			}
+		}
+		iVal = ivalue;
   }
-  iVal = ivalue;
-  }
-else
+	else
   {
-  bIsOn = FALSE;
+		bIsOn = FALSE;
 
-  ctrlData.wMixer   = lpmwd->iMixer;
-  ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-  ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
-  // ok we need to go up to max value
-  ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
-  iVal   = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
-  iVal++;// skip this value since the control is already there
-  if((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE) 
-    &&  lpctrlZM->iCtrlType != CTRL_TYPE_BTN_AUXMUTE_FILTER 
-    && (ctrlData.wCtrl < 0x8000))
-  {
-    for(iVal; iVal < ivalue; iVal++)
-      {
-      // Send the Data out
-      //------------------
-      ctrlData.wVal     = iVal;
-      SendDataToDevice(&ctrlData, FALSE, lpctrlZM, 1, lpmwd, TRUE);
-      }
-    iVal --; // this would be the correct control value
-  }
-  else
-  {
-    iVal = ivalue - 1;
-    if(iVal == 1)
-      iVal ++;
+		ctrlData.wMixer   = lpmwd->iMixer;
+		ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
+		ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
 
-  }
-  // Handle possible Filter buttons ... like MUTE and such
-  //
-  StartControlDataFilter(iPhisChannel, lpmwd, lpctrlZM, bIsOn, FALSE);
-  }
+		// ok we need to go up to max value
 
-// Set the Phisical Data Value
-//----------------------------
-SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
+		ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
+		iVal   = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+		iVal++;// skip this value since the control is already there
 
-if(iVal == CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs))
-  {
-  UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
-  }
-else
-  {
+		if((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE) 
+			&&  lpctrlZM->iCtrlType != CTRL_TYPE_BTN_AUXMUTE_FILTER 
+			&& (ctrlData.wCtrl < 0x8000))
+		{
+			for(iVal; iVal < ivalue; iVal++)
+			{
+				// Send the Data out
+				//------------------
+				ctrlData.wVal     = iVal;
+				SendDataToDevice(&ctrlData, FALSE, lpctrlZM, 1, lpmwd, TRUE);
+			}
 
-  // now update all of the other mixers
-  // windows that represent this mixer
-  // using the iMixer, iPhisChannel
-  // and iVal
-  //-----------------------------------
-  UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, g_hdcBuffer);
+			iVal --; // this would be the correct control value
 
+		}
+		else
+		{
+			iVal = ivalue - 1;
+			if(iVal == 1)
+				iVal ++;
+
+		}
+		// Handle possible Filter buttons ... like MUTE and such
+		//
+		StartControlDataFilter(iPhisChannel, lpmwd, lpctrlZM, bIsOn, FALSE);
   }
 
-//UpdateControlFromNetwork((WORD)iPhisChannel, ctrlData.wCtrl, iVal, TRUE);
-UpdateControlFromNetwork((WORD)iPhisChannel, (WORD)lpctrlZM->iCtrlChanPos, iVal, FALSE);
-return;
+	// Set the Phisical Data Value
+	//----------------------------
+	SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
+
+	if(iVal == CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs))
+	{
+		UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
+	}
+	else
+	{
+
+		// now update all of the other mixers
+		// windows that represent this mixer
+		// using the iMixer, iPhisChannel
+		// and iVal
+		//-----------------------------------
+		UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, g_hdcBuffer);
+
+	}
+
+	//UpdateControlFromNetwork((WORD)iPhisChannel, ctrlData.wCtrl, iVal, TRUE);
+	UpdateControlFromNetwork((WORD)iPhisChannel, (WORD)lpctrlZM->iCtrlChanPos, iVal, FALSE);
+
+	return;
+
 }
 
