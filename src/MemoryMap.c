@@ -1,17 +1,13 @@
 //=================================================
-// Copyright 1998, CorTek Software, Inc.
+// Copyright 2001, CorTek Software, Inc.
 //=================================================
 
 #include <math.h>
-//#include <windows.h>
 #include "SAMM.h"
 #include "SAMMEXT.h"
 #include "MACRO.h"
 
-
 #include "consoledefinition.h"
-
-
 
 int                 g_aiAux[MAX_MATRIX_COUNT];
 int                 g_aiMatrix[MAX_MATRIX_COUNT];
@@ -366,6 +362,7 @@ int     SetMemoryMapDefaults(void)
         if((iCtrlNum != CTRL_NUM_NULL) && (lpctrlZM->iModuleNumber > -1))
         {
 
+					////////////////////////////////////////////////////////////
           // This is very UGLY !!! Please fix it !!!!!!!!!!!! ??????
           // These are all SOFTWARE CONTROLS
 					// We are setting their default values here, ie on/off
@@ -418,9 +415,14 @@ int     SetMemoryMapDefaults(void)
 /////////////////////////////////////////////////////////////////////
 //  MEMBER FUNCTION: RecallMemoryMapBuffer
 //
+//  This routine
 //
-//
+// Called from: RecallEntry(void)
+//							WndMainProc:    case IDM_RESET_ALL_CONTROLS: and 		case IDM_RECAL_ALL_CONTROLS:
+//							LoadMixFile((LPFILESTRUCT pfs, BOOL	saveName)
+
 extern	int	g_CueMasterSystem;
+
 void    RecallMemoryMapBuffer(BOOL bForce)
 {
   CONTROLDATA         ctrlData;
@@ -438,6 +440,8 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 
   ClearProgress();
   SetProgressRange(0, giMax_CHANNELS);
+
+
   for(iChannel = 0; iChannel < giMax_CHANNELS; iChannel++)
   {
     StepProgress(1);
@@ -446,6 +450,7 @@ void    RecallMemoryMapBuffer(BOOL bForce)
       continue;
 
 		setBufferChannelSafeActive (lpctrlZM, FALSE);
+
 		// make sure we do not recall settings for a channel in safe mode
 		//
 		if (isChanelSafeActive (lpctrlZM) == TRUE){
@@ -462,13 +467,22 @@ void    RecallMemoryMapBuffer(BOOL bForce)
     {
     iCtrlNum = lpctrlZM->iCtrlChanPos;
     iCtrlAbs = lpctrlZM->iCtrlNumAbs;
+
     if(((iCtrlNum != CTRL_NUM_NULL) && (iCtrlAbs != iCtrlAbsLast) &&
        (iCtrlAbs > -1) && (lpctrlZM->iModuleNumber < 80) && 
        (lpctrlZM->iModuleNumber >= 0)) || IsMuteFilter(lpctrlZM))
         {
+					///////////////////////////////////////////////////////////////////////
+					// Get the value from the gpwMemMapBuffer.  This buffer is filled
+					// by the ReadDataFile() routine when reading a sequence.
+
           iValue = GETPHISDATAVALUEBUFFER(0, lpctrlZM, iCtrlNum);
           if(IsMuteFilter(lpctrlZM) == FALSE && IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE)
           {
+
+						///////////////////////////////////////////////////////////////////////
+						// ONLY update control if value has changed OR we are forcing an update
+						//
             if(iValue != GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) || bForce == TRUE)
             {
               SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValue);
@@ -500,6 +514,7 @@ void    RecallMemoryMapBuffer(BOOL bForce)
                 else
                   SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, 2);
               }
+
 						/*
 							if(iValue == CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs))
 								StartControlDataFilter(iChannel, lpmwd, lpctrlZM, TRUE, FALSE);
@@ -521,6 +536,8 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 							}
 							else{
 */
+
+
 								//  ...
 								if(lpmwd)
 									HandleCtrlBtnClickInGroup(NULL, lpmwd, lpctrlZM, iChannel);
@@ -532,6 +549,8 @@ void    RecallMemoryMapBuffer(BOOL bForce)
         }
     lpctrlZM++;
     }
+
+
 		/*
 		// Handle Mutes ... that are ON or Off
 		//
@@ -551,6 +570,8 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 			lpctrlZM ++;
 		}
 		*/
+
+		/////////////////////////////////////////////////////////////////////
 		// we are done with the normal Channel stuff.
 		// now comes a tricky-bit ... only Input modules !!!!!!!!!!!!!!!!!
 		// we need to set the gate-depth properly which would be a problem 
@@ -558,6 +579,7 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 		// and the Gate-depth is anything other than -80.
 		// To fix it ... just emulate pushing(in&out) the Gate In/Out button !!!
 		// this should be enough ?!
+
 		lpctrlZM = gpZoneMaps_Zoom[iChannel].lpZoneMap;
 		lpctrlZM = ScanCtrlZonesNum (lpctrlZM, CTRL_NUM_INPUT_GATE_FEEDTHRUINOUT);
 		if (lpctrlZM != NULL && 
@@ -566,8 +588,10 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 			filtered = lpctrlZM->iFiltered;
 			if  (GETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos) == CDef_GetCtrlDefaultVal(lpctrlZM->iCtrlNumAbs) )
 			{
-				// push in&out the darn thing  :)
-				// actualy just pretend we are pushing it out and its done.
+				////////////////////////////////////////////////////////////
+				// push in&out the darn thing 
+				// actually just pretend we are pushing it out and its done.
+
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
 				ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
@@ -586,8 +610,10 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 				lpctrlZM = gpZoneMaps_Zoom[iChannel].lpZoneMap;
 				lpctrlZM = ScanCtrlZonesNum (lpctrlZM, CTRL_NUM_INPUT_GATE_FEED_THRU);
 				
-				// push in&out the darn thing  :)
-				// actualy just pretend we are pushing it out and its done.
+				////////////////////////////////////////////////////////////
+				// push in&out the darn thing
+				// actually just pretend we are pushing it out and its done.
+
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
 				ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
@@ -606,12 +632,15 @@ void    RecallMemoryMapBuffer(BOOL bForce)
 		//						 sizeof(WORD)*giMax_CONTROLS);
   }
 
+
   //MoveMemory(gpwMemMapMixer, gpwMemMapBuffer, giMemMapSize);
 
   // Update all Windows with the new data
   //-------------------------------------
+
   RefreshAllMDIWindows();
   ClearProgress();
+
 	// handle the master Cue system ..
 	//
 	g_CueMasterSystem = 0;
@@ -693,10 +722,12 @@ return iReturn;
 
 
 //////////////////////////////////////////////////////////////
+// void    InitVULookupTables(BOOL bLinear)
 //
+// Initiallizes the VU lookup table so that the raw VU
+// data can be scaled to the screen display.
 //
-//
-//
+
 #define   VU_DIVIDER_001    (float)728.2054
 #define   PIXELS_PER_SEGMENT (float)3
 
@@ -714,6 +745,7 @@ void    InitVULookupTables(BOOL bLinear)
 		/////////////////////////////////////////////////////////
 		//
 		// 40.0 changed to 38.0  - 12/28/2000
+
     if(bLinear)
       // Tom's formula #1..................
       fDacRead = (float)(((fDacRead + 38.0) / 55.0) * (float)gbmpVUONVert.bmHeight);
@@ -755,8 +787,10 @@ void    InitVULookupTables(BOOL bLinear)
   ZeroMemory(gVU_CompDispTable, 4096);
   ZeroMemory(gVU_GateDispTable, 4096);
 
+	//////////////////////////////////////////////////////
   // do compression meter,
   // Comp ADC range: <52 map to 0dB, >3033 map to 20dB
+
   for(iCount = 0; iCount < 4096; iCount ++)
   {
 	  if (iCount == 0)
@@ -792,9 +826,10 @@ void    InitVULookupTables(BOOL bLinear)
 	  gVU_CompDispTable[iCount] = (int)fDacComp;
   }
 
-
+	//////////////////////////////////////////////////////
   // do gate meter,
   // Gate ADC range: <400 map to 0dB, >3959 map to 20dB
+
   for(iCount = 0; iCount < 4096; iCount ++)
   {
 	  if (iCount == 0)
@@ -833,13 +868,14 @@ void    InitVULookupTables(BOOL bLinear)
 
 
     //if(iCount <400) fDacGate=0;
-
 	  //fDacGate = 96 - (fPixelShift + (fDacGate - fDBLow)* (PIXELS_PER_SEGMENT / fDBPerSeg) );
-	  fDacGate = (fPixelShift + (fDacGate - fDBLow)* (PIXELS_PER_SEGMENT / fDBPerSeg) );
 
+	  fDacGate = (fPixelShift + (fDacGate - fDBLow)* (PIXELS_PER_SEGMENT / fDBPerSeg) );
 	  gVU_GateDispTable[iCount] = (int)fDacGate;
+
   }
 }
+
 
 //
 #ifdef _DEBUG
