@@ -293,6 +293,7 @@ IDB_VU_DISPLAY2         BITMAP  DISCARDABLE     "dcx\\vu_displ.bmp"
 IDB_CLIP_LIGHT_MEDIUM   BITMAP  DISCARDABLE     "dcx\\clip_light_medium.bmp"
 IDB_CLIP_LIGHT_BIG      BITMAP  DISCARDABLE     "dcx\\clip_light_big.bmp"
 IDB_CLIP_LIGHT_SMALL    BITMAP  DISCARDABLE     "dcx\\clip_light_small.bmp"
+IDB_CENTER_MONO_CLIP    BITMAP  DISCARDABLE     "dcx\\CENTER_MONO_CLIP_ON.BMP"
 
 /////////////////////////////////////////////////////////////////////////////
 //
