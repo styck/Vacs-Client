@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/ZoomView.c         $
-// $Revision:: 19                                 $
+// $Revision:: 20                                 $
 //
 
 //=================================================
@@ -19,7 +19,7 @@
 #include "MACRO.h"
 #include <stdio.h>
 
-#include <zmouse.h>
+//FDS 6/13/04 #include <zmouse.h>
 
 static int giZoomWndCnt=0;
 
@@ -127,6 +127,7 @@ HWND       CreateZoomViewWindow(HWND hWnd, LPSTR szTitle, LPMIXERWNDDATA  pMWD, 
 															| WS_MINIMIZEBOX  | WS_THICKFRAME // | WS_MAXIMIZEBOX
 															| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
+
 #ifdef SCROLLBARS
 	style = style | WS_VSCROLL;
 	// ADJUST for Vertical Scroll Bars
@@ -137,7 +138,7 @@ HWND       CreateZoomViewWindow(HWND hWnd, LPSTR szTitle, LPMIXERWNDDATA  pMWD, 
     hWnd = CreateMDIWindow (
                             gszZoomViewClass,
                             szTitle,
-                            style,
+	                          style,
                             1,//CW_USEDEFAULT,
                             1,//CW_USEDEFAULT,
                             lpmwd->rWndPos.right,
@@ -548,6 +549,9 @@ static cyClient, cxClient, nVscrollMax, nVscrollPos;
 
         break;
 		//////////////////
+
+#ifdef NOTWORKING
+
 		case WM_MOUSEWHEEL:
 			{
 				int zDelta = (short)HIWORD(wParam);
@@ -597,6 +601,8 @@ static cyClient, cxClient, nVscrollMax, nVscrollPos;
 
 			}
 			break;
+#endif		// notworking
+
 
     //////////////////////////////////////////////////////////////
     case WM_DESTROY:
