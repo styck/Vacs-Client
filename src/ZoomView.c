@@ -1,11 +1,11 @@
 //=================================================
-// Copyright 1998-2001 CorTek Software, Inc.
+// Copyright 1998-2002 CorTek Software, Inc.
 //=================================================
 //
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/ZoomView.c         $
-// $Revision:: 17                                 $
+// $Revision:: 18                                 $
 //
 
 //=================================================
@@ -146,7 +146,7 @@ HWND       CreateZoomViewWindow(HWND hWnd, LPSTR szTitle, LPMIXERWNDDATA  pMWD, 
                             ghInstMain,
                             (LPARAM)lpmwd
                             );
-  else
+  else		// use the window positions stored in mix file
     hWnd = CreateMDIWindow (
                             gszZoomViewClass,
                             szTitle,
@@ -175,9 +175,6 @@ HWND       CreateZoomViewWindow(HWND hWnd, LPSTR szTitle, LPMIXERWNDDATA  pMWD, 
 		wsprintf(szTempBuff,"Zoom Views: %d",giZoomWndCnt);
 		ShowTBZoomWinCnt(szTempBuff);
 	}
-
-
-
 
   //if(pMWD == NULL)
   //    {
@@ -225,8 +222,9 @@ HWND       CreateZoomViewWindow(HWND hWnd, LPSTR szTitle, LPMIXERWNDDATA  pMWD, 
 
 #ifdef SCROLLBARS
 		// Setup the Scroll bars
-		SetScrollRange(hWnd, SB_VERT, 0, 3950, FALSE);             
+		SetScrollRange(hWnd, SB_VERT, 0, 3950, FALSE);							// 3950, 3378
 		SetScrollPos(hWnd, SB_VERT, 1975, TRUE); 
+//		SetScrollPos(hWnd, SB_VERT, lpmwd->iYOffset, TRUE); 
 
 #endif
 
@@ -327,7 +325,7 @@ HWND       OpenZoomViewWindow(LPMIXERWNDDATA lpmwd, LPSTR szTitle)
 //
 
 #define	PAGEUPDOWN_OFFSET	rect.bottom - rect.top - HEIGHT_FULL_LABEL_WND;	//  765	// Number of pixels to pageup/down
-#define	LINEUPDOWN_OFFSET	5		// Number of pixels to lineup/down
+#define	LINEUPDOWN_OFFSET	25		// Number of pixels to lineup/down
 
 LRESULT CALLBACK  ZoomViewProc(HWND hWnd, UINT wMessage, 
                                WPARAM wParam, LPARAM lParam)
@@ -337,6 +335,10 @@ LPMIXERWNDDATA      lpmwd;
 RECT                rect;
 char								szTempBuff[20];
 int nVscrollInc;	// Dummy variable
+//int iPos;
+  char            szBuff[128];
+
+static cyClient, cxClient, nVscrollMax, nVscrollPos;
 
 	lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
@@ -348,60 +350,76 @@ int nVscrollInc;	// Dummy variable
 		case WM_VSCROLL: 
 
       GetWindowRect(hWnd, &rect);
+//      iPos = GetScrollPos (hWnd, SB_VERT); 
 
 			/* Determine how much to scroll vertically. 
 			*/ 
 			switch (LOWORD(wParam)) 
 			{ 
 				case SB_TOP: 
-				nVscrollInc = 1; 
+				nVscrollInc = -nVscrollPos; 
 				break; 
 
 				case SB_BOTTOM: 
-				nVscrollInc = 2; 
+				nVscrollInc = nVscrollMax - nVscrollPos; 
 				break; 
 
 				case SB_LINEUP: 
+					nVscrollInc = -LINEUPDOWN_OFFSET;
+
 					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
 					{
-						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-							lpmwd->pntMouseCur.y -= LINEUPDOWN_OFFSET;	// Change the current mouse position
+//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+//							lpmwd->pntMouseCur.y -= LINEUPDOWN_OFFSET;	// Change the current mouse position
+//						if (lpmwd->pntMouseCur.y < 0)
+//							lpmwd->pntMouseCur.y = 0;
 					
-						ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
-						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+						ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
+//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
 					}
 				break; 
 
 				case SB_LINEDOWN: 
+
+					nVscrollInc = LINEUPDOWN_OFFSET;
+
 					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
 					{
-						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-						lpmwd->pntMouseCur.y += LINEUPDOWN_OFFSET;	// this is the number of pixels we move down
+//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+//						lpmwd->pntMouseCur.y += LINEUPDOWN_OFFSET;	// this is the number of pixels we move down
+//						if (lpmwd->pntMouseCur.y > 3950)
+//							lpmwd->pntMouseCur.y = 3950;		// set to the TOP
 						
-						ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
-						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+						ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
+//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
 					}
 				break; 
 
 				case SB_PAGEUP:
+
+					nVscrollInc = min(-1,-cyClient);	// Page up the window size
+
 					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
 					{
-						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-						lpmwd->pntMouseCur.y -= PAGEUPDOWN_OFFSET;	// Change the current mouse position
-					
-						ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
-						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+//						lpmwd->pntMouseCur.y += nVscrollInc; //PAGEUPDOWN_OFFSET;	// Change the current mouse position
+
+						ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
+//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
 					}
 				break; 
 
 				case SB_PAGEDOWN: 
+
+					nVscrollInc = max(1, cyClient);	// Page down the window size
+
 					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
 					{
-						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-						lpmwd->pntMouseCur.y += PAGEUPDOWN_OFFSET;	// this is the number of pixels we move down
+//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+//						lpmwd->pntMouseCur.y += nVscrollInc;		// PAGEUPDOWN_OFFSET;	// this is the number of pixels we move down
 						
-						ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
-						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+						ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
+//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
 					}
 				break; 
 
@@ -411,10 +429,25 @@ int nVscrollInc;	// Dummy variable
 
 				default: 
 					g_iYSpeed = 0;
-
-				nVscrollInc = 0; 
-
+					nVscrollInc = 0; 
 			} 
+
+//				if ( nVscrollInc = max(-nVscrollPos,min(nVscrollInc, nVscrollMax - nVscrollInc)) ) 
+				if ( nVscrollInc !=0 ) 
+        {
+					nVscrollPos += nVscrollInc;
+
+					if(nVscrollPos > nVscrollMax)
+						nVscrollPos = nVscrollMax;
+					if(nVscrollPos < 0)
+						nVscrollPos = 0;
+
+//					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+//						SetScrollPos(hWnd,SB_VERT,lpmwd->iYOffset,TRUE);
+//					else
+//						SetScrollPos(hWnd,SB_VERT,nVscrollPos,TRUE);
+				}
+
 			break;
 #endif
 
@@ -430,7 +463,12 @@ int nVscrollInc;	// Dummy variable
                 return DefMDIChildProc(hWnd, wMessage, wParam, lParam);
 			}
         break;
+
     //////////////////////////////////////////////////////////////
+		// lpmwd-wKeyFlags is sent to the ScrollSideWays() routine and
+		// it checks to see if it is set and scrolls only one module
+		// at a time if it is.
+
     case WM_KEYUP:
       switch(wParam)
       {
@@ -471,6 +509,18 @@ int nVscrollInc;	// Dummy variable
     //    break;
     //////////////////////////////////////////////////////////////
     case WM_SIZE:
+
+#ifdef SCROLLBARS
+				cxClient = LOWORD(lParam);
+				cyClient = HIWORD(lParam);
+				cyClient = cyClient - HEIGHT_FULL_LABEL_WND; 
+
+					nVscrollMax = 3950;
+
+//					nVscrollPos = min (nVscrollPos, nVscrollMax) ; 
+					SetScrollRange(hWnd,SB_VERT,0,nVscrollMax, FALSE);
+//					SetScrollPos(hWnd, SB_VERT,nVscrollPos, TRUE);
+#endif
         HandleWndSize(hWnd, lpmwd, LOWORD(lParam), HIWORD(lParam), wParam);
         break;
     //////////////////////////////////////////////////////////////
@@ -501,24 +551,48 @@ int nVscrollInc;	// Dummy variable
 		case WM_MOUSEWHEEL:
 			{
 				int zDelta = (short)HIWORD(wParam);
+
 				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
 				{
 					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
 					if (zDelta < 0 )
 					{
-						lpmwd->pntMouseCur.y += 50;
-						if (lpmwd->pntMouseCur.y >3950)
-							lpmwd->pntMouseCur.y = 3950;
+						nVscrollInc = 50;
+//						lpmwd->pntMouseCur.y += nVscrollInc;
+//						if (lpmwd->pntMouseCur.y > 3950)	// 3950 or 3378
+//							lpmwd->pntMouseCur.y = 3950;		// set to the TOP
 					}
 					else
 					{
-						lpmwd->pntMouseCur.y -= 50;
-						if (lpmwd->pntMouseCur.y < 0)
-							lpmwd->pntMouseCur.y = 0;
+						nVscrollInc = -50;
+//						lpmwd->pntMouseCur.y += nVscrollInc;
+//						if (lpmwd->pntMouseCur.y < 0)
+//							lpmwd->pntMouseCur.y = 0;
 					}
 
-					ScrollImgWindow(lpmwd->hwndImg, lpmwd);
-					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+//					ScrollImgWindow(lpmwd->hwndImg, lpmwd,(int)(lpmwd->pntMouseCur.y - lpmwd->pntMouseLast.y));
+					ScrollImgWindow(lpmwd->hwndImg, lpmwd,nVscrollInc);
+//					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+
+#ifdef SCROLLBARSNOTUSEDYET
+					if ( nVscrollInc !=0 ) 
+					{
+						nVscrollPos += nVscrollInc;
+
+						if(nVscrollPos > nVscrollMax)
+							nVscrollPos = nVscrollMax;
+
+						if(nVscrollPos < 0)
+							nVscrollPos = 0;
+
+				sprintf(szBuff, "      nVscrollPos = %d ", nVscrollPos);
+				SendMessage(ghwndStatus, SB_SETTEXT, MAKEWPARAM(0,SBT_POPOUT), (LPARAM)szBuff);
+
+//						SetScrollPos(hWnd,SB_VERT,nVscrollInc + lpmwd->iYOffset + lpmwd->rVisible.bottom,TRUE);
+//						SetScrollPos(hWnd,SB_VERT,nVscrollPos+lpmwd->rVisible.bottom,TRUE);
+					}
+#endif
+
 				}
 
 			}
