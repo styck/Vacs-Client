@@ -561,29 +561,49 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 			pnotify = (LPNMHDR) lParam;
       switch (pnotify->code) 
       { 
-        case TTN_NEEDTEXT: 
-				//case TTN_GETDISPINFO:
+        case TTN_NEEDTEXT: // ToolTips needs some text
         {             
           LPTOOLTIPTEXT   lpttt;
           int             idButton;
-
-          
+        
           lpttt         = (LPTOOLTIPTEXT) lParam;
-          lpttt->hinst  = NULL;//ghInstStrRes;
 					lpttt->lpszText = NULL;
+
+					//////////////////////////////////////////////////////
           // Specify the resource identifier of the descriptive
-          // text for the given button.
+          // text for the given button on the toolbar.
+					//////////////////////////////////////////////////////
+
           idButton = lpttt->hdr.idFrom;
           switch (idButton) 
           {          
           case IDM_V_FULLCONSOLE: 
-						lstrcpy(lpttt->szText, "Open Full console");
-            //lpttt->lpszText = MAKEINTRESOURCE(IDM_V_FULLCONSOLE); 
+						lpttt->lpszText = "Open Full console";
             break;
           case IDM_V_FULLZOOM:
-						lstrcpy(lpttt->szText, "Open Zoom console");
-            //lpttt->lpszText = MAKEINTRESOURCE(IDM_V_FULLZOOM); 
+						lpttt->lpszText = "Open Zoom console";
             break;
+					case IDM_V_CANCELGROUPS:
+						lpttt->lpszText = "Cancel Groups";
+						break;
+					case IDM_V_CANCELCUES:
+						lpttt->lpszText = "Cancel Cues";
+						break;
+					case IDM_V_GROUP:
+						lpttt->lpszText = "Show Group Window";
+						break;
+					case IDM_V_SEQUENCE:
+						lpttt->lpszText = "Show Sequence Window";
+						break;
+					case IDM_S_NEXT:
+						lpttt->lpszText = "Next Sequence";
+						break;
+					case IDM_S_BACK:
+						lpttt->lpszText = "Prev Sequence";
+						break;
+					case IDM_F_SAVE_FILE:
+						lpttt->lpszText = "Save Mix File";
+						break;
 					default:
 						lstrcpy(lpttt->szText, "Unknown ...");
 						break;
