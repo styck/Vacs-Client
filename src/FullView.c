@@ -5,7 +5,7 @@
 //
 // $Author:: Styck       $
 // $Archive:: /Vacs Clien $
-// $Revision:: 35         $
+// $Revision:: 36         $
 //
 //=================================================
 // The Full View Window
@@ -579,8 +579,8 @@ lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
       BeginPaint(hWnd, &ps);
       DrawImgWindow(&ps, lpmwd);
-      EndPaint(hWnd, &ps);
       ShowMousePos(hWnd, lpmwd);
+      EndPaint(hWnd, &ps);
 
 			SetEvent(gDisplayEvent);
       break;
@@ -626,7 +626,7 @@ lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 					lpmwd->iCurMode = MW_NOTHING_MODE;	// Make this button UNPROCESSED again
 					HandleLBDown(hWnd, MAKEPOINTS(lParam), wParam, lpmwd);
 			}
-			ActivateMWMode(hWnd, lpmwd);
+			ActivateMWMode(hWnd, lpmwd);	// This used to be done in HandleLBDown()
 
       break;
 
@@ -1711,13 +1711,13 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
 	// Calculate the delay needed to match the data
 	// rate that the GServer is sending data (Pentium 200Mhz)
 	//
-	// Delay factor changed from 2.0f to 1.5f as per Gamble 12/12/2001
+	// Delay factor changed from 2.0f to 1.2f as per Gamble 12/17/2001
 
   if(liQueryPerformance.QuadPart == 0)
   {
     QueryPerformanceFrequency(&liQueryPerformance);
     QueryPerformanceCounter(&liPerformanceCounterStart);
-		VU_delaystep = (DWORD)((float)(liQueryPerformance.QuadPart / 1000.)*1.5f);//mseconds
+		VU_delaystep = (DWORD)((float)(liQueryPerformance.QuadPart / 1000.)*1.2f);//mseconds
   }
 
   if(iVU_Count > 0)
