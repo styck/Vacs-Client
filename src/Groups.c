@@ -797,14 +797,20 @@ int	GetListItemGroupNumber(int iItem)
 LPSTR	GetListItemGroupName(int iItem)
 {
 	char			szText[80] = "Not Set";
+  LPGROUPSTORE  pWalker;
+	int i;
 
+  pWalker = gpGroupStoreFaders;
 
-    ListView_GetItemText(GetDlgItem(ghwndGroupsDlg, IDC_GROUP_LIST), 
-                                 iItem, 
-                                 0, 
-                                 szText,
-																 80);
-		return &szText[0];
+	// Move to the selected item text
+	// (group name for item)
+
+  for(i = 0; i < iItem; i ++,pWalker++);
+
+    if(pWalker->szGroupName[0] != 0) 
+			return pWalker->szGroupName;
+		else
+			return &szText[0];
 }
 
 
