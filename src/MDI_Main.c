@@ -205,9 +205,9 @@ LRESULT CALLBACK   MDIClientProc(HWND hWnd, UINT wMessage,
 
 switch (wMessage)
  {
-  case WM_MOUSEMOVE:
+///  case WM_MOUSEMOVE:
 //    UpdateTrackingWindow(NULL);
-    break;
+//    break;
   case WM_PAINT:
     ClientWindowPaint();
     return 0;
