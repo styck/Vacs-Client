@@ -1,12 +1,16 @@
 //=================================================
-// Copyright 1998-2001 CorTek Software, Inc.
+// Copyright 1998-2002 CorTek Software, Inc.
 //=================================================
 //
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Sequence.c         $
-// $Revision:: 22                                 $
+// $Revision:: 23                                 $
 //
+
+//////////////////////////////////////////////
+// Routines to handle the Sequence window
+//////////////////////////////////////////////
 
 
 #include "SAMM.H"
@@ -337,7 +341,8 @@ TV_HITTESTINFO  tvht;  // hit test information
 						// Handle DELETE pop-up menu item and BUTTON item
             case MENU_TVN_DELELTE:
             case IDBTN_SEQ_DELETE:
-								if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_DELETE_SEQUENCE_ENTRY) == IDYES)
+//FDS Removed for autosave mix so it doesnt crash
+//FDS							if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_DELETE_SEQUENCE_ENTRY) == IDYES)
                 SeqDeleteItem();
                 break;
 
