@@ -1,10 +1,10 @@
 //=================================================
-// Copyright 1998-2001, CorTek Software, Inc.
+// Copyright 1998-2002, CorTek Software, Inc.
 //=================================================
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/Remap and Mode.c $
-// $Revision: 20 $
+// $Revision: 21 $
 //
 //=================================================
 //
@@ -426,7 +426,7 @@ LPCTRLZONEMAP       lpctrlZM;
 						case		CTRL_TYPE_OPEN_MATRIX_SUB:
                 lpctrlZM = lpmwd->lpCtrlZM;
                 JumpToMZWindow(NULL, lpctrlZM, 0, lpmwd, (BYTE)LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan]));
-                StopMWMode(hwnd, lpmwd, 0);
+                StopMWMode(hwnd, lpmwd);
                 break;
             }                           
       break;                              
@@ -463,7 +463,7 @@ return 0;
 //  Stop a Mixer Window Mode
 //
 //=============================================
-int       StopMWMode(HWND hwnd, LPMIXERWNDDATA lpmwd, WPARAM wKeyFlags)
+int       StopMWMode(HWND hwnd, LPMIXERWNDDATA lpmwd)
 {
 int     iOldMode;
 int     iOldCtrlMode;
