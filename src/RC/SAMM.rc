@@ -138,9 +138,9 @@ VS_VERSION_INFO VERSIONINFO
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
- FILEFLAGS 0x1L
+ FILEFLAGS 0x9L
 #else
- FILEFLAGS 0x0L
+ FILEFLAGS 0x8L
 #endif
  FILEOS 0x40004L
  FILETYPE 0x1L
@@ -153,14 +153,14 @@ BEGIN
             VALUE "Comments", "by Hristo Doichev\0"
             VALUE "CompanyName", "CorTek Software Inc.  www.corteksoft.com\0"
             VALUE "FileDescription", "VACS® Client Workstation\0"
-            VALUE "FileVersion", "Version 11/25/99\0"
+            VALUE "FileVersion", "2.43\0"
             VALUE "InternalName", "VACS® Client Workstation\0"
-            VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 1999\0"
+            VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2000\0"
             VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc.\0"
             VALUE "OriginalFilename", "VACS.EXE\0"
-            VALUE "PrivateBuild", "\0"
+            VALUE "PrivateBuild", "Build by Hristo on \\RETRO 06/26/2000\0"
             VALUE "ProductName", "CorTek Software VACS\0"
-            VALUE "ProductVersion", "rev 2.37\0"
+            VALUE "ProductVersion", "2.44\0"
             VALUE "SpecialBuild", "\0"
         END
     END
