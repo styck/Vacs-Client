@@ -263,6 +263,7 @@ switch(uiMsg)
             //-------------------
             case MENU_TVN_DELELTE:
             case IDBTN_SEQ_DELETE:
+			if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_DELETE_SEQUENCE_ENTRY) == IDYES)
                 SeqDeleteItem();
                 break;
 
