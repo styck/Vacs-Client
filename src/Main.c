@@ -1,6 +1,12 @@
 //=================================================
-// Copyright 1998-2001, CorTek Software, Inc.
+// Copyright 1998 - 2001, CorTek Softawre, Inc.
 //=================================================
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
 
 
 #include "SAMM.H"
@@ -19,7 +25,11 @@ BOOL		OpenSequenceFiles (LPSTR  lpstrFName);
 
 BOOL    g_bReversDirection = FALSE;
 int			FindConsecutiveGroupIndex(int iNum, int iType);
+
 void		CancelAllCues (HWND);
+
+
+BOOL		g_bIsSoloCueMode;	// Default as true
 
 //======================
 // Windows Main Routine
@@ -139,6 +149,12 @@ int			iRet;
 		}
 	}
 
+			// As per Gamble 10/19/2001
+			// Make sure we cancel all our cues when first loading
+			// At this point LoadMix() has already been called
+
+			CancelAllCues (ghwndMain);
+	
 
 	//
 	timerID = SetTimer(ghwndMain, 33, 200000, NULL);
@@ -365,8 +381,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
   //RECT    TempDesktopRect, TempMainRect;
   int     iRet;
 	BOOL bResult;
-
-
+	
 	// Registry variables 
 
 	LONG lnResult;
@@ -402,6 +417,30 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
         ActivateTrackingWindow();
 			}
       break;
+
+
+		//////////////////////////////////
+		// Set global flag to indicate that
+		// Solo Mute Mode is enabled for the
+		// CUES, this will cause the
+		// CancelCue() routine to be called
+		// whenever a cue button is processed
+		// See Events interface.c
+
+    case IDM_SOLO_CUE_MODE:
+      if(g_bIsSoloCueMode == TRUE)
+			{
+				CheckMenuItem(ghMainMenu, IDM_SOLO_CUE_MODE, MF_UNCHECKED);
+				g_bIsSoloCueMode = FALSE;
+			}	
+			else
+			{
+				CheckMenuItem(ghMainMenu, IDM_SOLO_CUE_MODE, MF_CHECKED);
+				g_bIsSoloCueMode = TRUE;
+			}
+      break;
+
+
     case IDM_V_PROP_FILTER:
       GetSeqUpdateProps(NULL);
       break;
