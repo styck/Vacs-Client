@@ -334,6 +334,7 @@ switch(iMode)
             case CTRL_TYPE_BTN_AUXMUTE_FILTER:
                 HandleCtrlBtnClick(hwnd, lpmwd);
               break;
+						case CTRL_INPUT_AUX16B_MUTE_FILTER:	// LINE B TO AUX 16
 						case CTRL_TYPE_INPUT_GATE_IN_BTN_FILTER:
             case CTRL_CUE_MASTER_MUTE_FILTER:
             case CTRL_MATRIX_MASTER_LT_MUTE_FILTER:
