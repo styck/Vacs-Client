@@ -933,6 +933,10 @@ BOOL    RecallEntry(void)
   SEQENTRY            *pSeqentry = NULL;
 
 
+	////////////////////////////////////////////
+	// Show ACTIVE SEQUENCE 
+	////////////////////////////////////////////
+
   htreeitem = TreeView_GetSelection(g_hwndTV);
   if(htreeitem != NULL)
   {
@@ -977,6 +981,7 @@ BOOL    RecallEntry(void)
 	{
 		ShowTBNextSeqName("END of Sequence");
 	}
+
 
 
   return bRet;
@@ -1578,12 +1583,6 @@ long            lItemDel;
 	tvi.mask = TVIF_PARAM;
 	tvi.hItem = htreeitem;
 	TreeView_GetItem(g_hwndTV, &tvi);
-
-	lItemDel =(long)tvi.lParam;
-
-	if(lItemDel > 0)
-			DelEntryPtr(g_pdlrSequence, lItemDel);
-
 	TreeView_EditLabel(g_hwndTV, htreeitem);
 
 return;
