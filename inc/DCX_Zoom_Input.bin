@@ -2799,6 +2799,7 @@ BEGIN
 
 ///////////////////////////////////////////////////////////////
 //  Mute buttons -Dave 3-30-98
+//  INPUT AUX's
 ///////////////////////////////////////////////////////////////
 
     // Input Mute Button -aux16###################		
@@ -3090,12 +3091,14 @@ BEGIN
     0x0000, IDB_SMALL_REDBTN, 0x0000,
 
 /////////////////////////////
-//
+// LINE B TO AUX 16
+// LT/RT
+// SEE CTRL_INPUT_AUX16B_MUTE_FILTER for the actual DCX control name
 ////////////////////////////
 	// Input Mute Button lineBLT -aux16 ########################		
     //------------------
     31, 21,   52, 32,
-     CTRL_NUM_INPUT_AUX16BLT_MUTE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+     CTRL_NUM_INPUT_AUX16BLT_MUTE, CTRL_INPUT_AUX16B_MUTE_FILTER, DISP_TYPE_NORMAL,
 	  "\0                         ",  // the control name ....
 	  "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
@@ -3104,7 +3107,7 @@ BEGIN
 	// Input Mute Button lineBRT -aux16 ########################		
     //------------------
 	59, 21,   80, 32,
-     CTRL_NUM_INPUT_AUX16BRT_MUTE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
+     CTRL_NUM_INPUT_AUX16BRT_MUTE, CTRL_INPUT_AUX16B_MUTE_FILTER, DISP_TYPE_NORMAL,
 	  "\0                         ",  // the control name ....
 	  "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
