@@ -124,8 +124,6 @@ int     SaveMixFile(void)
 	char						old_sequence_files [MAX_PATH];
 	char						szFile [MAX_PATH];
 	USHORT					compression;
-	HANDLE          hf;
-	DWORD						dwBWrite;
 	char						szBuff[MAX_PATH];
 
 
@@ -137,7 +135,9 @@ int     SaveMixFile(void)
 	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 
 	ofn.lStructSize = sizeof( OPENFILENAME );
-	ofn.hwndOwner = ghwndMain; // An invalid hWnd causes non-modality
+
+	ofn.hwndOwner = ghwndMain;		 // An invalid hWnd causes non-modality
+
 	ofn.lpstrFilter = "VACS Mix Files\0*.mix\0All Files\0*.*\0\0";//(LPSTR)szFilter;  // See previous note concerning string
 	ofn.lpstrCustomFilter = NULL;
 	ofn.nFilterIndex = 1; // Always pick the first one
