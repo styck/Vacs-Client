@@ -187,6 +187,16 @@ BOOL    OpenDataFile(LPSTR  lpstrFName)
                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
                             NULL);
 
+		// cool ... now set the compression on this file
+
+		if (g_hDataFile != INVALID_HANDLE_VALUE){
+			compression = COMPRESSION_FORMAT_LZNT1;
+			DeviceIoControl (g_hDataFile, FSCTL_SET_COMPRESSION, &compression, sizeof (compression), 0, 0, 
+											 &dwWrite, 0);
+    }
+
+
+
   if(g_hDataFile != INVALID_HANDLE_VALUE)
   {
     ReadFile(g_hDataFile, &dfHeader, sizeof(VACS_DATA_FILE_HEADER), &dwRead, NULL);
