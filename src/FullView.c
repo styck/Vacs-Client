@@ -1743,12 +1743,9 @@ iX = iY = iCX = iCY = 0;
       // Skip channels that are not for this VU
       //  ModuleIdx for VU data is in Lower byte
 
+			//    If this is uncommented then the CUE VU meters will not work, only the seperate window CUE VUs
+			//		But this is needed to keep the SUB AUX's from moving when input/matrix is chosen
 
-      pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + iVUCounter + pVuWalker->cLock);
-      //pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + (pVuData->iVUType - 1) );
-
-//    If this is uncommented then the CUE VU meters will not work, only the seperate window CUE VUs
-//		But this is needed to keep the SUB AUX's from moving when input/matrix is chosen
 
 #ifdef MINE
      if(iPhisChannel != (int)(pVuWalker->wModuleIdx & 0x00ff) &&
@@ -1760,6 +1757,10 @@ iX = iY = iCX = iCY = 0;
 			 continue;
 
 #endif
+
+      pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + iVUCounter + pVuWalker->cLock);
+      //pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + (pVuData->iVUType - 1) );
+
 
       if(pCtrlZm == NULL)
         continue;
