@@ -67,29 +67,29 @@ int     InitMemoryMap(void)
 //==================================================
 void    FreeMemoryMap(void)
 {
-if(gpwMemMapMixer != NULL)
-    {
+	if(gpwMemMapMixer != NULL)
+   {
     GlobalFree((HGLOBAL)gpwMemMapMixer );
     gpwMemMapMixer = NULL;
-    }
+   }
 
-if(gpwMemMapBuffer != NULL)
-    {
+	if(gpwMemMapBuffer != NULL)
+	{
     GlobalFree((HGLOBAL)gpwMemMapBuffer );
     gpwMemMapBuffer = NULL;
-    }
+	}
 
-if(gpwMemMapUpdateBufferMask != NULL)
-    {
+	if(gpwMemMapUpdateBufferMask != NULL)
+	{
     GlobalFree((HGLOBAL)gpwMemMapUpdateBufferMask );
     gpwMemMapUpdateBufferMask = NULL;
-    }
+	}
 
-if(gpwMemMapUpdateBuffer != NULL)
-    {
+	if(gpwMemMapUpdateBuffer != NULL)
+	{
     GlobalFree((HGLOBAL)gpwMemMapUpdateBuffer);
     gpwMemMapUpdateBuffer = NULL;
-    }
+	}
 return;
 }
 
@@ -99,6 +99,8 @@ return;
 //
 //
 //
+//////////////////////////////////////////////////////////////////////////
+
 void  SetControlsModuleNumber(LPCTRLZONEMAP lpctrlZM, int iStartRange, int iEndRange, int iChannel)
 {
   while(lpctrlZM->rZone.right > 0)
@@ -137,6 +139,7 @@ void  SetControlsModuleNumber(LPCTRLZONEMAP lpctrlZM, int iStartRange, int iEndR
 //  put together the Master and Cue modules.
 //  
 //
+/////////////////////////////////////////////////////////////////////
 int InitPhysicalModuleMap(void)
 {
   int                 iRet = 0;
@@ -309,6 +312,8 @@ int InitPhysicalModuleMap(void)
   }
   return iRet;
 }
+
+
 ////////////////////////////////////////////
 //FUNCTION: SetMemoryMapDefaults
 //
@@ -318,6 +323,7 @@ int InitPhysicalModuleMap(void)
 //
 //
 //
+////////////////////////////////////////////
 int     SetMemoryMapDefaults(void)
 {
   int                 iChannel;
@@ -368,17 +374,20 @@ int     SetMemoryMapDefaults(void)
           // These are all SOFTWARE CONTROLS
 					// We are setting their default values here, ie on/off
 					//
+					////////////////////////////////////////////////////////////
           if(
 
-//	DO NOT DEFAULT
-//  THE PREPOST
-//  FADER BUTTON TO ON IF THE LINE B OR THE KEY BUTTON IS PRESSED IN
-//#ifdef REMOVED
+					////////////////////////////////////////////////////////////////////
+					//	DEFAULT THE PREPOST FADER BUTTON TO ON 
+					// The CTRL_NUM_INPUT_GATE_KEY_VU and CTRL_NUM_INPUT_LINE_B_VU
+					// buttons will not be restored below since this one
+					// is default on
+					////////////////////////////////////////////////////////////////////
+
 					( (lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_PREPOST_FADER_VU) && 
 					  (gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT) 
 				  )
 					  ||
-//#endif
             ( (lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_POST_LT_VU 
                || lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_POST_RT_VU )
              && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_MASTER) 
@@ -421,6 +430,7 @@ int     SetMemoryMapDefaults(void)
 // Called from: RecallEntry(void)
 //							WndMainProc:    case IDM_RESET_ALL_CONTROLS: and 		case IDM_RECAL_ALL_CONTROLS:
 //							LoadMixFile((LPFILESTRUCT pfs, BOOL	saveName)
+/////////////////////////////////////////////////////////////////////
 
 extern	int	g_CueMasterSystem;
 
@@ -474,9 +484,11 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 			continue;
 		}
 
+		///////////////////////////////////////////////////////
 		// loop through all valid zone maps and recall them
 		// ... no recall will be done if the Zone is filtered
 		//
+		///////////////////////////////////////////////////////
     while(lpctrlZM->rZone.right)
     {
 				iCtrlNum = lpctrlZM->iCtrlChanPos;
@@ -489,6 +501,7 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 					///////////////////////////////////////////////////////////////////////
 					// Get the value from the gpwMemMapBuffer.  This buffer is filled
 					// by the ReadDataFile() routine when reading a sequence.
+					///////////////////////////////////////////////////////////////////////
 
         iValue = GETPHISDATAVALUEBUFFER(0, lpctrlZM, iCtrlNum);
 
@@ -498,28 +511,42 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 					//////////////////////////////////////////////////////////////////////
 					// ONLY update control if value has changed OR we are forcing an update
 					//
+					//////////////////////////////////////////////////////////////////////
 					if(iValue != GETPHISDATAVALUE(0, lpctrlZM, iCtrlNum) || bForce == TRUE)
 					{
 
 						/////////////////////////////////////////////
 						// If its NOT a fader then update immediatly
+						/////////////////////////////////////////////
 
 						if( lpctrlZM->iCtrlType != CTRL_TYPE_FADER_VERT)
 						{
-							SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValue);
-        
-							if(lpctrlZM->iFiltered == NO_FILTER)
+							/////////////////////////////////////////////
+							// DO NOT RESTORE THESE VALUES
+							// These are the 3 VU buttons on the input
+							// and these two will be default OFF so 
+							// no need to retore. They are saved and
+							// should be removed when time permits.
+							/////////////////////////////////////////////
+
+							if(lpctrlZM->iCtrlChanPos != CTRL_NUM_INPUT_GATE_KEY_VU &&
+								(lpctrlZM->iCtrlChanPos != CTRL_NUM_INPUT_LINE_B_VU))
 							{
-								// Send the Data out
-								//------------------
-								ctrlData.wMixer   = 0;
-								ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
-								ctrlData.wCtrl    = iCtrlAbs; // we use this one since for the definition dll
-								ctrlData.wVal     = iValue;
-								SendDataToDevice(&ctrlData, FALSE, NULL, 0, NULL, FALSE); // was TRUE
+								SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValue);
+        
+								if(lpctrlZM->iFiltered == NO_FILTER)
+								{
+									// Send the Data out
+									//------------------
+									ctrlData.wMixer   = 0;
+									ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
+									ctrlData.wCtrl    = iCtrlAbs; // we use this one since for the definition dll
+									ctrlData.wVal     = iValue;
+									SendDataToDevice(&ctrlData, FALSE, NULL, 0, NULL, FALSE); // was TRUE
+								}
 							}
 						}
-						else	// It IS a main fader, so save info so that we can crossfade later
+						else if(lpctrlZM->iCtrlType == CTRL_TYPE_FADER_VERT)	// It IS a main fader, so save info so that we can crossfade later
 						{
 
 							if(dwfadeDelay)   // But only if crossfade is set
@@ -545,6 +572,7 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 
 							} // end for if(dwfadeDelay)
 						} // end for != CTRL_TYPE_FADER_VERT
+
           } // end for iValue != GETPHISDATAVAULE
         }
         else	// IsMuteFilter() == TRUE, so its a MUTE filter, handle it if its changed
@@ -629,6 +657,7 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 		// and the Gate-depth is anything other than -80.
 		// To fix it ... just emulate pushing(in&out) the Gate In/Out button !!!
 		// this should be enough ?!
+		/////////////////////////////////////////////////////////////////////
 
 		lpctrlZM = gpZoneMaps_Zoom[iChannel].lpZoneMap;
 		lpctrlZM = ScanCtrlZonesNum (lpctrlZM, CTRL_NUM_INPUT_GATE_FEEDTHRUINOUT);
@@ -641,6 +670,7 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 				////////////////////////////////////////////////////////////
 				// push in&out the darn thing 
 				// actually just pretend we are pushing it out and its done.
+				////////////////////////////////////////////////////////////
 
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
@@ -693,6 +723,7 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 	// First time it is called it must find the largest movement
 	// and then calculate the rate of change based on the timer
 	// resolution and the sequence time selected.
+	///////////////////////////////////////////////////////////
 
 
 	if( (iSavedZM != 0) && (dwfadeDelay))
@@ -705,8 +736,10 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 		// dwfadeDelay
 
 		dwFadeDelayPerTick = dwfadeDelay / (iMaxFaderMovement / iSavedZM);
+#ifdef _DEBUG
     sprintf(szBuff, "             dwFadeDelayPerTick=%d   dwfadeDelay=%d ", dwFadeDelayPerTick, dwfadeDelay);//dwMoreThanOne);
     SendMessage(ghwndStatus, SB_SETTEXT, MAKEWPARAM(0,SBT_POPOUT), (LPARAM)szBuff);
+#endif
 
 		// loop to get the fader to its maximum position
 
@@ -715,8 +748,9 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 
 					dwNowSystemTime = timeGetTime();
 
-		//////////////////////////////////////
+			//////////////////////////////////////
 			// Loop through each fader zonemap
+			//////////////////////////////////////
 
 			for(i=0;i<iSavedZM;i++)
 			{
@@ -847,23 +881,23 @@ LPSCRTOMIDITABLE    lpSCRTOMIDI;
 LPWORD              lpData;
 int                 iReturn;
 
-if((iVal < 0) || (iIndx < 0))
-    {
+	if((iVal < 0) || (iIndx < 0))
+  {
     MessageBeep(0);  // Temporary for DEBUG
     return 0;
-    }
+  }
 
-// Get the RdOut table pointer
-//----------------------------
-lpSCRTOMIDI = (LPSCRTOMIDITABLE)gpBinResTable[iIndx].lpBinRes;
+	// Get the RdOut table pointer
+	//----------------------------
+	lpSCRTOMIDI = (LPSCRTOMIDITABLE)gpBinResTable[iIndx].lpBinRes;
 
-if(lpSCRTOMIDI->iTotVals <= iVal)
-    iVal = lpSCRTOMIDI->iMax;
+	if(lpSCRTOMIDI->iTotVals <= iVal)
+			iVal = lpSCRTOMIDI->iMax;
 
 
-(LPSTR)lpData = (LPSTR)lpSCRTOMIDI + sizeof(SCRTOMIDITABLE);
-lpData = lpData + iVal;
-iReturn = (int)*lpData;
+	(LPSTR)lpData = (LPSTR)lpSCRTOMIDI + sizeof(SCRTOMIDITABLE);
+	lpData = lpData + iVal;
+	iReturn = (int)*lpData;
 
 return iReturn;
 }
@@ -875,6 +909,7 @@ return iReturn;
 // Initiallizes the VU lookup table so that the raw VU
 // data can be scaled to the screen display.
 //
+//////////////////////////////////////////////////////////////
 
 #define   VU_DIVIDER_001    (float)728.2054
 #define   PIXELS_PER_SEGMENT (float)3
@@ -893,6 +928,7 @@ void    InitVULookupTables(BOOL bLinear)
 		/////////////////////////////////////////////////////////
 		//
 		// 40.0 changed to 38.0  - 12/28/2000
+		/////////////////////////////////////////////////////////
 
     if(bLinear)
       // Tom's formula #1..................
@@ -938,6 +974,7 @@ void    InitVULookupTables(BOOL bLinear)
 	//////////////////////////////////////////////////////
   // do compression meter,
   // Comp ADC range: <52 map to 0dB, >3033 map to 20dB
+	//////////////////////////////////////////////////////
 
   for(iCount = 0; iCount < 4096; iCount ++)
   {
@@ -955,17 +992,18 @@ void    InitVULookupTables(BOOL bLinear)
 		   fDacComp = 20.0;
   
 	  if(fDacComp < 12.0)
-        {
-          fDBLow = 0.5;
-          fDBPerSeg = 0.5;
-          fPixelShift = 2.0;
-        }
+		{
+			fDBLow = 0.5;
+			fDBPerSeg = 0.5;
+			fPixelShift = 2.0;
+		}
 	  else
-        {
-          fDBLow = 12.0;
-          fDBPerSeg = 1.0;
-          fPixelShift = 71.0;
-        }
+		{
+			fDBLow = 12.0;
+			fDBPerSeg = 1.0;
+			fPixelShift = 71.0;
+		}
+
     if(iCount <52) fDacComp=0;
 
 	  //fDacComp = 96 - (fPixelShift + (fDacComp - fDBLow)* (PIXELS_PER_SEGMENT / fDBPerSeg) );
@@ -977,6 +1015,7 @@ void    InitVULookupTables(BOOL bLinear)
 	//////////////////////////////////////////////////////
   // do gate meter,
   // Gate ADC range: <400 map to 0dB, >3959 map to 20dB
+	//////////////////////////////////////////////////////
 
   for(iCount = 0; iCount < 4096; iCount ++)
   {
@@ -995,24 +1034,23 @@ void    InitVULookupTables(BOOL bLinear)
 		   fDacGate = 20.0;
   
 	  if(fDacGate < 5.0)
-      {
+		{
         fDBLow = -38.0;	// <=== changed from 38 to 34 12/28/2000
         fDBPerSeg = 5.0;
         fPixelShift = 2.0;
-      }
-	  else
-      if(fDacGate < 12.0)
-      {
+		}
+	  else if(fDacGate < 12.0)
+		{
         fDBLow = 5.0;
         fDBPerSeg = 0.5;
         fPixelShift = 29.0;
-      }
-      else
-      {
-        fDBLow = 12.0;
-        fDBPerSeg = 1.0;
-        fPixelShift = 71.0;
-      }
+		}
+		else
+		{
+			fDBLow = 12.0;
+			fDBPerSeg = 1.0;
+			fPixelShift = 71.0;
+		}
 
 
     //if(iCount <400) fDacGate=0;
