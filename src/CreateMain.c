@@ -1,9 +1,12 @@
 //=================================================
-//
-// Copyright 1998, CorTek Software, Inc.
+// Copyright 1998-2001 CorTek Software, Inc.
 //=================================================
-
-//#include <windows.h>
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
 
 #include "SAMM.h"
 #include "SAMMEXT.h"
@@ -592,7 +595,7 @@ wc.hIcon = NULL;
 wc.hCursor = NULL;
 wc.hbrBackground = GetStockObject(BLACK_BRUSH);
 wc.lpszMenuName = NULL;
-wc.lpszClassName = "256COLOR";
+wc.lpszClassName = gsz256ColorsClass;	// "256COLOR";
 
 iReturn = RegisterClass(&wc);
 
