@@ -42,6 +42,7 @@ void    StopTimeEvent(void);
 void    SeqInsertEntryDL(void);
 HTREEITEM SeqAddItem(long, long,HTREEITEM);
 void    SeqDeleteItem(void);
+void    SeqRenameItem(void);
 void    DisplayTVNPopupMenu(HWND);
 HTREEITEM AddItemToTree(HWND hwndTV, LPSTR lpszItem, int nLevel) ;
 BOOL    RecallEntry(void);
@@ -168,7 +169,7 @@ return 0;
 //================================================
 //function: SeqProc
 //
-//main window procedure 
+// main window procedure 
 // for the Sequence View
 //================================================
 BOOL CALLBACK   SeqProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
@@ -193,7 +194,7 @@ switch(uiMsg)
                 HandleTVGetDispInfo((TV_DISPINFO *)lParam);
                 break;
             //----------------
-            case TVN_ENDLABELEDIT:
+            case TVN_ENDLABELEDIT:	// update after editing seq name
                 HandleTVEndLabelEdit((TV_DISPINFO *)lParam);
                 break;
             //----------------
@@ -205,7 +206,7 @@ switch(uiMsg)
                 HandleSeqTVNBeginDrag((LPNM_TREEVIEW)lParam);
                 break;
             //----------------
-            case NM_RCLICK:
+            case NM_RCLICK:		// Handle Right Click pop-up menu
                 if(((LPNMHDR) lParam)->idFrom == IDTREE_SEQUENCE)
                     DisplayTVNPopupMenu(hwnd);
                 break;
@@ -255,25 +256,38 @@ switch(uiMsg)
                     }
                 break;
              */
+
+            //--------------------------------------------
+						// Handle ADD pop-up menu item and BUTTON item
             //----------------
             case MENU_TVN_ADD:
             case IDBTN_SEQ_ADD:
                 SeqInsertEntryDL();
                 break;
-            //-------------------
+
+            //--------------------------------------------
+						// Handle ADD pop-up menu item and BUTTON item
             case MENU_TVN_DELELTE:
             case IDBTN_SEQ_DELETE:
-			if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_DELETE_SEQUENCE_ENTRY) == IDYES)
+								if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_DELETE_SEQUENCE_ENTRY) == IDYES)
                 SeqDeleteItem();
                 break;
 
-            //-------------------
+            //--------------------------------------------
+						// Handle RENAME pop-up menu item
+            case MENU_TVN_RENAME:
+							SeqRenameItem();
+							break;
+
+            //--------------------------------------------
+						// Handle ADD pop-up menu item and BUTTON item
             case MENU_TVN_UPDATE:
             case IDBTN_SEQ_UPDATE:
               UpdateEntry();
               break;
 
-            //-------------------
+            //-----------------------------
+						// Handle PLAY BUTTON item
             case IDBTN_SEQ_PLAY:
               if(HIWORD(wParam) == BN_CLICKED)
                   {
@@ -285,20 +299,29 @@ switch(uiMsg)
                   else
                       g_iStopTimeEvent = 1;
                   }
-            //~~~~~~~~~~~~~
+            //-----------------------------
+						// Handle RECALL BUTTON item
             case ID_RECALL:
               RecallEntry();
               break;
 
+            //-----------------------------
+						// Handle NEXT BUTTON item
             case IDBTN_SEQ_NEXT:
               SeqGoToNext();
               break;
+            //-----------------------------
+						// Handle PREV BUTTON item
             case IDBTN_SEQ_PREV:
               SeqGoToPrev();
               break;
+            //-----------------------------
+						// Handle LAST BUTTON item
             case IDBTN_SEQ_BOTTOM:
               SeqGoToLast();
               break;
+            //-----------------------------
+						// Handle TOP BUTTON item
             case IDBTN_SEQ_TOP:
               SeqGoToFirst();
               break;
@@ -676,6 +699,7 @@ return 0;
 
 
 /////////////////////////////////////////////////////////////////////
+//FUNCTION: SeqGoToNext
 //
 //
 //
@@ -700,6 +724,7 @@ BOOL  SeqGoToNext(void)
 }
 
 /////////////////////////////////////////////////////////////////////
+//FUNCTION: SeqGoToPrev
 //
 //
 //
@@ -723,6 +748,7 @@ BOOL  SeqGoToPrev(void)
 }
 
 /////////////////////////////////////////////////////////////////////
+//FUNCTION: SeqGoToFirst
 //
 //
 //
@@ -743,7 +769,9 @@ BOOL  SeqGoToFirst(void)
 
   return bRet;
 }
+
 /////////////////////////////////////////////////////////////////////
+//FUNCTION: SeqGoToLast
 //
 //
 //
@@ -776,6 +804,7 @@ BOOL  SeqGoToLast(void)
 
 
 /////////////////////////////////////////////////////////////////////
+//FUNCTION: SeqUpdatePropProc
 //
 //
 BOOL CALLBACK   SeqUpdatePropProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
@@ -833,6 +862,7 @@ BOOL CALLBACK   SeqUpdatePropProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM l
 }
 
 /////////////////////////////////////////////////////////////////////
+//FUNCTION: SetSeqUpdateAllProps
 //
 //
 void  SetSeqUpdateAllProps(HWND hwnd, BOOL bSet)
@@ -849,6 +879,10 @@ void  SetSeqUpdateAllProps(HWND hwnd, BOOL bSet)
 };
 
 
+/////////////////////////////////////////////////////////////////////
+//FUNCTION: DisableSeqUpdateAllProps
+//
+//
 void  DisableSeqUpdateAllProps(HWND hwnd, BOOL bDisable)
 {
   int     id = IDC_INP_VOLUME;
@@ -873,6 +907,7 @@ void  DisableSeqUpdateAllProps(HWND hwnd, BOOL bDisable)
 
 
 /////////////////////////////////////////////////////////////////////
+//FUNCTION: GetSeqUpdateProps
 //
 //
 void  GetSeqUpdateProps(SEQENTRY  *pSeqentry)
@@ -915,8 +950,35 @@ BOOL    RecallEntry(void)
         RecallMemoryMapBuffer(FALSE);
       }
     }
-
   }
+
+	////////////////////////////////////////////
+	// Show NEXT SEQUENCE if there is one
+	////////////////////////////////////////////
+
+  htreeitem = TreeView_GetNextItem(g_hwndTV,htreeitem, TVGN_NEXT);
+  if(htreeitem != NULL)
+  {
+    tvi.mask = TVIF_PARAM;
+    tvi.hItem = htreeitem;
+    TreeView_GetItem(g_hwndTV, &tvi);
+    lItemCur = (long)tvi.lParam;
+    pSeqentry = GetEntryData(g_pdlrSequence, lItemCur);
+
+    if(pSeqentry)
+    {
+      if(ReadDataFile(pSeqentry->dwOffset))
+      {
+				ShowTBNextSeqName(pSeqentry->szName);
+      }
+    }
+  }
+	else
+	{
+		ShowTBNextSeqName("END of Sequence");
+	}
+
+
   return bRet;
 }
 
@@ -1027,6 +1089,7 @@ return hPrev;
 } 
 
  
+//================================================================
 // InitTreeViewImageLists - creates an image list, adds three bitmaps to 
 //     it, and associates the image list with a tree-view control.  
 // Returns TRUE if successful or FALSE otherwise. 
@@ -1044,29 +1107,29 @@ HIMAGELIST  himl;  // handle of image list
 HBITMAP     hbmp;     // handle of bitmap 
 
 // Create the image list. 
-if ((himl = ImageList_Create(16, 16, 
-                            ILC_COLOR, SEQ_NUMBITMAPS, SEQ_NUMBITMAPS)) == NULL) 
+	if ((himl = ImageList_Create(16, 16, 
+     ILC_COLOR, SEQ_NUMBITMAPS, SEQ_NUMBITMAPS)) == NULL) 
     return FALSE; 
 
-// Add the open file, closed file, and document bitmaps. 
-hbmp = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_SEQ_OPEN)); 
-g_nOpen = ImageList_Add(himl, hbmp, (HBITMAP) NULL); 
-DeleteObject(hbmp); 
+	// Add the open file, closed file, and document bitmaps. 
+	hbmp = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_SEQ_OPEN)); 
+	g_nOpen = ImageList_Add(himl, hbmp, (HBITMAP) NULL); 
+	DeleteObject(hbmp); 
 
-hbmp = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_SEQ_CLOSE)); 
-g_nClosed = ImageList_Add(himl, hbmp, (HBITMAP) NULL); 
-DeleteObject(hbmp); 
+	hbmp = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_SEQ_CLOSE)); 
+	g_nClosed = ImageList_Add(himl, hbmp, (HBITMAP) NULL); 
+	DeleteObject(hbmp); 
 
-hbmp = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_SEQ_DOCUMENT)); 
-g_nDocument = ImageList_Add(himl, hbmp, (HBITMAP) NULL); 
-DeleteObject(hbmp); 
+	hbmp = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_SEQ_DOCUMENT)); 
+	g_nDocument = ImageList_Add(himl, hbmp, (HBITMAP) NULL); 
+	DeleteObject(hbmp); 
 
-// Fail if not all of the images were added. 
-if (ImageList_GetImageCount(himl) < 3) 
-    return FALSE; 
+	// Fail if not all of the images were added. 
+	if (ImageList_GetImageCount(himl) < 3) 
+			return FALSE; 
 
-// Associate the image list with the tree-view control. 
-TreeView_SetImageList(hwndTV, himl, TVSIL_NORMAL); 
+	// Associate the image list with the tree-view control. 
+	TreeView_SetImageList(hwndTV, himl, TVSIL_NORMAL); 
 
 return TRUE; 
 } 
@@ -1074,6 +1137,11 @@ return TRUE;
 
 
 //===================================
+//
+//
+//
+//
+
 BOOL InitSeqList(HWND hwnd)
 {
 char        szTemp[256];     // temporary buffer 
@@ -1090,18 +1158,23 @@ lvc.cx = 100;
 lvc.pszText = szTemp; 
 
 // Add the columns. 
-for (iCol = 0; iCol < SEQ_COLUMNS; iCol++) 
-    { 
+	for (iCol = 0; iCol < SEQ_COLUMNS; iCol++) 
+  { 
     lvc.iSubItem = iCol; 
     LoadString(ghInstStrRes, IDS_FIRSTSEQCOLUMN + iCol, 
             szTemp, sizeof(szTemp)); 
     if (ListView_InsertColumn(hwnd, iCol, &lvc) == -1) 
         return FALSE; 
-    } 
+  } 
+
 return TRUE; 
 }
 
 //==================================================
+//
+//
+//
+
 int HandleSeqTVNExpand(LPNM_TREEVIEW lpnm_tv)
 {
 /*
@@ -1120,7 +1193,13 @@ else if(lpnm_tv->action == TVE_EXPAND)
 return 0;
 }
 
+
 //==================================================
+//
+//
+//
+//
+
 int HandleSeqTVNBeginDrag(LPNM_TREEVIEW lpnmtv)
 {
 //HIMAGELIST  himl;    // handle of image list 
@@ -1128,45 +1207,50 @@ int HandleSeqTVNBeginDrag(LPNM_TREEVIEW lpnmtv)
 DWORD       dwLevel;      // heading level of item 
 DWORD       dwIndent;     // amount that child items are indented 
  
-// The TreeList Window Handle
-g_hwndTV = lpnmtv->hdr.hwndFrom;
-g_dcTV = GetDC(g_hwndTV);
+	// The TreeList Window Handle
+	g_hwndTV = lpnmtv->hdr.hwndFrom;
+	g_dcTV = GetDC(g_hwndTV);
 
-GetClientRect(g_hwndTV, &g_rDrag);
-// Tell the tree-view control to create an image to use 
-// for dragging. 
-g_himlDrag = TreeView_CreateDragImage(g_hwndTV, lpnmtv->itemNew.hItem); 
+	GetClientRect(g_hwndTV, &g_rDrag);
+	// Tell the tree-view control to create an image to use 
+	// for dragging. 
+	g_himlDrag = TreeView_CreateDragImage(g_hwndTV, lpnmtv->itemNew.hItem); 
 
-// Get the bounding rectangle of the item being dragged. 
-TreeView_GetItemRect(g_hwndTV, lpnmtv->itemNew.hItem, &g_rDragItem, TRUE); 
-g_rDragItem.bottom -=  g_rDragItem.top;// Convert the bottom to the Height
-g_rDragItem.right  -=  g_rDragItem.left;// Convert the right to Width
+	// Get the bounding rectangle of the item being dragged. 
+	TreeView_GetItemRect(g_hwndTV, lpnmtv->itemNew.hItem, &g_rDragItem, TRUE); 
+	g_rDragItem.bottom -=  g_rDragItem.top;// Convert the bottom to the Height
+	g_rDragItem.right  -=  g_rDragItem.left;// Convert the right to Width
 
-// Get the heading level and the amount that the child items are 
-// indented. 
-dwLevel = lpnmtv->itemNew.lParam; 
-dwIndent = (DWORD) SendMessage(g_hwndTV, TVM_GETINDENT, 0, 0); 
+	// Get the heading level and the amount that the child items are 
+	// indented. 
+	dwLevel = lpnmtv->itemNew.lParam; 
+	dwIndent = (DWORD) SendMessage(g_hwndTV, TVM_GETINDENT, 0, 0); 
 
-// Start the drag operation. 
-if(ImageList_BeginDrag(g_himlDrag, 0, 0, 0) == 0)
+	// Start the drag operation. 
+	if(ImageList_BeginDrag(g_himlDrag, 0, 0, 0) == 0)
     // handle an error
-    {
+  {
     ImageList_Destroy(g_himlDrag);
     return 1;
-    }
+  }
 
-ImageList_DragEnter(g_hwndTV, lpnmtv->ptDrag.x, lpnmtv->ptDrag.y);
+	ImageList_DragEnter(g_hwndTV, lpnmtv->ptDrag.x, lpnmtv->ptDrag.y);
 
 
-// Hide the mouse cursor, and direct mouse input to the 
-// parent window. 
-SetCapture(GetParent(g_hwndTV)); 
-g_bDragging = TRUE; 
+	// Hide the mouse cursor, and direct mouse input to the 
+	// parent window. 
+	SetCapture(GetParent(g_hwndTV)); 
+	g_bDragging = TRUE; 
 
 return 0;
 }
 
 //=======================================================
+//
+//
+//
+//
+
 void HandleSeqTVNStopDrag(void) 
 { 
 HTREEITEM       htiTarget;  // handle of target item 
@@ -1193,6 +1277,7 @@ if (g_bDragging)
 return; 
 } 
  
+//=================================================================
 // HandleSeqTVN_OnMouseMove - drags an item in a tree-view control,  
 //     highlighting the item that is the target. 
 // hwndParent - handle of the parent window 
@@ -1297,11 +1382,11 @@ return;
 //=======================================
 void    StopDragTimer(void)
 {
-if(g_iTimerID)
-    {
+	if(g_iTimerID)
+  {
     KillTimer(ghwndSeqDlg, g_iTimerID);
     g_iTimerID = 0;
-    }
+  }
 
 return;
 }
@@ -1360,34 +1445,37 @@ long                lDLInsert;
 
 
 htreeitem = TreeView_GetSelection(g_hwndTV);
-if(htreeitem == NULL)
-    {
+	if(htreeitem == NULL)
+  {
     lItemCur = GetLastEntry(g_pdlrSequence);
     lItemAdd = 0;
 //    lDLInsert = DL_RELATION_PEER;
-    }
-else
-    {
+  }
+	else
+  {
     tvi.mask = TVIF_PARAM;
     tvi.hItem = htreeitem;
     TreeView_GetItem(g_hwndTV, &tvi);
     lItemCur = (long)tvi.lParam;
 //    lDLInsert = DL_RELATION_CHILD;
-    }
+  }
 
   lDLInsert = DL_RELATION_PEER; // ??
 
+////////////////////////////////
 // Set the text of the item. 
 // and other attributes
-//--------------------------
+////////////////////////////////
+	
 wsprintf(seqentry.szName, "Sequence Entry (%d / 0000)", TreeView_GetCount (g_hwndTV) + 1);
 seqentry.dwSize = sizeof(SEQENTRY);
 
-
+	////////////////////////////////////////////////////////
   // try to add the data to the data file ...
   // if it is ok    seqentry.dwOffset will be set to the
   // correct offset within the data file ...
-  //
+	////////////////////////////////////////////////////////
+
   if(AddToDataFile(&seqentry.dwOffset))
   {
     lItemAdd = InsertEntry(g_pdlrSequence, lItemCur, (LPSTR)&seqentry, sizeof(SEQENTRY), 
@@ -1406,7 +1494,7 @@ return;
 //=================================================
 //FUNCTION: SeqAddItem
 //
-//add an item to the Sequence 
+//PURPOSE: add an item to the Sequence 
 //
 //=================================================
 HTREEITEM SeqAddItem(long lItemPtr,long lLinkState,HTREEITEM htreeitem)
@@ -1414,16 +1502,16 @@ HTREEITEM SeqAddItem(long lItemPtr,long lLinkState,HTREEITEM htreeitem)
 TV_ITEM             tvi;
 TV_INSERTSTRUCT     tvins; 
 
-if(htreeitem == NULL)
-    {
+	if(htreeitem == NULL)
+  {
     htreeitem = TVI_ROOT;
-    }
-else
-    {
+  }
+	else
+  {
     tvi.mask = TVIF_PARAM;
     tvi.hItem = htreeitem;
     TreeView_GetItem(g_hwndTV, &tvi);
-    }
+  }
 
 // set the mask parameter
 tvi.pszText = LPSTR_TEXTCALLBACK;
@@ -1431,18 +1519,18 @@ tvi.cchTextMax = 0;
 
 tvi.mask = TVIF_TEXT | TVIF_IMAGE  | TVIF_SELECTEDIMAGE | TVIF_PARAM;
 
-if(lLinkState & DLENTRY_CHILD)
-    {
+	if(lLinkState & DLENTRY_CHILD)
+  {
     tvi.iImage = g_nClosed; 
     tvi.iSelectedImage = g_nOpen; 
     //tvi.mask |= TVIF_CHILDREN; // I_CHILDRENCALLBACK 
     tvi.cChildren = 1;
-    }
-else
-    {
+  }
+	else
+  {
     tvi.iImage = g_nDocument; 
     tvi.iSelectedImage = g_nDocument; 
-    }
+  }
 
 // Save the heading level in the item's application-defined 
 // data area. 
@@ -1466,6 +1554,42 @@ return TreeView_InsertItem(g_hwndTV, &tvins);
 
 //return;
 }
+
+
+//==================================================
+//FUNCTION: SeqRenameItem
+//
+//PURPOSE: Rename a sequence name, called from
+//         right click pop-up from seq window
+//
+//==================================================
+void    SeqRenameItem(void)
+{
+HTREEITEM       htreeitem;
+TV_ITEM         tvi;
+long            lItemDel;
+
+	htreeitem = TreeView_GetSelection(g_hwndTV);
+	if(htreeitem == NULL)
+  {
+    return;
+  }
+
+	tvi.mask = TVIF_PARAM;
+	tvi.hItem = htreeitem;
+	TreeView_GetItem(g_hwndTV, &tvi);
+
+	lItemDel =(long)tvi.lParam;
+
+	if(lItemDel > 0)
+			DelEntryPtr(g_pdlrSequence, lItemDel);
+
+	TreeView_EditLabel(g_hwndTV, htreeitem);
+
+return;
+}
+
+
 
 //==================================================
 //FUNCTION: SeqDeleteItem
@@ -1619,10 +1743,13 @@ hTVNPopupMenu = CreatePopupMenu();
 
 iMenu = 0;
  
+/////////////////////////////////////////////////////
 // Get menu state will return the style of the menu
 // in the lobyte of the unsigned int. Return value
 // of -1 indicates the menu does not exist, and we
 // have finished creating our pop up.
+/////////////////////////////////////////////////////
+
 while ((uMenuState = GetMenuState(hTVNMenu, iMenu, MF_BYPOSITION)) != -1)
     {
     if (uMenuState != -1)
