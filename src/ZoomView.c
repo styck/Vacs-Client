@@ -15,6 +15,8 @@
 
 #include <zmouse.h>
 
+void	HandleRemoteSequenceControl(WORD wControl);
+
 //====================================
 // FUNCTION: RegisterZoomViewClass
 //
@@ -64,6 +66,7 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
   HWND                hWnd;
   RECT                rect;
   LPMIXERWNDDATA      lpmwd;
+	DWORD								style;
 
   
 	if (gInitialized == FALSE)
@@ -106,11 +109,17 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
   lpmwd->rMaxWndPos.bottom += HEIGHT_FULL_LABEL_WND;
   lpmwd->rWndPos.bottom += HEIGHT_FULL_LABEL_WND;
 
+
+	style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE
+															| WS_THICKFRAME | WS_MINIMIZEBOX// | WS_MAXIMIZEBOX
+															| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+	style &= ~WS_MAXIMIZEBOX;
+
   if(pMWD == NULL)
     hWnd = CreateMDIWindow (
                             gszZoomViewClass,
                             szTitle,
-                            WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+                            style,
                             1,//CW_USEDEFAULT,
                             1,//CW_USEDEFAULT,
                             lpmwd->rWndPos.right,
@@ -123,7 +132,7 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
     hWnd = CreateMDIWindow (
                             gszZoomViewClass,
                             szTitle,
-                            WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+                            style,
                             lpmwd->rWndPos.left,
                             lpmwd->rWndPos.top,
                             lpmwd->rWndPos.right,
@@ -185,6 +194,7 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
     PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
 
   SetFocus(hWnd);
+	//SendMessage (ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)hWnd, 0L);
   return hWnd;
 };
 
@@ -312,6 +322,9 @@ switch (wMessage)
 			case VK_SHIFT:
 				lpmwd->wKeyFlags &= ~VK_SHIFT;
 				break;
+			case VK_SPACE:
+					HandleRemoteSequenceControl(IDM_S_NEXT);
+				break;
       }
       break;                              
 		//
@@ -322,9 +335,10 @@ switch (wMessage)
 				lpmwd->wKeyFlags |= VK_SHIFT;
 				break;
 			}
-    //////////////////////////////////////////////////////////////
-    case WM_MDIACTIVATE:
         break;
+    //////////////////////////////////////////////////////////////
+    //case WM_MDIACTIVATE:
+    //    break;
     //////////////////////////////////////////////////////////////
     case WM_SIZE:
         HandleWndSize(hWnd, lpmwd, LOWORD(lParam), HIWORD(lParam), wParam);
