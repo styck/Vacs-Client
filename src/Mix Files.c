@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Mix Files.c        $
-// $Revision:: 25                                 $
+// $Revision:: 26                                 $
 //
 
 #include "SAMM.H"
@@ -1541,7 +1541,10 @@ LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType )
 
 LPSTR	GetSequenceFileName(void)
 {
+	if(g_szSequenceFileName[0] != 0)
 		return &g_szSequenceFileName[0];
+	else
+		return "LA$T.MIX";	// Safety check incase registry has incorrect value
 }
 
 
