@@ -6,7 +6,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/ControlDataFilters.c $
-// $Revision: 40 $
+// $Revision: 41 $
 //
 
 
@@ -2345,7 +2345,8 @@ BOOL	isChanelSafeActive (LPCTRLZONEMAP pctrlzm)
 	///////////////////////////////////////////////////
 	// make sure this effects only the input channels
 
-	if (pctrlzm && gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber] == 1) {
+	if (pctrlzm && gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT) 
+	{
 		LPCTRLZONEMAP safecontrol = ScanCtrlZonesNum ( pctrlzm, CTRL_NUM_INPUT_SAFE);
 		if (safecontrol){
 			int iVal = GETPHISDATAVALUE(0, safecontrol, safecontrol->iCtrlChanPos);
@@ -2368,9 +2369,11 @@ void	setBufferChannelSafeActive (LPCTRLZONEMAP pctrlzm, BOOL active)
 	////////////////////////////////////////////////////
 	// make sure this effects only the input channels
 
-	if (pctrlzm && gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber] == 1) {
+	if (pctrlzm && gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT) 
+	{
 		LPCTRLZONEMAP safecontrol = ScanCtrlZonesNum ( pctrlzm, CTRL_NUM_INPUT_SAFE);
-		if (safecontrol && gDeviceSetup.iaChannelTypes[safecontrol->iModuleNumber] == 1){
+		if (safecontrol && gDeviceSetup.iaChannelTypes[safecontrol->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT)
+		{
 			if (active)
 				SETPHISDATAVALUEBUFFER(0, safecontrol, CTRL_NUM_INPUT_SAFE, 0);
 			else
