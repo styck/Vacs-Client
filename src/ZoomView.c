@@ -338,6 +338,9 @@ switch (wMessage)
 				lpmwd->wKeyFlags &= ~VK_SHIFT;
 				break;
 			case VK_SPACE:
+				if(lpmwd->wKeyFlags & VK_SHIFT)					// if shift key down then go backwards in sequence
+					HandleRemoteSequenceControl(IDM_S_BACK);
+				else
 					HandleRemoteSequenceControl(IDM_S_NEXT);
 				break;
       }
