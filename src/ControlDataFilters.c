@@ -1715,6 +1715,9 @@ void	UpdateExternalInterface(CONTROLDATA *pCtrlData)
 		wVal = pCtrlData->wVal;
 		wVal = (WORD)((float)wVal * gExternalIface[0].fscale);
 		wVal = 0x7f - wVal;
+		
+		// FDS - REMOVE LINE BELOW FOR DEBUGGING
+
 		SendCommData((BYTE)gExternalIface[0].chann, (BYTE)pCtrlData->wChannel, (BYTE)wVal);
 	}
 }
