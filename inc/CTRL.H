@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/inc/CTRL.H             $
-// $Revision:: 32                                 $
+// $Revision:: 33                                 $
 //
 //
 //=================================================
@@ -528,6 +528,9 @@
 //----------------------------------
 
 // Belonging to the master module ... !!!!!!!!!!
+
+// THESE ARE PHYSICALLY ON THE MASTER MODULE
+
 #define CTRL_NUM_MASTERLT_FADER               1
 #define CTRL_NUM_MASTERRT_FADER               2
 #define CTRL_NUM_MASTERLT_CENTER_FADER        3
@@ -550,10 +553,16 @@
 
 #define CTRL_NUM_MASTER_CUE_LEVEL_CENTER      15
 #define CTRL_NUM_MASTER_CUE_LEVEL_MONO        16
+
+// THESE ARE PHYSICALLY ON THE MASTER MODULE
+
 #define __MASTER_GROUP_01_START               CTRL_NUM_MASTERLT_FADER
 #define __MASTER_GROUP_01_END                 CTRL_NUM_MASTER_CUE_LEVEL_MONO
 
 ////////////////////////////////////////////////
+
+// THESE ARE PHYSICALLY ON THE CUE MODULE
+
 #define CTRL_NUM_MASTER_AUX16LT_FADER					17
 #define CTRL_NUM_MASTER_AUX16RT_FADER					18
 
@@ -747,6 +756,8 @@
 #define CTRL_NUM_MASTER_CUE_AUX01_MUTE        165
                                               
 #define CTRL_NUM_MASTER_HEADPHONES_PRE        166
+
+// THESE ARE PHYSICALLY ON THE CUE MODULE
 
 #define __MASTER_GROUP_02_START               CTRL_NUM_MASTER_AUX16LT_FADER
 #define __MASTER_GROUP_02_END                 CTRL_NUM_MASTER_HEADPHONES_PRE

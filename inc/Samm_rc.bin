@@ -19,7 +19,7 @@
 //    }MIXERDESC;
 MIXER_PHIS_DESC RT_MIXER_PHIS_DESC MOVEABLE IMPURE LOADONCALL DISCARDABLE
 BEGIN
-    100, 1, 3, 256,
+    100, 1, 3, 512,
     "Gamble DCX console                    \0",
 END
 

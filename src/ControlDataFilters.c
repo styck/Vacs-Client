@@ -6,7 +6,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/ControlDataFilters.c $
-// $Revision: 42 $
+// $Revision: 43 $
 //
 
 
@@ -2807,7 +2807,7 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 			//////////////////////////////
       // aha ... turn off this duda
       // 
-      FlipTheControl(lpctrl, lpmwd);
+//      FlipTheControl(lpctrl, lpmwd);	NOT FOR SOFTWARE CONTROL
 
 			//////////////////////////////////////
       // now update all of the other mixers
@@ -2840,7 +2840,7 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 			//////////////////////////////
       // aha ... turn off this duda
       // 
-      FlipTheControl(lpctrl, lpmwd);
+//      FlipTheControl(lpctrl, lpmwd);	NOT FOR SOFTWARE CONTROL
 
 			////////////////////////////////////////
       // now update all of the other mixers

@@ -5,7 +5,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/Events interface.c $
-// $Revision: 38 $
+// $Revision: 39 $
 //
 
 //=================================================
@@ -1561,6 +1561,21 @@ return;
 */
 
 
+
+
+
+////////////////////////////
+// ONLY USED BELOW TO FIND
+// wCtrlVal in a zonemap
+
+BOOL bFindCtrlVal(LPCTRLZONEMAP lpctrlZM, WORD wCtrlVal)
+{
+	if((lpctrlZM != 0) && (lpctrlZM->iCtrlNumAbs == wCtrlVal))
+			return TRUE;
+	else
+			return FALSE;
+}
+
 ///////////////////////////////////////////////
 // FUNCTION: UpdateControlFromNetwork
 //
@@ -1664,31 +1679,33 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD wCtrlVal, int iVal, BOOL 
 			// we need to distinguish the correct control by using the wCtrlVal that is passed
 			// over the network.
 
+
       lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX1LT_FADER - iCount*4);
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX1RT_FADER - iCount*4);
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX2LT_FADER - iCount*4);
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX2RT_FADER - iCount*4);
 			// SUM IN
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 	      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_SUMIN1 - iCount*2);
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_SUMIN2 - iCount*2);
 			// Master Pre-post
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 	      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX01PRE - iCount*4);
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX01POST - iCount*4);
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 	      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX02PRE - iCount*4);
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_AUX02POST - iCount*4);
     // Master Aux mutes
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 	      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_CUE_AUX01_MUTE - iCount*2);
-			if(lpctrlZM->iCtrlNumAbs != wCtrlVal)
+			if(!bFindCtrlVal(lpctrlZM, wCtrlVal))
 				lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, CTRL_NUM_MASTER_CUE_AUX02_MUTE - iCount*2);
 
 			// now force to master module so that UpdateSameMixWndByCtrlNum() can update control values

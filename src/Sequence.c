@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Sequence.c         $
-// $Revision:: 24                                 $
+// $Revision:: 25                                 $
 //
 
 //////////////////////////////////////////////
@@ -821,6 +821,8 @@ BOOL  SeqGoToNext(void)
   BOOL                bRet = FALSE;
   HTREEITEM           htreeitem;
 
+	UpdateEntry();		// make sure any changes made are applied to next scene  10/23/2003
+	 
   htreeitem = TreeView_GetSelection(g_hwndTV);
 	g_current_item_before_next = htreeitem;
   htreeitem = TreeView_GetNextItem(g_hwndTV, htreeitem, TVGN_NEXT);
