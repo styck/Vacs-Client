@@ -1,14 +1,21 @@
 //=================================================
-// Copyright 1998 - 2001, CorTek Softawre, Inc.
+// Copyright 1998 - 2002, CorTek Softawre, Inc.
 //=================================================
 //
 //
 // $Author:: Styck       $
 // $Archive:: /Vacs Clien $
-// $Revision:: 36         $
+// $Revision:: 37         $
 //
 //=================================================
-// The Full View Window
+// Handle the FULL VIEW
+// Create and process messages
+//
+// Includes routines for creating and processing
+// the IMAGE windows for the Zoom, Full, and Master 
+// windows.
+//
+// Draws all VU data
 //
 //=================================================
 
@@ -24,6 +31,9 @@ extern int                 g_iCueModuleIdx;
 extern int                 g_iAuxIdx;
 extern int                 g_iMasterModuleIdx;
 
+WORD GetShiftKeyFlag(void);
+BOOL GetShiftKeyState(void);
+void SetShiftKeyFlag(BOOL bSet);
 
 // static variables
 int	g_CueMasterSystem=0;
@@ -182,11 +192,6 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 	//------------------------------------------------
 	lpmwd->rMaxWndPos.bottom += HEIGHT_FULL_LABEL_WND;
 
-/*
-	style	=  MDIS_ALLCHILDSTYLES;
-	style |= (WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_VISIBLE | WS_CHILD);
-	style &= ~WS_MAXIMIZEBOX;
-*/
 
 	style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE
 															| WS_THICKFRAME | WS_MINIMIZEBOX  // | WS_MAXIMIZEBOX
@@ -310,9 +315,6 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 //
 //================================================
 
-#define	PAGEUPDOWN_OFFSET	100	// Number of pixels to pageup/down
-#define	LINEUPDOWN_OFFSET	5		// Number of pixels to lineup/down
-
 
 LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage, 
                                WPARAM wParam, LPARAM lParam)
@@ -327,78 +329,6 @@ LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage,
 
 	switch (wMessage)
 	{
-
-#ifdef SCROLLBARSNOTUSEDHERE
-
-		case WM_VSCROLL: 
-			/* Determine how much to scroll vertically. 
-			*/ 
-			switch (LOWORD(wParam)) 
-			{ 
-			case SB_TOP: 
-			nVscrollInc = 1; 
-			break; 
-
-			case SB_BOTTOM: 
-			nVscrollInc = 2; 
-			break; 
-
-			case SB_LINEUP: 
-				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
-				{
-					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-						lpmwd->pntMouseCur.y -= LINEUPDOWN_OFFSET;	// Change the current mouse position
-				
-					ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
-					lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
-				}
-			break; 
-
-			case SB_LINEDOWN: 
-				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
-				{
-					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-					lpmwd->pntMouseCur.y += LINEUPDOWN_OFFSET;	// this is the number of pixels we move down
-					
-					ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
-					lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
-				}
-			break; 
-
-			case SB_PAGEUP:
-				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
-				{
-					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-					lpmwd->pntMouseCur.y -= PAGEUPDOWN_OFFSET;	// Change the current mouse position
-				
-					ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
-					lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
-				}
-			break; 
-
-			case SB_PAGEDOWN: 
-				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
-				{
-					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-					lpmwd->pntMouseCur.y += PAGEUPDOWN_OFFSET;	// this is the number of pixels we move down
-					
-					ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
-					lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
-				}
-			break; 
-
-			case SB_THUMBTRACK: 
-			nVscrollInc = 7; 
-			break; 
-
-			default: 
-				g_iYSpeed = 0;
-
-			nVscrollInc = 0; 
-
-			} 
-			break;
-#endif
 
 		//////////////////////////////////////////////////////////////
 		case WM_ERASEBKGND: // to reduce flashing on the screen
@@ -417,15 +347,16 @@ LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage,
 				lpmwd->wKeyFlags &= ~VK_SHIFT;
 				break;
 			case VK_SPACE:
-				if(lpmwd->wKeyFlags & VK_SHIFT)					// if shift key down then go backwards in sequence
+				if(lpmwd->wKeyFlags & VK_SHIFT)					// if shift key down then go backwards in sequence list
 					HandleRemoteSequenceControl(IDM_S_BACK);
 				else
-					HandleRemoteSequenceControl(IDM_S_NEXT); // else just go to the next sequence
+					HandleRemoteSequenceControl(IDM_S_NEXT); // else just go to the next sequence in list
 				break;
 
       }
       break;                              
-		//
+		
+    //////////////////////////////////////////////////////////////
 		case WM_KEYDOWN:
 			switch(wParam)
 			{
@@ -434,6 +365,7 @@ LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage,
 					break;
 			}
 			break;
+
     //////////////////////////////////////////////////////////////
     case WM_COMMAND:
 	    switch (LOWORD(wParam))
@@ -442,6 +374,7 @@ LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage,
               return DefMDIChildProc(hWnd, wMessage, wParam, lParam);
 			}
         break;
+
     //////////////////////////////////////////////////////////////
     case WM_SIZE:
         HandleWndSize(hWnd, lpmwd, LOWORD(lParam), HIWORD(lParam), wParam);
@@ -457,14 +390,8 @@ LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage,
         }
 
         break;
-    //////////////////////////////////////////////////////////////
-//    case WM_MDIACTIVATE:
-//        if((HWND)lParam == hWnd)    
-//            {
-            //SetWindowPos(hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSIZE);
-//            }
-//        break;    
-    //////////////////////////////////////////////////////////////
+
+		//////////////////////////////////////////////////////////////
     case WM_GETMINMAXINFO:
             lpMMI = (MINMAXINFO *)lParam;
             // get the information for this window
@@ -479,9 +406,6 @@ LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage,
             break;
 
     //////////////////////////////////////////////////////////////
-    case WM_DESTROY:
-
-//        break;
     default:
         return DefMDIChildProc(hWnd, wMessage, wParam, lParam);
 
@@ -560,6 +484,8 @@ HDC                 hdc;
 // the image is displayed, updated and used
 // as a control
 //
+// Used for ZOOM, FULL and MASTER windows
+//
 //====================================================
 LRESULT CALLBACK  FullViewImgProc(HWND hWnd, UINT wMessage, 
                                   WPARAM wParam, LPARAM lParam)
@@ -577,12 +503,11 @@ lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
     case WM_PAINT:
 			WaitForSingleObject(gDisplayEvent, 70);
 
-      BeginPaint(hWnd, &ps);
-      DrawImgWindow(&ps, lpmwd);
-      ShowMousePos(hWnd, lpmwd);
-      EndPaint(hWnd, &ps);
-
-			SetEvent(gDisplayEvent);
+				BeginPaint(hWnd, &ps);
+				DrawImgWindow(&ps, lpmwd);
+				ShowMousePos(hWnd, lpmwd);
+				EndPaint(hWnd, &ps);
+				SetEvent(gDisplayEvent);
       break;
 
     //////////////////////////////////////////////////////////////
@@ -590,16 +515,28 @@ lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
       break;
 
+		//////////////////////////////////////////////////////////////
+		//
+		// All mouse functions will set the wParam with the SHIFT key
+		// status using MK_SHIFT (NOT VK_SHIFT)
+		// 
     //////////////////////////////////////////////////////////////
+
     case WM_MOUSEMOVE:
 			//WaitForSingleObject(gDisplayEvent, 90);
+//debug			if(lpmwd->wKeyFlags & MK_SHIFT)
+//				OutputDebugString("SHIFT PRESSED\n");
+//			else
+//				OutputDebugString("SHIFT NOT PRESSED\n");
+
       HandleMouseMove(hWnd, MAKEPOINTS(lParam), wParam, lpmwd);
+
 			//SetEvent(gDisplayEvent);
       break;
     //////////////////////////////////////////////////////////////
     case WM_LBUTTONDOWN:
 
-      HandleLBDown(hWnd, MAKEPOINTS(lParam), wParam, lpmwd);
+			HandleLBDown(hWnd, MAKEPOINTS(lParam), wParam, lpmwd);
 			lpczm=lpmwd->lpCtrlZM;	// Save THIS buttons zone
 			iCurChan = lpmwd->iCurChan;
 			iXadj = lpmwd->iXadj;
@@ -655,13 +592,16 @@ lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
       HandleMBUp(hWnd, MAKEPOINTS(lParam), wParam, lpmwd);
       break;
 
+    //////////////////////////////////////////////////////////////
     case WM_TIMER:
-      HandleCtrlTimer(hWnd, lpmwd);
+      HandleCtrlTimer(hWnd, lpmwd);	// Timer for incrementing the controls
       break;
+
     //////////////////////////////////////////////////////////////
 //    case WM_SIZE:
 //        MessageBox(ghwndMain, "WM_SIZE in the ImgWindow", "", MB_OK);
 //        break;
+
     //////////////////////////////////////////////////////////////
     case WM_COMMAND:
 	    switch (LOWORD(wParam))
@@ -670,8 +610,11 @@ lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
             return DefWindowProc(hWnd, wMessage, wParam, lParam);
 			}
         break;
+
     //////////////////////////////////////////////////////////////
     case WM_CREATE:
+
+        //---------------------------
         // Set the pointer to the
         // Mixer window data
         //---------------------------
@@ -711,12 +654,16 @@ return 0;
 
 
 //======================================================
-//FUNCTION: DrawFullImgWindow
+//FUNCTION: DrawImgWindow
 //
 //params:
 //      LPPAINTSTRUCT       lpPS; the paint structure
 //      LPMIXERWNDDATA      lpMWD; Data needed to redraw
+//
+// This draws the image for the ZOOM, FULL, and MASTER
+// windows
 //======================================================
+
 void      DrawImgWindow(LPPAINTSTRUCT lpPS,
                               LPMIXERWNDDATA lpMWD)
 {
@@ -738,19 +685,16 @@ int         iMixer;
 
 	if(lpMWD == NULL)
 			return;
+
 	hdc = lpPS->hdc; // assign to local ... for speed only
 	hdcMem = CreateCompatibleDC(hdc);
 
-	//hdcMemBuff = CreateCompatibleDC(hdc);
 
 	////////////////////////////
 	// apply the vertical offset
 	//--------------------------
 
 	iX = iY = iCX = iCY = 0;
-
-//lZMCount = lpMWD->lZMCount;
-//for(lCount = 0; lCount < lZMCount; lCount++)
 
 	for(lCount = lpMWD->iStartScrChan; lCount < lpMWD->iEndScrChan + 1; lCount++)
   {
@@ -1000,7 +944,7 @@ void    RequestVisibleVU(LPMIXERWNDDATA lpmwd, int iPrevStart, int iPrevEnd)
 
 
 
-/*
+/* // For debug
 	wsprintf(chBuffer, "%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x,%x",
 					 lpmwd->acVisibleVU[0], lpmwd->acVisibleVU[1],
 					 lpmwd->acVisibleVU[2], lpmwd->acVisibleVU[3],
@@ -1127,53 +1071,55 @@ void  ScrollSideWays(HWND hwnd, LPMIXERWNDDATA lpmwd, int iDir)
 //  Calculate the NEW vertical offset of the Window
 // and then Repaint it ....
 //
+// lpmwd->iYOffset is the position in the bitmap we are to display
+//
 // Used for Jump Zones from the Full View
 //
-// called from JumpToMZWindow()
+// called from JumpToMZWindow() and others
 //
 //======================================================
 
-void      ScrollImgWindow(HWND hwnd, LPMIXERWNDDATA lpmwd)
+void      ScrollImgWindow(HWND hwnd, LPMIXERWNDDATA lpmwd, int iYChange)
 {
-  int             iYChange;
   PAINTSTRUCT     ps;
   POINT           pnt;
   int             iOldYOffset = lpmwd->iYOffset;
 
-  iYChange = lpmwd->pntMouseCur.y - lpmwd->pntMouseLast.y;
+// This is passed now:  iYChange = lpmwd->pntMouseCur.y - lpmwd->pntMouseLast.y;
 
   if(iYChange == 0)
-      return; // nothing to scroll
+		iYChange = lpmwd->pntMouseCur.y - lpmwd->pntMouseLast.y;
 
-  if(iYChange < 0)
-  {
-		if((iYChange + lpmwd->iYOffset) <= 0)
+//    return; // nothing to scroll
+
+		if(iYChange < 0)
 		{
-			if(lpmwd->iYOffset == 0)    // we already at the top
-						return;
-			lpmwd->iYOffset = 0;
+			if((iYChange + lpmwd->iYOffset) <= 0)
+			{
+				if(lpmwd->iYOffset == 0)    // we already at the top
+							return;
+				lpmwd->iYOffset = 0;
+			}
+			else
+			{
+				lpmwd->iYOffset = lpmwd->iYOffset + iYChange;
+			}
 		}
 		else
 		{
-			lpmwd->iYOffset = lpmwd->iYOffset + iYChange;
+			if(lpmwd->rMaxSize.bottom <=		// Check if we are at the bottom
+				 (iYChange + lpmwd->iYOffset + lpmwd->rVisible.bottom))
+			{
+				iYChange = lpmwd->rMaxSize.bottom - lpmwd->rVisible.bottom;
+				if(iYChange == lpmwd->iYOffset)	// we are already Scrolled to the bottom
+					return; 
+				lpmwd->iYOffset = iYChange;
+			}
+			else
+			{
+				lpmwd->iYOffset = lpmwd->iYOffset + iYChange;
+			}
 		}
-  }
-  else
-  {
-		if(lpmwd->rMaxSize.bottom <= 
-			 (iYChange + lpmwd->iYOffset + lpmwd->rVisible.bottom))
-		{
-			iYChange = lpmwd->rMaxSize.bottom - lpmwd->rVisible.bottom;
-			if(iYChange == lpmwd->iYOffset)	// we are already Scrolled to the bottom
-				return; 
-			lpmwd->iYOffset = iYChange;
-		}
-		else
-		{
-			lpmwd->iYOffset = lpmwd->iYOffset + iYChange;
-		}
-  }
-
 
   InvalidateRect(hwnd, NULL, FALSE);
   BeginPaint(hwnd, &ps);
@@ -1198,7 +1144,7 @@ void      ScrollImgWindow(HWND hwnd, LPMIXERWNDDATA lpmwd)
     SetCursorPos(pnt.x, pnt.y);
   }
 
-  if(lpmwd->iYOffset < 2853)
+  if(lpmwd->iYOffset < 2853)	// 2853
   {
     if(iOldYOffset >= 2853)
     {
@@ -1754,16 +1700,6 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
   }
 
 
-
-// END of DEBUG STUFF
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-  
-
   CopyMemory(szVuDataBuffer, pVuData, iSize);
 
 	
@@ -1904,8 +1840,6 @@ void      DrawVUReadOutImgWindow(LPPAINTSTRUCT lpPS,
   VU_READ     *pVuWalker;
   LPCTRLZONEMAP   pCtrlZm = NULL;
   LPCTRLZONEMAP   pCtrlZmClip = NULL;
-	//int							tempModuleType  = 0;
-  
 
 	hbmpOld = NULL;
 	hbmpBuff = NULL;
@@ -1932,18 +1866,6 @@ void      DrawVUReadOutImgWindow(LPPAINTSTRUCT lpPS,
     iCY = gpBMPTable[iBMPIndex].iHeight;
 
     pVuWalker = pVuData;
-
-    // THIS IS ONLY FOR DEBUG !!!
-		// Check the VU packet 
-    //
-		/*
-    if(iPhisChannel != (int)pVuWalker->wModuleIdx)
-		{
-			tempModuleType = gDeviceSetup.iaChannelTypes[pVuWalker->wModuleIdx];
-			if (tempModuleType == 3 || tempModuleType == 4)
-				tempModuleType = 5; // break point place :)
-		}
-		*/
 
 		////////////////////////////////////////////////////////////////////////
 		// update all clip lights
@@ -1991,7 +1913,7 @@ void      DrawVUReadOutImgWindow(LPPAINTSTRUCT lpPS,
 
     for(iVUCounter = 0; iVUCounter < 8;iVUCounter++)
     {
-      // Skip channels that are not for this VU
+      //  Skip channels that are not for this VU
       //  ModuleIdx for VU data is in Lower byte
 
 			//    If this is uncommented then the CUE VU meters will not work, only the seperate window CUE VUs
@@ -2010,8 +1932,6 @@ void      DrawVUReadOutImgWindow(LPPAINTSTRUCT lpPS,
 #endif
 
       pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + iVUCounter + pVuWalker->cLock);
-      //pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + (pVuData->iVUType - 1) );
-
 
       if(pCtrlZm == NULL)
         continue;
