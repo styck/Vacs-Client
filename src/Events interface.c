@@ -22,6 +22,8 @@ extern int                 g_iAuxIdx;
 extern int                 g_iMasterModuleIdx;
 
 
+void HandleMasterCueSwitch(LPMIXERWNDDATA lpmwd, WORD wVal);
+
 void TurnOffAllVUforMixerWindow(LPMIXERWNDDATA lpmwd);
 void  CheckForSpecialFilters(/*LPMIXERWNDDATA lpwmd, */LPCTRLZONEMAP pctrlzm);
 void	syncInputPriority (LPCTRLZONEMAP pctrlzm, int	icount, LPMIXERWNDDATA lpmwd);
@@ -829,7 +831,7 @@ RECT                r;
 HBITMAP             hbmp;
 int                 iBMPIndex;
 BOOL                bIsOn;
-
+WORD								wVal;
 
 if(hwnd == NULL)
   hwnd = lpmwd->hwndImg; // Grab the image Window from the MixerWindow data
@@ -855,6 +857,10 @@ if(iVal != ivalue)
 		//
 		StartControlDataFilter(iPhisChannel, lpmwd, lpctrlZM, bIsOn, TRUE);
 
+		// Do the Toggle stuff ..
+		//
+		CheckForToggleSwitches(lpmwd, lpctrlZM);
+
 		ctrlData.wMixer   = lpmwd->iMixer;
 		ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
 		ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
@@ -874,10 +880,28 @@ if(iVal != ivalue)
 		}
 		iVal = ivalue;
 
-		// Do the Toggle stuff ..
-		//
-		CheckForToggleSwitches(lpmwd, lpctrlZM);
 
+	// Moved this logic from HandleInputToggleSwtches() so that the order of commands
+	// sent out are:
+	//
+	// *033XXW440000
+	// *033XXW450065
+	// *033XXW440063
+	// *033XXW451063
+	//
+	// Still needs to be cleaned up.
+
+	if(gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT)
+  {
+
+		if(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_MIC_A_CUE ||
+			lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_MIC_B_CUE ||
+			lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_GATE_KEY_INOUT)
+		{
+			wVal = GETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos);
+			HandleMasterCueSwitch(lpmwd, wVal);
+		}
+	}
 		// Handle this control type again ...
 		// not the best solution, since we are going to resend the data to the Mixer .... ???
 		//
