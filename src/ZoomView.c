@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/ZoomView.c         $
-// $Revision:: 16                                 $
+// $Revision:: 17                                 $
 //
 
 //=================================================
@@ -432,7 +432,7 @@ int nVscrollInc;	// Dummy variable
         break;
     //////////////////////////////////////////////////////////////
     case WM_KEYUP:
-      switch(LOWORD(wParam))
+      switch(wParam)
       {
       case VK_LEFT:
         ScrollSideWays(hWnd, lpmwd, LEFT);  // Scrolling left
