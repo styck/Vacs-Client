@@ -457,7 +457,7 @@ int		CreateToolBars(HWND		hwndParent)
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
-	tbinfo.cx = 155;	// 175	SIZE OF THE NUM ZOOM WINDOW
+	tbinfo.cx = 120;	// 155	SIZE OF THE NUM ZOOM WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBZoomWinCntReadout, (LPARAM)&tbinfo);
 
@@ -477,7 +477,7 @@ int		CreateToolBars(HWND		hwndParent)
 																	r.left, r.top, r.right - r.left, r.bottom - r.top,
 																	ghwndTBPlay, NULL, ghInstMain, NULL);
 	
-	SetWindowText(ghwndTBZoomWinCntReadout, " Zoom Viewss: 0");
+	SetWindowText(ghwndTBZoomWinCntReadout, " Zoom Views: 0");
 
 //////////////////////////////////////////
 
