@@ -25,6 +25,7 @@ CFG=ConsoleDefinition - Win32 Debug
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""$/SAMMPlus/ConsoleDefinition", VFAAAAAA"
 # PROP Scc_LocalPath "."
+# PROP WCE_FormatVersion ""
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
@@ -350,10 +351,6 @@ SOURCE=.\Resource\dcx\full_input_module.bmp
 # Begin Source File
 
 SOURCE=.\Resource\dcx\full_subaux_module.bmp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Resource\dcx\gamblelogo.BMP
 # End Source File
 # Begin Source File
 
