@@ -1,5 +1,5 @@
 //=================================================
-// CopyRight 1998, CorTek Software, Inc.
+// CopyRight 1998-2001, CorTek Software, Inc.
 //=================================================
 
 //=================================================
@@ -33,27 +33,27 @@ int         iReturn;
 WNDCLASS    wc;
 
 
-// Register Zoom View Class
-//--------------------------
-ZeroMemory(&wc,  sizeof(WNDCLASS));      // Clear wndclass structure
+	// Register Zoom View Class
+	//--------------------------
+	ZeroMemory(&wc,  sizeof(WNDCLASS));      // Clear wndclass structure
 
-wc.style = CS_HREDRAW | CS_VREDRAW;
-wc.lpfnWndProc = (WNDPROC)ZoomViewProc;
-wc.cbClsExtra = 0;
-wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
-wc.hInstance = ghInstMain;
-wc.hIcon = LoadIcon(ghInstConsoleDef, MAKEINTRESOURCE(ZoomViewIcon));// this might leak memory
-wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-wc.hbrBackground = GetStockObject(BLACK_BRUSH);
-wc.lpszMenuName = NULL;
-wc.lpszClassName = gszZoomViewClass;
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = (WNDPROC)ZoomViewProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
+	wc.hInstance = ghInstMain;
+	wc.hIcon = LoadIcon(ghInstConsoleDef, MAKEINTRESOURCE(ZoomViewIcon));// this might leak memory
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = GetStockObject(BLACK_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = gszZoomViewClass;
 
-iReturn = RegisterClass(&wc);
+	iReturn = RegisterClass(&wc);
 
-if(iReturn == 0)
-	 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+	if(iReturn == 0)
+		 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
-return 0;
+	return 0;
 }
 
 //////////////////////////////////
@@ -78,7 +78,7 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
 		return NULL;
 
   if(pMWD == NULL)
-    {
+  {
     lpmwd = MixerWindowDataAlloc(gwActiveMixer,
                                  gpZoneMaps_Zoom,
                                  MAX_CHANNELS,
@@ -87,10 +87,10 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
 
 
     if(lpmwd == NULL)
-      {
+    {
       ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
       return NULL;
-      }
+    }
     // store the Window title
     //
     lstrcpy(lpmwd->szTitle, szTitle);
@@ -99,12 +99,12 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
     // in it's full size
     //
     lpmwd->rWndPos.bottom -= HEIGHT_FULL_LABEL_WND;
-    }
+  }
   else
-    {
+  {
     lpmwd = pMWD;
     lpmwd->rWndPos.bottom -= HEIGHT_FULL_LABEL_WND;
-    }
+  }
 
 	lpmwd->lpZoneMapZoom = gpZoneMaps_Full;
 
@@ -115,10 +115,12 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
   lpmwd->rWndPos.bottom += HEIGHT_FULL_LABEL_WND;
 
 
+	// Set the style for the Zoom Window View
+	// WS_MAXIMIZEBOX - allows the window to be maximized, curently disabled
+
 	style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE
-															| WS_THICKFRAME | WS_MINIMIZEBOX// | WS_MAXIMIZEBOX
+															| WS_THICKFRAME | WS_MINIMIZEBOX //| WS_MAXIMIZEBOX
 															| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-	style &= ~WS_MAXIMIZEBOX;
 
   if(pMWD == NULL)
     hWnd = CreateMDIWindow (
@@ -159,7 +161,7 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
 	else
 	{
 		giZoomWndCnt++;		// increment our zoom window count
-		wsprintf(szTempBuff,"Zoom Windows: %d",giZoomWndCnt);
+		wsprintf(szTempBuff,"Zoom Views: %d",giZoomWndCnt);
 		ShowTBZoomWinCnt(szTempBuff);
 	}
 
@@ -239,11 +241,11 @@ HWND       OpenZoomViewWindow(LPMIXERWNDDATA lpmwd, LPSTR szTitle)
                           (LPARAM)lpmwd
                           );
   if(hWnd == NULL)
-      {
-      MixerWindowDataFree(lpmwd);
-      ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
-      return NULL;
-      }
+	{
+		MixerWindowDataFree(lpmwd);
+		ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
+		return NULL;
+	}
 
   // adjust the Image Window Size to fit
   // perfectly inside of the Client Window
@@ -269,11 +271,11 @@ HWND       OpenZoomViewWindow(LPMIXERWNDDATA lpmwd, LPSTR szTitle)
   lpmwd->wWndType = WND_GROUPLBL_ZOOM;//WND_GROUPLBL_FULL;
 
   if(CreateLblGroupWnd(&rect, hWnd, lpmwd) == NULL)
-      {
-      ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
-      PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
-      return NULL;
-      }
+	{
+		ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
+		PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
+		return NULL;
+  }
 
 
   // now create the Image window
@@ -304,7 +306,7 @@ char szTempBuff[20];
 
 lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
-switch (wMessage)
+	switch (wMessage)
 	{
     //////////////////////////////////////////////////////////////
     case WM_ERASEBKGND: // to reduce flashing on the screen
@@ -419,7 +421,7 @@ switch (wMessage)
             ghwndZoom = NULL;
 				}
 						giZoomWndCnt--;		// decrement zoom window count and display it
-						wsprintf(szTempBuff," Zoom Windows: %d",giZoomWndCnt);
+						wsprintf(szTempBuff," Zoom Views: %d",giZoomWndCnt);
 						ShowTBZoomWinCnt(szTempBuff);				
 //      break;
     default:
@@ -463,6 +465,7 @@ int       RegisterStereoCueMetersViewClass(void)
 
 	return 0;
 }
+
 ////////////////////////////////////////////////////////////
 //
 //
@@ -477,6 +480,11 @@ BITMAP		g_bmpInfoVU2;
 HBITMAP		g_bmpCueVu;
 
 
+///////////////////////////////////////////////////////////////////
+//
+// Function: showStereoCueMetersView()
+//
+//
 int showStereoCueMetersView (void)
 {
 	HWND	hwnd;
@@ -511,9 +519,9 @@ int showStereoCueMetersView (void)
 												);
 
   if(hwnd == NULL)
-    {
-    ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
-    }
+  {
+	  ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
+  }
 
 	g_stereoCueMetersWindow = hwnd;
 	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -535,8 +543,11 @@ int showStereoCueMetersView (void)
 
 	return 0; // IDS_ERR_CREATE_WINDOW;
 }
+
+
+///////////////////////////////////////////////////////////////////
 //
-//
+// Function: ShowStereoCueMetersWindow()
 //
 //
 int			g_leftPosSCM = -1;
@@ -578,7 +589,9 @@ void		ShowStereoCueMetersWindow (BOOL show)
 	}
 }
 
-////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+//
+// Function: StereoCueMetersViewProc()
 //
 //
 LRESULT CALLBACK  StereoCueMetersViewProc(HWND hWnd, UINT wMessage, 
@@ -640,7 +653,9 @@ LRESULT CALLBACK  StereoCueMetersViewProc(HWND hWnd, UINT wMessage,
    return (0); 
 }
 
-//////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+//
+// Function: DisplayStereoCueVUData()
 //
 //
 void	DisplayStereoCueVUData(VU_READ *pVuDataBuffer)

@@ -334,9 +334,9 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
   switch (wMessage)
 	{
-  case WM_MOUSEMOVE:
+//  case WM_MOUSEMOVE:
 //    UpdateTrackingWindow(NULL);
-    break;
+//    break;
 
 	//````````````````````````````
 	case WM_U_COMIO_IN_DONE:
@@ -841,10 +841,11 @@ switch(uiMsg)
             LPSTR lpstrVffInfo;
             HANDLE  hMem;
 
-                hFontDlg = CreateFont(20,0, 0, 0,
+                hFontDlg = CreateFont(18,0, 0, 0,
                                        0, 0, 0, 0,
                                        0, 0, 0, 0,
-                                       VARIABLE_PITCH | FF_SWISS,"");
+////                                       VARIABLE_PITCH | FF_SWISS,"");
+                                       VARIABLE_PITCH,"Arial");
 
 
             hMem = GlobalAlloc(GMEM_MOVEABLE, dwVerInfoSize);
@@ -896,7 +897,7 @@ switch(uiMsg)
                   if(i==IDT_TRADEMARKS)
                   {
  
-                 hFontCopyRight = CreateFont(14,0, 0, 0,
+											hFontCopyRight = CreateFont(18,0, 0, 0,
                                        FW_BOLD , 0, 0, 0,
                                        0, 0, 0, 0,
                                        VARIABLE_PITCH,"Arial");
