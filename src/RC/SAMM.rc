@@ -53,7 +53,8 @@ FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,219,248,50,14
     CONTROL         136,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | 
-                    SS_REALSIZEIMAGE,19,73,186,55,WS_EX_TRANSPARENT
+                    SS_REALSIZEIMAGE | SS_SUNKEN | WS_BORDER,19,73,186,55,
+                    WS_EX_TRANSPARENT
     LTEXT           "CompanyName",IDT_COMPANY_NAME,19,9,198,12
     LTEXT           "FileDescription",IDT_FILE_DESC,19,24,140,11
     LTEXT           "LegalCopyright",IDT_COPYRIGHT,19,40,249,15
@@ -156,14 +157,14 @@ BEGIN
             VALUE "Comments", "by CorTek Software, Inc.\0"
             VALUE "CompanyName", "CorTek Software Inc.\0"
             VALUE "FileDescription", "VACS® Client Workstation\0"
-            VALUE "FileVersion", "2.47S\0"
+            VALUE "FileVersion", "2.48 ALPHA03\0"
             VALUE "InternalName", "VACS® Client Workstation\0"
-            VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2001\0"
+            VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2002\0"
             VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc. all rights reserved.\0"
             VALUE "OriginalFilename", "VACS.EXE\0"
-            VALUE "PrivateBuild", "Build 12/02/2001\0"
+            VALUE "PrivateBuild", "Build 2/20/2002\0"
             VALUE "ProductName", "CorTek Software VACS\0"
-            VALUE "ProductVersion", "2.47S\0"
+            VALUE "ProductVersion", "2.48 ALPHA03\0"
             VALUE "SpecialBuild", "\0"
         END
     END
