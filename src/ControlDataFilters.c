@@ -60,6 +60,7 @@ BOOL  IsMuteFilter(LPCTRLZONEMAP pctrlzm)
   {
   case CTRL_TYPE_BTN_INPUTMUTE_FILTER: 
   case  CTRL_TYPE_BTN_AUXMUTE_FILTER:   
+	case CTRL_INPUT_AUX16B_MUTE_FILTER:	// LINE B TO AUX 16
   case  CTRL_MASTER_MUTE_FILTER:
   case  CTRL_MARIXLT_MUTE_FILTER:       
   case  CTRL_MARIXRT_MUTE_FILTER:       
@@ -1465,7 +1466,66 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 		}
 
 		break;
-  case CTRL_TYPE_BTN_AUXMUTE_FILTER:
+
+
+	//////////////////////////////////
+  // LINE B TO AUX 16 LT/RT MUTES
+
+	case CTRL_INPUT_AUX16B_MUTE_FILTER:
+
+    if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
+      break;
+
+    if(bIsOn == TRUE)
+    {         
+
+			// iCtrlChanPos is the control number of the button clicked on
+			// for this case it is either CTRL_NUM_INPUT_AUX16BLT_MUTE (0x8a) or 
+			// CTRL_NUM_INPUT_AUX16BRT_MUTE (0x8b) We use the control numbers to offset
+			// into the zonemap so we can use the same code below for both mutes
+			//
+			// We need to look for the fader for this control (CTRL_NUM_INPUT_AUX16LT_LINEB_FADER) and pull it down.
+
+      lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, 
+                                  (lpctrlZM->iCtrlChanPos - CTRL_NUM_INPUT_AUX16BLT_MUTE) +
+                                  CTRL_NUM_INPUT_AUX16LT_LINEB_FADER);
+      // Send the Data out
+      //------------------
+      ctrlData.wMixer   = 0;
+      ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
+      ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+      ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
+      SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
+      
+      SetFilteredControlsByNumber(lpctrl, YES_FILTER);
+			SetAlternativeZMFilter(lpctrl, YES_FILTER, lpmwd, iPhisChann);
+
+    }
+    else
+    {
+			// Same as above but now need to put the fader back to where it was
+
+      lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, 
+                                  (lpctrlZM->iCtrlChanPos - CTRL_NUM_INPUT_AUX16BLT_MUTE) +
+                                  CTRL_NUM_INPUT_AUX16LT_LINEB_FADER);
+      // Send the Data out
+      //------------------
+      ctrlData.wMixer   = 0;
+      ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
+      ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+      ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
+      SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
+
+      SetFilteredControlsByNumber(lpctrl, NO_FILTER);
+			SetAlternativeZMFilter(lpctrl, NO_FILTER, lpmwd, iPhisChann);
+
+    }
+      
+    break;
+
+	
+	
+	case CTRL_TYPE_BTN_AUXMUTE_FILTER:
     if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
       break;
     if(bIsOn == TRUE)
