@@ -896,14 +896,14 @@ void    InitVULookupTables(BOOL bLinear)
 
     if(bLinear)
       // Tom's formula #1..................
-      fDacRead = (float)(((fDacRead + 38.0) / 55.0) * (float)gbmpVUONVert.bmHeight);
+      fDacRead = (float)(((fDacRead + 40.0) / 55.0) * (float)gbmpVUONVert.bmHeight);	// <=== 38/40
     else
     {
 
       // Tom's formula #2...................
       if(iCount < 116)
       {
-        fDBLow = -38.0;
+        fDBLow = -40.0;		// <== 38/40
         fDBPixPerSeg = 1.0;
         fPixelShift = 2.0;
       }
@@ -989,14 +989,14 @@ void    InitVULookupTables(BOOL bLinear)
 				  +    ( 20.0*log10(fDacGate) )
 				  - pow( 20.0*log10(fDacGate) ,2.0) / 521.229
 				  + pow( 20.0*log10(fDacGate) ,3.0) / 48000.0 );
-	  if(fDacGate < -34.0)	// <=== changed from 38 to 34 12/28/2000
+	  if(fDacGate < -38.0)	// <=== changed from 38 to 34 12/28/2000
 		   fDacGate = -60.0;
 	  if(fDacGate > 20.0)
 		   fDacGate = 20.0;
   
 	  if(fDacGate < 5.0)
       {
-        fDBLow = -34.0;	// <=== changed from 38 to 34 12/28/2000
+        fDBLow = -38.0;	// <=== changed from 38 to 34 12/28/2000
         fDBPerSeg = 5.0;
         fPixelShift = 2.0;
       }
