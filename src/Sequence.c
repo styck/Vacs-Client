@@ -32,6 +32,10 @@ int         g_iStopTimeEvent = 0;
 LPDLROOTPTR g_pdlrSequence = NULL;
 SEQ_PROPAGATE g_SeqPropagate = {0};
 char				g_sequence_file_name[MAX_PATH];
+DWORD				g_dwCurrentSeqSelection;		// Index into selected sequence entry
+
+HTREEITEM		hDrag;
+
 
 void    CALLBACK MTC_EmulateProc(UINT , UINT , DWORD , DWORD , DWORD);
 void    StopTimeEvent(void);
@@ -54,6 +58,19 @@ void  DisableSeqUpdateAllProps(HWND hwnd, BOOL bDisable);
 void	CloseSequenceFiles (void);
 BOOL	OpenSequenceFiles (LPSTR  lpstrFName);
 void ShowArea(BOOL bShowDefAreaOnly, HWND hDlg, HWND hWndDefArea);
+
+DWORD SeqSelectionIndex(void);
+BOOL SeqGoToIndex(DWORD index);
+
+extern void		UpdateSeqSceneNumber(void);
+
+
+// lParam으로 대입되는 구조체
+struct tag_Param {
+	char Num[10];
+};
+
+HWND hTree;
 
 //=================================================
 //function: RegisterSeqWindowClass
@@ -101,17 +118,19 @@ int     ShowSeqWindow(BOOL bShow)
 char                    szTitle[128];
 LPSEQUENCEWINDOWFILE    lpSeqWF;
 RECT										r;
-	DWORD										style;
+DWORD										style;
 
-if(ghwndSeq == NULL)
-    {
+	if(ghwndSeq == NULL)
+  {
     lpSeqWF = GlobalAlloc(GPTR, sizeof(SEQUENCEWINDOWFILE));
-    if(lpSeqWF == NULL){
-        ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
-        return 1;
-        }
-    lpSeqWF->iWndID = SEQUENCE_WINDOW_FILE_ID;        
 
+		if(lpSeqWF == NULL)
+		{
+			ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
+			return 1;
+		}
+
+    lpSeqWF->iWndID = SEQUENCE_WINDOW_FILE_ID;        
 
 		style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE 
 																| WS_THICKFRAME | WS_MINIMIZEBOX// | WS_MAXIMIZEBOX
@@ -132,16 +151,18 @@ if(ghwndSeq == NULL)
                             (LPARAM)NULL
                             );			 
 
-    if(ghwndSeq == NULL){
-        GlobalFree(lpSeqWF);
-        ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
-        return 1;
-        }
-    SetWindowLong(ghwndSeq, 0, (LONG)lpSeqWF);
-    // Show something in the MTC/SMPTE readout
-    //----------------------------------------
-    DisplayMTCReadout();
-    }
+		if(ghwndSeq == NULL)
+		{
+			GlobalFree(lpSeqWF);
+			ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
+			return 1;
+		}
+
+		SetWindowLong(ghwndSeq, 0, (LONG)lpSeqWF);
+		// Show something in the MTC/SMPTE readout
+		//----------------------------------------
+		DisplayMTCReadout();
+  }
 
   if(bShow)
   {
@@ -464,18 +485,20 @@ switch(uiMsg)
       // init the Tree and the List View
       //--------------------------------
       hwndCtrl = GetDlgItem(hwnd, IDTREE_SEQUENCE);
-      if(hwndCtrl)
-          FillSeqTree(hwndCtrl);
+//fds      if(hwndCtrl)
+//fds          FillSeqTree(hwndCtrl);
+
 
       hwndCtrl = GetDlgItem(hwnd, IDLIST_SEQ_EVENTS);
       if(hwndCtrl)
           InitSeqList(hwndCtrl);
 
       g_hwndMTCReadout = GetDlgItem(hwnd, IDC_MTC_READOUT);
-      if(g_hwndMTCReadout) {
+      if(g_hwndMTCReadout) 
+			{
           GetClientRect(g_hwndMTCReadout, &g_rMTCReadout);
           PrepareMTCReadout();
-          }
+      }
 
 // Only show the default dialog box (ie the small size).  The size shown
 // depends on the size of the ID_DEFAULTBOX. In our case this is just a
@@ -486,6 +509,7 @@ switch(uiMsg)
       return TRUE;
 
       break;
+
     ////////////////////////////////////////////////////
     case WM_DESTROY:
         if(g_TimeEvent)
@@ -662,21 +686,21 @@ long    GetDlgWindowMinX(HWND hwnd, int iIDC)
 RECT    rect;
 HWND    hwndCtrl;
 
-if(hwnd == NULL)
-  return 0;
+	if(hwnd == NULL)
+		return 0;
 
-hwndCtrl = NULL;
-if(iIDC > 0)
-    hwndCtrl = GetDlgItem(hwnd, iIDC);
+	hwndCtrl = NULL;
+	if(iIDC > 0)
+			hwndCtrl = GetDlgItem(hwnd, iIDC);
 
-if(hwndCtrl == NULL)
-    GetWindowRect(hwnd, &rect);
-else
-    GetWindowRect(hwndCtrl, &rect);
+	if(hwndCtrl == NULL)
+			GetWindowRect(hwnd, &rect);
+	else
+			GetWindowRect(hwndCtrl, &rect);
 
-ScreenToClient(hwnd, (LPPOINT)&rect.right);
+	ScreenToClient(hwnd, (LPPOINT)&rect.right);
 
-rect.right += GetSystemMetrics(SM_CXDLGFRAME)*3;
+	rect.right += GetSystemMetrics(SM_CXDLGFRAME)*3;
 return rect.right;
 }
 //====================================
@@ -697,23 +721,23 @@ long    GetDlgWindowMinY(HWND hwnd, int iIDC)
 RECT    rect;
 HWND    hwndCtrl;
 
-if(hwnd == NULL)
-  return 0;
+	if(hwnd == NULL)
+		return 0;
 
-hwndCtrl = NULL;
-if(iIDC > 0)
-    hwndCtrl = GetDlgItem(hwnd, iIDC);
+	hwndCtrl = NULL;
+	if(iIDC > 0)
+			hwndCtrl = GetDlgItem(hwnd, iIDC);
 
-if(hwndCtrl == NULL)
-    GetWindowRect(hwnd, &rect);
-else
-    GetWindowRect(hwndCtrl, &rect);
+	if(hwndCtrl == NULL)
+			GetWindowRect(hwnd, &rect);
+	else
+			GetWindowRect(hwndCtrl, &rect);
 
-ScreenToClient(hwnd, (LPPOINT)&rect.right);
+	ScreenToClient(hwnd, (LPPOINT)&rect.right);
 
-rect.bottom += GetSystemMetrics(SM_CYDLGFRAME)*3 + 
-               GetSystemMetrics(SM_CYCAPTION);
-return rect.bottom;
+	rect.bottom += GetSystemMetrics(SM_CYDLGFRAME)*3 + 
+								 GetSystemMetrics(SM_CYCAPTION);
+	return rect.bottom;
 }
 
 //===================================
@@ -729,44 +753,48 @@ long            lItemPos, lLinkState;
 LPSEQENTRY      p_seqentry;
 HTREEITEM       htreItem = NULL;
 
-g_hwndTV = hwnd;
+	g_hwndTV = hwnd;
 
-if(InitTreeViewImageLists(hwnd) == FALSE)
-    return 0;
+	if(InitTreeViewImageLists(hwnd) == FALSE)
+			return 0;
 
-TreeView_DeleteAllItems (hwnd);
+	TreeView_DeleteAllItems (hwnd);
 
-lItemPos = GetFirstEntry(g_pdlrSequence);
-if(lItemPos > 0)
-    {
-    // Go through the Items and
-    // insert them into the Tree View
-    // lock the root and use the
-    // locked root pointer to 
-    // access the dllist functions
-    //-------------------------------
-    pdlrootPtr = LockDLListRoot(g_pdlrSequence);
-    if(pdlrootPtr == NULL)
-        return 0;
+	lItemPos = GetFirstEntry(g_pdlrSequence);
+	if(lItemPos > 0)
+	{
+			// Go through the Items and
+			// insert them into the Tree View
+			// lock the root and use the
+			// locked root pointer to 
+			// access the dllist functions
+			//-------------------------------
+			pdlrootPtr = LockDLListRoot(g_pdlrSequence);
+			if(pdlrootPtr == NULL)
+					return 0;
     
-    while(lItemPos > 0)
-        {
-        lLinkState = GetEntryLinkState(pdlrootPtr, lItemPos);
-        p_seqentry = (LPSEQENTRY)GetEntryData(pdlrootPtr, lItemPos);
-        if(p_seqentry == NULL)
-            break;
+			while(lItemPos > 0)
+			{
+					lLinkState = GetEntryLinkState(pdlrootPtr, lItemPos);
+					p_seqentry = (LPSEQENTRY)GetEntryData(pdlrootPtr, lItemPos);
+					if(p_seqentry == NULL)
+							break;
 
-        htreItem = SeqAddItem(lItemPos, lLinkState, htreItem);
-//        AddItemToTree(hwnd, p_seqentry->szName, lLinkState);
-        lItemPos = GetNextEntry(pdlrootPtr, lItemPos);
-        }
+					htreItem = SeqAddItem(lItemPos, lLinkState, htreItem);
+	//        AddItemToTree(hwnd, p_seqentry->szName, lLinkState);
+					lItemPos = GetNextEntry(pdlrootPtr, lItemPos);
+			}
 
-    // unlock the root and free the memory for the
-    // locked copy of the root
-    //--------------------------------------------
-    UnlockDLListRoot(g_pdlrSequence, pdlrootPtr);
-    }
+			// unlock the root and free the memory for the
+			// locked copy of the root
+			//--------------------------------------------
+			UnlockDLListRoot(g_pdlrSequence, pdlrootPtr);
+	}
 
+		// Set the current seq selection
+		// based on our global variable
+			SeqGoToIndex(g_dwCurrentSeqSelection);
+			UpdateSeqSceneNumber();			
 
 return 0;
 }
@@ -821,6 +849,70 @@ BOOL  SeqGoToPrev(void)
   return bRet;
 }
 
+
+/////////////////////////////////////////////////////////////////////
+//FUNCTION: SeqGoToIndex
+//
+//
+//
+BOOL SeqGoToIndex(DWORD index)
+{
+  HTREEITEM           htree;
+  BOOL                bRet = FALSE;
+	int i;
+
+  htree = TreeView_GetRoot(g_hwndTV);
+
+	for(i=0;i<index;i++)
+	{
+		htree = TreeView_GetNextItem(g_hwndTV, htree, TVGN_NEXT);
+	}
+
+	if(htree)
+	{
+		bRet = TRUE;
+    TreeView_SelectItem(g_hwndTV, htree);
+	}
+
+  return bRet;
+
+}
+
+/////////////////////////////////////////////////////////////////////
+//FUNCTION: SeqSelectionIndex
+//
+// This routine returns the index of the currently selected item
+// so that we can store it in the mix file and recover the
+// selected item when restoring a mix file.
+//
+
+DWORD SeqSelectionIndex(void)
+{
+	DWORD index = 0;
+  HTREEITEM           htreeTop, htreeSelection, htreeNext;
+
+  htreeTop = TreeView_GetRoot(g_hwndTV);
+
+  htreeSelection = TreeView_GetSelection(g_hwndTV);
+	htreeNext = htreeTop;
+	
+	// If we the current selection isn't the first one (top)
+	// then loop until we find our selection and return
+	// its index
+
+	if(htreeTop != htreeSelection)
+	{
+		do
+		{
+			htreeNext = TreeView_GetNextItem(g_hwndTV, htreeNext, TVGN_NEXT);
+			index++;
+		}while(htreeNext != htreeSelection);
+	}
+
+	return index;
+}
+
+
 /////////////////////////////////////////////////////////////////////
 //FUNCTION: SeqGoToFirst
 //
@@ -830,7 +922,7 @@ BOOL  SeqGoToFirst(void)
 {
   BOOL                bRet = FALSE;
   HTREEITEM           htreeitem;
-
+	
   htreeitem = TreeView_GetRoot(g_hwndTV);
 
   if(htreeitem != NULL)
@@ -843,6 +935,7 @@ BOOL  SeqGoToFirst(void)
 
   return bRet;
 }
+
 
 /////////////////////////////////////////////////////////////////////
 //FUNCTION: SeqGoToLast
@@ -1108,6 +1201,13 @@ BOOL    RecallEntry(void)
 		ShowTBNextSeqName("END of Sequence");
 	}
 
+		// Update the scene number display
+		// Since we are recalling an entry
+	  // the global SeqSelection number must be updated
+
+		g_dwCurrentSeqSelection = SeqSelectionIndex();
+		SeqGoToIndex(g_dwCurrentSeqSelection);
+		UpdateSeqSceneNumber();
 
   return bRet;
 }
@@ -1171,52 +1271,52 @@ static HTREEITEM    hPrevRootItem = NULL;
 static HTREEITEM    hPrevLev2Item = NULL; 
 HTREEITEM           hti; 
 
-tvi.mask = TVIF_TEXT | TVIF_IMAGE  | TVIF_SELECTEDIMAGE | TVIF_PARAM; 
+	tvi.mask = TVIF_TEXT | TVIF_IMAGE  | TVIF_SELECTEDIMAGE | TVIF_PARAM; 
 
-// Set the text of the item. 
-tvi.pszText = LPSTR_TEXTCALLBACK ;//lpszItem; 
-tvi.cchTextMax = lstrlen(lpszItem); 
+	// Set the text of the item. 
+	tvi.pszText = LPSTR_TEXTCALLBACK ;//lpszItem; 
+	tvi.cchTextMax = lstrlen(lpszItem); 
 
-// Assume the item is not a parent item, so give it a 
-// document image. 
-tvi.iImage = g_nDocument; 
-tvi.iSelectedImage = g_nDocument; 
+	// Assume the item is not a parent item, so give it a 
+	// document image. 
+	tvi.iImage = g_nDocument; 
+	tvi.iSelectedImage = g_nDocument; 
 
-// Save the heading level in the item's application-defined 
-// data area. 
-tvi.lParam = (LPARAM) nLevel; 
+	// Save the heading level in the item's application-defined 
+	// data area. 
+	tvi.lParam = (LPARAM) nLevel; 
 
-tvins.item = tvi; 
-tvins.hInsertAfter = hPrev; 
+	tvins.item = tvi; 
+	tvins.hInsertAfter = hPrev; 
 
-// Set the parent item based on the specified level. 
-if (nLevel == 1) 
-    tvins.hParent = TVI_ROOT; 
-else if (nLevel == 2)
-    tvins.hParent = hPrevRootItem; 
-else 
-    tvins.hParent = hPrevLev2Item; 
+	// Set the parent item based on the specified level. 
+	if (nLevel == 1) 
+			tvins.hParent = TVI_ROOT; 
+	else if (nLevel == 2)
+			tvins.hParent = hPrevRootItem; 
+	else 
+			tvins.hParent = hPrevLev2Item; 
 
-// Add the item to the tree-view control. 
-hPrev = TreeView_InsertItem(hwndTV, &tvins);
+	// Add the item to the tree-view control. 
+	hPrev = TreeView_InsertItem(hwndTV, &tvins);
 
-// Save the handle of the item. 
-if (nLevel == 1) 
-    hPrevRootItem = hPrev; 
-else if (nLevel == 2) 
-    hPrevLev2Item = hPrev; 
+	// Save the handle of the item. 
+	if (nLevel == 1) 
+			hPrevRootItem = hPrev; 
+	else if (nLevel == 2) 
+			hPrevLev2Item = hPrev; 
 
-// The new item is a child item. Give the parent item a 
-// closed folder bitmap to indicate it now has child items. 
-if (nLevel > 1) 
-    { 
+	// The new item is a child item. Give the parent item a 
+	// closed folder bitmap to indicate it now has child items. 
+	if (nLevel > 1) 
+	{ 
     hti = TreeView_GetParent(hwndTV, hPrev); 
     tvi.mask = TVIF_IMAGE | TVIF_SELECTEDIMAGE; 
     tvi.hItem = hti; 
     tvi.iImage = g_nClosed; 
     tvi.iSelectedImage = g_nOpen; 
     TreeView_SetItem(hwndTV, &tvi); 
-    } 
+	} 
 
 return hPrev; 
 } 
@@ -1284,11 +1384,11 @@ int         iCol;
 // Init List Columns
 //------------------
 
-// Initialize the LV_COLUMN structure. 
-lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM; 
-lvc.fmt = LVCFMT_LEFT; 
-lvc.cx = 100; 
-lvc.pszText = szTemp; 
+	// Initialize the LV_COLUMN structure. 
+	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM; 
+	lvc.fmt = LVCFMT_LEFT; 
+	lvc.cx = 100; 
+	lvc.pszText = szTemp; 
 
 // Add the columns. 
 	for (iCol = 0; iCol < SEQ_COLUMNS; iCol++) 
@@ -1347,10 +1447,12 @@ DWORD       dwIndent;     // amount that child items are indented
 	GetClientRect(g_hwndTV, &g_rDrag);
 	// Tell the tree-view control to create an image to use 
 	// for dragging. 
-	g_himlDrag = TreeView_CreateDragImage(g_hwndTV, lpnmtv->itemNew.hItem); 
+
+	hDrag=lpnmtv->itemNew.hItem;
+	g_himlDrag = TreeView_CreateDragImage(g_hwndTV, hDrag); 
 
 	// Get the bounding rectangle of the item being dragged. 
-	TreeView_GetItemRect(g_hwndTV, lpnmtv->itemNew.hItem, &g_rDragItem, TRUE); 
+	TreeView_GetItemRect(g_hwndTV, hDrag, &g_rDragItem, TRUE); 
 	g_rDragItem.bottom -=  g_rDragItem.top;// Convert the bottom to the Height
 	g_rDragItem.right  -=  g_rDragItem.left;// Convert the right to Width
 
@@ -1378,6 +1480,64 @@ DWORD       dwIndent;     // amount that child items are indented
 return 0;
 }
 
+
+
+////////////////////////////////////////////////////////////////////////
+// HTREEITEM CopyTreeItem(HWND hTree, HTREEITEM hSrc, HTREEITEM hDest)
+//
+//
+
+HTREEITEM CopyTreeItem(HWND hTree, HTREEITEM hSrc, HTREEITEM hDest)
+{
+
+
+	HTREEITEM hNew;
+	TVINSERTSTRUCT TI;
+	TVITEMEX TvEx;
+	char Text[256];
+	struct tag_Param *pParam;
+
+	TvEx.hItem=hSrc;
+	TvEx.mask=TVIF_PARAM | TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+	TvEx.pszText=Text;
+	TvEx.cchTextMax=256;
+	TreeView_GetItem(hTree,&TvEx);
+
+	TI.itemex.mask=TVIF_PARAM | TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
+	TI.itemex.pszText=Text;
+
+//	pParam=(struct tag_Param *)malloc(sizeof(struct tag_Param));
+//	memcpy(pParam,(struct tag_Param *)TvEx.lParam, sizeof(struct tag_Param));
+
+	TI.itemex.lParam=(LPARAM)pParam;
+	TI.itemex.iImage=TvEx.iImage;
+	TI.itemex.iSelectedImage=TvEx.iSelectedImage;
+	TI.hParent=hDest;
+	TI.hInsertAfter=TVI_LAST;
+	hNew=TreeView_InsertItem(hTree,&TI);
+	return hNew;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// HTREEITEM CopyTreeItems(HWND hTree, HTREEITEM hSrc, HTREEITEM hDest)
+//
+//
+
+HTREEITEM CopyTreeItems(HWND hTree, HTREEITEM hSrc, HTREEITEM hDest)
+{
+	HTREEITEM hNew, hChild;
+
+	hNew=CopyTreeItem(hTree, hSrc, hDest);
+	hChild=TreeView_GetChild(hTree, hSrc);
+	while (hChild != NULL) {
+		CopyTreeItems(hTree,hChild, hNew);		// recursive
+		hChild=TreeView_GetNextSibling(hTree,hChild);
+	}
+	return hNew;
+}
+
+
 //=======================================================
 //
 //
@@ -1387,12 +1547,14 @@ return 0;
 void HandleSeqTVNStopDrag(void) 
 { 
 HTREEITEM       htiTarget;  // handle of target item 
+HTREEITEM hItem;
 
 if (g_bDragging) 
     { 
     StopDragTimer();
     ImageList_DragLeave(g_hwndTV);
     ImageList_EndDrag(); 
+
     if((htiTarget = TreeView_GetDropHilight(g_hwndTV)) != NULL)
         {
         TreeView_SelectDropTarget(g_hwndTV, NULL); 
@@ -1400,6 +1562,25 @@ if (g_bDragging)
         }
     else
         TreeView_SelectDropTarget(g_hwndTV, NULL); 
+
+//#define DRAGDROP
+#ifdef DRAGDROP
+
+		if (hDrag == htiTarget)
+				return;
+
+
+		hItem=htiTarget;
+			while (hItem != NULL) {
+				hItem=TreeView_GetParent(g_hwndTV,hItem);
+				if (hItem == hDrag)
+					return;
+			}
+
+			CopyTreeItems(g_hwndTV, hDrag, htiTarget);
+			TreeView_Expand(g_hwndTV,htiTarget,TVE_EXPAND);
+			TreeView_DeleteItem(g_hwndTV,hDrag);
+#endif
 
     ReleaseDC(g_hwndTV, g_dcTV);
     g_himlDrag = NULL;
@@ -1533,10 +1714,10 @@ void    HandleDragTimer(void)
 {
 POINT       pnt;
 
-// Check the hit results
-//----------------------
-switch(g_iDragScrlDir)
-    {
+	// Check the hit results
+	//----------------------
+	switch(g_iDragScrlDir)
+	{
     case -1:
         ImageList_DragShowNolock(FALSE);
         SendMessage(g_hwndTV, WM_VSCROLL, MAKEWPARAM(SB_LINEUP, 0), (LPARAM)NULL);
@@ -1556,7 +1737,7 @@ switch(g_iDragScrlDir)
         break;
     default:
         break;
-    }
+	}
 
 return;
 };
@@ -1577,7 +1758,7 @@ long                lDLInsert;
 
 
 
-htreeitem = TreeView_GetSelection(g_hwndTV);
+	htreeitem = TreeView_GetSelection(g_hwndTV);
 	if(htreeitem == NULL)
   {
     lItemCur = GetLastEntry(g_pdlrSequence);
@@ -1595,13 +1776,13 @@ htreeitem = TreeView_GetSelection(g_hwndTV);
 
   lDLInsert = DL_RELATION_PEER; // ??
 
-////////////////////////////////
-// Set the text of the item. 
-// and other attributes
-////////////////////////////////
-	
-wsprintf(seqentry.szName, "Sequence Scene %d /0000", TreeView_GetCount (g_hwndTV) + 1);
-seqentry.dwSize = sizeof(SEQENTRY);
+	////////////////////////////////
+	// Set the text of the item. 
+	// and other attributes
+	////////////////////////////////
+		
+	wsprintf(seqentry.szName, "Sequence Scene %d /0000", TreeView_GetCount (g_hwndTV) + 1);
+	seqentry.dwSize = sizeof(SEQENTRY);
 
 	////////////////////////////////////////////////////////
   // try to add the data to the data file ...
@@ -1623,7 +1804,6 @@ seqentry.dwSize = sizeof(SEQENTRY);
 
 		SeqGoToNext();
   }
-
 
 return;
 }
@@ -1650,11 +1830,11 @@ TV_INSERTSTRUCT     tvins;
     TreeView_GetItem(g_hwndTV, &tvi);
   }
 
-// set the mask parameter
-tvi.pszText = LPSTR_TEXTCALLBACK;
-tvi.cchTextMax = 0;
+	// set the mask parameter
+	tvi.pszText = LPSTR_TEXTCALLBACK;
+	tvi.cchTextMax = 0;
 
-tvi.mask = TVIF_TEXT | TVIF_IMAGE  | TVIF_SELECTEDIMAGE | TVIF_PARAM;
+	tvi.mask = TVIF_TEXT | TVIF_IMAGE  | TVIF_SELECTEDIMAGE | TVIF_PARAM;
 
 	if(lLinkState & DLENTRY_CHILD)
   {
@@ -1669,9 +1849,9 @@ tvi.mask = TVIF_TEXT | TVIF_IMAGE  | TVIF_SELECTEDIMAGE | TVIF_PARAM;
     tvi.iSelectedImage = g_nDocument; 
   }
 
-// Save the heading level in the item's application-defined 
-// data area. 
-tvi.lParam = (LPARAM)lItemPtr; 
+	// Save the heading level in the item's application-defined 
+	// data area. 
+	tvi.lParam = (LPARAM)lItemPtr; 
 
   if(lLinkState & DLENTRY_CHILD)
   {
@@ -1733,21 +1913,21 @@ HTREEITEM       htreeitem;
 TV_ITEM         tvi;
 long            lItemDel;
 
-htreeitem = TreeView_GetSelection(g_hwndTV);
-if(htreeitem == NULL)
-    {
+	htreeitem = TreeView_GetSelection(g_hwndTV);
+	if(htreeitem == NULL)
+  {
     return;
-    }
+  }
 
-tvi.mask = TVIF_PARAM;
-tvi.hItem = htreeitem;
-TreeView_GetItem(g_hwndTV, &tvi);
+	tvi.mask = TVIF_PARAM;
+	tvi.hItem = htreeitem;
+	TreeView_GetItem(g_hwndTV, &tvi);
 
-lItemDel =(long)tvi.lParam;
-if(lItemDel > 0)
-    DelEntryPtr(g_pdlrSequence, lItemDel);
+	lItemDel =(long)tvi.lParam;
+	if(lItemDel > 0)
+			DelEntryPtr(g_pdlrSequence, lItemDel);
 
-TreeView_DeleteItem(g_hwndTV, htreeitem);
+	TreeView_DeleteItem(g_hwndTV, htreeitem);
 
 return;
 }
@@ -1764,20 +1944,21 @@ long            lItemCur;
 TV_ITEM         *p_tvi;
 LPSEQENTRY      p_seqentry;
 
-p_tvi = &pTVDispInfo->item;
-// does the item needs text information
-//-------------------------------------
-if(p_tvi->mask && TVIF_TEXT)
-    {
-    lItemCur = (long)p_tvi->lParam;
-    if(lItemCur < 0)
-        return;
-    
-    p_seqentry = (LPSEQENTRY)GetEntryData(g_pdlrSequence, lItemCur);
-    if(p_seqentry == NULL)
-        return;
-    lstrcpy(p_tvi->pszText, p_seqentry->szName);
-    }
+	p_tvi = &pTVDispInfo->item;
+
+	// does the item needs text information
+	//-------------------------------------
+	if(p_tvi->mask && TVIF_TEXT)
+  {
+  lItemCur = (long)p_tvi->lParam;
+  if(lItemCur < 0)
+      return;
+  
+  p_seqentry = (LPSEQENTRY)GetEntryData(g_pdlrSequence, lItemCur);
+  if(p_seqentry == NULL)
+      return;
+  lstrcpy(p_tvi->pszText, p_seqentry->szName);
+  }
 
 return;
 }
@@ -1798,11 +1979,11 @@ long            lItemCur;
 TV_ITEM         *p_tvi;
 LPSEQENTRY      p_seqentry;
 
-p_tvi = &pTVDispInfo->item;
-// does the item needs text information
-//-------------------------------------
-if(p_tvi->mask && TVIF_TEXT)
-    {
+	p_tvi = &pTVDispInfo->item;
+	// does the item needs text information
+	//-------------------------------------
+	if(p_tvi->mask && TVIF_TEXT)
+	{
     lItemCur = (long)p_tvi->lParam;
     if(lItemCur < 0)
         return;
@@ -1811,18 +1992,18 @@ if(p_tvi->mask && TVIF_TEXT)
     if(p_seqentry == NULL)
         return;
     lstrcpy(p_tvi->pszText, p_seqentry->szName);
-    }
+	}
 
 
 return;
 }
 
 //==================================================
-//FUNCTION: HandleTVSetItemIfno
+//FUNCTION: HandleTVEndLabelEdit
 //
 //
 //purpose:
-// Store the new name of the Item(Entry)
+//
 //==================================================
 void    HandleTVEndLabelEdit(TV_DISPINFO *pTVDispInfo)
 {
@@ -1830,20 +2011,20 @@ long            lItemCur;
 TV_ITEM         *p_tvi;
 LPSEQENTRY      p_seqentry;
 
-p_tvi = &pTVDispInfo->item;
-// does the item needs text information
-//-------------------------------------
-if(p_tvi->mask && TVIF_TEXT)
-    {
-    lItemCur = (long)p_tvi->lParam;
-    if(lItemCur < 0)
-        return;
-    
-    p_seqentry = (LPSEQENTRY)GetEntryData(g_pdlrSequence, lItemCur);
-    if(p_seqentry == NULL)
-        return;
-    lstrcpy(p_seqentry->szName, p_tvi->pszText);
-    }
+	p_tvi = &pTVDispInfo->item;
+	// does the item needs text information
+	//-------------------------------------
+	if(p_tvi->mask && TVIF_TEXT)
+  {
+  lItemCur = (long)p_tvi->lParam;
+  if(lItemCur < 0)
+      return;
+  
+  p_seqentry = (LPSEQENTRY)GetEntryData(g_pdlrSequence, lItemCur);
+  if(p_seqentry == NULL)
+      return;
+  lstrcpy(p_seqentry->szName, p_tvi->pszText);
+  }
 
 
 return;
@@ -1865,64 +2046,65 @@ UINT    uMenuState;
 char    szBuf[128];
 POINT   pt;
 
-hTVNMenu = LoadMenu(ghInstStrRes, MAKEINTRESOURCE(MENU_TVN_POPUP));
-if(hTVNMenu == NULL)
-    goto ON_EXIT;
+	hTVNMenu = LoadMenu(ghInstStrRes, MAKEINTRESOURCE(MENU_TVN_POPUP));
+	if(hTVNMenu == NULL)
+			goto ON_EXIT;
 
-hTVNPopupMenu = CreatePopupMenu();
+	hTVNPopupMenu = CreatePopupMenu();
 
-iMenu = 0;
+	iMenu = 0;
  
-/////////////////////////////////////////////////////
-// Get menu state will return the style of the menu
-// in the lobyte of the unsigned int. Return value
-// of -1 indicates the menu does not exist, and we
-// have finished creating our pop up.
-/////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////
+	// Get menu state will return the style of the menu
+	// in the lobyte of the unsigned int. Return value
+	// of -1 indicates the menu does not exist, and we
+	// have finished creating our pop up.
+	/////////////////////////////////////////////////////
 
-while ((uMenuState = GetMenuState(hTVNMenu, iMenu, MF_BYPOSITION)) != -1)
-    {
-    if (uMenuState != -1)
-        {
-        // Get the menu string.
-        GetMenuString(hTVNMenu, iMenu, szBuf, 128, MF_BYPOSITION);
-        if (LOBYTE(uMenuState) & MF_POPUP) // It's a pop-up menu.
-            {
-            hSubMenu = GetSubMenu(hTVNMenu, iMenu);
-            AppendMenu(hTVNPopupMenu, LOBYTE(uMenuState), (UINT)hSubMenu, szBuf);
-            }
-        else  // Is a menu item, get the ID.
-            {
-            iID = GetMenuItemID(hTVNMenu, iMenu);
-            AppendMenu(hTVNPopupMenu, uMenuState, iID, szBuf);
-            }
-        }
-    iMenu++;  // Get the next item.
-    }
+	while ((uMenuState = GetMenuState(hTVNMenu, iMenu, MF_BYPOSITION)) != -1)
+  {
+		if (uMenuState != -1)
+		{
+      // Get the menu string.
+      GetMenuString(hTVNMenu, iMenu, szBuf, 128, MF_BYPOSITION);
+      if (LOBYTE(uMenuState) & MF_POPUP) // It's a pop-up menu.
+      {
+				hSubMenu = GetSubMenu(hTVNMenu, iMenu);
+				AppendMenu(hTVNPopupMenu, LOBYTE(uMenuState), (UINT)hSubMenu, szBuf);
+      }
+      else  // Is a menu item, get the ID.
+      {
+				iID = GetMenuItemID(hTVNMenu, iMenu);
+				AppendMenu(hTVNPopupMenu, uMenuState, iID, szBuf);
+      }
+		}
+  iMenu++;  // Get the next item.
+  }
 
 
 // TrackPopupMenu expects screen coordinates.
-if(GetCursorPos(&pt) == FALSE)
-    {
-    pt.x = 100;
-    pt.y = 100;
-    }
-TrackPopupMenu(hTVNPopupMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x,pt.y, 0, hwnd, NULL);
+	if(GetCursorPos(&pt) == FALSE)
+  {
+		pt.x = 100;
+		pt.y = 100;
+  }
 
-// Because we are using parts of the main menu in our
-// pop-up menu, we can't just delete the pop-up menu, because
-// that would also delete the main menu. So we must
-// go through the pop-up menu and remove all the items.
-while (RemoveMenu(hTVNPopupMenu, 0, MF_BYPOSITION))
+	TrackPopupMenu(hTVNPopupMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x,pt.y, 0, hwnd, NULL);
+
+	// Because we are using parts of the main menu in our
+	// pop-up menu, we can't just delete the pop-up menu, because
+	// that would also delete the main menu. So we must
+	// go through the pop-up menu and remove all the items.
+	while (RemoveMenu(hTVNPopupMenu, 0, MF_BYPOSITION))
     ;
 
 
 ON_EXIT:
-if(hTVNMenu)
-    DestroyMenu(hTVNMenu);
+	if(hTVNMenu)
+			DestroyMenu(hTVNMenu);
 
-if(hTVNPopupMenu)
-    DestroyMenu(hTVNPopupMenu);
+	if(hTVNPopupMenu)
+			DestroyMenu(hTVNPopupMenu);
 
 return;
 };
@@ -1941,7 +2123,7 @@ return;
 //==================================================
 //FUNCTION: PrepareMTCReadout
 //
-//purpose: Prepare the bitmap for
+// purpose: Prepare the bitmap for
 // display in the MTC/SMPTE readout
 //==================================================
 void    PrepareMTCReadout(void)
@@ -1950,41 +2132,41 @@ BITMAP  bmpInfo;
 HDC     hdcSrc, hdcDest;
 HBITMAP hbmpSrc, hbmpDest;
 
-bmpInfo = g_bmpNumbersInfo;
-//bmpInfo.bmWidth = g_rMTCReadout.right;
-//bmpInfo.bmHeight = g_rMTCReadout.bottom;
-g_hbmpMTC = CreateCompatibleBitmap(ghdc256, bmpInfo.bmWidth-15, bmpInfo.bmHeight);
+	bmpInfo = g_bmpNumbersInfo;
+	//bmpInfo.bmWidth = g_rMTCReadout.right;
+	//bmpInfo.bmHeight = g_rMTCReadout.bottom;
+	g_hbmpMTC = CreateCompatibleBitmap(ghdc256, bmpInfo.bmWidth-15, bmpInfo.bmHeight);
 
-if(g_hbmpMTC == NULL)
-    return;
+	if(g_hbmpMTC == NULL)
+			return;
 
-// Prepare the bitmap
-//-------------------
-hdcSrc = CreateCompatibleDC(ghdc256);
-hdcDest = CreateCompatibleDC(ghdc256);
-hbmpDest = SelectObject(hdcDest, g_hbmpMTC);
-hbmpSrc = SelectObject(hdcSrc, g_hbmpNumbers);
+	// Prepare the bitmap
+	//-------------------
+	hdcSrc = CreateCompatibleDC(ghdc256);
+	hdcDest = CreateCompatibleDC(ghdc256);
+	hbmpDest = SelectObject(hdcDest, g_hbmpMTC);
+	hbmpSrc = SelectObject(hdcSrc, g_hbmpNumbers);
 
-BitBlt(hdcDest, 30, 0, 15, 30, hdcSrc, 150, 0, SRCCOPY);
-BitBlt(hdcDest, 75, 0, 15, 30, hdcSrc, 150, 0, SRCCOPY);
-BitBlt(hdcDest, 120, 0, 15, 30, hdcSrc, 150, 0, SRCCOPY);
+	BitBlt(hdcDest, 30, 0, 15, 30, hdcSrc, 150, 0, SRCCOPY);
+	BitBlt(hdcDest, 75, 0, 15, 30, hdcSrc, 150, 0, SRCCOPY);
+	BitBlt(hdcDest, 120, 0, 15, 30, hdcSrc, 150, 0, SRCCOPY);
 
 
 
-// Release the bitmaps from the DC
-//--------------------------------
-SelectObject(hdcSrc, hbmpSrc);
-SelectObject(hdcSrc, hbmpDest);
+	// Release the bitmaps from the DC
+	//--------------------------------
+	SelectObject(hdcSrc, hbmpSrc);
+	SelectObject(hdcSrc, hbmpDest);
 
-// just for update purpose
-//------------------------
-g_mtcLast.u.ms = 0xFFFFFFFF;
+	// just for update purpose
+	//------------------------
+	g_mtcLast.u.ms = 0xFFFFFFFF;
 
-SendMessage(g_hwndMTCReadout, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, 
-                                            (LPARAM)g_hbmpMTC);
+	SendMessage(g_hwndMTCReadout, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, 
+																							(LPARAM)g_hbmpMTC);
 
-DeleteDC(hdcSrc);
-DeleteDC(hdcDest);
+	DeleteDC(hdcSrc);
+	DeleteDC(hdcDest);
 
 return;
 }
@@ -1998,10 +2180,10 @@ return;
 //===================================================
 void    FreeMTCReadout(void)
 {
-if(g_hbmpMTC)
-    DeleteObject(g_hbmpMTC);
+	if(g_hbmpMTC)
+			DeleteObject(g_hbmpMTC);
 
-g_hbmpMTC = NULL;
+	g_hbmpMTC = NULL;
 return;
 }
 
@@ -2019,53 +2201,53 @@ HBITMAP     hbmpMem, hbmpDest;
 HDC         hdcMem, hdcDest;
 int         iHighN, iLowN;
 
-// assmeble the Bitmap
-//--------------------
-hdcMem = CreateCompatibleDC(ghdc256);
-hdcDest = CreateCompatibleDC(ghdc256);
-if((hdcMem == NULL) || (hdcDest == NULL))
-    goto ON_EXIT;
+	// assmeble the Bitmap
+	//--------------------
+	hdcMem = CreateCompatibleDC(ghdc256);
+	hdcDest = CreateCompatibleDC(ghdc256);
+	if((hdcMem == NULL) || (hdcDest == NULL))
+			goto ON_EXIT;
 
-hbmpMem = SelectObject(hdcMem, g_hbmpNumbers);
-hbmpDest = SelectObject(hdcDest, g_hbmpMTC);
+	hbmpMem = SelectObject(hdcMem, g_hbmpNumbers);
+	hbmpDest = SelectObject(hdcDest, g_hbmpMTC);
 
-// check to see what are the numbers
-// that we need to update
-//----------------------------------
-if(g_mtcLast.u.smpte.hour != g_mtcNow.u.smpte.hour)
-    // Update the hour
-    //----------------
-    {
-    iHighN = g_mtcNow.u.smpte.hour /10;
-    iLowN   = g_mtcNow.u.smpte.hour - (iHighN*10);
+	// check to see what are the numbers
+	// that we need to update
+	//----------------------------------
+	if(g_mtcLast.u.smpte.hour != g_mtcNow.u.smpte.hour)
+  // Update the hour
+  //----------------
+  {
+		iHighN = g_mtcNow.u.smpte.hour /10;
+		iLowN   = g_mtcNow.u.smpte.hour - (iHighN*10);
 
-    BitBlt(hdcDest, 0, 0, 15, 30,
-           hdcMem, iHighN*15, 0, SRCCOPY);
-    BitBlt(hdcDest, 15, 0, 15, 30,
-           hdcMem, iLowN*15, 0, SRCCOPY);
+		BitBlt(hdcDest, 0, 0, 15, 30,
+					 hdcMem, iHighN*15, 0, SRCCOPY);
+		BitBlt(hdcDest, 15, 0, 15, 30,
+					 hdcMem, iLowN*15, 0, SRCCOPY);
 
-    g_mtcLast.u.smpte.hour = g_mtcNow.u.smpte.hour;
-    }
+		g_mtcLast.u.smpte.hour = g_mtcNow.u.smpte.hour;
+  }
 
-if(g_mtcLast.u.smpte.min != g_mtcNow.u.smpte.min)
-    // Update the minutes
-    //-------------------
-    {
-    iHighN = g_mtcNow.u.smpte.min /10;
-    iLowN   = g_mtcNow.u.smpte.min - (iHighN*10);
+	if(g_mtcLast.u.smpte.min != g_mtcNow.u.smpte.min)
+  // Update the minutes
+  //-------------------
+  {
+		iHighN = g_mtcNow.u.smpte.min /10;
+		iLowN   = g_mtcNow.u.smpte.min - (iHighN*10);
 
-    BitBlt(hdcDest, 45, 0, 15, 30,
-           hdcMem, iHighN * 15, 0, SRCCOPY);
-    BitBlt(hdcDest, 60, 0, 15, 30,
-           hdcMem, iLowN*15, 0, SRCCOPY);
+		BitBlt(hdcDest, 45, 0, 15, 30,
+					 hdcMem, iHighN * 15, 0, SRCCOPY);
+		BitBlt(hdcDest, 60, 0, 15, 30,
+					 hdcMem, iLowN*15, 0, SRCCOPY);
 
-    g_mtcLast.u.smpte.min = g_mtcNow.u.smpte.min;
-    }
+		g_mtcLast.u.smpte.min = g_mtcNow.u.smpte.min;
+  }
 
-if(g_mtcLast.u.smpte.sec != g_mtcNow.u.smpte.sec)
+	if(g_mtcLast.u.smpte.sec != g_mtcNow.u.smpte.sec)
     // Update the seconds
     //-------------------
-    {
+  {
     iHighN = g_mtcNow.u.smpte.sec /10;
     iLowN   = g_mtcNow.u.smpte.sec - (iHighN*10);
 
@@ -2075,12 +2257,12 @@ if(g_mtcLast.u.smpte.sec != g_mtcNow.u.smpte.sec)
            hdcMem, iLowN * 15, 0, SRCCOPY);
 
     g_mtcLast.u.smpte.sec = g_mtcNow.u.smpte.sec;
-    }
+  }
 
-if(g_mtcLast.u.smpte.frame != g_mtcNow.u.smpte.frame)
+	if(g_mtcLast.u.smpte.frame != g_mtcNow.u.smpte.frame)
     // Update the frames
     //------------------
-    {
+  {
     iHighN = g_mtcNow.u.smpte.frame /10;
     iLowN   = g_mtcNow.u.smpte.frame - (iHighN*10);
 
@@ -2090,22 +2272,23 @@ if(g_mtcLast.u.smpte.frame != g_mtcNow.u.smpte.frame)
            hdcMem, iLowN * 15, 0, SRCCOPY);
 
     g_mtcLast.u.smpte.frame = g_mtcNow.u.smpte.frame;
-    }
+  }
 
 
-SelectObject(hdcMem, hbmpMem);
-SelectObject(hdcDest, hbmpDest);
+	SelectObject(hdcMem, hbmpMem);
+	SelectObject(hdcDest, hbmpDest);
 
 
-SendMessage(g_hwndMTCReadout, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, 
+	SendMessage(g_hwndMTCReadout, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, 
                                             (LPARAM)g_hbmpMTC);
 
 
 ON_EXIT:
-// Release stuff..
-//-----------------
-DeleteDC(hdcMem);
-DeleteDC(hdcDest);
+	// Release stuff..
+	//-----------------
+	DeleteDC(hdcMem);
+	DeleteDC(hdcDest);
+
 return;
 }
 
@@ -2121,16 +2304,16 @@ void    CALLBACK MTC_EmulateProc(UINT uID, UINT iMsg, DWORD dwUser,
                                     DWORD dw1, DWORD dw2)
 {
 
-if(g_iStopTimeEvent == 1)
-    {
-    StopTimeEvent();
-    return;
-    }
+	if(g_iStopTimeEvent == 1)
+			{
+			StopTimeEvent();
+			return;
+			}
 
-g_mtcNow.u.smpte.frame++;
-VerifySMPTE(&g_mtcNow);
+	g_mtcNow.u.smpte.frame++;
+	VerifySMPTE(&g_mtcNow);
 
-DisplayMTCReadout();
+	DisplayMTCReadout();
 
 return;
 }
@@ -2146,10 +2329,10 @@ return;
 void    StopTimeEvent(void)
 {
 
-if(timeKillEvent(g_TimeEvent) != TIMERR_NOERROR)
-    MessageBeep(0);
-g_TimeEvent = 0;
-g_iStopTimeEvent = 0;
+	if(timeKillEvent(g_TimeEvent) != TIMERR_NOERROR)
+			MessageBeep(0);
+	g_TimeEvent = 0;
+	g_iStopTimeEvent = 0;
 
 return;
 }
@@ -2279,6 +2462,8 @@ BOOL	OpenSequenceFiles (LPSTR  lpstrFName){
 //////////////////////////////////////////////////////////////////
 // These used to be in windowssx.h
 //
+//////////////////////////////////////////////////////////////////
+
 #define SetStyleOn(hWnd, Style)		SetWindowLong(hWnd, GWL_STYLE, \
 									Style | GetWindowLong(hWnd, GWL_STYLE));
 									
@@ -2305,6 +2490,7 @@ BOOL	OpenSequenceFiles (LPSTR  lpstrFName){
 *	allow the user to access them.
 *
 */
+////////////////////////////////////////////////////////////////////
 
 void ShowArea(BOOL bShowDefAreaOnly, HWND hDlg, HWND hWndDefArea)
 {
