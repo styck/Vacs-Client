@@ -5,7 +5,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/inc/SAMM.h $
-// $Revision: 43 $
+// $Revision: 44 $
 //
 
 #include <windows.h>
@@ -15,7 +15,7 @@
 #include <mmsystem.h>
 #include <string.h>
 
-#define SCROLLBARS		// FOR TOUCHSCREEN OPERATION WE NEED SCROLL BARS
+//FDS 6/13/04 #define SCROLLBARS		// FOR TOUCHSCREEN OPERATION WE NEED SCROLL BARS
 // #define AUTOSAVE		// 3 MINUTE POP UP BOX TO SAVE MIX
 
 
