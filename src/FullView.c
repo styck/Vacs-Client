@@ -1461,11 +1461,12 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
 
 // Debug stuff for VU display frequency ... !!!! Should be deleted
   char            szBuff[128];
+
   if(liQueryPerformance.QuadPart == 0)
   {
     QueryPerformanceFrequency(&liQueryPerformance);
     QueryPerformanceCounter(&liPerformanceCounterStart);
-		VU_delaystep = (DWORD)((float)(liQueryPerformance.QuadPart / 1000.)*1.8f);//mseconds
+		VU_delaystep = (DWORD)((float)(liQueryPerformance.QuadPart / 1000.)*1.0f);//mseconds
   }
 
   if(iVU_Count > 0)
@@ -1477,10 +1478,12 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
 
 	// Delay some msec ..
 	//
+
 	QueryPerformanceCounter(&liVUDisplayDealy);
 	while(liVUDisplayDealy.QuadPart < liVUDisplayCur.QuadPart + VU_delaystep){
 		QueryPerformanceCounter(&liVUDisplayDealy);
 	}
+
 	QueryPerformanceCounter(&liVUDisplayCur);
 
   if(dwVuPacketsCount >= 1000)
