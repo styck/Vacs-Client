@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Labels and Groups. $
-// $Revision:: 20                                 $
+// $Revision:: 21                                 $
 //
 
 //=================================================
@@ -112,21 +112,22 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
   HDC                 hdc;
   int                 iXVal;
 
-	static BOOL		bLBDown=FALSE;
-
 	lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
 	switch (wMessage)
   {
 
 		/////////////////////////////////////////////////////////////////////////
-		// If mouse button is held down and dragged/moved across the labels then
+		// If LEFT mouse button is held down and dragged/moved across the labels then
 		// they will be added to the grouping
+		// If RIGHT mouse button is held down and dragged/moved across the labels then
+		// they will be removed from the gruoping
+		//
 		// This works for both the zoom and full view windows
 		////////////////////////////////////////////////////////////////////////
 
 		case WM_MOUSEMOVE:
-			if(bLBDown)
+			if(wParam & MK_LBUTTON)
 			{
 				iXVal = LOWORD(lParam);
 				if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
@@ -137,11 +138,20 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 					}
 				}
 			}
-		break;
+			else if(wParam & MK_RBUTTON)
+			{
+				iXVal = LOWORD(lParam);
+			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
+			{
+				if(UnGroupChannel(iXVal))
+				{
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+					RefreshAllLblWindows();
+				}
+			}
+			}
 
-
-		case WM_LBUTTONUP:
-				bLBDown = FALSE;
 		break;
 
 		//////////////////////////////////////////////////////////////
@@ -154,13 +164,10 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 					RefreshAllLblWindows();
 				}
 			}
-				bLBDown = TRUE;
-
 			break;
 
 		//////////////////////////////////////////////////////////////
 		case WM_RBUTTONDOWN:
-			bLBDown = FALSE;
 			iXVal = LOWORD(lParam);
 			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
 			{
@@ -184,10 +191,6 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 				DrawLbl(hdc, lpmwd);
 				EndPaint(hWnd, &ps);
 				break;
-
-		case WM_KILLFOCUS:
-				bLBDown = FALSE;
-			// fall thru
 
 		//////////////////////////////////////////////////////////////
 		default:
