@@ -832,3 +832,223 @@ if(ghwndGroup)
 
 return 0;
 }
+
+
+//====================================================
+//function: WriteFkeyFile(LPFILESTRUCT pfs, int fKey)
+//
+// fKey is the function key pressed
+//
+//
+//====================================================
+int     WriteFkeyFile(LPFILESTRUCT pfs, int fKey)
+{
+HANDLE          hf;
+char            szFile[1024];
+BOOL            bResult;
+DWORD           dwBWrite;
+HWND            hwnd;
+int             *piWndID;
+FILESECTIONHEADER   fsh;
+
+wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
+
+hf = CreateFile(szFile, GENERIC_WRITE, 
+                0, NULL, OPEN_ALWAYS, 
+                FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+                NULL);
+
+if(hf == INVALID_HANDLE_VALUE)
+    {
+    return 1;
+    }
+
+// Write the File header
+//----------------------
+gmfhMix.dwID   = SAMMPLUS_ID;
+gmfhMix.dwVersion   = SAMMPLUS_VERSION;
+gmfhMix.dwSize = sizeof(MIXFILEHEADER);
+gmfhMix.dwDevID = 0; // IT SHOULD BE SET TO THE DEVICE ID for THE MIXER
+gmfhMix.iNumDev = 0; // the number of devices
+gmfhMix.iScrCX = 0; // the screen resolution CX
+gmfhMix.iScrCY = 0; // the screen resolution CX
+ZeroMemory(gmfhMix.iReserved, sizeof(gmfhMix.iReserved));
+
+bResult = WriteFile(hf, (LPVOID)&gmfhMix, 
+                    sizeof(MIXFILEHEADER), &dwBWrite, NULL);
+if(bResult == FALSE || dwBWrite == 0)
+    goto ON_ERROR_EXIT;
+
+  // Write this section .. so we know that tha master window was visible
+  // before we start creating the other windows
+  if(ghwndMaster)
+  {
+    fsh.dwID = MASTER_WINDOW_FILE_ID;
+    fsh.lSize = 0;
+    fsh.dwVersion = 0;
+    WriteFile(hf, &fsh, sizeof(fsh), &dwBWrite, NULL);  
+  }
+
+
+// Save all of the Open Windows
+//-----------------------------
+hwnd = GetTopWindow(ghwndMDIClient);
+if(GetWindow(hwnd, GW_HWNDLAST))
+    hwnd = GetWindow(hwnd, GW_HWNDLAST);
+
+  while(hwnd)
+  {
+    piWndID = (int *)GetWindowLong(hwnd, 0);
+    if(piWndID == NULL)
+        goto ON_ERROR_EXIT;
+
+    switch((int)(*piWndID))
+    {
+    case MIXER_WINDOW_FILE_ID:
+      if(WriteMixerWndDataToFile(hwnd, hf) != 0)
+          goto ON_ERROR_EXIT; // Something went wrong saving the Window Data 
+      break;
+    case SEQUENCE_WINDOW_FILE_ID:
+			if(IsWindowVisible(hwnd))
+				if(WriteSequenceWndDataToFile(hwnd, hf) != 0)
+					goto ON_ERROR_EXIT; // Something went wrong saving the Window Data 
+      break;
+		case GROUP_WINDOW_FILE_ID:
+			if(IsWindowVisible(hwnd))
+				if(WriteGroupWndDataToFile(hwnd, hf) != 0)
+					goto ON_ERROR_EXIT; // Something went wrong saving the Window Data 
+			break;
+    }
+    hwnd = GetNextWindow(hwnd, GW_HWNDPREV);
+  }
+
+
+// Set the End-Of-File
+// Close the file
+//--------------------
+SetEndOfFile(hf);
+CloseHandle(hf);
+return 0;
+
+ON_ERROR_EXIT:
+ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATING_FILE);
+
+SetEndOfFile(hf);
+CloseHandle(hf);
+
+return 1;
+}
+
+
+
+//====================================================
+//function: LoadFkeyFile(LPFILESTRUCT pfs, int fKey)
+//
+// fKey is the function key pressed
+//
+//
+//====================================================
+
+int     LoadFkeyFile(LPFILESTRUCT pfs, int fKey)
+{
+HANDLE              hf;
+FILESECTIONHEADER   fsh;
+char                szFile[1024];
+BOOL                bResult;
+BOOL                bRecallFromMemBuffer = FALSE;
+DWORD               dwBRead;
+
+wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
+
+
+hf = CreateFile(szFile, GENERIC_READ, 
+                0, NULL, OPEN_EXISTING, 
+                FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+                NULL);
+if(hf == INVALID_HANDLE_VALUE)
+    {
+    return 1;
+    }
+
+	// Only close windows if we have a valid file available
+
+    CloseAllMDI();	// close all the open windows
+
+bResult = ReadFile(hf, (LPSTR)&gmfhTemp, 
+                   sizeof(MIXFILEHEADER), &dwBRead, NULL);
+if(bResult == FALSE || dwBRead == 0)
+    {
+    InformationStatus(ghInstStrRes, IDS_ERR_OPENING_FILE);
+    CloseHandle(hf);
+    return 1;
+    }
+
+
+if((gmfhTemp.dwID != SAMMPLUS_ID) || (gmfhTemp.dwSize != sizeof(MIXFILEHEADER))||
+    gmfhTemp.dwVersion > SAMMPLUS_VERSION)
+    {
+    ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_MIX_FILE);
+    }
+else
+    {
+    gmfhMix = gmfhTemp;
+    if(gmfhTemp.dwVersion < SAMMPLUS_VERSION)
+        ;//InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
+    }
+
+// Go through the file and
+// Read the Header for every Section
+//----------------------------------
+bResult = ReadFile(hf, (LPSTR)&fsh, 
+                   sizeof(FILESECTIONHEADER), &dwBRead, NULL);
+if(bResult == FALSE || dwBRead != sizeof(FILESECTIONHEADER))
+    {
+    InformationStatus(ghInstStrRes, IDS_ERR_READING_FILE);
+    CloseHandle(hf);
+    return 1;
+    }
+
+while(bResult != FALSE && dwBRead == sizeof(FILESECTIONHEADER))
+  {
+    switch(fsh.dwID)
+    {
+    case MASTER_WINDOW_FILE_ID:
+      // Make sure the Master Window is visible ..
+      if(ghwndMaster == NULL)
+        CreateMasterViewWindow("Zoom Master View", NULL);
+      break;
+    case MIXER_WINDOW_FILE_ID:
+        ReadMixerWndDataFromFile(hf, &fsh);
+        break;
+    case SEQUENCE_WINDOW_FILE_ID:
+        ReadSequenceWndDataFromFile(hf, &fsh);
+        break;
+    case GROUP_WINDOW_FILE_ID:
+        ReadGroupWndDataFromFile(hf, &fsh);
+        break;
+
+    default:
+        // in case we don't know what
+        // is this Section just skip over it
+        //----------------------------------
+        if(fsh.lSize > 0)
+            SetFilePointer(hf, fsh.lSize, 0, FILE_CURRENT);
+        else
+            {
+            InformationStatus(ghInstStrRes, IDS_ERR_READING_FILE);
+            CloseHandle(hf);
+            return 1;
+            }
+        break;
+    }
+
+    bResult = ReadFile(hf, (LPSTR)&fsh, sizeof(FILESECTIONHEADER), &dwBRead, NULL);
+  }
+
+CloseHandle(hf);
+
+
+return 0;
+}
+
+
