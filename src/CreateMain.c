@@ -13,8 +13,10 @@
 
 HWND		ghwndTBSeqReadout = NULL;
 HWND		ghwndTBSeqReadout2 = NULL;
+HWND		ghwndTBSeqSceneNumber = NULL;
 int			giTBSeqReadout = 9512;
 int			giTBSeqReadout2 = 9513;
+int			giTBSeqSceneNumber = 9514;
 
 HWND		ghwndTBZoomWinCntReadout = NULL;
 
@@ -82,7 +84,7 @@ return 0;
 };
 
 ////////////////////////////////// 
-#define TB_BUTTONS_COUNT	26	// was 28 with all the buttons
+#define TB_BUTTONS_COUNT	27	// was 28 with all the buttons
 
 /////////////////////////////////////////////////////////////////////
 //	MEMBER FUNCTION: CreateToolbars
@@ -94,7 +96,7 @@ int		CreateToolBars(HWND		hwndParent)
   int					iRet = 0;
   TBBUTTON		tbb[TB_BUTTONS_COUNT];
 	TBBUTTONINFO tbinfo = {0};
-  int					iCount = 0, iButtonCount = 0, iSeqButton,iSeqButton2, iNumZoomWindowsButton, i;
+  int					iCount = 0, iButtonCount = 0, iSeqScenNumber, iSeqButton,iSeqButton2, iNumZoomWindowsButton, i;
   RECT				r;                      
   HWND        hToolTips;
 
@@ -152,10 +154,21 @@ int		CreateToolBars(HWND		hwndParent)
   tbb[iCount].iBitmap = -1;
   tbb[iCount].idCommand = 0;
   tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_SEP | TBSTYLE_AUTOSIZE;
+  tbb[iCount].fsStyle = TBSTYLE_SEP; // | TBSTYLE_AUTOSIZE;
   tbb[iCount].dwData = 0;
   tbb[iCount].iString = -1; 
 	iCount++;
+
+	//////////////////
+	// Sequence Scene Number
+	iSeqScenNumber = iCount;			// save for later
+  tbb[iCount].iBitmap = -1; // account for the separator
+  tbb[iCount].idCommand = ghwndTBSeqSceneNumber;
+  tbb[iCount].fsState = TBSTATE_ENABLED;
+  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+  tbb[iCount].dwData = 0;
+  tbb[iCount].iString = -1;
+  iCount++;
 
 	//////////////////
 	// Active Sequence name
@@ -345,6 +358,38 @@ int		CreateToolBars(HWND		hwndParent)
 															  16, 14, 16, 14, sizeof(TBBUTTON));
 
 #endif
+
+
+	/////////////////////////////////////////////////////////
+	// now Create the SEQUENCE SCENE NUMBER readout window ....
+	/////////////////////////////////////////////////////////
+
+	tbinfo.cbSize = sizeof(TBBUTTONINFO);
+	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
+	tbinfo.fsStyle = TBSTYLE_SEP;
+	tbinfo.cx = 30;	// 175	SIZE OF THE SEQUENCE SCENE NUMBER WINDOW
+
+	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBSeqSceneNumber, (LPARAM)&tbinfo);
+
+  SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+  SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
+	
+	// Get the size of the sequence button passed in WPARAM
+
+	SendMessage(ghwndTBPlay, TB_GETITEMRECT, (WPARAM)iSeqScenNumber, (LPARAM)&r);
+	r.top = 2;
+
+	//////////////////////////////////////////////////
+	// Create Sequence window on toolbar
+	//////////////////////////////////////////////////
+
+	ghwndTBSeqSceneNumber = CreateWindow("STATIC", "", WS_VISIBLE | WS_CHILD | WS_BORDER,//CBS_DROPDOWNLIST | CBS_HASSTRINGS,
+																	r.left, r.top, r.right - r.left, r.bottom - r.top,
+																	ghwndTBPlay, NULL, ghInstMain, NULL);
+	
+	SetWindowText(ghwndTBSeqSceneNumber, "0");
+
+
 	/////////////////////////////////////////////////////////
 	// now Create the CURRENT SEQUENCE readout window ....
 	/////////////////////////////////////////////////////////
@@ -431,7 +476,7 @@ int		CreateToolBars(HWND		hwndParent)
 																	r.left, r.top, r.right - r.left, r.bottom - r.top,
 																	ghwndTBPlay, NULL, ghInstMain, NULL);
 	
-	SetWindowText(ghwndTBZoomWinCntReadout, " Zoom Windows: 0");
+	SetWindowText(ghwndTBZoomWinCntReadout, " Zoom Viewss: 0");
 
 //////////////////////////////////////////
 
