@@ -367,21 +367,21 @@ int     SetMemoryMapDefaults(void)
           // This is very UGLY !!! Please fix it !!!!!!!!!!!! ??????
           //
           if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_PREPOST_FADER_VU
-            && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 1)
+            && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT)
             ||
             ( (lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_POST_LT_VU 
                || lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_POST_RT_VU )
-             && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 5) 
+             && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_MASTER) 
             ||
             ( (lpctrlZM->iCtrlChanPos == CTRL_NUM_SUB_POST_LT_VU
                || lpctrlZM->iCtrlChanPos == CTRL_NUM_SUB_POST_RT_VU )
-             && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 3) 
+             && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_MATRIX) 
             ||
             ( (lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_POST_LT_VU
                || lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_POST_RT_VU )
-             && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 3) 
+             && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_MATRIX) 
             || (lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_CUEA_SYSTEM_SEL
-             && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 4) )
+             && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_CUE) )
 
             iValue = 0;
           else
