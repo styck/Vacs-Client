@@ -796,7 +796,8 @@ int	GetListItemGroupNumber(int iItem)
 
 LPSTR	GetListItemGroupName(int iItem)
 {
-	char			szText[80];
+	char			szText[80] = "Not Set";
+
 
     ListView_GetItemText(GetDlgItem(ghwndGroupsDlg, IDC_GROUP_LIST), 
                                  iItem, 
