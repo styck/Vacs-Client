@@ -330,8 +330,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
     //````````````````````````````
     case IDM_RESET_ALL_CONTROLS:
         // Reset all mixer Cotrol Values .. to Reg0 value
-        SetMemoryMapDefaults();
-        RecallMemoryMapBuffer(TRUE);// Force the Control data to the Mixer
+		if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_RECALL_ALL_CONTROLS) == IDYES)
+		{
+			SetMemoryMapDefaults();
+			RecallMemoryMapBuffer(TRUE);// Force the Control data to the Mixer
+		}
         break;
     //````````````````````````````
 		case IDM_RECAL_ALL_CONTROLS:
@@ -342,8 +345,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 				// willnot be recalled until the filters
 				// are removed ...
 				// 
-			MoveMemory(gpwMemMapBuffer, gpwMemMapMixer, giMemMapSize);
-			RecallMemoryMapBuffer(TRUE);// Force the Control data to the Mixer
+			if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_RECALL_ALL_CONTROLS) == IDYES)
+			{
+				MoveMemory(gpwMemMapBuffer, gpwMemMapMixer, giMemMapSize);
+				RecallMemoryMapBuffer(TRUE);// Force the Control data to the Mixer
+			}
 			break;
     case IDM_REQUEST_SETUPDATA:
         if(CDEF_GetCSData(hWnd))
@@ -479,6 +485,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 			
 			ActivateGroup(-1, FADERS_GROUPS, FindConsecutiveGroupIndex(LOWORD(wParam) - IDM_V_CANCELGROUPS - 1, FADERS_GROUPS));
 			break;
+
+	case IDM_H_INFO:
+		MessageBox(ghwndMain,"Comming soon","Info",MB_OK);
+	break;
+
     case IDM_H_ABOUT:
 
         DialogBox(ghInstMain, MAKEINTRESOURCE(IDD_ABOUT), ghwndMain, AboutProc);
