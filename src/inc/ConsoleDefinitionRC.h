@@ -1,0 +1,119 @@
+//{{NO_DEPENDENCIES}}
+// Microsoft Developer Studio generated include file.
+// Used by D:\work\Vacs Client\consoledefinition\Resource\ConsoleDefinition.rc
+//
+#define IDI_RD                          101
+#define IDD_ABOUT_CONSOLEDEFINITION     101
+#define FullViewIcon                    102
+#define IDD_CONFIGURATION               102
+#define ZoomViewIcon                    103
+#define IDD_TABLE                       103
+#define SAMMVSCROLLCURSOR               106
+#define IDB_ZOOM_I_PAN_KNOB             106
+#define IDICON_SEQUENCE                 107
+#define IDB_SEQ_CLOSE                   108
+#define IDB_SEQ_OPEN                    109
+#define IDB_CLIENT_BACKGROUND           110
+#define IDB_SEQ_DOCUMENT                111
+#define IDB_I_FULL                      112
+#define IDB_LOWCUT_IN                   113
+#define IDB_IQS_PALETTE                 114
+#define IDB_NUMBERS_200_40              115
+#define IDB_FULL_I_SOLO_DOWN            116
+#define IDB_FULL_I_MUTE_DOWN            117
+#define IDB_FULL_I_SOLO_UP              118
+#define IDB_FULL_I_MUTE_UP              119
+#define IDB_FULL_I_VOL_FADER            120
+#define IDB_I_ZOOM                      121
+#define IDB_ZOOM_I_SOLO_DOWN            122
+#define IDB_ZOOM_I_MUTE_DOWN            123
+#define IDB_ZOOM_I_SOLO_UP              124
+#define IDB_ZOOM_I_MUTE_UP              125
+#define IDB_ZOOM_I_VOL_FADER            126
+#define IDB_ZOOM_COMP_FADER             127
+#define IDB_ZOOM_GATE_FADER             128
+#define IDB_CUE_01                      129
+#define IDB_EQ_IN                       130
+#define IDB_HF_PEAKSHELF                131
+#define IDB_KEY_IN                      132
+#define IDB_LF_PEAKSHELF                133
+#define IDB_COMPGATE_IN                 134
+#define IDB_PPWR_IN                     136
+#define IDB_INSERT_INOUT                137
+#define IDB_SM_ZOOM                     138
+#define IDB_CDEF_LOGO                   139
+#define IDB_ZOOM_SMALLKNOB              141
+#define IDB_ZOOM_MEDKNOB                144
+#define IDB_INPUT_MUTE                  153
+#define IDB_MASTER_ZOOM                 154
+#define IDD_CLIENTSERVER_SETUP          155
+#define IDB_VU_ON_VERTICAL              156
+#define IDB_CUEA_PRE                    165
+#define IDB_CUEA_POST_PAN               166
+#define IDB_TINNY_REDBTN                167
+#define IDB_SMALL_REDBTN                168
+#define IDB_SMALL_GREENBTN              169
+#define IDB_SUBMUTE                     170
+#define IDB_SUBINSERT                   171
+#define IDICON_GROUP                    172
+#define IDB_INPUT_DIRECT_OUT            173
+#define IDB_AUX_EQ_IN                   174
+#define IDB_AUX_EQ_LO_SHELF             175
+#define IDB_AUX_EQ_HI_SHELF             176
+#define IDB_SUBMATRIX_MUTE              177
+#define IDB_MATRIX_MUTE_CENTER          178
+#define IDB_AUX_AUX_MUTE                179
+#define IDB_ZOOM_MEDKNOB_YELLOW         184
+#define IDB_ZOOM_MEDKNOB_BLUE           185
+#define IDB_ZOOM_MEDKNOB_RED            186
+#define IDB_MASTER_TINY_BLUE            187
+#define IDB_MASTER_TINY_GREEN           188
+#define IDB_MASTER_YELLOW_SMALL         189
+#define IDB_MASTER_RED_MED              190
+#define IDB_MASTER_ORANGE_SMALL         191
+#define IDB_MASTER_YELLOW_MED           192
+#define IDB_MASTER_YELLOW_TINY          193
+#define IDB_MASTER_PPWR                 194
+#define IDB_MASTER_BLUE_MED             195
+#define IDB_MASTER_GREEN_MED            196
+#define IDB_KEY_EXT                     197
+#define IDB_PAN_INDICATOR               200
+#define IDB_VU_ON_HORIZONTAL            202
+#define IDB_VU_SELECT_IN                203
+#define IDB_INPUT_COMP_IN               204
+#define IDB_INPUT_GATE_IN               205
+#define IDB_LO_FREQ_SHELF               206
+#define IDB_INPUT_AUX_POST_IN           207
+#define IDB_LINE_B_AUX_16               208
+#define IDB_MATRIX_MONO_MUTE_IN         209
+#define IDB_PHASE_REVERSE               210
+#define IDB_MASTER_VU_POST              211
+#define IDB_EQ_RIGHT                    212
+#define IDB_SAFE                        213
+#define IDB_SA_FULL                     217
+#define IDB_FDR_BLUE_SMALL              218
+#define IDB_FDR_WHITE_TINY              219
+#define IDB_STEREO_CUE_METERS           220
+#define IDB_VU_DISPLAY2                 221
+#define IDC_IP_ADDR                     1000
+#define IDC_PORT                        1001
+#define IDC_BTN_TEST_CONNECTION         1002
+#define IDC_STAT_1                      1003
+#define IDC_STAT_2                      1004
+#define IDC_FILENAME                    1004
+#define IDC_LIST_TABLE                  1005
+#define IDC_BTN_LOADTABLE               1006
+#define IDC_STAT_3                      1007
+#define IDC_ADDMESSAGE                  1008
+
+// Next default values for new objects
+// 
+#ifdef APSTUDIO_INVOKED
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_NO_MFC                     1
+#define _APS_NEXT_RESOURCE_VALUE        222
+#define _APS_NEXT_COMMAND_VALUE         40001
+#define _APS_NEXT_CONTROL_VALUE         1009
+#define _APS_NEXT_SYMED_VALUE           101
+#endif
+#endif
