@@ -281,10 +281,6 @@ SOURCE=.\src\RC\SAMMmain.ico
 # End Group
 # Begin Source File
 
-SOURCE=.\src\rc\cortek_l.bmp
-# End Source File
-# Begin Source File
-
 SOURCE=.\src\rc\corteklogo.bmp
 # End Source File
 # Begin Source File
