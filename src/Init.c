@@ -1,5 +1,5 @@
 //=================================================
-// Copyright 1998 CorTek Software, Inc.
+// Copyright 1998-2001 CorTek Software, Inc.
 //=================================================
 
 //#include <windows.h>
@@ -38,7 +38,7 @@ int   InitializeProc(void)
 	int	i;
 	char iChannelCount = 0;
 
-
+	
   // ShowSplashScreen(TRUE);
 
 	gDisplayEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -155,15 +155,21 @@ int   InitializeProc(void)
 
   if( (CTRL_key < 0) || !CDEF_GetCSData(ghwndMain))
   {
-		CDef_Preferences (ghwndMain);
-		if( CDEF_GetCSData(ghwndMain))
+		if(CDef_Preferences (ghwndMain) == APPLY)
 		{
-			if (CDEF_ReadDCXBinFile ())
-				return IDS_DCXBIN_FILE_FAILED;
-			gInitialized = TRUE;
+			if( CDEF_GetCSData(ghwndMain))
+			{
+				if (CDEF_ReadDCXBinFile ())
+					return IDS_DCXBIN_FILE_FAILED;
+				gInitialized = TRUE;
+			}
+			else
+				return IDS_DEFINITION_FAILED2;
 		}
 		else
-			return IDS_DEFINITION_FAILED2;
+		{
+				return IDS_DEFINITION_FAILED3;		// User CANCEL - Exiting
+		}
   }
 	else
 	{
@@ -228,6 +234,12 @@ be:
 			break;
 
 	}
+
+	////////////////////////////////////////////////////////////
+	// Get the MIXER type from the preferences, should only be
+	// set if we selected OFFLINE, else it will be -1
+
+	giMixerTypeOffline=CDef_MixerTypePreference();
 
 	// We know what type of mixer it is, now set the window title.
 
