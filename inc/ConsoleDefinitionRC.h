@@ -105,10 +105,12 @@
 #define IDC_STAT_1                      1003
 #define IDC_STAT_2                      1004
 #define IDC_FILENAME                    1004
+#define IDC_BTN_WORK_OFFLINE            1004
 #define IDC_LIST_TABLE                  1005
 #define IDC_BTN_LOADTABLE               1006
 #define IDC_STAT_3                      1007
 #define IDC_ADDMESSAGE                  1008
+#define IDC_DCX_RACK_CONFIG             1010
 
 // Next default values for new objects
 // 
@@ -117,7 +119,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        228
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1009
+#define _APS_NEXT_CONTROL_VALUE         1011
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
