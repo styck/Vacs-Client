@@ -1241,18 +1241,17 @@ void  HandleMasterAuxPrePostSwtch(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZO
 ///////////////////////////////////////////////////////////////////////////
 //
 // Reset the EQ to flat
+// Loops through all the EQ settings and setups then to their DEFAULT value
+// Also updates all windows that are displaying the same data.
 //
 void    HandleResetEQFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP lpctrlZM, BOOL bIsOn)
 {
   CONTROLDATA         ctrlData;
   LPCTRLZONEMAP       lpctrl;
   int                 i_ctrl_pos;
-//  HDC                 hdcScr;
   
   if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
     return;
-
-//	hdcScr = GetDC(lpmwd->hwndImg);
 
 	for(i_ctrl_pos = CTRL_NUM_INPUT_HIGHFREQ; i_ctrl_pos <=CTRL_NUM_INPUT_LF_PEAKSHELF ;i_ctrl_pos++)
 	{
@@ -1269,20 +1268,22 @@ void    HandleResetEQFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP 
 
 		SendDataToDevice(&ctrlData, TRUE, NULL, 0, lpmwd, TRUE);
 
-//		UpdateControlsByCtrlNum(hdcScr, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChann, lpctrlZM, ctrlData.wVal, DIRECTIONS_ALL, TRUE);
-//		UpdateSameMixWndByCtrlNum(lpmwd->hwndImg, lpmwd->iMixer, iPhisChann, lpctrlZM, ctrlData.wVal, NULL);
+		// now update all of the other mixers
+		// windows that represent this mixer
+		// using the iMixer, iPhisChannel
+		// and iVal
 
-	}
-
-	// Clean up the mess
-	//------------------
-//	ReleaseDC(lpmwd->hwndImg, hdcScr);
+//		UpdateControlsByCtrlNum(hdcScr, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChann, lpctrl, ctrlData.wVal, DIRECTIONS_ALL, TRUE);
+		UpdateSameMixWndByCtrlNum(lpmwd->hwndImg, lpmwd->iMixer, iPhisChann, lpctrl, ctrlData.wVal, NULL);
 
 		// force a redraw of the updated EQ settings
       if(ghwndMain) 
 			{
         InvalidateRect(lpmwd->hwndImg, &lpmwd->rVisible, TRUE);
       }
+
+	}
+
 
 }
 
