@@ -118,6 +118,7 @@ BEGIN
     MENUITEM "Update",                      MENU_TVN_UPDATE
     MENUITEM SEPARATOR
     MENUITEM "Delete",                      MENU_TVN_DELELTE
+    MENUITEM "Rename",                      MENU_TVN_RENAME
     MENUITEM SEPARATOR
     POPUP "Find"
     BEGIN
