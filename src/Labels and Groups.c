@@ -1,5 +1,5 @@
 //=================================================
-// Copyright 1998, CorTek Software, Inc.
+// Copyright 2001, CorTek Software, Inc.
 //=================================================
 
 //=================================================
@@ -332,7 +332,7 @@ LPSTR   GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan)
   int     iTarget;
   int     iCount;
 
-  if(gDeviceSetup.iaChannelTypes[iChan] == 5)
+  if(gDeviceSetup.iaChannelTypes[iChan] == DCX_DEVMAP_MODULE_MASTER)
   {
     // Check for the Aux Labels ...
     //
@@ -359,7 +359,7 @@ LPSTR   GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan)
       pRet =  &gpLabels[iChan * MAX_LABEL_SIZE];
   }
   else
-    if(gDeviceSetup.iaChannelTypes[iChan] == 2 &&
+    if(gDeviceSetup.iaChannelTypes[iChan] == DCX_DEVMAP_MODULE_AUX &&
       lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_LABEL)
     {
       iTarget = 0;
