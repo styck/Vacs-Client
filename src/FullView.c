@@ -781,7 +781,7 @@ void    RequestVisibleVU(LPMIXERWNDDATA lpmwd, int iPrevStart, int iPrevEnd)
   // and module offset 14 will not be incremented
   // (NOT TESTED)
 
-  for(iCount = lpmwd->iStartScrChan; iCount < lpmwd->iEndScrChan+1; iCount++)
+  for(iCount = lpmwd->iStartScrChan; iCount <= lpmwd->iEndScrChan; iCount++)
   {
     lpmwd->acVisibleVU[LOBYTE(lpmwd->lpwRemapToScr[iCount])] ++;
     if(lpmwd->lpwRemapToScr[iCount] == g_iMasterModuleIdx)
@@ -1526,17 +1526,26 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
 		// Need to put the module idx for the clip lights in upper byte also
 		pVuDataBuffer[iCount].wModuleIdx =  (pVuDataBuffer[iCount].wModuleIdx << 8) | pVuDataBuffer[iCount].wModuleIdx;
 
-    if(pVuDataBuffer[iCount].wModuleIdx == g_iCueModuleIdx)
+		////////////////////////////
+		// Check for the CUE module
+		////////////////////////////
+    if( (pVuDataBuffer[iCount].wModuleIdx  & 0x0FF) == g_iCueModuleIdx)
     {
-	  // Need to put the module idx for the clip lights in upper byte also
-      pVuDataBuffer[iCount].wModuleIdx =  (g_iMasterModuleIdx << 8) | g_iMasterModuleIdx;
+			pVuDataBuffer[iCount].wModuleIdx = (pVuDataBuffer[iCount].wModuleIdx & 0xff00) | g_iMasterModuleIdx;
       pVuDataBuffer[iCount].cLock = 8; // Use this as an offset
       bMasterData = TRUE;
+
+			// Display the CUE data in the seperate CUE VU Window
 			DisplayStereoCueVUData(pVuDataBuffer);
+
     }
     else
     {
       pVuDataBuffer[iCount].cLock = 0;
+
+			///////////////////////////////
+			// Check for the MASTER module
+			///////////////////////////////
       if( (pVuDataBuffer[iCount].wModuleIdx & 0x00FF) ==  g_iMasterModuleIdx)
       {
         bMasterData = TRUE;
@@ -1546,17 +1555,17 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
         bGeneralVuData = TRUE;
         for(iSubCount = 0; iSubCount < MAX_MATRIX_COUNT; iSubCount++)
         {
-		  // Check for the  Matrix modules and flip them to the Aux modules
-		  // Since the program *thinks* they reside on the same Module
-		  //
-
+					/////////////////////////////////////////////////////////////////
+					// Check for the  Matrix modules and flip them to the Aux modules
+					// Since the program *thinks* they reside on the same Module
+					/////////////////////////////////////////////////////////////////
           if(g_aiMatrix[iSubCount] != 0)
           {
             if(g_aiMatrix[iSubCount] == (pVuDataBuffer[iCount].wModuleIdx & 0x00FF))
             {
 							// Put the original module index into the upper byte to use with the clip lights
 							// The lower byte will have the modified module index
-							pVuDataBuffer[iCount].wModuleIdx = (pVuDataBuffer[iCount].wModuleIdx << 8) |  g_aiAux[iSubCount] ;
+							pVuDataBuffer[iCount].wModuleIdx = (pVuDataBuffer[iCount].wModuleIdx & 0xff00) |  g_aiAux[iSubCount] ;
 							pVuDataBuffer[iCount].cLock = 8;
             }
           }
@@ -1690,9 +1699,12 @@ iX = iY = iCX = iCY = 0;
 		while (pCtrlZmClip != NULL)
 		{
 			// Compare the module index with the one we are looking at 
-			// The ModuleIdx for Clip data is in the upper byte
-
-			if( ((pVuWalker->wModuleIdx >> 8) & 0x00ff) == pCtrlZmClip->iModuleNumber )
+			// The ModuleIdx for Clip data is in the upper byte		 
+		
+			if(  ((((pVuWalker->wModuleIdx >> 8) & 0x00ff) == pCtrlZmClip->iModuleNumber) &&
+				    (pCtrlZmClip->iCtrlChanPos != CTRL_NUM_CUE_CLIP_LIGHT) ) || 
+				  (  (pCtrlZmClip->iCtrlChanPos == CTRL_NUM_CUE_CLIP_LIGHT) && 
+				    (((pVuWalker->wModuleIdx >> 8) & 0x00ff) == pCtrlZmClip->iModuleNumber+1) ))
 			{
 				//
 				if (pVuWalker->wPeakClipValue != 0)
@@ -1728,11 +1740,24 @@ iX = iY = iCX = iCY = 0;
       // Skip channels that are not for this VU
       //  ModuleIdx for VU data is in Lower byte
 
-      if(iPhisChannel != (int)(pVuWalker->wModuleIdx & 0x00ff))	// Mask out the upper byte used for the clip lights
-        continue;
 
       pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + iVUCounter + pVuWalker->cLock);
       //pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + (pVuData->iVUType - 1) );
+
+//    If this is uncommented then the CUE VU meters will not work, only the seperate window CUE VUs
+//		But this is needed to keep the SUB AUX's from moving when input/matrix is chosen
+
+#ifdef MINE
+     if(iPhisChannel != (int)(pVuWalker->wModuleIdx & 0x00ff) &&
+			 (pVuWalker->wModuleIdx == 0) ||
+			 (pCtrlZm == NULL))	// Mask out the upper byte used for the clip lights
+        continue;
+#else
+     if(iPhisChannel != (int)(pVuWalker->wModuleIdx & 0x00ff))
+			 continue;
+
+#endif
+
       if(pCtrlZm == NULL)
         continue;
 
