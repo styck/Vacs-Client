@@ -61,7 +61,7 @@ BEGIN
     LTEXT           "LegalTrademarks",IDT_TRADEMARKS,19,133,245,24
     LTEXT           "www.corteksoft.com      sales@corteksoft.com",
                     IDC_STATIC,22,55,169,14
-    LTEXT           "Warning: this computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.",
+    LTEXT           "Warning: this computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program or any portion of it.",
                     IDC_STATIC,19,210,250,34
     LTEXT           "This product is Licensed to:\n\nJim Gamble Associates\nP.O. Box 7047\nTahoe City, California 96145\n",
                     IDC_STATIC,19,155,245,50,SS_SUNKEN
@@ -156,14 +156,14 @@ BEGIN
             VALUE "Comments", "by CorTek Software, Inc.\0"
             VALUE "CompanyName", "CorTek Software Inc.\0"
             VALUE "FileDescription", "VACS® Client Workstation\0"
-            VALUE "FileVersion", "2.47L\0"
+            VALUE "FileVersion", "2.47q\0"
             VALUE "InternalName", "VACS® Client Workstation\0"
             VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2001\0"
             VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc. all rights reserved.\0"
             VALUE "OriginalFilename", "VACS.EXE\0"
-            VALUE "PrivateBuild", "Build 02/25/2001\0"
+            VALUE "PrivateBuild", "Build 11/01/2001\0"
             VALUE "ProductName", "CorTek Software VACS\0"
-            VALUE "ProductVersion", "2.47L\0"
+            VALUE "ProductVersion", "2.47q\0"
             VALUE "SpecialBuild", "\0"
         END
     END
