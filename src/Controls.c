@@ -517,7 +517,7 @@ int				iScrVisible = 0;
   {
     lpMWD = MixerWindowDataAlloc(gwActiveMixer,
                                  gpZoneMaps_Zoom,
-                                 MAX_CHANNELS, 1);
+                                 MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
     if(lpMWD == NULL)
     {
         ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
@@ -552,7 +552,7 @@ int				iScrVisible = 0;
 				//GetMaxWindowSize(&lpMWD->rMaxWndPos, lpMWD->lpZoneMap, lpMWD->lZMCount, lpMWD);
 
         wsprintf(lpMWD->szTitle, "Zoom View (Link)");
-        ghwndZoom = CreateZoomViewWindow(ghwndMDIClient,"Zoom View (Link)", lpMWD, 1);
+        ghwndZoom = CreateZoomViewWindow(ghwndMDIClient,"Zoom View (Link)", lpMWD, DCX_DEVMAP_MODULE_INPUT);
 
      }
 	}
@@ -1148,7 +1148,7 @@ HWND			hWnd;
   {
     lpMWD = MixerWindowDataAlloc(gwActiveMixer,
                                  gpZoneMaps_Zoom,
-                                 MAX_CHANNELS, 1);
+                                 MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
     if(lpMWD == NULL)
     {
         ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
@@ -1189,7 +1189,7 @@ HWND			hWnd;
 				}
 				else	// No Zoom View windows exist, so create one.
 				{
-					ghwndZoom = CreateZoomViewWindow(ghwndMDIClient,"Zoom View", lpMWD, 1);// was Zoom View (Link)
+					ghwndZoom = CreateZoomViewWindow(ghwndMDIClient,"Zoom View", lpMWD, DCX_DEVMAP_MODULE_INPUT);// was Zoom View (Link)
 
 				}
 #ifdef NOTUSED
