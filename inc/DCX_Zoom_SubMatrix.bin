@@ -3119,7 +3119,7 @@ BEGIN
     //------------------
 	19, 2714,   51, 2742,
     CTRL_NUM_MATRIXLT_MUTE, CTRL_MARIXLT_MUTE_FILTER, DISP_TYPE_NORMAL,
-	  "\0                         ",  // the control name ....
+	  "MATRIX LT MUTE\0           ",  // the control name ....
 	  "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     0x0000, IDB_SUBMATRIX_MUTE, 0x0000,
@@ -3127,8 +3127,8 @@ BEGIN
 	// Matrix Mute Button  -MATRIXRT########################		
     //------------------
 	59, 2714,   91, 2742,
-    CTRL_NUM_MATRIXRT_MUTE, CTRL_MARIXRT_MUTE_FILTER, DISP_TYPE_NORMAL,
-	  "\0                         ",  // the control name ....
+    CTRL_NUM_MATRIXRT_MUTE, CTRL_MARIXRT_MUTE_FILTER , DISP_TYPE_NORMAL,
+	  "MATRIX RT MUTE\0           ",  // the control name ....
 	  "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     0x0000, IDB_SUBMATRIX_MUTE, 0x0000,
