@@ -1512,15 +1512,24 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
 
   CopyMemory(szVuDataBuffer, pVuData, iSize);
 
-
-
+	
+	//////////////////////////////////////////////////////////
   // Flip the incoming VU data channel to the Correct 
   // Screen Channel !!!!
+	// The clip light logic will use the upper byte of
+	// the .wModuleIdx, the VU logic will use the lower byte
+	//////////////////////////////////////////////////////////
+
   for(iCount = 0; iCount < iVU_Count; iCount ++)
   {
+		// This MUST be done for ALL VU data packets
+		// Need to put the module idx for the clip lights in upper byte also
+		pVuDataBuffer[iCount].wModuleIdx =  (pVuDataBuffer[iCount].wModuleIdx << 8) | pVuDataBuffer[iCount].wModuleIdx;
+
     if(pVuDataBuffer[iCount].wModuleIdx == g_iCueModuleIdx)
     {
-      pVuDataBuffer[iCount].wModuleIdx = g_iMasterModuleIdx;
+	  // Need to put the module idx for the clip lights in upper byte also
+      pVuDataBuffer[iCount].wModuleIdx =  (g_iMasterModuleIdx << 8) | g_iMasterModuleIdx;
       pVuDataBuffer[iCount].cLock = 8; // Use this as an offset
       bMasterData = TRUE;
 			DisplayStereoCueVUData(pVuDataBuffer);
@@ -1528,7 +1537,7 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
     else
     {
       pVuDataBuffer[iCount].cLock = 0;
-      if(pVuDataBuffer[iCount].wModuleIdx == g_iMasterModuleIdx)
+      if( (pVuDataBuffer[iCount].wModuleIdx & 0x00FF) ==  g_iMasterModuleIdx)
       {
         bMasterData = TRUE;
       }
@@ -1537,12 +1546,18 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
         bGeneralVuData = TRUE;
         for(iSubCount = 0; iSubCount < MAX_MATRIX_COUNT; iSubCount++)
         {
+		  // Check for the  Matrix modules and flip them to the Aux modules
+		  // Since the program *thinks* they reside on the same Module
+		  //
+
           if(g_aiMatrix[iSubCount] != 0)
           {
-            if(g_aiMatrix[iSubCount] == pVuDataBuffer[iCount].wModuleIdx)
+            if(g_aiMatrix[iSubCount] == (pVuDataBuffer[iCount].wModuleIdx & 0x00FF))
             {
-               pVuDataBuffer[iCount].wModuleIdx = g_aiAux[iSubCount];
-               pVuDataBuffer[iCount].cLock = 8;
+							// Put the original module index into the upper byte to use with the clip lights
+							// The lower byte will have the modified module index
+							pVuDataBuffer[iCount].wModuleIdx = (pVuDataBuffer[iCount].wModuleIdx << 8) |  g_aiAux[iSubCount] ;
+							pVuDataBuffer[iCount].cLock = 8;
             }
           }
         }
@@ -1551,8 +1566,10 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
   }
 
 
-  // Update the Master Window if it is open
-  //
+	//////////////////////////////////////////
+	// Update the Master Window if it is open
+	//////////////////////////////////////////
+
   if((ghwndMaster != NULL) && bMasterData)
   {
     lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndMaster, 0);
@@ -1567,8 +1584,10 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
     }
   }
 
+  /////////////////////////////////////////////
   // now update all MDI windows
-  //
+  /////////////////////////////////////////////
+
   if( bGeneralVuData )
   {
     hwndT = GetTopWindow(ghwndMDIClient);
@@ -1637,16 +1656,20 @@ hdcMem = CreateCompatibleDC(hdc);
 //--------------------------
 
 iX = iY = iCX = iCY = 0;
+
+// Loop through all the channels that are on the screen
+
   for(lCount = lpMWD->iStartScrChan; lCount < lpMWD->iEndScrChan + 1; lCount++)
   {
     iMixer = HIBYTE(lpMWD->lpwRemapToScr[lCount]);
-    iPhisChannel = LOBYTE(lpMWD->lpwRemapToScr[lCount]); // Get the actual phis channel
+    iPhisChannel = LOBYTE(lpMWD->lpwRemapToScr[lCount]); // Get the actual phisical channel
     
     iBMPIndex = lpMWD->lpZoneMap[iPhisChannel].iBmpIndx;
     iCX = gpBMPTable[iBMPIndex].iWidth;
     iCY = gpBMPTable[iBMPIndex].iHeight;
 
     pVuWalker = pVuData;
+
     // THIS IS ONLY FOR DEBUG !!!
 		// Check the VU packet 
     //
@@ -1658,11 +1681,18 @@ iX = iY = iCX = iCY = 0;
 				tempModuleType = 5; // break point place :)
 		}
 		*/
+
+		////////////////////////////////////////////////////////////////////////
 		// update all clip lights
-		pCtrlZmClip = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_CLIP_LIGHT);
+		////////////////////////////////////////////////////////////////////////
+
+		pCtrlZmClip = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_CLIP_LIGHT );
 		while (pCtrlZmClip != NULL)
 		{
-			if(pVuWalker->wModuleIdx == pCtrlZmClip->iModuleNumber )
+			// Compare the module index with the one we are looking at 
+			// The ModuleIdx for Clip data is in the upper byte
+
+			if( ((pVuWalker->wModuleIdx >> 8) & 0x00ff) == pCtrlZmClip->iModuleNumber )
 			{
 				//
 				if (pVuWalker->wPeakClipValue != 0)
@@ -1688,12 +1718,17 @@ iX = iY = iCX = iCY = 0;
 			pCtrlZmClip = ScanCtrlZonesType(pCtrlZmClip, CTRL_TYPE_CLIP_LIGHT);
 		}
 
-    //
+
+		////////////////////////////////////////////////////////////////////////
+		// Now update the VU data
+		////////////////////////////////////////////////////////////////////////
+
     for(iVUCounter = 0; iVUCounter < 8;iVUCounter++)
     {
       // Skip channels that are not for this VU
-      //
-      if(iPhisChannel != (int)pVuWalker->wModuleIdx)
+      //  ModuleIdx for VU data is in Lower byte
+
+      if(iPhisChannel != (int)(pVuWalker->wModuleIdx & 0x00ff))	// Mask out the upper byte used for the clip lights
         continue;
 
       pCtrlZm = ScanCtrlZonesType(lpMWD->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_TYPE_VU_DISPLAY + iVUCounter + pVuWalker->cLock);
@@ -1742,8 +1777,9 @@ iX = iY = iCX = iCY = 0;
 
       // Draw the VU data Display
       // into the Memory Bitmap
+			// Pass the lower byte of ModuleIdx only, upper byte is for clip lights only
       //-------------------------
-      DrawVUData(hdcMem, pCtrlZm,  pVuData, lpMWD, (int)pVuData->wModuleIdx, iVUCounter + pVuWalker->cLock); // !!
+      DrawVUData(hdcMem, pCtrlZm,  pVuData, lpMWD, (int)pVuData->wModuleIdx & 0x00ff, iVUCounter + pVuWalker->cLock); // !!
       // copy it to the screen
       BitBlt(hdc, pCtrlZm->rZone.left + iX, pCtrlZm->rZone.top - lpMWD->iYOffset, 
                   pCtrlZm->rZone.right - pCtrlZm->rZone.left, 
