@@ -12,9 +12,13 @@
 #include "SAMM.h"
 #include "SAMMEXT.h"
 #include "MACRO.h"
+#include <stdio.h>
 
 #include <zmouse.h>
 
+static int giZoomWndCnt=0;
+
+void ShowTBZoomWinCnt(LPSTR );	// see CreateMain.c
 void	HandleRemoteSequenceControl(WORD wControl);
 
 //====================================
@@ -67,6 +71,7 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
   RECT                rect;
   LPMIXERWNDDATA      lpmwd;
 	DWORD								style;
+ 	char szTempBuff[20];
 
   
 	if (gInitialized == FALSE)
@@ -142,12 +147,21 @@ HWND       CreateZoomViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
                             (LPARAM)lpmwd
                             );
   
+	
+	// Check if we create the window
+
   if(hWnd == NULL)
-    {
+   {
     MixerWindowDataFree(lpmwd);
     ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
     return NULL;//IDS_ERR_CREATE_WINDOW;
-    }
+   }
+	else
+	{
+		giZoomWndCnt++;		// increment our zoom window count
+		wsprintf(szTempBuff,"Zoom Windows: %d",giZoomWndCnt);
+		ShowTBZoomWinCnt(szTempBuff);
+	}
 
 
 
@@ -286,6 +300,7 @@ LRESULT CALLBACK  ZoomViewProc(HWND hWnd, UINT wMessage,
 MINMAXINFO FAR      *lpMMI;
 LPMIXERWNDDATA      lpmwd;
 RECT                rect;
+char szTempBuff[20];
 
 lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
@@ -397,8 +412,12 @@ switch (wMessage)
     //////////////////////////////////////////////////////////////
     case WM_DESTROY:
         if(ghwndZoom == hWnd)
+				{
             ghwndZoom = NULL;
-            
+				}
+						giZoomWndCnt--;		// decrement zoom window count and display it
+						wsprintf(szTempBuff," Zoom Windows: %d",giZoomWndCnt);
+						ShowTBZoomWinCnt(szTempBuff);				
 //      break;
     default:
         return DefMDIChildProc(hWnd, wMessage, wParam, lParam);
