@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/CreateMain.c       $
-// $Revision:: 20                                 $
+// $Revision:: 21                                 $
 //
 
 #include "SAMM.h"
@@ -91,7 +91,7 @@ return 0;
 
 
 ////////////////////////////////// 
-#define TB_BUTTONS_COUNT	27	// was 28 with all the buttons
+#define TB_BUTTONS_COUNT	28	// was 28 with all the buttons
 
 
 /////////////////////////////////////////////////////////////////////
@@ -330,10 +330,10 @@ int		CreateToolBars(HWND		hwndParent)
   tbb[iCount].iString = -1; 
   iCount++;
 
-	//////////////////
-  // Cancel the Groups
+	////////////////////////////////////
+  // Group selection buttons
   //
-	for(i=0; i < 8; i++)
+	for(i=0; i < 9; i++)
 	{
 		tbb[iCount].iBitmap = 12 + i; 
 		tbb[iCount].idCommand = IDM_V_CANCELGROUPS + i + 1;
@@ -479,7 +479,7 @@ int		CreateToolBars(HWND		hwndParent)
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
-	tbinfo.cx = 130;	// 155	SIZE OF THE NUM ZOOM WINDOW
+	tbinfo.cx = 155;	// 155	SIZE OF THE NUM ZOOM WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBZoomWinCntReadout, (LPARAM)&tbinfo);
 
@@ -490,7 +490,7 @@ int		CreateToolBars(HWND		hwndParent)
 
 	SendMessage(ghwndTBPlay, TB_GETITEMRECT, (WPARAM)iNumZoomWindowsButton, (LPARAM)&r);
 	r.top = 2;
-	r.left = r.left+20; // Position of Number of Zoom Windows
+	r.left = r.left+30; // Position of Number of Zoom Windows
 
 	//////////////////////////////////////////////////
 	// Create Number of Zoom Windows on toolbar
@@ -508,7 +508,7 @@ int		CreateToolBars(HWND		hwndParent)
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
-	tbinfo.cx = 80;	// SIZE OF THE NUM GROUP STATUS WINDOW
+	tbinfo.cx = 90;	// SIZE OF THE NUM GROUP STATUS WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBGroupStatus, (LPARAM)&tbinfo);
 
@@ -593,11 +593,29 @@ void ShowTBZoomWinCnt(LPSTR pName)
 
 void GroupedStatus(BOOL bStatus)
 {
+	HDC hdc;
+  RECT        rect = {0};
+  HBRUSH  hbrBack;
+
 	if(bStatus == TRUE)
 	{
 		if(ghwndTBGroupStatus)
 		{
-			SetWindowText(ghwndTBGroupStatus, "GROUPED");
+
+			GetClientRect(ghwndTBGroupStatus, &rect);
+			hdc = GetDC(ghwndTBGroupStatus);
+
+			hbrBack = CreateSolidBrush(RGB(0,255,0));	// Set Green background
+		  FillRect(hdc, &rect, hbrBack);						// fill it in
+
+			// Display Group status
+
+			WriteTextLinesToDC(hdc  , &rect , 0, 0, GetSysColor(COLOR_INFOTEXT), "GROUPED");
+
+			// Clean up
+			DeleteObject(hbrBack);
+			ReleaseDC(ghwndTBGroupStatus, hdc);
+
 		}
 	}
 	else
