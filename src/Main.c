@@ -17,6 +17,8 @@
 extern HWND			g_stereoCueMetersWindow;
 extern char	g_sequence_file_name[MAX_PATH];
 
+LPSTR							GetListItemGroupName(int iItem);	// SEE GROUPS.C
+
 BOOL		OpenSequenceFiles (LPSTR  lpstrFName);
 
 BOOL    g_bReversDirection = FALSE;
@@ -601,6 +603,23 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 					case IDM_V_CANCELGROUPS:
 						lpttt->lpszText = "Cancel Groups";
 						break;
+
+					/////////////////////////////////////////////
+					// GROUP Button TIPS
+					// Get tip text from the Group Name list box
+
+					case IDM_V_CANCELGROUPS+1:
+					case IDM_V_CANCELGROUPS+2:
+					case IDM_V_CANCELGROUPS+3:
+					case IDM_V_CANCELGROUPS+4:
+					case IDM_V_CANCELGROUPS+5:
+					case IDM_V_CANCELGROUPS+6:
+					case IDM_V_CANCELGROUPS+7:
+					case IDM_V_CANCELGROUPS+8:
+						lpttt->lpszText = GetListItemGroupName(idButton - IDM_V_CANCELGROUPS - 1);
+						break;
+
+
 					case IDM_V_CANCELCUES:
 						lpttt->lpszText = "Cancel Cues";
 						break;
@@ -632,7 +651,17 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
     //////////////////////////////////////////////////////////////
     case WM_SIZE:
       SizeClientWindow(hWnd, wMessage, wParam, lParam);
-			// Size the MASTER window too
+
+			// Hack the Master Window to the correct size
+			// after we size the main window
+
+				if(ghwndMaster)
+				{
+          DestroyMasterViewWindow(ghwndMaster);
+          CreateMasterViewWindow("Zoom Master View", NULL);
+				}
+
+			// Size the MASTER window too - this doesn't seem to work
 //				PostMessage(ghwndMaster,WM_SIZE,wParam,lParam);
      break;
 
