@@ -443,6 +443,8 @@ END
 STRINGTABLE DISCARDABLE 
 BEGIN
     IDS_CDEF_CONTROLNAME_NOTFOUND "Control Name Not Found !"
+    IDS_MULTIPLE_APPLICATIONS_RUNNING 
+                            "Vacs is already running! Only one Vacs instance can be active."
 END
 
 STRINGTABLE DISCARDABLE 
