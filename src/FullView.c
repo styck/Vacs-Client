@@ -32,6 +32,15 @@ int	g_CueMasterSystem=0;
 HRGN      g_hrgn;
 HBITMAP   g_hbmpUDScroller;
 
+///////////////////////////////////////////
+// SOLO CUE MODE SUPPORT
+
+void	CancelAllCues (HWND);	// see ControlDataFilters.c
+BOOL  IsCtrlCueButton(int,int);
+
+extern BOOL									g_bIsSoloCueMode; // see MAIN.C
+
+////////////////////////
 void TurnOffAllVUforMixerWindow(LPMIXERWNDDATA lpmwd);
 void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd, 
                                   LPCTRLZONEMAP lpctrlZM, BOOL bIsOn);
@@ -470,6 +479,8 @@ LRESULT CALLBACK  FullViewImgProc(HWND hWnd, UINT wMessage,
 {
 LPMIXERWNDDATA      lpmwd;
 PAINTSTRUCT         ps;
+LPCTRLZONEMAP       lpczm;
+int									iCurChan, iXadj;		// temp to save variables
 
 lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
@@ -500,7 +511,36 @@ lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
       break;
     //////////////////////////////////////////////////////////////
     case WM_LBUTTONDOWN:
+
       HandleLBDown(hWnd, MAKEPOINTS(lParam), wParam, lpmwd);
+			lpczm=lpmwd->lpCtrlZM;	// Save THIS buttons zone
+			iCurChan = lpmwd->iCurChan;
+			iXadj = lpmwd->iXadj;
+
+			//////////////////////////////////////////////////
+			// This is where we handle the SOLO CUE MODE
+			// If the button pressed meets the conditions
+			// below then we must cancel all the cues before
+			// enabling the cue button that they pressed.
+
+			if( 
+					(lpmwd->lpCtrlZM)	&&	// NOT NULL
+					(IsCtrlCueButton(lpmwd->lpCtrlZM->iCtrlChanPos,lpmwd->lpCtrlZM->iModuleNumber) == TRUE)	&&	// AND ITS A CUE BUTTON
+					(g_bIsSoloCueMode == TRUE)	&&												// AND WE ARE IN SOLO MODE
+					!(lpmwd->wKeyFlags & MK_SHIFT)											// AND SHIFT KEY IS NOT DOWN
+				)
+			{
+					CancelAllCues (ghwndMain);								// THEN CANCEL ALL CUES
+
+					lpmwd->lpCtrlZM = lpczm;						// restore THIS buttons zone
+					lpmwd->iCurChan = iCurChan;
+					lpmwd->iXadj = iXadj;
+
+					lpmwd->iCurMode = MW_NOTHING_MODE;	// Make this button UNPROCESSED again
+					HandleLBDown(hWnd, MAKEPOINTS(lParam), wParam, lpmwd);
+			}
+			ActivateMWMode(hWnd, lpmwd);
+
       break;
 
     //////////////////////////////////////////////////////////////
