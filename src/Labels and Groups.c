@@ -1,16 +1,19 @@
 //=================================================
-// Copyright 1998-2001 CorTek Software, Inc.
+// Copyright 1998-2002 CorTek Software, Inc.
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author:: Styck                                $
+// $Archive:: /Vacs Client/src/Labels and Groups. $
+// $Revision:: 20                                 $
 //
 
 //=================================================
 // The window that displays the labels and the
 // Grouping
+// 
+// Handles mouse buttons down and mouse movement
+// accross the labels and group windows
 //
 //=================================================
 
@@ -35,7 +38,7 @@ int         iReturn;
 WNDCLASS    wc;
 
 
-	// Register Full View Class
+	// Register Label Group Class
 	//--------------------------
 	memset(&wc, 0x00, sizeof(WNDCLASS));      // Clear wndclass structure
 
@@ -74,11 +77,11 @@ HWND        hwnd = NULL;
 						 WS_VISIBLE,
 						 prect->left,
 						 prect->top,
-						 prect->right,       // Set it to the max Width
-						 prect->bottom,      // Set it to the max Height
+						 prect->right,      // Set it to the max Width
+						 prect->bottom,     // Set it to the max Height
 						 hwndParent,        // Parent window's handle
 						 NULL,              // Default to Class Menu
-						 ghInstMain,         // Instance of window
+						 ghInstMain,        // Instance of window
 						 NULL               // Ptr To Data Structure For WM_CREATE
 										 );
 
@@ -116,11 +119,11 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 	switch (wMessage)
   {
 
-		///////////////////////////////////////////////////////////////////
-		// If mouse button is held down and moved across the labels then
+		/////////////////////////////////////////////////////////////////////////
+		// If mouse button is held down and dragged/moved across the labels then
 		// they will be added to the grouping
 		// This works for both the zoom and full view windows
-		///////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////
 
 		case WM_MOUSEMOVE:
 			if(bLBDown)
@@ -130,8 +133,6 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 				{
 					if(GroupChannel(iXVal, 1))
 					{
-//fds						InvalidateRect(hWnd, NULL, FALSE);
-//fds						UpdateWindow(hWnd);
 						RefreshAllLblWindows();
 					}
 				}
@@ -147,27 +148,30 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 		case WM_LBUTTONDOWN:
 			iXVal = LOWORD(lParam);
 			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
+			{
 				if(GroupChannel(iXVal, 1))
 				{
-//fds					InvalidateRect(hWnd, NULL, FALSE);
-//fds					UpdateWindow(hWnd);
 					RefreshAllLblWindows();
 				}
+			}
 				bLBDown = TRUE;
 
 			break;
 
 		//////////////////////////////////////////////////////////////
 		case WM_RBUTTONDOWN:
+			bLBDown = FALSE;
 			iXVal = LOWORD(lParam);
 			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
+			{
 				if(UnGroupChannel(iXVal))
 				{
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
 					RefreshAllLblWindows();
 				}
-    
+			}
+
 			break;
 
 		//////////////////////////////////////////////////////////////
