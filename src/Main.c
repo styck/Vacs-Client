@@ -80,6 +80,10 @@ if ( shift_key & 0x8000)
 }
 else
 {
+
+	CloseAllMDI();
+	ShowSeqWindow(FALSE);
+
 	// go to the right directory and Load the LA$T state of the mixer....			
 	wsprintf(fsTemp.szFileDir, "%s\\mix\\", gszProgDir);
 	wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
@@ -289,6 +293,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
   //RECT    TempDesktopRect, TempMainRect;
   int     iRet;
+	BOOL bResult;
 
   switch (wMessage)
 	{
@@ -487,7 +492,9 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 			break;
 
 	case IDM_H_INFO:
-		MessageBox(ghwndMain,"Comming soon","Info",MB_OK);
+			bResult = WinHelp(hWnd,"VACSKEYS.HLP",HELP_FINDER,0);
+			if(bResult == 0)
+			MessageBox(ghwndMain,"Help Failed: VACSKEYS.HLP NOT FOUND","Info",MB_OK);
 	break;
 
     case IDM_H_ABOUT:
