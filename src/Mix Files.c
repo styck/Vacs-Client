@@ -1,7 +1,7 @@
 //=================================================
 //Mix files
 //
-// CopyRight 1998 CorTek Software, Inc.
+// CopyRight 2001 CorTek Software, Inc.
 //=================================================
 
 //#include <windows.h>
@@ -20,6 +20,8 @@ extern int  g_iMasterModuleIdx;
 extern int	g_inputCueActiveCounter;
 extern char	g_sequence_file_name[MAX_PATH];
 extern LPDLROOTPTR g_pdlrSequence;
+extern DWORD g_dwCurrentSeqSelection;
+extern HWND		ghwndTBSeqSceneNumber;	// see CREATEMAIN.C
 
 void	UpdateTBGroupButtons(); // external 
 void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd, 
@@ -31,9 +33,16 @@ int			countInputCuesOn (void);
 void		handleInputCuePriority (LPMIXERWNDDATA lpmwd, BOOL	input_cue_on);
 BOOL		OpenSequenceFiles (LPSTR  lpstrFName);
 void		CloseSequenceFiles (void);
+void		UpdateSeqSceneNumber(void);
+LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType );
 
+
+extern DWORD SeqSelectionIndex(void);
+extern BOOL SeqGoToIndex(DWORD index);
 
 static char gszTitleBuffer[255] = {0};
+
+
 //======================================================
 //function: OpenMixFile
 //
@@ -41,41 +50,44 @@ static char gszTitleBuffer[255] = {0};
 //
 //
 //======================================================
+
 int     OpenMixFile(void)
 {
 OPENFILENAME    ofn;
 
-if (gfsMix.szFileDir[0] == 0)
-	sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
+	if (gfsMix.szFileDir[0] == 0)
+		sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
 
-CopyMemory(&gfsTemp, &gfsMix, sizeof(FILESTRUCT));
+	CopyMemory(&gfsTemp, &gfsMix, sizeof(FILESTRUCT));
 
-ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 
-ofn.lStructSize = sizeof( OPENFILENAME );
-ofn.hwndOwner = ghwndMain; // An invalid hWnd causes non-modality
-ofn.lpstrFilter = "VACS Mix Files\0*.mix\0All Files\0*.*\0\0";//(LPSTR)szFilter;  // See previous note concerning string
-ofn.lpstrCustomFilter = NULL;
-ofn.nFilterIndex = 1; // Always pick the first one
-ofn.lpstrFile = (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
-ofn.nMaxFile = 512;
-ofn.lpstrFileTitle = NULL;//(LPSTR)fsTemp.szFileName;
-ofn.nMaxFileTitle = 0;//512;
-ofn.lpstrInitialDir = (LPSTR)gfsTemp.szFileDir;
-ofn.lpstrTitle = "Open Mix File";  // Title for dialog
-ofn.Flags = OFN_CREATEPROMPT | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;// | OFN_EXPLORER;
-ofn.lpstrDefExt = ".mix";//(LPSTR)szDefExt;
+	ofn.lStructSize = sizeof( OPENFILENAME );
+	ofn.hwndOwner = ghwndMain; // An invalid hWnd causes non-modality
+	ofn.lpstrFilter = "VACS Mix Files\0*.mix\0All Files\0*.*\0\0";//(LPSTR)szFilter;  // See previous note concerning string
+	ofn.lpstrCustomFilter = NULL;
+	ofn.nFilterIndex = 1; // Always pick the first one
+	ofn.lpstrFile = (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
+	ofn.nMaxFile = 512;
+	ofn.lpstrFileTitle = NULL;//(LPSTR)fsTemp.szFileName;
+	ofn.nMaxFileTitle = 0;//512;
+	ofn.lpstrInitialDir = (LPSTR)gfsTemp.szFileDir;
+	ofn.lpstrTitle = "Open Mix File";  // Title for dialog
+	ofn.Flags = OFN_CREATEPROMPT | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;// | OFN_EXPLORER;
+	ofn.lpstrDefExt = ".mix";//(LPSTR)szDefExt;
 
 
-if(GetOpenFileName(&ofn))
-    {
-			if (g_mixer_state_changed)
+	if(GetOpenFileName(&ofn))
+  {
+		if (g_mixer_state_changed)
 		{	
 			if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
 				UpdateMixFile ();
-		}								  
+		}
+
 		g_mixer_state_changed = FALSE;
 		g_monitor_mix_file_changes = FALSE;
+		wsprintf(g_sequence_file_name, "%s", ofn.lpstrFile);
 
     CloseAllMDI();
 		ShowSeqWindow(FALSE);
@@ -85,7 +97,7 @@ if(GetOpenFileName(&ofn))
     LoadMixFile(&gfsMix, TRUE);
 		g_monitor_mix_file_changes = TRUE;
 
-    }
+  }
 
 
 return 0;
@@ -100,7 +112,7 @@ return 0;
 //======================================================
 int     SaveMixFile(void)
 {
-OPENFILENAME    ofn;
+	OPENFILENAME    ofn;
 	char						new_sequence_files [MAX_PATH];
 	char						old_sequence_files [MAX_PATH];
 	char						szFile [MAX_PATH];
@@ -110,70 +122,71 @@ OPENFILENAME    ofn;
 	char						szBuff[MAX_PATH];
 
 
-if (gfsMix.szFileDir[0] == 0)
-	sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
+	if (gfsMix.szFileDir[0] == 0)
+		sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
 
-CopyMemory(&gfsTemp, &gfsMix, sizeof(FILESTRUCT));
+	CopyMemory(&gfsTemp, &gfsMix, sizeof(FILESTRUCT));
 
-ZeroMemory(&ofn, sizeof(OPENFILENAME));
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 
-ofn.lStructSize = sizeof( OPENFILENAME );
-ofn.hwndOwner = ghwndMain; // An invalid hWnd causes non-modality
-ofn.lpstrFilter = "VACS Mix Files\0*.mix\0All Files\0*.*\0\0";//(LPSTR)szFilter;  // See previous note concerning string
-ofn.lpstrCustomFilter = NULL;
-ofn.nFilterIndex = 1; // Always pick the first one
-ofn.lpstrFile = (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
-ofn.nMaxFile = 512;
-ofn.lpstrFileTitle = NULL;//(LPSTR)fsTemp.szFileName;
-ofn.nMaxFileTitle = 0;//512;
-ofn.lpstrInitialDir = (LPSTR)gfsTemp.szFileDir;
-ofn.lpstrTitle = "Save Mix File";  // Title for dialog
-ofn.Flags = OFN_CREATEPROMPT | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;// | OFN_EXPLORER;
-ofn.lpstrDefExt = ".mix";//(LPSTR)szDefExt;
-
-
-		if(GetSaveFileName(&ofn))
-		{
-				CloseSequenceFiles ();	
-				wsprintf(gfsMix.szFileName, "%s", &gfsTemp.szFileName[ofn.nFileOffset]);
-				gfsTemp.szFileName[ofn.nFileOffset] = 0;
-				wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
-				WriteMixFile(&gfsMix, TRUE);
-
-				wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
+	ofn.lStructSize = sizeof( OPENFILENAME );
+	ofn.hwndOwner = ghwndMain; // An invalid hWnd causes non-modality
+	ofn.lpstrFilter = "VACS Mix Files\0*.mix\0All Files\0*.*\0\0";//(LPSTR)szFilter;  // See previous note concerning string
+	ofn.lpstrCustomFilter = NULL;
+	ofn.nFilterIndex = 1; // Always pick the first one
+	ofn.lpstrFile = (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
+	ofn.nMaxFile = 512;
+	ofn.lpstrFileTitle = NULL;//(LPSTR)fsTemp.szFileName;
+	ofn.nMaxFileTitle = 0;//512;
+	ofn.lpstrInitialDir = (LPSTR)gfsTemp.szFileDir;
+	ofn.lpstrTitle = "Save Mix File";  // Title for dialog
+	ofn.Flags = OFN_CREATEPROMPT | OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST;// | OFN_EXPLORER;
+	ofn.lpstrDefExt = ".mix";//(LPSTR)szDefExt;
 
 
-		// close the old files and the sequence window
-		//SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)ghwndSeq, 0L);
-		//DestroyWindow (ghwndSeq);
-		//ghwndSeq = NULL;
-		// assemble the new sequence file names and copy the old ones over
-		wsprintf (new_sequence_files, "%s.ctek", szFile);
-		wsprintf (old_sequence_files, "%s.ctek", g_sequence_file_name);
-		CopyFile (old_sequence_files, new_sequence_files, FALSE);
+	if(GetSaveFileName(&ofn))
+	{
+			CloseSequenceFiles ();	
+			wsprintf(gfsMix.szFileName, "%s", &gfsTemp.szFileName[ofn.nFileOffset]);
+			gfsTemp.szFileName[ofn.nFileOffset] = 0;
+			wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
+			WriteMixFile(&gfsMix, TRUE);
 
-		CloseDataFile();
+			wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
 
-		wsprintf (new_sequence_files, "%s.data", szFile);
-		wsprintf (old_sequence_files, "%s.data", g_sequence_file_name);
-		CopyFile (old_sequence_files, new_sequence_files, FALSE);
-		// cool ... now set the compression on this file
+
+	// close the old files and the sequence window
+	//SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)ghwndSeq, 0L);
+	//DestroyWindow (ghwndSeq);
+	//ghwndSeq = NULL;
+	// assemble the new sequence file names and copy the old ones over
+	wsprintf (new_sequence_files, "%s.ctek", szFile);
+	wsprintf (old_sequence_files, "%s.ctek", g_sequence_file_name);
+	CopyFile (old_sequence_files, new_sequence_files, FALSE);
+
+	CloseDataFile();
+
+	wsprintf (new_sequence_files, "%s.data", szFile);
+	wsprintf (old_sequence_files, "%s.data", g_sequence_file_name);
+	CopyFile (old_sequence_files, new_sequence_files, FALSE);
+	// cool ... now set the compression on this file
 
 //		wsprintf (szBuff, "%s.ctek", g_sequence_file_name);
 //		wsprintf (szBuff, "%s.ctek", szFile);
 //    g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szBuff);
 
 //    wsprintf(szBuff, "%s.data",g_sequence_file_name);
-    wsprintf(szBuff, "%s.data",szFile);
+  wsprintf(szBuff, "%s.data",szFile);
 
-				wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
-				wsprintf(g_sequence_file_name, "%s", szFile);
+			wsprintf(szFile, "%s%s", gfsMix.szFileDir, gfsMix.szFileName);
+			wsprintf(g_sequence_file_name, "%s", szFile);
 
-    if(OpenDataFile(szBuff))
-			OpenSequenceFiles (g_sequence_file_name);
-		//ShowSeqWindow(TRUE);
-    
-		}
+  if(OpenDataFile(szBuff))
+		OpenSequenceFiles (g_sequence_file_name);
+	//ShowSeqWindow(TRUE);
+  
+	}
+
 return 0;
 }
 
@@ -187,10 +200,10 @@ return 0;
 int     UpdateMixFile(void)
 {
 
-if(WriteMixFile(&gfsMix, TRUE) == 0)
-    InformationStatus(ghInstStrRes, IDS_MIXFILE_SAVED);
-else
-    InformationStatus(ghInstStrRes, IDS_MIXFILE_NOTSAVED);
+	if(WriteMixFile(&gfsMix, TRUE) == 0)
+			InformationStatus(ghInstStrRes, IDS_MIXFILE_SAVED);
+	else
+			InformationStatus(ghInstStrRes, IDS_MIXFILE_NOTSAVED);
 
 return 0;
 }
@@ -235,51 +248,86 @@ char								szBuff[MAX_PATH];
 	wsprintf(szBuff, "%smix\\%s", gszProgDir, "LA$T.mix");
 
 
-hf = CreateFile(szFile, GENERIC_READ, 
+	hf = CreateFile(szFile, GENERIC_READ, 
                 0, NULL, OPEN_EXISTING, 
                 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
                 NULL);
-if(hf == INVALID_HANDLE_VALUE)
-    {
+	if(hf == INVALID_HANDLE_VALUE)
+  {
     return 1;
-    }
+  }
 
 
-bResult = ReadFile(hf, (LPSTR)&gmfhTemp, 
+	bResult = ReadFile(hf, (LPSTR)&gmfhTemp, 
                    sizeof(MIXFILEHEADER), &dwBRead, NULL);
-if(bResult == FALSE || dwBRead == 0)
-    {
+	if(bResult == FALSE || dwBRead == 0)
+  {
     InformationStatus(ghInstStrRes, IDS_ERR_OPENING_FILE);
     CloseHandle(hf);
     return 1;
-    }
+  }
 
 
-if((gmfhTemp.dwID != SAMMPLUS_ID) || (gmfhTemp.dwSize != sizeof(MIXFILEHEADER))||
+	if((gmfhTemp.dwID != SAMMPLUS_ID) || (gmfhTemp.dwSize != sizeof(MIXFILEHEADER))||
     gmfhTemp.dwVersion > SAMMPLUS_VERSION)
-    {
+  {
     ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_MIX_FILE);
-    }
-else
-    {
+  }
+	else
+  {
     gmfhMix = gmfhTemp;
     if(gmfhTemp.dwVersion < SAMMPLUS_VERSION)
         ;//InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
-    }
+  }
 
-// Go through the file and
-// Read the Header for every Section
-//----------------------------------
-bResult = ReadFile(hf, (LPSTR)&fsh, 
+	///////////////////////////////////////////////////////////////////////////////
+	// If we are loading the LAS$T.mix file then try to get the sequence
+	// of the last loaded mix file
+
+	if(lstrcmp(szBuff, g_sequence_file_name) == 0)
+	{
+
+		lnResult = RegCreateKeyEx(
+								HKEY_CURRENT_USER,
+								szRegKey,
+								0, 
+								REG_NONE, 
+								0, 
+								KEY_ALL_ACCESS, 
+								NULL, 
+								&hKey,
+								&dwDisposition );
+
+		szRegValue = "MRUmix";
+		rc = RegQueryValueEx( 
+					hKey, 
+					szRegValue, 
+					NULL, 
+					&dwType, 
+					&szTempSeq, 
+					&dwBufferSize ); 
+
+		  // Set our global sequence name to the last loaded mix file
+
+			wsprintf(g_sequence_file_name, "%s", szTempSeq);
+
+	}
+
+	/////////////////////////////////////
+	// Go through the file and
+	// Read the Header for every Section
+	//----------------------------------
+	bResult = ReadFile(hf, (LPSTR)&fsh, 
                    sizeof(FILESECTIONHEADER), &dwBRead, NULL);
-if(bResult == FALSE || dwBRead != sizeof(FILESECTIONHEADER))
-    {
+
+	if(bResult == FALSE || dwBRead != sizeof(FILESECTIONHEADER))
+  {
     InformationStatus(ghInstStrRes, IDS_ERR_READING_FILE);
     CloseHandle(hf);
     return 1;
-    }
+  }
 
-while(bResult != FALSE && dwBRead == sizeof(FILESECTIONHEADER))
+	while(bResult != FALSE && dwBRead == sizeof(FILESECTIONHEADER))
   {
     switch(fsh.dwID)
     {
@@ -292,7 +340,7 @@ while(bResult != FALSE && dwBRead == sizeof(FILESECTIONHEADER))
         ReadMixerWndDataFromFile(hf, &fsh);
         break;
     case SEQUENCE_WINDOW_FILE_ID:
-        ReadSequenceWndDataFromFile(hf, &fsh);
+        ReadSequenceWndDataFromFile(hf, &fsh, TRUE);
         break;
     case GROUP_WINDOW_FILE_ID:
         ReadGroupWndDataFromFile(hf, &fsh);
@@ -347,11 +395,11 @@ while(bResult != FALSE && dwBRead == sizeof(FILESECTIONHEADER))
     bResult = ReadFile(hf, (LPSTR)&fsh, sizeof(FILESECTIONHEADER), &dwBRead, NULL);
   }
 
-CloseHandle(hf);
+	CloseHandle(hf);
 
 
-if(bRecallFromMemBuffer)
-  RecallMemoryMapBuffer(FALSE,0);
+	if(bRecallFromMemBuffer)
+		RecallMemoryMapBuffer(FALSE,0);
 
 //HadleCueMasterSystem ();
 /*
@@ -383,60 +431,27 @@ if(g_CueMasterSystem == 0){
 }
 */
 
-	if(saveName){
-	wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
-	SetWindowText(ghwndMain, gszTitleBuffer);
-}
-	//
+	// If saveName then add the name of the mix file to our window title
 
-	//SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)ghwndSeq, 0L);
-	//DestroyWindow (ghwndSeq);
-	//ghwndSeq = NULL;
-
-	// If we are loading the LAS$T.mix file then try to get the sequence
-	// of the last loaded mix file
-
-	if(lstrcmp(szBuff, g_sequence_file_name) == 0)
+	if(saveName)
 	{
-
-		lnResult = RegCreateKeyEx(
-								HKEY_CURRENT_USER,
-								szRegKey,
-								0, 
-								REG_NONE, 
-								0, 
-								KEY_ALL_ACCESS, 
-								NULL, 
-								&hKey,
-								&dwDisposition );
-
-		szRegValue = "MRUmix";
-		rc = RegQueryValueEx( 
-					hKey, 
-					szRegValue, 
-					NULL, 
-					&dwType, 
-					&szTempSeq, 
-					&dwBufferSize ); 
-
-			wsprintf(szBuff, "%s", szTempSeq);
-
-	}
-	else
-	{
-			wsprintf(szBuff, "%s", g_sequence_file_name);
+ 		wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
+		SetWindowText(ghwndMain, gszTitleBuffer);
 	}
 
-	OpenSequenceFiles (szBuff);
 	SetFocus(ghwndZoom);			// Gamble wants the Zoom window to be the one with focus after loading
 
 return 0;
 }
 
 
+//====================================================
+//function: HadleCueMasterSystem
 //
 //
 //
+//
+//====================================================
 void	HadleCueMasterSystem ()
 {
 	LPMIXERWNDDATA			lpmwd; // temp memory for the Mixer Window data
@@ -485,7 +500,7 @@ void	HadleCueMasterSystem ()
 
 
 //====================================================
-//function: SaveMixFile
+//function: WriteMixFile
 //
 //
 //
@@ -503,44 +518,44 @@ FILESECTIONHEADER   fsh;
 USHORT					compression;
 
 
-wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
+	wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
 
 
-hf = CreateFile(szFile, GENERIC_WRITE, 
-                0, NULL, OPEN_ALWAYS, 
-                FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
-                NULL);
+	hf = CreateFile(szFile, GENERIC_WRITE, 
+									0, NULL, OPEN_ALWAYS, 
+									FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+									NULL);
 
-if(hf == INVALID_HANDLE_VALUE)
-    {
+	if(hf == INVALID_HANDLE_VALUE)
+	{
     return 1;
-    }
+	}
 
-// cool ... now set the compression on this file
-compression = COMPRESSION_FORMAT_LZNT1;
-DeviceIoControl (hf, FSCTL_SET_COMPRESSION, &compression, sizeof (compression), 0, 0, 
-								 &dwBWrite, 0);
-////////////////////////////////////////////
-// Write the File header
-//----------------------
-gmfhMix.dwID   = SAMMPLUS_ID;
-gmfhMix.dwVersion   = SAMMPLUS_VERSION;
-gmfhMix.dwSize = sizeof(MIXFILEHEADER);
-gmfhMix.dwDevID = 0; // IT SHOULD BE SET TO THE DEVICE ID for THE MIXER
-gmfhMix.iNumDev = 0; // the number of devices
-gmfhMix.iScrCX = 0; // the screen resolution CX
-gmfhMix.iScrCY = 0; // the screen resolution CX
-ZeroMemory(gmfhMix.iReserved, sizeof(gmfhMix.iReserved));
+	// cool ... now set the compression on this file
+	compression = COMPRESSION_FORMAT_LZNT1;
+	DeviceIoControl (hf, FSCTL_SET_COMPRESSION, &compression, sizeof (compression), 0, 0, 
+									 &dwBWrite, 0);
+	////////////////////////////////////////////
+	// Write the File header
+	//----------------------
+	gmfhMix.dwID   = SAMMPLUS_ID;
+	gmfhMix.dwVersion   = SAMMPLUS_VERSION;
+	gmfhMix.dwSize = sizeof(MIXFILEHEADER);
+	gmfhMix.dwDevID = 0; // IT SHOULD BE SET TO THE DEVICE ID for THE MIXER
+	gmfhMix.iNumDev = 0; // the number of devices
+	gmfhMix.iScrCX = 0; // the screen resolution CX
+	gmfhMix.iScrCY = 0; // the screen resolution CX
+	ZeroMemory(gmfhMix.iReserved, sizeof(gmfhMix.iReserved));
 
-bResult = WriteFile(hf, (LPVOID)&gmfhMix, 
-                    sizeof(MIXFILEHEADER), &dwBWrite, NULL);
-if(bResult == FALSE || dwBWrite == 0)
-    goto ON_ERROR_EXIT;
+	bResult = WriteFile(hf, (LPVOID)&gmfhMix, 
+											sizeof(MIXFILEHEADER), &dwBWrite, NULL);
+	if(bResult == FALSE || dwBWrite == 0)
+			goto ON_ERROR_EXIT;
 
 
 	////////////////////////////////////////////
   // Save the Groups
-  //----------------
+	////////////////////////////////////////////
   ZeroMemory(&fsh, sizeof(fsh));
   // Write the Labelss ID ...
   //
@@ -554,7 +569,7 @@ if(bResult == FALSE || dwBWrite == 0)
 
   ////////////////////////////////////////////
 	// Save the Labels.
-  //-----------------
+  ////////////////////////////////////////////
   if(gpLabels)
   {
     ZeroMemory(&fsh, sizeof(fsh));
@@ -597,6 +612,7 @@ if(bResult == FALSE || dwBWrite == 0)
   ////////////////////////////////////////////
 	// Write this section .. so we know that tha master window was visible
   // before we start creating the other windows
+  ////////////////////////////////////////////
   if(ghwndMaster)
   {
     fsh.dwID = MASTER_WINDOW_FILE_ID;
@@ -608,7 +624,7 @@ if(bResult == FALSE || dwBWrite == 0)
 
 	////////////////////////////////////////////
 	// Save all of the Open Windows
-	//-----------------------------
+  ////////////////////////////////////////////
 	hwnd = GetTopWindow(ghwndMDIClient);
 	if(GetWindow(hwnd, GW_HWNDLAST))
 			hwnd = GetWindow(hwnd, GW_HWNDLAST);
@@ -643,6 +659,7 @@ if(bResult == FALSE || dwBWrite == 0)
 	////////////////////////////////////////////
   // Write the Device memory Image ..
   //
+	////////////////////////////////////////////
   fsh.dwID = DEV_CONTROLS_IMAGE_FILE_ID;
   fsh.lSize = giMemMapSize;
   fsh.dwVersion = 0x00000001;
@@ -653,13 +670,16 @@ if(bResult == FALSE || dwBWrite == 0)
 
 	////////////////////////////////////////////
 	// Save the Memory State
-	//----------------------
+	////////////////////////////////////////////
 
 	// Set the End-Of-File
 	// Close the file
 	//--------------------
 	SetEndOfFile(hf);
 	CloseHandle(hf);
+
+	// If saveName then add the name of the mix file to our window title
+
 	if(showName)
 	{
 		wsprintf(gszTitleBuffer, "%s %s", gszMainWndTitle, pfs->szFileName);
@@ -693,24 +713,25 @@ MIXERWINDOWFILE     mwdfile;
 BOOL                bResult;
 DWORD               dwBWrite;
 
-ZeroMemory(&fsh, sizeof(FILESECTIONHEADER));
-ZeroMemory(&mwdfile, sizeof(MIXERWINDOWFILE));
+	ZeroMemory(&fsh, sizeof(FILESECTIONHEADER));
+	ZeroMemory(&mwdfile, sizeof(MIXERWINDOWFILE));
 
-// Save the Section Header
-//------------------------
-fsh.lSize = sizeof(MIXERWINDOWFILE);
-fsh.dwID = MIXER_WINDOW_FILE_ID;
-fsh.dwVersion = SAMMPLUS_VERSION;
-bResult = WriteFile(hFile, (LPVOID)&fsh, sizeof(FILESECTIONHEADER), &dwBWrite, NULL);
-if(bResult == FALSE || dwBWrite != sizeof(FILESECTIONHEADER))
-    return 1;// error
+	// Save the Section Header
+	//------------------------
+	fsh.lSize = sizeof(MIXERWINDOWFILE);
+	fsh.dwID = MIXER_WINDOW_FILE_ID;
+	fsh.dwVersion = SAMMPLUS_VERSION;
+
+	bResult = WriteFile(hFile, (LPVOID)&fsh, sizeof(FILESECTIONHEADER), &dwBWrite, NULL);
+	if(bResult == FALSE || dwBWrite != sizeof(FILESECTIONHEADER))
+			return 1;// error
 
 
-// Save the Window Data
-//---------------------
-pmwd = (LPMIXERWNDDATA)GetWindowLong(hwnd, 0);
-if(pmwd != NULL)
-    {
+	// Save the Window Data
+	//---------------------
+	pmwd = (LPMIXERWNDDATA)GetWindowLong(hwnd, 0);
+	if(pmwd != NULL)
+	{
     lstrcpy(mwdfile.szTitle, pmwd->szTitle);
     mwdfile.iMixer = pmwd->iMixer;
     mwdfile.iZoneMap_ID = pmwd->lpZoneMap->wID;
@@ -727,8 +748,8 @@ if(pmwd != NULL)
     bResult = WriteFile(hFile, (LPVOID)&mwdfile, sizeof(MIXERWINDOWFILE), &dwBWrite, NULL);
     if(bResult == FALSE || dwBWrite != sizeof(MIXERWINDOWFILE))
         return 1;// error
-    }
-else
+	}
+	else
     return 1; // Error
 
 return 0;
@@ -744,6 +765,7 @@ return 0;
 //=============================================
 int     ReadMixerWndDataFromFile(HANDLE hFile, LPFILESECTIONHEADER pFSH)
 {
+
 MIXERWINDOWFILE mwdfile;
 BOOL            bResult;
 DWORD           dwBRead;
@@ -751,70 +773,70 @@ LPMIXERWNDDATA  pmwd;
 HWND            hwndLink;
 
 
-// ??????????????????????????
-// ??????????????????????????
-//
-// Save the type of the modules in the Windows in the file
-//
-// ??????????????????????????
-// ??????????????????????????
+	// ??????????????????????????
+	// ??????????????????????????
+	//
+	// Save the type of the modules in the Windows in the file
+	//
+	// ??????????????????????????
+	// ??????????????????????????
 
-ZeroMemory(&mwdfile, sizeof(MIXERWINDOWFILE));
+	ZeroMemory(&mwdfile, sizeof(MIXERWINDOWFILE));
 
-bResult = ReadFile(hFile, (LPVOID)&mwdfile, sizeof(MIXERWINDOWFILE), &dwBRead, NULL);
-if(bResult == FALSE || dwBRead != sizeof(MIXERWINDOWFILE))
-    return 1;// error
+	bResult = ReadFile(hFile, (LPVOID)&mwdfile, sizeof(MIXERWINDOWFILE), &dwBRead, NULL);
+	if(bResult == FALSE || dwBRead != sizeof(MIXERWINDOWFILE))
+			return 1;// error
 
-// load the Correct Zone Map
-//--------------------------
-switch(mwdfile.iZoneMap_ID)
-    {
+	// load the Correct Zone Map
+	//--------------------------
+	switch(mwdfile.iZoneMap_ID)
+	{
     case IDZM_INPUT_FULL:
-        // Set the pointers
-        pmwd = MixerWindowDataAlloc((WORD)mwdfile.iMixer,
-                                     gpZoneMaps_Full,
-                                     MAX_CHANNELS, 1);
+      // Set the pointers
+      pmwd = MixerWindowDataAlloc((WORD)mwdfile.iMixer,
+                                   gpZoneMaps_Full,
+                                   MAX_CHANNELS, 1);
         break;
     case IDZM_INPUT_ZOOM:
-        pmwd = MixerWindowDataAlloc((WORD)mwdfile.iMixer,
-                                     gpZoneMaps_Zoom,
-                                     MAX_CHANNELS, 1);
+      pmwd = MixerWindowDataAlloc((WORD)mwdfile.iMixer,
+                                   gpZoneMaps_Zoom,
+                                   MAX_CHANNELS, 1);
         break;
     }
 
-if(pmwd == NULL)
-    return 2;// error
+	if(pmwd == NULL)
+			return 2;// error
 
-lstrcpy(pmwd->szTitle, mwdfile.szTitle);
-pmwd->iMixer = mwdfile.iMixer;
+	lstrcpy(pmwd->szTitle, mwdfile.szTitle);
+	pmwd->iMixer = mwdfile.iMixer;
 
-// set the remaping
-CopyMemory(pmwd->lpwRemapToScr, mwdfile.lpwRemapToScr, sizeof(WORD)*MAX_CHANNELS);
-CopyMemory(pmwd->lpwRemapToPhis, mwdfile.lpwRemapToPhis, sizeof(WORD)*MAX_CHANNELS);
+	// set the remaping
+	CopyMemory(pmwd->lpwRemapToScr, mwdfile.lpwRemapToScr, sizeof(WORD)*MAX_CHANNELS);
+	CopyMemory(pmwd->lpwRemapToPhis, mwdfile.lpwRemapToPhis, sizeof(WORD)*MAX_CHANNELS);
 
-pmwd->iStartScrChan = mwdfile.iStartScrChan ;
-pmwd->iEndScrChan = mwdfile.iEndScrChan;
-pmwd->iXOffset = mwdfile.iXOffset;
-pmwd->iYOffset = mwdfile.iYOffset;
-pmwd->rWndPos = mwdfile.rWndPos;
-pmwd->rVisible = mwdfile.rVisible;
-pmwd->bLink = mwdfile.bLink;
+	pmwd->iStartScrChan = mwdfile.iStartScrChan ;
+	pmwd->iEndScrChan = mwdfile.iEndScrChan;
+	pmwd->iXOffset = mwdfile.iXOffset;
+	pmwd->iYOffset = mwdfile.iYOffset;
+	pmwd->rWndPos = mwdfile.rWndPos;
+	pmwd->rVisible = mwdfile.rVisible;
+	pmwd->bLink = mwdfile.bLink;
 
 
-switch(pmwd->lpZoneMap->wID)
-    {
+	switch(pmwd->lpZoneMap->wID)
+	{
     case IDZM_INPUT_FULL:
-        // Create the Window
-        CreateFullViewWindow(pmwd->szTitle, pmwd);
-        break;
+      // Create the Window
+      CreateFullViewWindow(pmwd->szTitle, pmwd);
+      break;
     case IDZM_INPUT_ZOOM:
-        // Create the Window
-        hwndLink = CreateZoomViewWindow(pmwd->szTitle, pmwd, 1);
+      // Create the Window
+      hwndLink = CreateZoomViewWindow(pmwd->szTitle, pmwd, 1);
 
 //       if(pmwd->bLink && hwndLink)
-            ghwndZoom = hwndLink;	// Gamble wants zoom window with focux, Always set this
-        break;
-    }
+          ghwndZoom = hwndLink;	// Gamble wants zoom window with focux, Always set this
+      break;
+	}
 
 return 0;// OK
 }
@@ -833,27 +855,30 @@ LPSEQUENCEWINDOWFILE    lpSeqWF;
 BOOL                    bResult;
 DWORD                   dwBWrite;
 
-ZeroMemory(&fsh, sizeof(FILESECTIONHEADER));
+	ZeroMemory(&fsh, sizeof(FILESECTIONHEADER));
 
-// Save the Section Header
-//------------------------
-fsh.lSize = sizeof(SEQUENCEWINDOWFILE);
-fsh.dwID = SEQUENCE_WINDOW_FILE_ID;
-fsh.dwVersion = SAMMPLUS_VERSION;
-bResult = WriteFile(hFile, (LPVOID)&fsh, sizeof(FILESECTIONHEADER), &dwBWrite, NULL);
-if(bResult == FALSE || dwBWrite != sizeof(FILESECTIONHEADER))
-    return 1;// error
-
-lpSeqWF = (LPSEQUENCEWINDOWFILE)GetWindowLong(hwnd, 0);
-
-GetWindowRect (hwnd, &lpSeqWF->rWndPos);
-ScreenToClient (ghwndMDIClient, (LPPOINT)&lpSeqWF->rWndPos.left);
-ScreenToClient (ghwndMDIClient, (LPPOINT)&lpSeqWF->rWndPos.right);
+	// Save the Section Header
+	//------------------------
+	fsh.lSize = sizeof(SEQUENCEWINDOWFILE);
+	fsh.dwID = SEQUENCE_WINDOW_FILE_ID;
+	fsh.dwVersion = SAMMPLUS_VERSION;
+	fsh.dwCurrentSeqSelection = SeqSelectionIndex();	// SAVE THE CURRENTLY SELECTED SEQUENCE
 
 
-bResult = WriteFile(hFile, (LPVOID)lpSeqWF, sizeof(SEQUENCEWINDOWFILE), &dwBWrite, NULL);
-if(bResult == FALSE || dwBWrite != sizeof(SEQUENCEWINDOWFILE))
-    return 1;// error
+	bResult = WriteFile(hFile, (LPVOID)&fsh, sizeof(FILESECTIONHEADER), &dwBWrite, NULL);
+	if(bResult == FALSE || dwBWrite != sizeof(FILESECTIONHEADER))
+			return 1;// error
+
+	lpSeqWF = (LPSEQUENCEWINDOWFILE)GetWindowLong(hwnd, 0);
+
+	GetWindowRect (hwnd, &lpSeqWF->rWndPos);
+	ScreenToClient (ghwndMDIClient, (LPPOINT)&lpSeqWF->rWndPos.left);
+	ScreenToClient (ghwndMDIClient, (LPPOINT)&lpSeqWF->rWndPos.right);
+
+
+	bResult = WriteFile(hFile, (LPVOID)lpSeqWF, sizeof(SEQUENCEWINDOWFILE), &dwBWrite, NULL);
+	if(bResult == FALSE || dwBWrite != sizeof(SEQUENCEWINDOWFILE))
+			return 1;// error
 
 return 0;
 }
@@ -865,29 +890,73 @@ return 0;
 //          HANDLE      hFile; handle to the
 //                             file
 //          FILESECTIONHEADER *pFSH;
+//          BOOL		bSetSeqSelection	
+//                  FALSE for Fkey - do not change the sequence selection
 //=============================================
 extern HWND	ghwndSeq;
-int     ReadSequenceWndDataFromFile(HANDLE hFile, LPFILESECTIONHEADER pFSH)
+int     ReadSequenceWndDataFromFile(HANDLE hFile, LPFILESECTIONHEADER pFSH, BOOL bSetSeqSelection)
 {
 SEQUENCEWINDOWFILE      seqWF;
 BOOL                    bResult;
 DWORD                   dwBRead;
 
-ZeroMemory(&seqWF, sizeof(SEQUENCEWINDOWFILE));
+	ZeroMemory(&seqWF, sizeof(SEQUENCEWINDOWFILE));
 
-bResult = ReadFile(hFile, (LPVOID)&seqWF, sizeof(SEQUENCEWINDOWFILE), &dwBRead, NULL);
-if(bResult == FALSE || dwBRead != sizeof(SEQUENCEWINDOWFILE))
-    return 1;// error
+	bResult = ReadFile(hFile, (LPVOID)&seqWF, sizeof(SEQUENCEWINDOWFILE), &dwBRead, NULL);
+	if(bResult == FALSE || dwBRead != sizeof(SEQUENCEWINDOWFILE))
+			return 1;// error
 
-ShowSeqWindow(TRUE);
-if(ghwndSeq && seqWF.rWndPos.right != 0)
-	SetWindowPos (ghwndSeq, HWND_TOP, seqWF.rWndPos.left, seqWF.rWndPos.top,
+	ShowSeqWindow(FALSE);	// Create the sequence window but don't show it until we position it
+
+	if(ghwndSeq && seqWF.rWndPos.right != 0)
+	{
+		SetWindowPos (ghwndSeq, HWND_TOP, seqWF.rWndPos.left, seqWF.rWndPos.top,
 																			seqWF.rWndPos.right - seqWF.rWndPos.left, 
 																			seqWF.rWndPos.bottom - seqWF.rWndPos.top,
 																			SWP_NOZORDER);
+	}
+
+	// Now show the sequence window, avoid the flashing.
+	ShowSeqWindow(TRUE);
+
+	/////////////////////////////////////////////////
+	// If we saved the current sequence selection
+	// then restore our global variable so that
+	// we can move the current selection to the saved
+	// point after loading it in.
+
+	if(bSetSeqSelection)
+	{
+		if(pFSH->dwCurrentSeqSelection)
+			g_dwCurrentSeqSelection = pFSH->dwCurrentSeqSelection;
+		else
+			g_dwCurrentSeqSelection = 0;
+
+				// Set the saved selection if there is one
+				// zero is valid for the first entry
+
+					SeqGoToIndex(g_dwCurrentSeqSelection);
+					UpdateSeqSceneNumber();			
+	}
 
 return 0;
 }
+
+////////////////////////////////
+// Get the currently selected
+// sequence and display its
+// index number
+////////////////////////////////
+
+void UpdateSeqSceneNumber(void)
+{
+	char szTemp[16];
+
+	itoa(SeqSelectionIndex()+1,&szTemp,10);
+	SetWindowText(ghwndTBSeqSceneNumber, szTemp);
+
+}
+
 
 //==================================================
 //function: WriteSequenceWndDataToFile
@@ -903,32 +972,32 @@ LPGROUPWINDOWFILE       pGroupWF;
 BOOL                    bResult;
 DWORD                   dwBWrite;
 
-ZeroMemory(&fsh, sizeof(FILESECTIONHEADER));
+	ZeroMemory(&fsh, sizeof(FILESECTIONHEADER));
 
-// Save the Section Header
-//------------------------
-fsh.lSize = sizeof(GROUPWINDOWFILE);
-fsh.dwID = GROUP_WINDOW_FILE_ID;
-fsh.dwVersion = SAMMPLUS_VERSION;
-bResult = WriteFile(hFile, (LPVOID)&fsh, sizeof(FILESECTIONHEADER), &dwBWrite, NULL);
-if(bResult == FALSE || dwBWrite != sizeof(FILESECTIONHEADER))
-    return 1;// error
+	// Save the Section Header
+	//------------------------
+	fsh.lSize = sizeof(GROUPWINDOWFILE);
+	fsh.dwID = GROUP_WINDOW_FILE_ID;
+	fsh.dwVersion = SAMMPLUS_VERSION;
+	bResult = WriteFile(hFile, (LPVOID)&fsh, sizeof(FILESECTIONHEADER), &dwBWrite, NULL);
+	if(bResult == FALSE || dwBWrite != sizeof(FILESECTIONHEADER))
+			return 1;// error
 
-pGroupWF = (LPGROUPWINDOWFILE)GetWindowLong(hwnd, 0);
+	pGroupWF = (LPGROUPWINDOWFILE)GetWindowLong(hwnd, 0);
 
-GetWindowRect (hwnd, &pGroupWF->rWndPos);
-ScreenToClient (ghwndMDIClient, (LPPOINT)&pGroupWF->rWndPos.left);
-ScreenToClient (ghwndMDIClient, (LPPOINT)&pGroupWF->rWndPos.right);
+	GetWindowRect (hwnd, &pGroupWF->rWndPos);
+	ScreenToClient (ghwndMDIClient, (LPPOINT)&pGroupWF->rWndPos.left);
+	ScreenToClient (ghwndMDIClient, (LPPOINT)&pGroupWF->rWndPos.right);
 
-bResult = WriteFile(hFile, (LPVOID)pGroupWF, sizeof(GROUPWINDOWFILE), &dwBWrite, NULL);
-if(bResult == FALSE || dwBWrite != sizeof(GROUPWINDOWFILE))
-    return 1;// error
+	bResult = WriteFile(hFile, (LPVOID)pGroupWF, sizeof(GROUPWINDOWFILE), &dwBWrite, NULL);
+	if(bResult == FALSE || dwBWrite != sizeof(GROUPWINDOWFILE))
+			return 1;// error
 
-return 0;
+	return 0;
 }
 
 //=============================================
-//function: ReadSequenceWndDataFromFile
+//function: ReadGroupWndDataFromFile
 //
 // params:
 //          HANDLE      hFile; handle to the
@@ -942,18 +1011,23 @@ GROUPWINDOWFILE					groupWF;
 BOOL                    bResult;
 DWORD                   dwBRead;
 
-ZeroMemory(&groupWF, sizeof(SEQUENCEWINDOWFILE));
-																									 
-bResult = ReadFile(hFile, (LPVOID)&groupWF, sizeof(GROUPWINDOWFILE), &dwBRead, NULL);
-if(bResult == FALSE || dwBRead != sizeof(GROUPWINDOWFILE))
-    return 1;// error
+	ZeroMemory(&groupWF, sizeof(SEQUENCEWINDOWFILE));
+																										 
+	bResult = ReadFile(hFile, (LPVOID)&groupWF, sizeof(GROUPWINDOWFILE), &dwBRead, NULL);
+	if(bResult == FALSE || dwBRead != sizeof(GROUPWINDOWFILE))
+			return 1;// error
 
-ShowGroupWindow(TRUE);
-if(ghwndGroup)
-	SetWindowPos (ghwndGroup, HWND_TOP, groupWF.rWndPos.left, groupWF.rWndPos.top,
-																			groupWF.rWndPos.right - groupWF.rWndPos.left, 
-																			groupWF.rWndPos.bottom - groupWF.rWndPos.top,
-																			SWP_NOZORDER);
+	ShowGroupWindow(FALSE);	// Create the Group window but DON'T show until we position it.
+
+	if(ghwndGroup)
+	{
+		SetWindowPos (ghwndGroup, HWND_TOP, groupWF.rWndPos.left, groupWF.rWndPos.top,
+																				groupWF.rWndPos.right - groupWF.rWndPos.left, 
+																				groupWF.rWndPos.bottom - groupWF.rWndPos.top,
+																				SWP_NOZORDER);
+	}
+	// Now show the group window, avoid the flashing.
+	ShowGroupWindow(TRUE);
 
 return 0;
 }
@@ -976,50 +1050,50 @@ HWND            hwnd;
 int             *piWndID;
 FILESECTIONHEADER   fsh;
 
-wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
+	wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
 
-hf = CreateFile(szFile, GENERIC_WRITE, 
-                0, NULL, OPEN_ALWAYS, 
-                FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
-                NULL);
+	hf = CreateFile(szFile, GENERIC_WRITE, 
+									0, NULL, OPEN_ALWAYS, 
+									FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+									NULL);
 
-if(hf == INVALID_HANDLE_VALUE)
-    {
+	if(hf == INVALID_HANDLE_VALUE)
+	{
     return 1;
-    }
+	}
 
-// Write the File header
-//----------------------
-gmfhMix.dwID   = SAMMPLUS_ID;
-gmfhMix.dwVersion   = SAMMPLUS_VERSION;
-gmfhMix.dwSize = sizeof(MIXFILEHEADER);
-gmfhMix.dwDevID = 0; // IT SHOULD BE SET TO THE DEVICE ID for THE MIXER
-gmfhMix.iNumDev = 0; // the number of devices
-gmfhMix.iScrCX = 0; // the screen resolution CX
-gmfhMix.iScrCY = 0; // the screen resolution CX
-ZeroMemory(gmfhMix.iReserved, sizeof(gmfhMix.iReserved));
+	// Write the File header
+	//----------------------
+	gmfhMix.dwID   = SAMMPLUS_ID;
+	gmfhMix.dwVersion   = SAMMPLUS_VERSION;
+	gmfhMix.dwSize = sizeof(MIXFILEHEADER);
+	gmfhMix.dwDevID = 0; // IT SHOULD BE SET TO THE DEVICE ID for THE MIXER
+	gmfhMix.iNumDev = 0; // the number of devices
+	gmfhMix.iScrCX = 0; // the screen resolution CX
+	gmfhMix.iScrCY = 0; // the screen resolution CX
+	ZeroMemory(gmfhMix.iReserved, sizeof(gmfhMix.iReserved));
 
-bResult = WriteFile(hf, (LPVOID)&gmfhMix, 
-                    sizeof(MIXFILEHEADER), &dwBWrite, NULL);
-if(bResult == FALSE || dwBWrite == 0)
-    goto ON_ERROR_EXIT;
+	bResult = WriteFile(hf, (LPVOID)&gmfhMix, 
+											sizeof(MIXFILEHEADER), &dwBWrite, NULL);
+	if(bResult == FALSE || dwBWrite == 0)
+			goto ON_ERROR_EXIT;
 
-  // Write this section .. so we know that tha master window was visible
-  // before we start creating the other windows
-  if(ghwndMaster)
-  {
-    fsh.dwID = MASTER_WINDOW_FILE_ID;
-    fsh.lSize = 0;
-    fsh.dwVersion = 0;
-    WriteFile(hf, &fsh, sizeof(fsh), &dwBWrite, NULL);  
-  }
+		// Write this section .. so we know that tha master window was visible
+		// before we start creating the other windows
+		if(ghwndMaster)
+		{
+			fsh.dwID = MASTER_WINDOW_FILE_ID;
+			fsh.lSize = 0;
+			fsh.dwVersion = 0;
+			WriteFile(hf, &fsh, sizeof(fsh), &dwBWrite, NULL);  
+		}
 
 
-// Save all of the Open Windows
-//-----------------------------
-hwnd = GetTopWindow(ghwndMDIClient);
-if(GetWindow(hwnd, GW_HWNDLAST))
-    hwnd = GetWindow(hwnd, GW_HWNDLAST);
+	// Save all of the Open Windows
+	//-----------------------------
+	hwnd = GetTopWindow(ghwndMDIClient);
+	if(GetWindow(hwnd, GW_HWNDLAST))
+			hwnd = GetWindow(hwnd, GW_HWNDLAST);
 
   while(hwnd)
   {
@@ -1048,20 +1122,20 @@ if(GetWindow(hwnd, GW_HWNDLAST))
   }
 
 
-// Set the End-Of-File
-// Close the file
-//--------------------
-SetEndOfFile(hf);
-CloseHandle(hf);
-return 0;
+	// Set the End-Of-File
+	// Close the file
+	//--------------------
+	SetEndOfFile(hf);
+	CloseHandle(hf);
+	return 0;
 
-ON_ERROR_EXIT:
-ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATING_FILE);
+	ON_ERROR_EXIT:
+	ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATING_FILE);
 
-SetEndOfFile(hf);
-CloseHandle(hf);
+	SetEndOfFile(hf);
+	CloseHandle(hf);
 
-return 1;
+	return 1;
 }
 
 
@@ -1079,61 +1153,110 @@ int     LoadFkeyFile(LPFILESTRUCT pfs, int fKey)
 HANDLE              hf;
 FILESECTIONHEADER   fsh;
 char                szFile[1024];
+char								szBuff[MAX_PATH];
+char								szTempSeq[MAX_PATH];
 BOOL                bResult;
 BOOL                bRecallFromMemBuffer = FALSE;
 DWORD               dwBRead;
 
-wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
+	// Registry variables 
+
+	LONG lnResult;
+	HKEY hKey = NULL;
+	DWORD dwDisposition;
+	static LPCTSTR szRegKey = "Software\\CorTek\\VACS";
+	static LPCTSTR szRegValue; 
+	DWORD dwType;
+	DWORD rc;
+	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
+
+	wsprintf(szFile, "%s%s", pfs->szFileDir, pfs->szFileName);
+
+	wsprintf(szBuff, "%smix\\%s", gszProgDir, "LA$T.mix");	// Used to see if we should check registery
 
 
-hf = CreateFile(szFile, GENERIC_READ, 
-                0, NULL, OPEN_EXISTING, 
-                FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
-                NULL);
-if(hf == INVALID_HANDLE_VALUE)
-    {
-    return 1;
-    }
+	hf = CreateFile(szFile, GENERIC_READ, 
+									0, NULL, OPEN_EXISTING, 
+									FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+									NULL);
+	if(hf == INVALID_HANDLE_VALUE)
+	{
+			return 1;
+	}
 
-	// Only close windows if we have a valid file available
+		// Only close windows if we have a valid file available
 
-    CloseAllMDI();	// close all the open windows
+			CloseAllMDI();	// close all the open windows
 
-bResult = ReadFile(hf, (LPSTR)&gmfhTemp, 
-                   sizeof(MIXFILEHEADER), &dwBRead, NULL);
-if(bResult == FALSE || dwBRead == 0)
-    {
-    InformationStatus(ghInstStrRes, IDS_ERR_OPENING_FILE);
-    CloseHandle(hf);
-    return 1;
-    }
+	bResult = ReadFile(hf, (LPSTR)&gmfhTemp, 
+										 sizeof(MIXFILEHEADER), &dwBRead, NULL);
+	if(bResult == FALSE || dwBRead == 0)
+	{
+		InformationStatus(ghInstStrRes, IDS_ERR_OPENING_FILE);
+		CloseHandle(hf);
+		return 1;
+	}
 
 
-if((gmfhTemp.dwID != SAMMPLUS_ID) || (gmfhTemp.dwSize != sizeof(MIXFILEHEADER))||
-    gmfhTemp.dwVersion > SAMMPLUS_VERSION)
-    {
-    ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_MIX_FILE);
-    }
-else
-    {
-    gmfhMix = gmfhTemp;
-    if(gmfhTemp.dwVersion < SAMMPLUS_VERSION)
-        ;//InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
-    }
+	if((gmfhTemp.dwID != SAMMPLUS_ID) || (gmfhTemp.dwSize != sizeof(MIXFILEHEADER))||
+			gmfhTemp.dwVersion > SAMMPLUS_VERSION)
+	{
+		ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_MIX_FILE);
+	}
+	else
+	{
+		gmfhMix = gmfhTemp;
+		if(gmfhTemp.dwVersion < SAMMPLUS_VERSION)
+				;//InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
+	}
 
-// Go through the file and
-// Read the Header for every Section
-//----------------------------------
-bResult = ReadFile(hf, (LPSTR)&fsh, 
+
+	////////////////////////////////////////////////////////////////////////////
+	// If we are loading the LAS$T.mix file then try to get the sequence
+	// of the last loaded mix file
+
+	if(lstrcmp(szBuff, g_sequence_file_name) == 0)
+	{
+
+		lnResult = RegCreateKeyEx(
+								HKEY_CURRENT_USER,
+								szRegKey,
+								0, 
+								REG_NONE, 
+								0, 
+								KEY_ALL_ACCESS, 
+								NULL, 
+								&hKey,
+								&dwDisposition );
+
+		szRegValue = "MRUmix";
+		rc = RegQueryValueEx( 
+					hKey, 
+					szRegValue, 
+					NULL, 
+					&dwType, 
+					&szTempSeq, 
+					&dwBufferSize ); 
+
+			wsprintf(g_sequence_file_name, "%s", szTempSeq);	// Set it to the last .mix file in registry.
+
+	}
+
+
+	/////////////////////////
+	// Go through the file and
+	// Read the Header for every Section
+	//----------------------------------
+	bResult = ReadFile(hf, (LPSTR)&fsh, 
                    sizeof(FILESECTIONHEADER), &dwBRead, NULL);
-if(bResult == FALSE || dwBRead != sizeof(FILESECTIONHEADER))
-    {
+	if(bResult == FALSE || dwBRead != sizeof(FILESECTIONHEADER))
+  {
     InformationStatus(ghInstStrRes, IDS_ERR_READING_FILE);
     CloseHandle(hf);
     return 1;
-    }
+  }
 
-while(bResult != FALSE && dwBRead == sizeof(FILESECTIONHEADER))
+	while(bResult != FALSE && dwBRead == sizeof(FILESECTIONHEADER))
   {
     switch(fsh.dwID)
     {
@@ -1146,7 +1269,7 @@ while(bResult != FALSE && dwBRead == sizeof(FILESECTIONHEADER))
         ReadMixerWndDataFromFile(hf, &fsh);
         break;
     case SEQUENCE_WINDOW_FILE_ID:
-        ReadSequenceWndDataFromFile(hf, &fsh);
+        ReadSequenceWndDataFromFile(hf, &fsh,FALSE); // get the sequence window up but don't set its position
         break;
     case GROUP_WINDOW_FILE_ID:
         ReadGroupWndDataFromFile(hf, &fsh);
@@ -1176,4 +1299,52 @@ CloseHandle(hf);
 return 0;
 }
 
+
+///////////////////////////////////////////////////////////////
+//function: LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType )
+//
+// Used above to get the mixer name 
+// to be displayed in the window bar
+//
+// iMixType is set in init.c
+//
+///////////////////////////////////////////////////////////////
+//
+
+LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType )
+{
+	static char			szText[80] = "Not Set";
+
+	switch(iMixType)
+	{
+
+		case DCX_CABARET:
+			wsprintf(szText,"%s","Cabaret -");
+			break;
+
+		case DCX_SHOWTIME:
+			wsprintf(szText,"%s","Showtime -");
+			break;
+
+		case DCX_EVENT_40:
+			wsprintf(szText,"%s","Event 40 -");
+			break;
+
+		case DCX_EVENT_60:
+			wsprintf(szText,"%s","Event 60 -");
+			break;
+
+		case DCX_CUSTOM:
+			wsprintf(szText,"%s","Custom -");
+			break;
+	
+		default:
+			wsprintf(szText,"%s","Undefined");
+			break;
+
+	}
+	
+	return &szText[0];
+
+}
 
