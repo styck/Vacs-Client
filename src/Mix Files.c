@@ -68,12 +68,22 @@ ofn.lpstrDefExt = ".mix";//(LPSTR)szDefExt;
 
 if(GetOpenFileName(&ofn))
     {
+			if (g_mixer_state_changed)
+		{	
+			if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
+				UpdateMixFile ();
+		}								  
+		g_mixer_state_changed = FALSE;
+		g_monitor_mix_file_changes = FALSE;
+
     CloseAllMDI();
 		ShowSeqWindow(FALSE);
     wsprintf(gfsMix.szFileName, "%s", &gfsTemp.szFileName[ofn.nFileOffset]);
     gfsTemp.szFileName[ofn.nFileOffset] = 0;
     wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
     LoadMixFile(&gfsMix, TRUE);
+		g_monitor_mix_file_changes = TRUE;
+
     }
 
 
