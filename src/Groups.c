@@ -5,7 +5,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/Groups.c $
-// $Revision: 35 $
+// $Revision: 36 $
 //
 
 //////////////////////////////////////////////////
@@ -33,6 +33,8 @@ GROUPSTORE        g_CurrentGroup;
 int               g_iGroupsDlgOffset = 0;
 BOOL              g_columnAdded = FALSE;
 
+
+void GroupedStatus(BOOL);						// SEE CREATEMAIN.C
 
 
 LRESULT CALLBACK  GroupWndProc(HWND , UINT , WPARAM , LPARAM );
@@ -963,10 +965,6 @@ int    InitGroups(void)
   if(gpGroupStoreFaders == NULL)
     return IDS_ERR_ALLOCATE_MEMORY;
 
-////////// NOT NEEDED?? didn't fix problem with Tool Tips showing junk
-//	else
-//		ZeroMemory(gpGroupStoreFaders, sizeof(GROUPSTORE)*MAX_GROUPS_COUNT);	// Make sure it is clean 
-
   gpGroupStoreMutes = GlobalAlloc(GPTR, sizeof(GROUPSTORE)*MAX_GROUPS_COUNT);
   if(gpGroupStoreMutes == NULL)
     return IDS_ERR_ALLOCATE_MEMORY;
@@ -1271,69 +1269,70 @@ int    InitGroups(void)
   g_StereoGroups[60].wRight = CTRL_NUM_MASTER_POST_RT_VU;
 
 
-	// Matrix module ..
+	// Matrix module ..THE AUXxxLT/RT RESIDE ON THE MASTER MODULE
+	// THESE ARE CURRENTLY NOT WORKING OVER THE NETWORK
 	//
-  g_StereoGroups[61].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[61].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[61].wLeft = CTRL_NUM_MATRIX_AUX16LT;
   g_StereoGroups[61].wRight = CTRL_NUM_MATRIX_AUX16RT;
 
-  g_StereoGroups[62].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[62].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[62].wLeft = CTRL_NUM_MATRIX_AUX15LT;
   g_StereoGroups[62].wRight = CTRL_NUM_MATRIX_AUX15RT;
 
-  g_StereoGroups[63].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[63].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[63].wLeft = CTRL_NUM_MATRIX_AUX14LT;
   g_StereoGroups[63].wRight = CTRL_NUM_MATRIX_AUX14RT;
 
-  g_StereoGroups[64].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[64].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[64].wLeft = CTRL_NUM_MATRIX_AUX13LT;
   g_StereoGroups[64].wRight = CTRL_NUM_MATRIX_AUX13RT;
 
-  g_StereoGroups[65].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[65].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[65].wLeft = CTRL_NUM_MATRIX_AUX12LT;
   g_StereoGroups[65].wRight = CTRL_NUM_MATRIX_AUX12RT;
 
-  g_StereoGroups[66].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[66].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[66].wLeft = CTRL_NUM_MATRIX_AUX11LT;
   g_StereoGroups[66].wRight = CTRL_NUM_MATRIX_AUX11RT;
 
-  g_StereoGroups[67].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[67].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[67].wLeft = CTRL_NUM_MATRIX_AUX10LT;
   g_StereoGroups[67].wRight = CTRL_NUM_MATRIX_AUX10RT;
 
-  g_StereoGroups[68].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[68].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[68].wLeft = CTRL_NUM_MATRIX_AUX09LT;
   g_StereoGroups[68].wRight = CTRL_NUM_MATRIX_AUX09RT;
 
-  g_StereoGroups[69].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[69].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[69].wLeft = CTRL_NUM_MATRIX_AUX08LT;
   g_StereoGroups[69].wRight = CTRL_NUM_MATRIX_AUX08RT;
 
-  g_StereoGroups[70].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[70].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[70].wLeft = CTRL_NUM_MATRIX_AUX07LT;
   g_StereoGroups[70].wRight = CTRL_NUM_MATRIX_AUX07RT;
 
-  g_StereoGroups[71].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[71].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[71].wLeft = CTRL_NUM_MATRIX_AUX06LT;
   g_StereoGroups[71].wRight = CTRL_NUM_MATRIX_AUX06RT;
 
-  g_StereoGroups[72].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[72].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[72].wLeft = CTRL_NUM_MATRIX_AUX05LT;
   g_StereoGroups[72].wRight = CTRL_NUM_MATRIX_AUX05RT;
 
-  g_StereoGroups[73].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[73].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[73].wLeft = CTRL_NUM_MATRIX_AUX04LT;
   g_StereoGroups[73].wRight = CTRL_NUM_MATRIX_AUX04RT;
 
-  g_StereoGroups[74].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[74].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[74].wLeft = CTRL_NUM_MATRIX_AUX03LT;
   g_StereoGroups[74].wRight = CTRL_NUM_MATRIX_AUX03RT;
 
-  g_StereoGroups[75].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[75].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[75].wLeft = CTRL_NUM_MATRIX_AUX02LT;
   g_StereoGroups[75].wRight = CTRL_NUM_MATRIX_AUX02RT;
 
-  g_StereoGroups[76].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+  g_StereoGroups[76].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[76].wLeft = CTRL_NUM_MATRIX_AUX01LT;
   g_StereoGroups[76].wRight = CTRL_NUM_MATRIX_AUX01RT;
 
@@ -1480,6 +1479,9 @@ BOOL    ActivateGroup(int iListItem, int iType, int iForcedGroup)
   }
 
   RefreshAllLblWindows();
+
+	GroupedStatus(TRUE); // INDICATE SOMETHING IS GROUPED
+
   return bRet;
 }
 
@@ -1498,6 +1500,8 @@ void    DeactivateGroup(void)
   ZeroMemory(&g_CurrentGroup, sizeof(GROUPSTORE));
   RefreshAllLblWindows();
 
+	GroupedStatus(FALSE);	// INDICATE NOTHING IS GROUPED
+
   return;
 }
 
@@ -1512,6 +1516,31 @@ void    DeactivateGroup(void)
 BOOL  IsGrouped(int iChannel)
 {
   return (g_CurrentGroup.Group[iChannel].iActive > 0)? TRUE:FALSE;
+}
+
+
+//=============================================
+// FUNCTION: IsAnyGrouped
+// 
+// Purpose: 
+//
+// Return TRUE if ANY channels are grouped
+// else returns FALSE only when there are
+// NO channels Grouped
+//
+BOOL  IsAnyGrouped(void)
+{
+	BOOL bRet;
+	int iChannel;
+
+	bRet=FALSE;
+
+	for(iChannel=0;iChannel<MAX_CHANNELS;iChannel++)
+	{
+		if(g_CurrentGroup.Group[iChannel].iActive > 0)
+			bRet = TRUE;
+	}
+	return(bRet);
 }
 
 
@@ -2008,8 +2037,14 @@ void   UpdateStereoControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
 
     if(CheckFilter(pctrl) == NO_FILTER)
     {
+			// fds test
+
+//fds			if(iModule == g_iMasterModuleIdx)
+//fds				pCtrlData->wChannel = iModule;
+
       // Check if it is a software control and 
       // deal with it in a special way ... 
+
 			CDef_SendData(pCtrlData); // Send the data only if not filtered
 			UpdateExternalInterface(pCtrlData);
     }
@@ -2018,6 +2053,8 @@ void   UpdateStereoControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
       SETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos, (WORD)iV);
     }
 
+		/////////////////////////////////////////
+		// Handle MASTER module Differently
 
 		if(iModule == g_iMasterModuleIdx)
 			UpdateControlFromNetwork((WORD)iModule, (WORD)pctrl->iCtrlChanPos, (int)pCtrlData->wVal, FALSE);

@@ -6,7 +6,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/ControlDataFilters.c $
-// $Revision: 41 $
+// $Revision: 42 $
 //
 
 
@@ -125,10 +125,16 @@ BOOL  IsMuteFilter(LPCTRLZONEMAP pctrlzm)
 //
 void    SetFilteredControlsByNumber(LPCTRLZONEMAP lpctrl, int filtered)//, LPMIXERWNDDATA lpmwd)
 {
+
   LPCTRLZONEMAP       pctrlTemp = lpctrl;
   int                 iCtrlPos = lpctrl->iCtrlChanPos;
 
-  while(lpctrl->iCtrlChanPos == iCtrlPos)
+	int idum;
+
+	if( (lpctrl->iCtrlNumAbs == 14) && (lpctrl->iCtrlChanPos == 47) && (lpctrl->iNumValues == 64) )
+			idum=0;
+
+	while(lpctrl->iCtrlChanPos == iCtrlPos)
   {
     lpctrl->iFiltered = filtered;
     lpctrl ++;
@@ -140,6 +146,7 @@ void    SetFilteredControlsByNumber(LPCTRLZONEMAP lpctrl, int filtered)//, LPMIX
     lpctrl->iFiltered = filtered;
     lpctrl --;
   }
+
 }
 
 /////////////////////////////////////////////////////////////////////
