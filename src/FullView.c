@@ -5,7 +5,7 @@
 //
 // $Author:: Styck       $
 // $Archive:: /Vacs Clien $
-// $Revision:: 34         $
+// $Revision:: 35         $
 //
 //=================================================
 // The Full View Window
@@ -1707,11 +1707,17 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
 // Debug stuff for VU display frequency ... !!!! Should be deleted
   char            szBuff[128];
 
+	/////////////////////////////////////////////////////////
+	// Calculate the delay needed to match the data
+	// rate that the GServer is sending data (Pentium 200Mhz)
+	//
+	// Delay factor changed from 2.0f to 1.5f as per Gamble 12/12/2001
+
   if(liQueryPerformance.QuadPart == 0)
   {
     QueryPerformanceFrequency(&liQueryPerformance);
     QueryPerformanceCounter(&liPerformanceCounterStart);
-		VU_delaystep = (DWORD)((float)(liQueryPerformance.QuadPart / 1000.)*2.0f);//mseconds
+		VU_delaystep = (DWORD)((float)(liQueryPerformance.QuadPart / 1000.)*1.5f);//mseconds
   }
 
   if(iVU_Count > 0)
