@@ -18,6 +18,7 @@ extern HWND			g_stereoCueMetersWindow;
 
 BOOL    g_bReversDirection = FALSE;
 int			FindConsecutiveGroupIndex(int iNum, int iType);
+void		CancelAllCues (void);
 
 //======================
 // Windows Main Routine
@@ -283,6 +284,8 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
   HDC					hDC;
 	LPNMHDR			pnotify;
 	FILESTRUCT	fsTemp;
+	HWND				focus_wnd;
+	HWND				last_wnd;
 
   //RECT    TempDesktopRect, TempMainRect;
   int     iRet;
@@ -457,6 +460,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
     case IDM_GENERATE_DLLIST:
         GenerateLL();
         break;
+		//```````````````
+		case IDM_V_CANCELCUES:
+			CancelAllCues ();
+			break;
+		//```````````````
     case IDM_V_CANCELGROUPS:
       DeactivateGroup();
       break;
@@ -482,6 +490,30 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
     }
     break;  // BREAK FROM WM_COMMAND
+		// handle this when we are losing focus
+		// to prevent some strange effects of "alt-tab" switching
+		//
+		case WM_SETFOCUS:
+			if ( hWnd == (HWND)wParam){
+				//wKeyFlags = 0;
+			}
+      return DefFrameProc(hWnd, ghwndMDIClient, wMessage, wParam, lParam);
+			break;
+		//
+		case WM_KILLFOCUS:
+			focus_wnd = (HWND)wParam;
+			if (focus_wnd){
+				while (focus_wnd = GetParent(focus_wnd)){
+					if (focus_wnd != ghwndMDIClient)
+						last_wnd = focus_wnd;
+					else
+						break;
+				}
+				if (last_wnd)
+					SetActiveWindow (last_wnd);
+			}
+											
+			break;
     //-------------
     case WM_NOTIFY:
 			pnotify = (LPNMHDR) lParam;
