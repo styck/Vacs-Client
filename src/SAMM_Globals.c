@@ -1,6 +1,6 @@
 //=================================================
 // Global Definitions
-// Copyright 2001 CorTek Software, Inc.
+// Copyright 1998-2001 CorTek Software, Inc.
 //=================================================
 
 #include "SAMM.H"
@@ -148,7 +148,8 @@ BOOL                gbFullImageWndClassReg = FALSE;
 // Zoom View Child Window
 //-----------------------
 char                gszZoomViewClass[] = "ZOOM_VIEW_CLASS";
-char								giMixerType;				// Mixer type, cabaret, event, showtime, etc.
+int 								giMixerType;				// Mixer type, cabaret, event, showtime, etc.
+int									giMixerTypeOffline;	// Same as above but only if OFFLINE, else will be -1
 
 char								 gszStereoCueMetersClass[] = "STEREOCUEMETERSCLASS";
 
