@@ -5,7 +5,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/Controls.c $
-// $Revision: 32 $
+// $Revision: 33 $
 //
 //
 //=================================================
@@ -53,21 +53,26 @@ int             iBMPIndex;
 	//iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
 	iPhisChannel = iChan;
 	iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
+
 	// Select the Original Bitmap
 	//---------------------------
+
 	hbmp = SelectObject(g_hdcTempBuffer, gpBMPTable[iBMPIndex].hbmp);
 
 	// copy the Control bitmap to the memory
 	//--------------------------------------
+
 	BitBlt(hdc, rZone.left, rZone.top, rZone.right - rZone.left, rZone.bottom - rZone.top,
 				 g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
 
 	// Clean the buffer so others can use it freely
 	//---------------------------------------------
+
 	SelectObject(g_hdcTempBuffer, hbmp);
 
 	// Get this Controls Bitmap
 	//-------------------------
+
 	hbmp = gpBMPTable[lpctrlZM->iCtrlBmp[0]].hbmp;
 	iHeight = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iHeight;
 	iWidth  = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iWidth;
@@ -118,21 +123,26 @@ void    DrawHorizFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA
 
 	iPhisChannel = iChan;
 	iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
+
 	// Select the Original Bitmap
 	//---------------------------
+
 	hbmp = SelectObject(g_hdcTempBuffer, gpBMPTable[iBMPIndex].hbmp);
 
 	// copy the Control bitmap to the memory
 	//--------------------------------------
+
 	BitBlt(hdc, rZone.left, rZone.top, rZone.right - rZone.left, rZone.bottom - rZone.top,
 				 g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
 
 	// Clean the buffer so others can use it freely
 	//---------------------------------------------
+
 	SelectObject(g_hdcTempBuffer, hbmp);
 
 	// Get this Controls Bitmap
 	//-------------------------
+
 	hbmp = gpBMPTable[lpctrlZM->iCtrlBmp[0]].hbmp;
 	iHeight = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iHeight;
 	iWidth  = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iWidth;
@@ -149,10 +159,12 @@ void    DrawHorizFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA
 
 	// do the Calculation using LONG instead of float
 	//-----------------------------------------------
+
 	iLeft = rZone.left + iVal;//(int)lValue;
 
 	// Calculate the horizontal position
 	//----------------------------------
+
 	iTop = rZone.top +(((rZone.bottom-rZone.top)-iHeight)/2);
 
 	BitBlt(hdc, iLeft, iTop, iWidth, iHeight,
@@ -184,10 +196,10 @@ void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWND
   WORD            wVUType;
   int             iModuleType;
 
+	// Get the MODULE Type, ie INPUT, MASTER, and MATRIX
 
   iModuleType = gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber];
   
-  //???? Handle Master VU data also ..... ????
   if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_VU_METER) && 
      ( iModuleType == DCX_DEVMAP_MODULE_INPUT) )
   {
@@ -292,11 +304,12 @@ void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWND
   // this is Input module so go ahead and display the Peak and the Average data
   //
   if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_VU_METER) &&
-    (gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 1) )
+    (gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT) )
   {
     BitBlt(hdc, 0, iHeight - iVal, iWidth/2, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
 
     iVal = pVuData->wVUValue[wVUType + 1];
+
     // Validate index
     //
     if(iVal > 4095)   
@@ -454,158 +467,6 @@ return;
 }
 
 
-////////////////////////////////
-//
-// DELETE DELETE WHEN NEW CODE AT END IS WORKING
-// PER GAMBLE
-
-//#define ORIGINAL
-
-#ifdef ORIGINAL
-//==================================================
-//FUNCTION: JumpToMZWindow
-//
-//
-//purpose:
-//  Jump to a Mixer Zoom Window with a particular
-// Y offset
-//==================================================
-void    JumpToMZWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
-                            LPMIXERWNDDATA lpmwd, int iChan)
-{
-LPMIXERWNDDATA      lpMWD;
-int				iYOffset = 0;
-int				iScrVisible = 0;
-
-
-// ?????????????????????
-// ?????????????????????
-//
-
-	switch(lpczm->iCtrlType)
-	{
-  case    CTRL_TYPE_OPEN_ZOOM_IAUX:
-		iYOffset = JUMP_TO_INPUT_AUX;
-		break;
-	case		CTRL_TYPE_OPEN_ZOOM_CCOMP:
-		iYOffset = JUMP_TO_INPUT_COMP;
-		break;
-	case		CTRL_TYPE_OPEN_ZOOM_EQ:
-		iYOffset = JUMP_TO_INPUT_EQ;
-		break;
-	case CTRL_TYPE_OPEN_ZOOM_SUB:
-		iYOffset = JUMP_TO_INPUT_SUB;
-		break;
-	case CTRL_TYPE_OPEN_FADER:
-		iYOffset = JUMP_TO_INPUT_FADER;
-		break;
-	case	CTRL_TYPE_OPEN_MATRIX_EQ:
-		iYOffset = JUMP_TO_MATRIX_EQ;
-		break;
-	case	CTRL_TYPE_OPEN_MATRIX_AUX:
-		iYOffset = JUMP_TO_MATRIX_AUX;
-		break;
-	case	CTRL_TYPE_OPEN_MATRIX_SUB:
-		iYOffset = JUMP_TO_MATRIX_SUB;
-		break;
-	default:
-		iYOffset = 4000;
-		break;
-	}
-
-
-	if(ghwndZoom == NULL)
-  {
-    lpMWD = MixerWindowDataAlloc(gwActiveMixer,
-                                 gpZoneMaps_Zoom,
-                                 MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
-    if(lpMWD == NULL)
-    {
-        ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
-        return;
-    }
-    else
-    {
-
-
-        // Set the Window Start channel
-        // and Remap table, and start channel
-        // and End Channel
-        //-----------------------------------
-        CopyMemory(lpMWD->lpwRemapToScr, lpmwd->lpwRemapToScr, MAX_CHANNELS * sizeof(WORD));
-        CopyMemory(lpMWD->lpwRemapToPhis, lpmwd->lpwRemapToPhis, MAX_CHANNELS * sizeof(WORD));
-
-				iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
-
-        lpMWD->iYOffset = iYOffset;//gpRdOutTable[lpczm->iRdOutIndx].lpRdOut->iDefault;
-				
-				iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
-				lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
-
-				if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
-					lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
-
-				lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
-        //lpMWD->iEndScrChan = lpmwd->iCurChan + lpMWD->iEndScrChan - lpMWD->iStartScrChan;// lpmwd->iEndScrChan;
-        //lpMWD->iStartScrChan = lpmwd->iCurChan;
-        lpMWD->iCurChan = lpmwd->iCurChan;
-				
-				//GetMaxWindowSize(&lpMWD->rMaxWndPos, lpMWD->lpZoneMap, lpMWD->lZMCount, lpMWD);
-
-        wsprintf(lpMWD->szTitle, "Zoom View (Link)");
-        ghwndZoom = CreateZoomViewWindow(ghwndMDIClient,"Zoom View (Link)", lpMWD, DCX_DEVMAP_MODULE_INPUT);
-
-     }
-	}
-	else
-    
-	{
-
-    lpMWD = (LPMIXERWNDDATA)GetWindowLong(ghwndZoom, 0);
-    if(lpMWD)
-    {
-				TurnOffAllVUforMixerWindow(lpMWD);
-
-				// Set the Window Start channel
-        // and Remap table, and start channel
-        // and End Channel
-        //-----------------------------------
-        CopyMemory(lpMWD->lpwRemapToScr, lpmwd->lpwRemapToScr, MAX_CHANNELS * sizeof(WORD));
-        CopyMemory(lpMWD->lpwRemapToPhis, lpmwd->lpwRemapToPhis, MAX_CHANNELS * sizeof(WORD));
-        
-        
-				iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
-				lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
-
-				if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
-					lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
-
-				lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
-        lpMWD->iCurChan = lpmwd->iCurChan;
-
-        InvalidateRect(lpMWD->hwndLblGroup, NULL, FALSE);
-        UpdateWindow(lpMWD->hwndLblGroup);
-        
-				lpMWD->pntMouseCur.y = iYOffset - lpMWD->iYOffset;
-				lpMWD->pntMouseLast.y = 0;
-
-				//lpMWD->iYOffset = iYOffset;//gpRdOutTable[lpczm->iRdOutIndx].lpRdOut->iDefault;
-
-				ScrollImgWindow(ghwndZoom, lpMWD,0);
-
-        InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
-        UpdateWindow(lpMWD->hwndImg);
-
-			  RequestVisibleVU(lpMWD, -1, -1);
-
-    }
-	}
-
-
-return;
-}
-
-#endif
 
 //==================================================
 //FUNCTION: RdOutText
@@ -812,7 +673,7 @@ void    ChannelNumberTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXE
   //----------------------
   r = lpczm->rZone;
 
-	if( gDeviceSetup.iaChannelTypes[lpczm->iModuleNumber] == 2 )
+	if( gDeviceSetup.iaChannelTypes[lpczm->iModuleNumber] == DCX_DEVMAP_MODULE_AUX )
 	{
     for(iic = 0; iic < MAX_AUX_CHANNELS; iic++)
     {
@@ -953,7 +814,7 @@ int									sum_in_flag = 0;
 	// Activate the Cue system when it is not OFF and activate the SCILENT 
 	// Cue system when it is OFF.
 
-	if (gDeviceSetup.iaChannelTypes[iPhisChannel] == 5 && 
+	if (gDeviceSetup.iaChannelTypes[iPhisChannel] == DCX_DEVMAP_MODULE_MASTER && 
 			lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_CUE_A_SUM_IN)
 	{
 		if (isCtrlValueNotEqualToDefault (lpctrlZM, CTRL_NUM_MASTER_CUE_A_SUM_IN))
@@ -1087,12 +948,6 @@ void    LeftRightControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDA
   return;
 }
   
-
-
-
-#define MYCODE
-
-#ifdef MYCODE
 
 //==================================================
 //FUNCTION: JumpToMZWindow
@@ -1255,4 +1110,3 @@ HWND			hWnd;
 return;
 }
 
-#endif
