@@ -126,6 +126,7 @@ void    HandleLBDown(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
 int                 iChan;
 LPCTRLZONEMAP       lpczm;
 POINT               pnt;
+LPCTRLZONEMAP				lpczmChan;
 
 if(lpmwd == NULL)
     return;
@@ -152,24 +153,30 @@ pnt.y += lpmwd->iYOffset;
 
 // Scan for Controls
 //------------------
-lpczm = ScanCtrlZonesPnt(lpmwd->lpZoneMap[iChan].lpZoneMap, pnt);
+lpczmChan = lpmwd->lpZoneMap[iChan].lpZoneMap;
 
-// Check the CTRL flag
-//---------------------
-if(wKeyFlags & MK_CONTROL)
-    {
-    lpmwd->iCurMode = MW_DRAGDROP_MODE;
-    }
-else
-    if(lpczm)
-        {
-        lpmwd->lpCtrlZM = lpczm;
-        lpmwd->iCurMode = MW_CONTROL_ACTIVE;
-        }
-    else
-        return;
+if(lpczmChan != NULL)
+{
 
-ActivateMWMode(hwnd, lpmwd);
+	lpczm = ScanCtrlZonesPnt(lpczmChan, pnt);
+
+	// Check the CTRL flag
+	//---------------------
+	if(wKeyFlags & MK_CONTROL)
+			{
+			lpmwd->iCurMode = MW_DRAGDROP_MODE;
+			}
+	else
+			if(lpczm)
+					{
+					lpmwd->lpCtrlZM = lpczm;
+					lpmwd->iCurMode = MW_CONTROL_ACTIVE;
+					}
+			else
+					return;
+
+	ActivateMWMode(hwnd, lpmwd);
+}
 
 return;
 }
