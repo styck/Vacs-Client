@@ -13,15 +13,16 @@
 
 HWND		ghwndTBSeqReadout = NULL;
 HWND		ghwndTBSeqReadout2 = NULL;
+HWND		ghwndTBZoomWinCntReadout = NULL;
 HWND		ghwndTBSeqSceneNumber = NULL;
+
 int			giTBSeqReadout = 9512;
 int			giTBSeqReadout2 = 9513;
-int			giTBSeqSceneNumber = 9514;
-
-HWND		ghwndTBZoomWinCntReadout = NULL;
-
-
 int			giTBZoomWinCntReadout = 9514;		
+int			giTBSeqSceneNumber = 9515;
+
+
+
 
 //=================================
 // FUNCTION: CreateMainWindow
@@ -163,7 +164,7 @@ int		CreateToolBars(HWND		hwndParent)
 	// Sequence Scene Number
 	iSeqScenNumber = iCount;			// save for later
   tbb[iCount].iBitmap = -1; // account for the separator
-  tbb[iCount].idCommand = ghwndTBSeqSceneNumber;
+  tbb[iCount].idCommand = giTBSeqSceneNumber;
   tbb[iCount].fsState = TBSTATE_ENABLED;
   tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
   tbb[iCount].dwData = 0;
@@ -367,7 +368,7 @@ int		CreateToolBars(HWND		hwndParent)
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
-	tbinfo.cx = 30;	// 175	SIZE OF THE SEQUENCE SCENE NUMBER WINDOW
+	tbinfo.cx = 35;	// 175	SIZE OF THE SEQUENCE SCENE NUMBER WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBSeqSceneNumber, (LPARAM)&tbinfo);
 
