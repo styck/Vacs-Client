@@ -711,6 +711,7 @@ while(lpczmrLoad->rZone.Right)
         case CTRL_MATRIX_MONO_MUTE_FILTER:
         case CTRL_MATRIX_CENTER_MUTE_FILTER:
         case CTRL_CUE_MASTER_MUTE_FILTER:
+				case CTRL_TYPE_BTN_EQ_RESET_FILTER:
           lpctrlzm[iZonesCount].CtrlFunc = PushBtn;
           break;
         case CTRL_TYPE_FADER_VERT:
