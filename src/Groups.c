@@ -70,7 +70,7 @@ int         iReturn;
 WNDCLASS    wc;
 
 
-// Register Full View Class
+// Register Group View Class
 //--------------------------
 ZeroMemory(&wc, sizeof(WNDCLASS));      // Clear wndclass structure
 
@@ -109,16 +109,19 @@ int     ShowGroupWindow(BOOL bShow)
 {
 char                    szTitle[128];
 LPGROUPWINDOWFILE       pGroupWF;
+
 DWORD										style;
 
-if(ghwndGroup == NULL)
-    {
+	if(ghwndGroup == NULL)
+  {
     pGroupWF = GlobalAlloc(GPTR, sizeof(GROUPWINDOWFILE));
+
     if(pGroupWF == NULL)
-        {
-        ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
-        return 1;
-        }
+    {
+			ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
+			return 1;
+    }
+
     pGroupWF->iWndID = GROUP_WINDOW_FILE_ID;        
 
 		style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE
@@ -131,8 +134,8 @@ if(ghwndGroup == NULL)
                             gszGroupClass,
                             szTitle,
 														style,
-                            CW_USEDEFAULT,
-                            CW_USEDEFAULT,
+                            10000,
+                            10000,
                             CW_USEDEFAULT,
                             CW_USEDEFAULT,
                             ghwndMDIClient,
@@ -140,23 +143,25 @@ if(ghwndGroup == NULL)
                             (LPARAM)NULL
                             );
 
-    if(ghwndGroup == NULL)
-        {
-        GlobalFree(pGroupWF);
-        ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
-        return 1;
-        }
-    SetWindowLong(ghwndGroup, 0, (LONG)pGroupWF);
+	  if(ghwndGroup == NULL)
+    {
+      GlobalFree(pGroupWF);
+      ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
+      return 1;
     }
 
-  if(bShow)
+    SetWindowLong(ghwndGroup, 0, (LONG)pGroupWF);
+
+
+
+  }
+
+  if(bShow && ghwndGroup)
   {
-    if(ghwndGroup)
       SetWindowPos(ghwndGroup, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
   }
   else
   {
-    if(ghwndGroup)
       ShowWindow(ghwndGroup, SW_HIDE);
   }
 
@@ -796,21 +801,22 @@ int	GetListItemGroupNumber(int iItem)
 
 LPSTR	GetListItemGroupName(int iItem)
 {
-	char			szText[80] = "Not Set";
+	static char			szText[80] = "Not Set";
   LPGROUPSTORE  pWalker;
 	int i;
 
-  pWalker = gpGroupStoreFaders;
+		pWalker = gpGroupStoreFaders;
 
-	// Move to the selected item text
-	// (group name for item)
+		// Move to the selected item text
+		// (group name for item)
 
-  for(i = 0; i < iItem; i ++,pWalker++);
+		for(i = 0; i < iItem; i ++,pWalker++);
 
-    if(pWalker->szGroupName[0] != 0) 
+		if( pWalker->szGroupName[0] != 0) 
 			return pWalker->szGroupName;
 		else
 			return &szText[0];
+
 }
 
 
@@ -895,6 +901,10 @@ int    InitGroups(void)
   gpGroupStoreFaders = GlobalAlloc(GPTR, sizeof(GROUPSTORE)*MAX_GROUPS_COUNT);
   if(gpGroupStoreFaders == NULL)
     return IDS_ERR_ALLOCATE_MEMORY;
+
+////////// NOT NEEDED?? didn't fix problem with Tool Tips showing junk
+//	else
+//		ZeroMemory(gpGroupStoreFaders, sizeof(GROUPSTORE)*MAX_GROUPS_COUNT);	// Make sure it is clean 
 
   gpGroupStoreMutes = GlobalAlloc(GPTR, sizeof(GROUPSTORE)*MAX_GROUPS_COUNT);
   if(gpGroupStoreMutes == NULL)
@@ -1601,6 +1611,11 @@ BOOL    GroupChannel(int iChannel, int iControl)
   g_CurrentGroup.Group[iChannel].iActive = 1;
   g_CurrentGroup.Group[iChannel].iControl = iControl;
 
+	// Increment the number of channels that are grouped
+	g_CurrentGroup.Count++;
+	if(g_CurrentGroup.Count > MAX_CHANNELS)
+		g_CurrentGroup.Count = MAX_CHANNELS;
+
   return TRUE;
 }
 
@@ -1616,6 +1631,11 @@ BOOL    UnGroupChannel(int iChannel)
 
   g_CurrentGroup.Group[iChannel].iActive = 0;
   g_CurrentGroup.Group[iChannel].iControl = -1; // Invalid control
+
+	// Decrement the number of channels that are grouped
+	g_CurrentGroup.Count--;
+	if(g_CurrentGroup.Count < 0)
+		g_CurrentGroup.Count = 0;
 
   return TRUE;
 }
