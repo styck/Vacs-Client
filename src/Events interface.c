@@ -1,11 +1,11 @@
 //=================================================
-// Copyright 1998-2001, CorTek Software, Inc.
+// Copyright 1998-2002, CorTek Software, Inc.
 //=================================================
 //
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/Events interface.c $
-// $Revision: 34 $
+// $Revision: 35 $
 //
 
 //=================================================
@@ -73,13 +73,13 @@ int iCtrlMode;
 	pnt.x = pnts.x;
 	pnt.y = pnts.y;
 
-	lpmwd->wKeyFlags = wKeyFlags;
+	lpmwd->wKeyFlags = wKeyFlags;		// wKeyFlags passed above
 
 		if(lpmwd->iCurMode == MW_SCROLL)
 		{
 			lpmwd->pntMouseLast = lpmwd->pntMouseCur;
 			lpmwd->pntMouseCur = pnt;
-			ScrollImgWindow(hwnd, lpmwd);
+			ScrollImgWindow(hwnd, lpmwd,(int)(lpmwd->pntMouseCur.y - lpmwd->pntMouseLast.y));
 			SetEvent(gDisplayEvent);
 			return;
 		}
@@ -228,8 +228,6 @@ LPCTRLZONEMAP				lpczmChan;
 			}
 		}
 
-//FDS		ActivateMWMode(hwnd, lpmwd);	// Now done seperatly in fullview.c
-
 	}
 
 return;
@@ -275,6 +273,7 @@ return;
 //FUNCTION: HandleRBDown
 //
 // Handle when the Right mouse button is pressed
+// This scrolls the image view
 //================================================
 
 void    HandleRBDown(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
@@ -328,7 +327,7 @@ POINT       pnt;
 
 
 	if(lpmwd->iCurMode != MW_NOTHING_MODE)
-			StopMWMode(hwnd, lpmwd,  wKeyFlags);
+			StopMWMode(hwnd, lpmwd);
 
 return;
 }
@@ -353,7 +352,7 @@ POINT       pnt;
 
 
 	if(lpmwd->iCurMode != MW_NOTHING_MODE)
-			StopMWMode(hwnd, lpmwd,  wKeyFlags);
+			StopMWMode(hwnd, lpmwd);
 
 return;
 }
@@ -379,7 +378,7 @@ POINT           pnt;
 	pnt.y = pnts.y;
 
 	if(lpmwd->iCurMode != MW_NOTHING_MODE)
-			StopMWMode(hwnd, lpmwd,  wKeyFlags);
+			StopMWMode(hwnd, lpmwd);
 
 return;
 }
@@ -535,14 +534,6 @@ int     iPrevStart, iPrevEnd;
 //  }
 
 
-#ifdef SCROLLBARS
-	if(ghwndFull != hwnd)		// don't do this for full view
-	{
-				SetScrollRange(hwnd, SB_VERT, 0, 3950, FALSE);             
-				SetScrollPos(hwnd, SB_VERT, 1975, TRUE); 
-	}
-#endif
-
 	RequestVisibleVU(lpmwd, -1, 0);
 	SetEvent(gDisplayEvent);
 
@@ -564,7 +555,7 @@ RECT    rChan;
 HDC     hdc;
 HPEN    hpen, hpenSel, hpenOld;
 
-//	if( lpmwd->iCurMode != MW_CONTROL_ACTIVE)
+	if(strcmp(lpmwd->szTitle,"Zoom Master View"))		// DO NOT DRAW BORDER AROUND MASTER MODULE
 	{
 		hdc = GetDC(hwnd);
 
@@ -606,7 +597,7 @@ HPEN    hpen, hpenSel, hpenOld;
 
 		rChan.right++;	// Make the rectangle one bigger to the right
 
-		// Check if we are draggin a channel, if so draw a RED rectangle
+		// Check if we are dragging a channel, if so draw a RED rectangle
 
 		switch(lpmwd->iCurMode)
 		{
@@ -622,7 +613,7 @@ HPEN    hpen, hpenSel, hpenOld;
 
 		}
 
-		// Now Draw the highlite rectangle
+		// Now Draw the hilight rectangle
 		//----------------------------
 		Rectangle(hdc, rChan.left, rChan.top, rChan.right, rChan.bottom);
 
@@ -766,6 +757,7 @@ RECT            r;
 	ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
 	ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
 	ctrlData.wVal     = iVal;
+
 	SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
 									 lpctrlZM, iVal - iCurVal, lpmwd, TRUE);
 
@@ -881,12 +873,11 @@ RECT            r;
 	ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll 
 																						 //these(our) control Numbers are meaningless
 	ctrlData.wVal     = iVal;
+
 	SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
 									 lpctrlZM, iVal - iCurVal, lpmwd, TRUE);
 
-
-
-
+	///////////////////////////////
 	//  Now update all of the other
 	// controls that have the same
 	// iCtrlNum and are Capable of
@@ -900,6 +891,7 @@ RECT            r;
 	UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, 
 													lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
 
+	//////////////////////////////////////
 	// now update all of the other mixers
 	// windows that represent this mixer
 	// using the iMixer, iPhisChannel
@@ -1105,13 +1097,12 @@ WORD								wVal;
 	////////////////////////////////////////////////////
 	// Get the current value and the minimum value
 
-	ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
 	iVal = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
 
 	////////////////////////////////////////////////////////////////////
 	// If they are not equal then we are turning the button ON
 
-	if(iVal != ivalue)
+	if(iVal != 0)
   {
 		bIsOn = TRUE;
 
@@ -1124,18 +1115,20 @@ WORD								wVal;
 		CheckForToggleSwitches(lpmwd, lpctrlZM);
 
 		ctrlData.wMixer   = lpmwd->iMixer;
-		ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-		ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
-		// ok we need to go down to the minimum value
-		iVal = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs) - 1;
-		iVal--;// skip this value since the control is already there
+		ctrlData.wChannel = lpctrlZM->iModuleNumber;					// iPhisChannel;
+		ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs;						// Index into lookup table, currently 0-470
+		iVal = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs) - 1;	// get number of table entries, we need to go down to the minimum value
+		iVal--;																								// skip this value since the control is already there
+
 		if((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE) && (ctrlData.wCtrl < 0x8000))
 		{
+			// Loop thru the table 
 			for(iVal; iVal >= ivalue; iVal --)
 			{
 				// Send the Data out
 				//------------------
 				ctrlData.wVal     = iVal;
+
 				SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
 												 lpctrlZM, -1, lpmwd, TRUE);
 			}
@@ -1176,17 +1169,21 @@ WORD								wVal;
   {
 		bIsOn = FALSE;
 
+		// Handle possible Filter buttons ... like MUTE and such
+		//
+		StartControlDataFilter(iPhisChannel, lpmwd, lpctrlZM, bIsOn, TRUE);
+
 		// Do the Toggle stuff ..
 		//
 		CheckForToggleSwitches(lpmwd, lpctrlZM);
 
 		ctrlData.wMixer   = lpmwd->iMixer;
-		ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-		ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
-		// ok we need to go up to max value
-		ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
-		iVal   = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
-		iVal++;// skip this value since the control is already there
+		ctrlData.wChannel = lpctrlZM->iModuleNumber;	// iPhisChannel;
+		ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs;		// Index into lookup table, currently 0-470
+		
+		ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);	// ok we need to go up to max value
+		iVal = 0;
+		iVal++;																							// skip this value since the control is already there
 
 		if((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE) && (ctrlData.wCtrl < 0x8000))
 		{
@@ -1195,6 +1192,7 @@ WORD								wVal;
 				// Send the Data out
 				//------------------
 				ctrlData.wVal     = iVal;
+
 				SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
 												lpctrlZM, 1, lpmwd, TRUE);
 			}
@@ -1206,9 +1204,6 @@ WORD								wVal;
 			if(iVal == 1)
 				iVal ++;
 		}
-		// Handle possible Filter buttons ... like MUTE and such
-		//
-		StartControlDataFilter(iPhisChannel, lpmwd, lpctrlZM, bIsOn, TRUE);
   }
 
 	// Set the Phisical Data Value
@@ -1237,9 +1232,11 @@ WORD								wVal;
 	// and the button in being pressed DOWN
 	// else we are turning the button OFF and we are
 	// releasing the button
+	//
+	// Was testing against CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs)()
+	// but that always returns 0
 
-
-	if(iVal == CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs))
+	if(iVal == 0)
   {
 		PushBtn(g_hdcMemory, lpctrlZM, iVal, lpmwd, iPhisChannel);
 
@@ -1548,7 +1545,12 @@ return;
 ///////////////////////////////////////////////
 // FUNCTION: UpdateControlFromNetwork
 //
+// Recieves control data echoed by the GServer
+// from other clients.
 //
+// Called from DeinitionCallback() function after 
+// the data is recieved
+
 void  UpdateControlFromNetwork(WORD iPhisChannel, WORD iCtrlAbs, int iVal, BOOL bIsAbsVal) 
 {
   LPCTRLZONEMAP lpctrlZM;
@@ -1591,7 +1593,7 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD iCtrlAbs, int iVal, BOOL 
   //
   if(lpctrlZM == NULL)
   {
-    if(bIsAbsVal)
+    if(bIsAbsVal)	// DOESN'T DO ANYTHING WITH THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       lpctrlZM = ScanCtrlZonesAbs(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, iCtrlAbs);
     else
       lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, iCtrlAbs);
@@ -1599,8 +1601,12 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD iCtrlAbs, int iVal, BOOL 
 	else	/// if(lpctrlZM != NULL)
   {
     // Set the Phisical Data Value
-    //----------------------------
-    SETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
+		// This causes the control to be drawn in the new position
+		// If its a fader that has been pulled down because of a mute
+		// then we do NOT want to do this.
+    //-----------------------------------------------------------
+
+			SETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
 
     r = lpctrlZM->rZone;
     // Select the appropriate bitmap into the buffer
