@@ -153,6 +153,8 @@ void    HandleTcpReadMessage(SOCKET s)
 {
   int     status;
 
+  int   iCurErr;
+  char  szBuffer[64];
 
 
   if( gbReadHeader == TRUE )
@@ -218,16 +220,26 @@ void    HandleTcpReadMessage(SOCKET s)
 	
   if( status == SOCKET_ERROR )
 	{
-	  // we need to check this value here
-	  // but in most cases it will be ERROR to close the socket all together
-
 	  //SetDlgItemText(g_hwndMain, IDC_STAT_12, "TCP ERROR-> Connection broken!");
-	  closesocket(g_socket);
-    giLeftBytesToReceive = 0;
-    giNetBufferOfset = 0;
-    gbReadHeader = TRUE;
 
-    g_socket = INVALID_SOCKET;
+		// check error value here
+
+    iCurErr = WSAGetLastError();
+    FormatSockError(szBuffer, iCurErr);
+
+		if(iCurErr == WSAEWOULDBLOCK || iCurErr == WSAEFAULT || 
+			 iCurErr == WSAEINTR || iCurErr == WSAEINPROGRESS || iCurErr == WSAEMSGSIZE)
+			iCurErr = 0;
+		else		// its REALLY and error, close it down.
+		{
+			closesocket(g_socket);
+			giLeftBytesToReceive = 0;
+			giNetBufferOfset = 0;
+			gbReadHeader = TRUE;
+
+			g_socket = INVALID_SOCKET;
+		}
+
 	}
   return;
 }
