@@ -266,6 +266,8 @@ PREFERENCES         gprfPref=
 
 
 HBITMAP             ghbmpPrefBkgnd = NULL;
+BOOL								g_mixer_state_changed = FALSE;
+BOOL								g_monitor_mix_file_changes = FALSE;
 
 //===========================
 // MultiMedia Midi Variables
