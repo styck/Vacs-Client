@@ -375,7 +375,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 		{
 			CDef_StopVuData();
 			SetMemoryMapDefaults();
-			RecallMemoryMapBuffer(TRUE);// Force the Control data to the Mixer
+			RecallMemoryMapBuffer(TRUE,0);// Force the Control data to the Mixer
 			CDef_StartVuData ();
 		}
         break;
@@ -392,7 +392,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 			{
 				CDef_StopVuData();
 				MoveMemory(gpwMemMapBuffer, gpwMemMapMixer, giMemMapSize);
-				RecallMemoryMapBuffer(TRUE);// Force the Control data to the Mixer
+				RecallMemoryMapBuffer(TRUE,0);// Force the Control data to the Mixer
 				CDef_StartVuData ();
 			}
 			break;
@@ -442,9 +442,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
         SaveMixFile();
         break;
     //``````````````
+#ifdef NOTUSED		// removed 1/7/2001 as per Gamble - Same as Save Mix
     case IDM_F_UPDATE_FILE:
         UpdateMixFile();
         break;
+#endif
     //``````````````
     case IDM_F_EXIT:
 				PostMessage(hWnd,WM_CLOSE,wParam,lParam);	// Handle it like the WM_CLOSE - save mix file in registry
