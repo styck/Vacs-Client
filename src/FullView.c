@@ -3,9 +3,9 @@
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author:: Styck       $
+// $Archive:: /Vacs Clien $
+// $Revision:: 34         $
 //
 //=================================================
 // The Full View Window
@@ -104,7 +104,7 @@ int       RegisterFullViewClass(void)
 	return 0;
 }
 
-//===============================
+//===========================================================================
 // FUNCTION: CreateFullViewWindow
 //
 // Purpose:
@@ -117,7 +117,8 @@ int       RegisterFullViewClass(void)
 // pMWD - pointer to mixer data, NULL when first created
 //        or value read when restoring a mix in ReadMixerWndDataFromFile()
 //				This is used for saving the position of the window in a mix file
-//===============================
+//===========================================================================
+
 HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 {
 	HWND                hWnd;
@@ -148,7 +149,7 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 
 		lpmwd = MixerWindowDataAlloc(gwActiveMixer,
 																 gpZoneMaps_Full,
-																 MAX_CHANNELS, 1);
+																 MAX_CHANNELS, DCX_DEVMAP_MODULE_NA);
 
 		// If could not allocate data for mixer window then return error
 
@@ -188,11 +189,16 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 */
 
 	style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE
-															| WS_THICKFRAME | WS_MINIMIZEBOX// | WS_MAXIMIZEBOX
+															| WS_THICKFRAME | WS_MINIMIZEBOX  // | WS_MAXIMIZEBOX
 															| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 	style &= ~WS_MAXIMIZEBOX;
 
-	// if pointer to mixer data is NULL then create a new full view
+#ifdef SCROLLBARS
+// FDS	style = style | WS_VSCROLL;	// GAMBLE SAYS NO TO SCROLL BARS ON FULL VIEW
+#endif
+
+	////////////////////////////////////////////////////////////////////////
+	// if pointer to mixer data is NULL then create a new FULL VIEW WINDOW
 	// Located in the upper left corner of the screen
 
 	if(pMWD == NULL)
@@ -284,6 +290,13 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 	if(CreateFullViewImageWindow(hWnd, (LPARAM)lpmwd))
 			PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
 
+#ifdef SCROLLBARS	// GAMBLE SAYS NO SCROLL BARS ON FULL VIEW WINDOW
+		// Setup the Scroll bars
+// FDS		SetScrollRange(hWnd, SB_VERT, 0, 580, FALSE);	// 580 - height of full view bitmap
+// FDS 		SetScrollPos(hWnd, SB_VERT, 290, TRUE);				// put it in the middle
+#endif
+
+
 	SetFocus(hWnd);
 	return hWnd;
 };
@@ -296,6 +309,11 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 // Process the messages for the full view window
 //
 //================================================
+
+#define	PAGEUPDOWN_OFFSET	100	// Number of pixels to pageup/down
+#define	LINEUPDOWN_OFFSET	5		// Number of pixels to lineup/down
+
+
 LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage, 
                                WPARAM wParam, LPARAM lParam)
 {
@@ -303,10 +321,85 @@ LRESULT CALLBACK  FullViewProc(HWND hWnd, UINT wMessage,
 	LPMIXERWNDDATA      lpmwd;
 	RECT                rect;
 
+	int	nVscrollInc;		// DUMMY PLACEHOLDER
+
 	lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
 	switch (wMessage)
 	{
+
+#ifdef SCROLLBARSNOTUSEDHERE
+
+		case WM_VSCROLL: 
+			/* Determine how much to scroll vertically. 
+			*/ 
+			switch (LOWORD(wParam)) 
+			{ 
+			case SB_TOP: 
+			nVscrollInc = 1; 
+			break; 
+
+			case SB_BOTTOM: 
+			nVscrollInc = 2; 
+			break; 
+
+			case SB_LINEUP: 
+				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+				{
+					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+						lpmwd->pntMouseCur.y -= LINEUPDOWN_OFFSET;	// Change the current mouse position
+				
+					ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
+					lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+				}
+			break; 
+
+			case SB_LINEDOWN: 
+				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+				{
+					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+					lpmwd->pntMouseCur.y += LINEUPDOWN_OFFSET;	// this is the number of pixels we move down
+					
+					ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
+					lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+				}
+			break; 
+
+			case SB_PAGEUP:
+				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+				{
+					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+					lpmwd->pntMouseCur.y -= PAGEUPDOWN_OFFSET;	// Change the current mouse position
+				
+					ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
+					lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+				}
+			break; 
+
+			case SB_PAGEDOWN: 
+				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+				{
+					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+					lpmwd->pntMouseCur.y += PAGEUPDOWN_OFFSET;	// this is the number of pixels we move down
+					
+					ScrollImgWindow(lpmwd->hwndImg, lpmwd);		// Scroll to window to the new position
+					lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+				}
+			break; 
+
+			case SB_THUMBTRACK: 
+			nVscrollInc = 7; 
+			break; 
+
+			default: 
+				g_iYSpeed = 0;
+
+			nVscrollInc = 0; 
+
+			} 
+			break;
+#endif
+
 		//////////////////////////////////////////////////////////////
 		case WM_ERASEBKGND: // to reduce flashing on the screen
 			break;
@@ -405,7 +498,11 @@ return 0;
 // bitmap image and take care of all mixer
 // controls 
 //
+// This routine is used by the Zoom, Full, and Master
+// routines to create their image windows with the
+// mixer bitmaps
 //==================================================
+
 int       CreateFullViewImageWindow(HWND hwndParent,LPARAM lParam)
 {
 HWND                hwnd;
@@ -416,16 +513,16 @@ HDC                 hdc;
 
 	hwnd = CreateWindow(
 					 gszFullViewImageClass,   // Window class name
-					 NULL,                   // Window's title
-					 WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE,
+					 NULL,										// Window's title
+					 WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE ,
 					 lpmwd->rVisible.left,
 					 lpmwd->rVisible.top,
 					 lpmwd->rVisible.right,   // Set it to the max Width
 					 lpmwd->rVisible.bottom,  // Set it to the max Height
-					 hwndParent,             // Parent window's handle
-					 NULL,                   // Default to Class Menu
+					 hwndParent,							// Parent window's handle
+					 NULL,										// Default to Class Menu
 					 ghInstMain,              // Instance of window
-					 (void *)lParam                  // Ptr To Data Structure For WM_CREATE
+					 (void *)lParam           // Ptr To Data Structure For WM_CREATE
                    );
 
 	// If can not create window then dispaly error
@@ -449,16 +546,6 @@ HDC                 hdc;
 		SelectObject(g_hdcMemory, g_hbmpBuffer);
 		ReleaseDC(hwnd, hdc);
 	}
-
-// Store this Window Information in the
-// Double linked List
-//-------------------------------------
-//	if(AddMWEntryToDLList(hwnd, lpmwd))
-//  {
-//    ErrorBox(hwndMain, hInstMainRes,IDS_ERR_MAX_WINDOW);
-//    return IDS_ERR_MAX_WINDOW;
-//  };
-
 
 	UpdateWindow(hwnd);
 	return 0;
@@ -606,10 +693,6 @@ lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
     //////////////////////////////////////////////////////////////
     case WM_DESTROY:
-        // Delete the Window Entry
-        // from the Linked List
-        //------------------------
-//        DeleteMWEntryFromDLList(lpmwd);
 
         // Free all the resources
         // the memory and other stuff
@@ -841,21 +924,6 @@ void TurnOffAllVUforMixerWindow(LPMIXERWNDDATA lpmwd)
       acVU[iCount] = -1;
   }
 
-  /*
-  for(iCount = lpmwd->iStartScrChan; iCount < lpmwd->iEndScrChan+1; iCount++)
-  {
-    acVU[LOBYTE(lpmwd->lpwRemapToScr[iCount])] = -1;
-    if(lpmwd->lpwRemapToScr[iCount] == g_iMasterModuleIdx)
-      acVU[g_iCueModuleIdx] = -1;
-
-    for(iSubCount = 0; iSubCount < MAX_MATRIX_COUNT; iSubCount++)
-    {
-      if(g_aiAux[iSubCount] != 0)
-        if(g_aiAux[iSubCount] == lpmwd->lpwRemapToScr[iCount])
-          acVU[g_aiMatrix[iSubCount]] = -1;
-    }
-  }
-  */
   ZeroMemory(lpmwd->acVisibleVU, 80);
   CDef_ShowVuData(acVU);
 }
@@ -1058,6 +1126,11 @@ void  ScrollSideWays(HWND hwnd, LPMIXERWNDDATA lpmwd, int iDir)
 //purpose:
 //  Calculate the NEW vertical offset of the Window
 // and then Repaint it ....
+//
+// Used for Jump Zones from the Full View
+//
+// called from JumpToMZWindow()
+//
 //======================================================
 
 void      ScrollImgWindow(HWND hwnd, LPMIXERWNDDATA lpmwd)
@@ -1075,16 +1148,15 @@ void      ScrollImgWindow(HWND hwnd, LPMIXERWNDDATA lpmwd)
   if(iYChange < 0)
   {
 		if((iYChange + lpmwd->iYOffset) <= 0)
-				{
-				if(lpmwd->iYOffset == 0)    
-						// we already at the top
+		{
+			if(lpmwd->iYOffset == 0)    // we already at the top
 						return;
-				lpmwd->iYOffset = 0;
-				}
+			lpmwd->iYOffset = 0;
+		}
 		else
-				{
-				lpmwd->iYOffset = lpmwd->iYOffset + iYChange;
-				}
+		{
+			lpmwd->iYOffset = lpmwd->iYOffset + iYChange;
+		}
   }
   else
   {
@@ -1092,8 +1164,7 @@ void      ScrollImgWindow(HWND hwnd, LPMIXERWNDDATA lpmwd)
 			 (iYChange + lpmwd->iYOffset + lpmwd->rVisible.bottom))
 		{
 			iYChange = lpmwd->rMaxSize.bottom - lpmwd->rVisible.bottom;
-			if(iYChange == lpmwd->iYOffset)
-				// we are already Scrolled to the bottom
+			if(iYChange == lpmwd->iYOffset)	// we are already Scrolled to the bottom
 				return; 
 			lpmwd->iYOffset = iYChange;
 		}
@@ -1110,6 +1181,7 @@ void      ScrollImgWindow(HWND hwnd, LPMIXERWNDDATA lpmwd)
   EndPaint(hwnd, &ps);
 
   pnt = lpmwd->pntMouseCur;
+
   if((pnt.y == 0) || (pnt.y == (lpmwd->rVisible.bottom - 1)))//lpmwd->rVisible.bottom - 1))
   {
 		////////////////////////////////
@@ -1178,6 +1250,10 @@ int             iOldYSpeed;
 	iOldYSpeed = g_iYSpeed;
 	g_iYSpeed = ((-iYChange) / 3) * 4; // 3 * 2
 
+	////////////////////////////////////////////////////
+	// Set cursor to up or down arrow depending on the
+	// direction we are moving
+
 	if(g_iYSpeed > 0)
 	{
 		if(iOldYSpeed <= 0)
@@ -1233,8 +1309,7 @@ void      HandleScrollImgWindowRelative(HWND hwnd, LPMIXERWNDDATA lpmwd)
        (g_iYSpeed + lpmwd->iYOffset + lpmwd->rVisible.bottom))
     {
         iYChange = lpmwd->rMaxSize.bottom - lpmwd->rVisible.bottom;
-        if(iYChange == lpmwd->iYOffset)
-            // we are already Scrolled to the bottom
+        if(iYChange == lpmwd->iYOffset)	// we are already Scrolled to the bottom
             return; 
         lpmwd->iYOffset = iYChange;
     }
@@ -1281,6 +1356,7 @@ return;
 //                          Zone Map for this mixer-view
 //          long    lpZMCount; count of the actual ZoneMaps
 //
+//					int iType;  0=FULL VIEW, 1=ZOOM, 5=MASTER
 //return:
 //      MIXERWNDDATA    far* == NULL is an error
 //                           != NULL the memory has
@@ -1299,6 +1375,7 @@ LPMIXERWNDDATA  MixerWindowDataAlloc(WORD wMixer,
                                      int iType)
 {
 	LPMIXERWNDDATA      lpmwd;
+	BOOL	bScrollBars = TRUE;
 
 	lpmwd = NULL;
 
@@ -1322,12 +1399,19 @@ LPMIXERWNDDATA  MixerWindowDataAlloc(WORD wMixer,
 			// They should be only one type of channels
 			//--------------------------------------------------------------------------
 
-			if(iType == 1)
-				MakeModulesArraySameType(lpmwd, iType, 2);
-			else
+			if(iType == DCX_DEVMAP_MODULE_INPUT)
+			{
+				MakeModulesArraySameType(lpmwd, DCX_DEVMAP_MODULE_INPUT, 2);
+			}
+			else if(iType == DCX_DEVMAP_MODULE_NA)	// ONLY FULL VIEW WILL BE HERE
+			{
+				MakeModulesArraySameType(lpmwd, DCX_DEVMAP_MODULE_INPUT, 2);
+				bScrollBars = FALSE;	// Tell GetMaxWindowSize not to account for scroll bars for full view
+			}
+			else	// ONLY MASTER MODULE IS NULL_MODULE_TYPE
 				MakeModulesArraySameType(lpmwd, iType, NULL_MODULE_TYPE);
 
-			GetMaxWindowSize(&lpmwd->rMaxWndPos, lpwZM, lpmwd->lZMCount, lpmwd);
+			GetMaxWindowSize(&lpmwd->rMaxWndPos, lpwZM, lpmwd->lZMCount, lpmwd, bScrollBars);
 	}
 	return lpmwd;
 }
@@ -1408,7 +1492,6 @@ BOOL    bRet;
   }
 	else
 			bRet = TRUE;
-
 
 	*pRect = rClient;
 
@@ -1590,11 +1673,14 @@ static LARGE_INTEGER liVUDisplayDealy = {0};
 static DWORD					VU_delaystep = 0;
 static double    dVUResolution;
 static DWORD     dwMoreThanOne = 0;
+
 #include <stdio.h>
+
 void      DrawVUReadOutImgWindow(LPPAINTSTRUCT lpPS,
                                   LPMIXERWNDDATA lpMWD,
                                   VU_READ *pVuData,
                                   int   iVUCount); // Just a prototype
+
 void  DisplayVU_Data(VU_READ *pVuData, int iSize)
 {
   int             iVU_Count = iSize / sizeof(VU_READ);
@@ -1993,52 +2079,3 @@ void      DrawVUReadOutImgWindow(LPPAINTSTRUCT lpPS,
 return;
 }
 
-//======================================================
-//FUNCTION: AddMWEntryToDLList
-//
-//param:
-//      HWND                hwnd; -> these two variables
-//      LPMIXERWNDDATA      lpmwd;-> will get stored
-//                                   as an extra info
-//                                   in the doub. linked
-//                                   list
-//
-// return:
-//          0 = OK
-//          n = error
-//======================================================
-/*
-int       AddMWEntryToDLList(HWND hwnd, LPMIXERWNDDATA lpmwd)
-{
-LPDLENTRY       lpdle;
-LPMW_DL_LIST    lpMW_DL;
-
-lpdle = AddEntry(lpMixerWindows_DL_List, sizeof(MW_DL_LIST));
-if(lpdle == NULL)
-    return 1;
-
-lpmwd->lpdle = lpdle;
-
-lpMW_DL = (LPMW_DL_LIST)GetEntryData(lpMixerWindows_DL_List, lpdle);
-lpMW_DL->hwndMW = hwnd; // Store the Window handle
-lpMW_DL->lpMWD = lpmwd; // Store the Window Data Pointer
-
-return 0;
-}
-
-//=====================================================
-//FUNCTION: DeleteMWEntryFromDLList
-//
-//called whenever the window is destroyed
-//=====================================================
-void      DeleteMWEntryFromDLList(LPMIXERWNDDATA lpmwd)
-{
-if(lpmwd)
-    // Delete the Entry using the pointer
-    // to it and not the index
-    //-----------------------------------
-    DelEntryPtr(lpMixerWindows_DL_List, lpmwd->lpdle);
-
-return;
-}
-*/
