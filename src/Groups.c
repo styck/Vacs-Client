@@ -889,110 +889,110 @@ int    InitGroups(void)
   // Now prepare the Stereo groups
   //
   // Input channel Stereo grouped controls
-  g_StereoGroups[0].iModuleType = 1;
+  g_StereoGroups[0].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[0].wLeft = CTRL_NUM_INPUT_AUX1LT_FADER;
   g_StereoGroups[0].wRight = CTRL_NUM_INPUT_AUX1RT_FADER;
 
-  g_StereoGroups[1].iModuleType = 1;
+  g_StereoGroups[1].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[1].wLeft = CTRL_NUM_INPUT_AUX2LT_FADER;
   g_StereoGroups[1].wRight = CTRL_NUM_INPUT_AUX2RT_FADER;
 
-  g_StereoGroups[2].iModuleType = 1;
+  g_StereoGroups[2].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[2].wLeft = CTRL_NUM_INPUT_AUX3LT_FADER;
   g_StereoGroups[2].wRight = CTRL_NUM_INPUT_AUX3RT_FADER;
 
-  g_StereoGroups[3].iModuleType = 1;
+  g_StereoGroups[3].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[3].wLeft = CTRL_NUM_INPUT_AUX4LT_FADER;
   g_StereoGroups[3].wRight = CTRL_NUM_INPUT_AUX4RT_FADER;
 
-  g_StereoGroups[4].iModuleType = 1;
+  g_StereoGroups[4].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[4].wLeft = CTRL_NUM_INPUT_AUX5LT_FADER;
   g_StereoGroups[4].wRight = CTRL_NUM_INPUT_AUX5RT_FADER;
 
-  g_StereoGroups[5].iModuleType = 1;
+  g_StereoGroups[5].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[5].wLeft = CTRL_NUM_INPUT_AUX6LT_FADER;
   g_StereoGroups[5].wRight = CTRL_NUM_INPUT_AUX6RT_FADER;
 
-  g_StereoGroups[6].iModuleType = 1;
+  g_StereoGroups[6].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[6].wLeft = CTRL_NUM_INPUT_AUX7LT_FADER;
   g_StereoGroups[6].wRight = CTRL_NUM_INPUT_AUX7RT_FADER;
 
-  g_StereoGroups[7].iModuleType = 1;
+  g_StereoGroups[7].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[7].wLeft = CTRL_NUM_INPUT_AUX8LT_FADER;
   g_StereoGroups[7].wRight = CTRL_NUM_INPUT_AUX8RT_FADER;
 
-  g_StereoGroups[8].iModuleType = 1;
+  g_StereoGroups[8].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[8].wLeft = CTRL_NUM_INPUT_AUX9LT_FADER;
   g_StereoGroups[8].wRight = CTRL_NUM_INPUT_AUX9RT_FADER;
 
-  g_StereoGroups[9].iModuleType = 1;
+  g_StereoGroups[9].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[9].wLeft = CTRL_NUM_INPUT_AUX10LT_FADER;
   g_StereoGroups[9].wRight = CTRL_NUM_INPUT_AUX10RT_FADER;
 
-  g_StereoGroups[10].iModuleType = 1;
+  g_StereoGroups[10].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[10].wLeft = CTRL_NUM_INPUT_AUX11LT_FADER;
   g_StereoGroups[10].wRight = CTRL_NUM_INPUT_AUX11RT_FADER;
 
-  g_StereoGroups[11].iModuleType = 1;
+  g_StereoGroups[11].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[11].wLeft = CTRL_NUM_INPUT_AUX12LT_FADER;
   g_StereoGroups[11].wRight = CTRL_NUM_INPUT_AUX12RT_FADER;
 
-  g_StereoGroups[12].iModuleType = 1;
+  g_StereoGroups[12].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[12].wLeft = CTRL_NUM_INPUT_AUX13LT_FADER;
   g_StereoGroups[12].wRight = CTRL_NUM_INPUT_AUX13RT_FADER;
 
-  g_StereoGroups[13].iModuleType = 1;
+  g_StereoGroups[13].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[13].wLeft = CTRL_NUM_INPUT_AUX14LT_FADER;
   g_StereoGroups[13].wRight = CTRL_NUM_INPUT_AUX14RT_FADER;
 
-  g_StereoGroups[14].iModuleType = 1;
+  g_StereoGroups[14].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[14].wLeft = CTRL_NUM_INPUT_AUX15LT_FADER;
   g_StereoGroups[14].wRight = CTRL_NUM_INPUT_AUX15RT_FADER;
 
-  g_StereoGroups[15].iModuleType = 1;
+  g_StereoGroups[15].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[15].wLeft = CTRL_NUM_INPUT_AUX16LT_FADER;
   g_StereoGroups[15].wRight = CTRL_NUM_INPUT_AUX16RT_FADER;
 
   // Subs
-  g_StereoGroups[16].iModuleType = 1;
+  g_StereoGroups[16].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[16].wLeft = CTRL_NUM_INPUT_SUB8LT_FADER;
   g_StereoGroups[16].wRight = CTRL_NUM_INPUT_SUB8RT_FADER;
 
-  g_StereoGroups[17].iModuleType = 1;
+  g_StereoGroups[17].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[17].wLeft = CTRL_NUM_INPUT_SUB7LT_FADER;
   g_StereoGroups[17].wRight = CTRL_NUM_INPUT_SUB7RT_FADER;
 
-  g_StereoGroups[18].iModuleType = 1;
+  g_StereoGroups[18].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[18].wLeft = CTRL_NUM_INPUT_SUB6LT_FADER;
   g_StereoGroups[18].wRight = CTRL_NUM_INPUT_SUB6RT_FADER;
 
-  g_StereoGroups[19].iModuleType = 1;
+  g_StereoGroups[19].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[19].wLeft = CTRL_NUM_INPUT_SUB5LT_FADER;
   g_StereoGroups[19].wRight = CTRL_NUM_INPUT_SUB5RT_FADER;
 
-  g_StereoGroups[20].iModuleType = 1;
+  g_StereoGroups[20].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[20].wLeft = CTRL_NUM_INPUT_SUB4LT_FADER;
   g_StereoGroups[20].wRight = CTRL_NUM_INPUT_SUB4RT_FADER;
 
-  g_StereoGroups[21].iModuleType = 1;
+  g_StereoGroups[21].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[21].wLeft = CTRL_NUM_INPUT_SUB3LT_FADER;
   g_StereoGroups[21].wRight = CTRL_NUM_INPUT_SUB3RT_FADER;
 
-  g_StereoGroups[22].iModuleType = 1;
+  g_StereoGroups[22].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[22].wLeft = CTRL_NUM_INPUT_SUB2LT_FADER;
   g_StereoGroups[22].wRight = CTRL_NUM_INPUT_SUB2RT_FADER;
 
-  g_StereoGroups[23].iModuleType = 1;
+  g_StereoGroups[23].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[23].wLeft = CTRL_NUM_INPUT_SUB1LT_FADER;
   g_StereoGroups[23].wRight = CTRL_NUM_INPUT_SUB1RT_FADER;
 
   // Line B to Aux 16
-  g_StereoGroups[24].iModuleType = 1;
+  g_StereoGroups[24].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[24].wLeft = CTRL_NUM_INPUT_AUX16LT_LINEB_FADER;
   g_StereoGroups[24].wRight = CTRL_NUM_INPUT_AUX16RT_LINEB_FADER;
 
   // Master return 
-  g_StereoGroups[25].iModuleType = 1;
+  g_StereoGroups[25].iModuleType = DCX_DEVMAP_MODULE_INPUT;
   g_StereoGroups[25].wLeft = CTRL_NUM_INPUT_MASTERLT_LEVEL;
   g_StereoGroups[25].wRight = CTRL_NUM_INPUT_MASTERRT_LEVEL;
   
@@ -1003,295 +1003,303 @@ int    InitGroups(void)
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // SubAux Stereo Controls
   
-  g_StereoGroups[26].iModuleType = 2;
+  g_StereoGroups[26].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[26].wLeft =   CTRL_NUM_MATRIX_SUB_VOL_LT;
   g_StereoGroups[26].wRight =   CTRL_NUM_MATRIX_SUB_VOL_RT;
 
-  g_StereoGroups[27].iModuleType = 3;
+  g_StereoGroups[27].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[27].wLeft =   CTRL_NUM_MATRIX_LT_FADER;
   g_StereoGroups[27].wRight =   CTRL_NUM_MATRIX_RT_FADER;
 
 
 
-  g_StereoGroups[28].iModuleType = 3;
+  g_StereoGroups[28].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[28].wLeft =   CTRL_NUM_MATRIX_HI_FREQ_LT;
   g_StereoGroups[28].wRight =   CTRL_NUM_MATRIX_HI_FREQ_RT;
   
-  g_StereoGroups[29].iModuleType = 3;
+  g_StereoGroups[29].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[29].wLeft =   CTRL_NUM_MATRIX_HF_BW_LT;
   g_StereoGroups[29].wRight =   CTRL_NUM_MATRIX_HF_BW_RT;
 
-  g_StereoGroups[30].iModuleType = 3;
+  g_StereoGroups[30].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[30].wLeft =   CTRL_NUM_MATRIX_HF_BC_LT;
   g_StereoGroups[30].wRight =   CTRL_NUM_MATRIX_HF_BC_RT;
 
-  g_StereoGroups[31].iModuleType = 3;
+  g_StereoGroups[31].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[31].wLeft =   CTRL_NUM_MATRIX_HF_PK_SHELF_LT;
   g_StereoGroups[31].wRight =   CTRL_NUM_MATRIX_HF_PK_SHELF_RT;
 
-  g_StereoGroups[32].iModuleType = 3;
+  g_StereoGroups[32].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[32].wLeft =   CTRL_NUM_MATRIX_HM_FREQ_LT;
   g_StereoGroups[32].wRight =   CTRL_NUM_MATRIX_HM_FREQ_RT;
 
-  g_StereoGroups[33].iModuleType = 3;
+  g_StereoGroups[33].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[33].wLeft =   CTRL_NUM_MATRIX_HM_BW_LT;
   g_StereoGroups[33].wRight =   CTRL_NUM_MATRIX_HM_BW_RT;
 
-  g_StereoGroups[34].iModuleType = 3;
+  g_StereoGroups[34].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[34].wLeft =   CTRL_NUM_MATRIX_HM_BC_LT;
   g_StereoGroups[34].wRight =   CTRL_NUM_MATRIX_HM_BC_RT;
 
-  g_StereoGroups[35].iModuleType = 3;
+  g_StereoGroups[35].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[35].wLeft =   CTRL_NUM_MATRIX_LM_FREQ_LT;
   g_StereoGroups[35].wRight =   CTRL_NUM_MATRIX_LM_FREQ_RT;
 
-  g_StereoGroups[36].iModuleType = 3;
+  g_StereoGroups[36].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[36].wLeft =   CTRL_NUM_MATRIX_LM_BW_LT;
   g_StereoGroups[36].wRight =   CTRL_NUM_MATRIX_LM_BW_RT;
 
-  g_StereoGroups[37].iModuleType = 3;
+  g_StereoGroups[37].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[37].wLeft =   CTRL_NUM_MATRIX_LM_BC_LT;
   g_StereoGroups[37].wRight =   CTRL_NUM_MATRIX_LM_BC_RT;
 
-  g_StereoGroups[38].iModuleType = 3;
+  g_StereoGroups[38].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[38].wLeft =   CTRL_NUM_MATRIX_LO_FREQ_LT;
   g_StereoGroups[38].wRight =   CTRL_NUM_MATRIX_LO_FREQ_RT;
 
-  g_StereoGroups[39].iModuleType = 3;
+  g_StereoGroups[39].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[39].wLeft =   CTRL_NUM_MATRIX_LF_BW_LT;
   g_StereoGroups[39].wRight =   CTRL_NUM_MATRIX_LF_BW_RT;
 
-  g_StereoGroups[40].iModuleType = 3;
+  g_StereoGroups[40].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[40].wLeft =   CTRL_NUM_MATRIX_LF_BC_LT;
   g_StereoGroups[40].wRight =   CTRL_NUM_MATRIX_LF_BC_RT;
 
-  g_StereoGroups[41].iModuleType = 3;
+  g_StereoGroups[41].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[41].wLeft =   CTRL_NUM_MATRIX_LF_PK_SHELF_LT;
   g_StereoGroups[41].wRight =   CTRL_NUM_MATRIX_LF_PK_SHELF_RT;
   
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Cue module stereo stuff
-  g_StereoGroups[42].iModuleType = 4;
+  g_StereoGroups[42].iModuleType = DCX_DEVMAP_MODULE_CUE;
   g_StereoGroups[42].wLeft = CTRL_NUM_MASTERLT_CUE_A_LT;
   g_StereoGroups[42].wRight = CTRL_NUM_MASTERLT_CUE_A_RT;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Master module volume stereo Group
-  g_StereoGroups[43].iModuleType = 5;
+  g_StereoGroups[43].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[43].wLeft = CTRL_NUM_MASTERLT_FADER;
   g_StereoGroups[43].wRight = CTRL_NUM_MASTERRT_FADER;
 
 
 
-  g_StereoGroups[44].iModuleType = 2;
+  g_StereoGroups[44].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[44].wLeft = CTRL_NUM_MASTER_AUX16LT_FADER;
   g_StereoGroups[44].wRight = CTRL_NUM_MASTER_AUX16RT_FADER;
 			
-  g_StereoGroups[45].iModuleType = 2;
+  g_StereoGroups[45].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[45].wLeft = CTRL_NUM_MASTER_AUX15LT_FADER;
   g_StereoGroups[45].wRight = CTRL_NUM_MASTER_AUX15RT_FADER;
 
-  g_StereoGroups[46].iModuleType = 2;
+  g_StereoGroups[46].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[46].wLeft = CTRL_NUM_MASTER_AUX14LT_FADER;
   g_StereoGroups[46].wRight = CTRL_NUM_MASTER_AUX14RT_FADER;
 			
-  g_StereoGroups[47].iModuleType = 2;
+  g_StereoGroups[47].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[47].wLeft = CTRL_NUM_MASTER_AUX13LT_FADER;
   g_StereoGroups[47].wRight = CTRL_NUM_MASTER_AUX13RT_FADER;
 
 
-  g_StereoGroups[48].iModuleType = 2;
+  g_StereoGroups[48].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[48].wLeft = CTRL_NUM_MASTER_AUX12LT_FADER;
   g_StereoGroups[48].wRight = CTRL_NUM_MASTER_AUX12RT_FADER;
 
-  g_StereoGroups[49].iModuleType = 2;
+  g_StereoGroups[49].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[49].wLeft = CTRL_NUM_MASTER_AUX11LT_FADER;
   g_StereoGroups[49].wRight = CTRL_NUM_MASTER_AUX11RT_FADER;
 			
-  g_StereoGroups[50].iModuleType = 2;
+  g_StereoGroups[50].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[50].wLeft = CTRL_NUM_MASTER_AUX10LT_FADER;
   g_StereoGroups[50].wRight = CTRL_NUM_MASTER_AUX10RT_FADER;
 
-  g_StereoGroups[51].iModuleType = 2;
+  g_StereoGroups[51].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[51].wLeft = CTRL_NUM_MASTER_AUX9LT_FADER;
   g_StereoGroups[51].wRight = CTRL_NUM_MASTER_AUX9RT_FADER;
 
-  g_StereoGroups[52].iModuleType = 2;
+  g_StereoGroups[52].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[52].wLeft = CTRL_NUM_MASTER_AUX8LT_FADER;
   g_StereoGroups[52].wRight = CTRL_NUM_MASTER_AUX8RT_FADER;
 
-  g_StereoGroups[53].iModuleType = 2;
+  g_StereoGroups[53].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[53].wLeft = CTRL_NUM_MASTER_AUX7LT_FADER;
   g_StereoGroups[53].wRight = CTRL_NUM_MASTER_AUX7RT_FADER;
 
-  g_StereoGroups[54].iModuleType = 2;
+  g_StereoGroups[54].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[54].wLeft = CTRL_NUM_MASTER_AUX6LT_FADER;
   g_StereoGroups[54].wRight = CTRL_NUM_MASTER_AUX6RT_FADER;
 
-  g_StereoGroups[55].iModuleType = 2;
+  g_StereoGroups[55].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[55].wLeft = CTRL_NUM_MASTER_AUX5LT_FADER;
   g_StereoGroups[55].wRight = CTRL_NUM_MASTER_AUX5RT_FADER;
 
-  g_StereoGroups[56].iModuleType = 2;
+  g_StereoGroups[56].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[56].wLeft = CTRL_NUM_MASTER_AUX4LT_FADER;
   g_StereoGroups[56].wRight = CTRL_NUM_MASTER_AUX4RT_FADER;
 
-  g_StereoGroups[57].iModuleType = 2;
+  g_StereoGroups[57].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[57].wLeft = CTRL_NUM_MASTER_AUX3LT_FADER;
   g_StereoGroups[57].wRight = CTRL_NUM_MASTER_AUX3RT_FADER;
 
-  g_StereoGroups[58].iModuleType = 2;
+  g_StereoGroups[58].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[58].wLeft = CTRL_NUM_MASTER_AUX2LT_FADER;
   g_StereoGroups[58].wRight = CTRL_NUM_MASTER_AUX2RT_FADER;
 
-  g_StereoGroups[59].iModuleType = 2;
+  g_StereoGroups[59].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[59].wLeft = CTRL_NUM_MASTER_AUX1LT_FADER;
   g_StereoGroups[59].wRight = CTRL_NUM_MASTER_AUX1RT_FADER;
 
 
 	// Master module ... stuff
 	//
-  g_StereoGroups[60].iModuleType = 5;
+  g_StereoGroups[60].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[60].wLeft = CTRL_NUM_MASTERLT_SUM_IN;
   g_StereoGroups[60].wRight = CTRL_NUM_MASTERRT_SUM_IN;
 
 
-  g_StereoGroups[61].iModuleType = 5;
+  g_StereoGroups[61].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[61].wLeft = CTRL_NUM_MASTER_POST_LT_VU;
   g_StereoGroups[61].wRight = CTRL_NUM_MASTER_POST_RT_VU;
 
 
 	// Matrix module ..
 	//
-  g_StereoGroups[62].iModuleType = 3;
+  g_StereoGroups[62].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[62].wLeft = CTRL_NUM_MATRIX_AUX16LT;
   g_StereoGroups[62].wRight = CTRL_NUM_MATRIX_AUX16RT;
 
-  g_StereoGroups[63].iModuleType = 3;
+  g_StereoGroups[63].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[63].wLeft = CTRL_NUM_MATRIX_AUX15LT;
   g_StereoGroups[63].wRight = CTRL_NUM_MATRIX_AUX15RT;
 
-  g_StereoGroups[64].iModuleType = 3;
+  g_StereoGroups[64].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[64].wLeft = CTRL_NUM_MATRIX_AUX14LT;
   g_StereoGroups[64].wRight = CTRL_NUM_MATRIX_AUX14RT;
 
-  g_StereoGroups[65].iModuleType = 3;
+  g_StereoGroups[65].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[65].wLeft = CTRL_NUM_MATRIX_AUX13LT;
   g_StereoGroups[65].wRight = CTRL_NUM_MATRIX_AUX13RT;
 
-  g_StereoGroups[66].iModuleType = 3;
+  g_StereoGroups[66].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[66].wLeft = CTRL_NUM_MATRIX_AUX12LT;
   g_StereoGroups[66].wRight = CTRL_NUM_MATRIX_AUX12RT;
 
-  g_StereoGroups[67].iModuleType = 3;
+  g_StereoGroups[67].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[67].wLeft = CTRL_NUM_MATRIX_AUX11LT;
   g_StereoGroups[67].wRight = CTRL_NUM_MATRIX_AUX11RT;
 
-  g_StereoGroups[68].iModuleType = 3;
+  g_StereoGroups[68].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[68].wLeft = CTRL_NUM_MATRIX_AUX10LT;
   g_StereoGroups[68].wRight = CTRL_NUM_MATRIX_AUX10RT;
 
-  g_StereoGroups[69].iModuleType = 3;
+  g_StereoGroups[69].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[69].wLeft = CTRL_NUM_MATRIX_AUX09LT;
   g_StereoGroups[69].wRight = CTRL_NUM_MATRIX_AUX09RT;
 
-  g_StereoGroups[70].iModuleType = 3;
+  g_StereoGroups[70].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[70].wLeft = CTRL_NUM_MATRIX_AUX08LT;
   g_StereoGroups[70].wRight = CTRL_NUM_MATRIX_AUX08RT;
 
-  g_StereoGroups[71].iModuleType = 3;
+  g_StereoGroups[71].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[71].wLeft = CTRL_NUM_MATRIX_AUX07LT;
   g_StereoGroups[71].wRight = CTRL_NUM_MATRIX_AUX07RT;
 
-  g_StereoGroups[72].iModuleType = 3;
+  g_StereoGroups[72].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[72].wLeft = CTRL_NUM_MATRIX_AUX06LT;
   g_StereoGroups[72].wRight = CTRL_NUM_MATRIX_AUX06RT;
 
-  g_StereoGroups[73].iModuleType = 3;
+  g_StereoGroups[73].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[73].wLeft = CTRL_NUM_MATRIX_AUX05LT;
   g_StereoGroups[73].wRight = CTRL_NUM_MATRIX_AUX05RT;
 
-  g_StereoGroups[74].iModuleType = 3;
+  g_StereoGroups[74].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[74].wLeft = CTRL_NUM_MATRIX_AUX04LT;
   g_StereoGroups[74].wRight = CTRL_NUM_MATRIX_AUX04RT;
 
-  g_StereoGroups[75].iModuleType = 3;
+  g_StereoGroups[75].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[75].wLeft = CTRL_NUM_MATRIX_AUX03LT;
   g_StereoGroups[75].wRight = CTRL_NUM_MATRIX_AUX03RT;
 
-  g_StereoGroups[76].iModuleType = 3;
+  g_StereoGroups[76].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[76].wLeft = CTRL_NUM_MATRIX_AUX02LT;
   g_StereoGroups[76].wRight = CTRL_NUM_MATRIX_AUX02RT;
 
-  g_StereoGroups[77].iModuleType = 3;
+  g_StereoGroups[77].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[77].wLeft = CTRL_NUM_MATRIX_AUX01LT;
   g_StereoGroups[77].wRight = CTRL_NUM_MATRIX_AUX01RT;
 
 
-  g_StereoGroups[78].iModuleType = 3;
+  g_StereoGroups[78].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[78].wLeft = CTRL_NUM_MATRIX_SUB08LT;
   g_StereoGroups[78].wRight = CTRL_NUM_MATRIX_SUB08RT;
 	
-  g_StereoGroups[79].iModuleType = 3;
+  g_StereoGroups[79].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[79].wLeft = CTRL_NUM_MATRIX_SUB07LT;
   g_StereoGroups[79].wRight = CTRL_NUM_MATRIX_SUB07RT;
 	
-  g_StereoGroups[80].iModuleType = 3;
+  g_StereoGroups[80].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[80].wLeft = CTRL_NUM_MATRIX_SUB06LT;
   g_StereoGroups[80].wRight = CTRL_NUM_MATRIX_SUB06RT;
 	
-  g_StereoGroups[81].iModuleType = 3;
+  g_StereoGroups[81].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[81].wLeft = CTRL_NUM_MATRIX_SUB05LT;
   g_StereoGroups[81].wRight = CTRL_NUM_MATRIX_SUB05RT;
 	
-  g_StereoGroups[82].iModuleType = 3;
+  g_StereoGroups[82].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[82].wLeft = CTRL_NUM_MATRIX_SUB04LT;
   g_StereoGroups[82].wRight = CTRL_NUM_MATRIX_SUB04RT;
 	
-  g_StereoGroups[83].iModuleType = 3;
+  g_StereoGroups[83].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[83].wLeft = CTRL_NUM_MATRIX_SUB03LT;
   g_StereoGroups[83].wRight = CTRL_NUM_MATRIX_SUB03RT;
 	
-  g_StereoGroups[84].iModuleType = 3;
+  g_StereoGroups[84].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[84].wLeft = CTRL_NUM_MATRIX_SUB02LT;
   g_StereoGroups[84].wRight = CTRL_NUM_MATRIX_SUB02RT;
 	
-  g_StereoGroups[85].iModuleType = 3;
+  g_StereoGroups[85].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[85].wLeft = CTRL_NUM_MATRIX_SUB01LT;
   g_StereoGroups[85].wRight = CTRL_NUM_MATRIX_SUB01RT;
 	
-  g_StereoGroups[86].iModuleType = 2;
+  g_StereoGroups[86].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[86].wLeft = CTRL_NUM_MATRIX_SUB_LT_SUM_IN;
   g_StereoGroups[86].wRight = CTRL_NUM_MATRIX_SUB_RT_SUM_IN;
 
-  g_StereoGroups[87].iModuleType = 2;
+  g_StereoGroups[87].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[87].wLeft = CTRL_NUM_MATRIXLT_MUTE_SUB;
   g_StereoGroups[87].wRight = CTRL_NUM_MATRIXRT_MUTE_SUB;
 
-  g_StereoGroups[88].iModuleType = 2;
+  g_StereoGroups[88].iModuleType = DCX_DEVMAP_MODULE_AUX;
   g_StereoGroups[88].wLeft = CTRL_NUM_MATRIXLT_INSERT_SUB;
   g_StereoGroups[88].wRight = CTRL_NUM_MATRIXRT_INSERT_SUB;
 	
-  g_StereoGroups[89].iModuleType = 5;
+  g_StereoGroups[89].iModuleType = DCX_DEVMAP_MODULE_MASTER;
   g_StereoGroups[89].wLeft = CTRL_NUM_MASTER_INSERTLT;
   g_StereoGroups[89].wRight = CTRL_NUM_MASTER_INSERTRT;
 
-  g_StereoGroups[90].iModuleType = 3;
+  g_StereoGroups[90].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[90].wLeft = CTRL_NUM_MATRIXLT_INSERT;
   g_StereoGroups[90].wRight = CTRL_NUM_MATRIXRT_INSERT;
   
-  g_StereoGroups[91].iModuleType = 3;
+  g_StereoGroups[91].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[91].wLeft = CTRL_NUM_MATRIX_SUMINLT;
   g_StereoGroups[91].wRight = CTRL_NUM_MATRIX_SUMINRT;
 
-  g_StereoGroups[92].iModuleType = 3;
+  g_StereoGroups[92].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[92].wLeft = CTRL_NUM_MATRIX_MASTER_PRELT;
   g_StereoGroups[92].wRight = CTRL_NUM_MATRIX_MASTER_PRERT;
 
-  g_StereoGroups[93].iModuleType = 3;
+  g_StereoGroups[93].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
   g_StereoGroups[93].wLeft = CTRL_NUM_MATRIX_LT_INOUT;
   g_StereoGroups[93].wRight = CTRL_NUM_MATRIX_RT_INOUT;
+
+//////////////////////////////////////////////////
+//  Attempt to get FULL VIEW Matrix Mute to work
+//  correctly so it is stereo linked - fds
+//
+//  g_StereoGroups[94].iModuleType = DCX_DEVMAP_MODULE_MATRIX;
+//  g_StereoGroups[94].wLeft = CTRL_NUM_MATRIXLT_MUTE;
+//  g_StereoGroups[94].wRight = CTRL_NUM_MATRIXLT_MUTE;
 
 
 
