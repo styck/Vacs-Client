@@ -129,6 +129,7 @@ extern BOOL                gbFullImageWndClassReg;
 //-----------------------
 extern char                gszZoomViewClass[];
 extern char								giMixerType;				// Mixer type, cabaret, event, showtime, etc.
+int												giMixerTypeOffline;	// Same as above but only if OFFLINE, else will be -1
 
 extern char								 gszStereoCueMetersClass[];
 
