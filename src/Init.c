@@ -18,19 +18,26 @@ HWND          g_hwndSplashScreen = NULL;
 void          ShowSplashScreen(BOOL );
 BOOL APIENTRY dlgProcSplash(HWND ,UINT , UINT , LONG );
 
+extern LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType ); // see mix_files.c
 
-//=========================
+
+//////////////////////////////////////////////////////////
 // the initialize procedure
 // sets all the variables
 // windows, buffers, ....
-//=========================
+//////////////////////////////////////////////////////////
+
 int   InitializeProc(void)
 {
   int     iReturn;
   char    szString[256];
   LPSTR   lpstrFName = NULL;
   HWND    hwndTest = NULL;
-	int					CTRL_key;	 
+	int			CTRL_key;	 
+
+	int	i;
+	char iChannelCount = 0;
+
 
   // ShowSplashScreen(TRUE);
 
@@ -47,12 +54,12 @@ int   InitializeProc(void)
   ZeroMemory(gszProgDir, 256);
   GetFullPathName(szString, 256, gszProgDir, &lpstrFName);
   if(lpstrFName)
-      {
-      // now we have only the path
-      // because we put 0 where the actual file name begins
-      //---------------------------------------------------
-      *lpstrFName = 0;
-      }
+  {
+    // now we have only the path
+    // because we put 0 where the actual file name begins
+    //---------------------------------------------------
+    *lpstrFName = 0;
+  }
 
 
   // Load the Bitmap Resource DLL
@@ -60,18 +67,18 @@ int   InitializeProc(void)
   wsprintf(szString,"%s%s",gszProgDir,"usengl.dll");
   ghInstStrRes = LoadLibrary(szString);
   if(ghInstStrRes == NULL )
-      {
-      return IDS_NO_RES_FILE;
-      }
+  {
+    return IDS_NO_RES_FILE;
+  }
 
   // Load the Bitmap Resource DLL
   //-----------------------------
   wsprintf(szString,"%s%s",gszProgDir,"ConsoleDefinition.dll");
   ghInstConsoleDef = LoadLibrary(szString);
   if(ghInstConsoleDef == NULL )
-      {
+  {
       return IDS_NO_RES2_FILE;
-      }
+  }
 	// Is Vacs already running
 	if (CDef_isRunning ())
 		return IDS_MULTIPLE_APPLICATIONS_RUNNING;
@@ -133,10 +140,16 @@ int   InitializeProc(void)
 
   }
 
-  // start the client and get all the data from there
+	//////////////////////////////////////////////////////////
+  // start the client and get all the data from the GServer
   //
 	// If Control key is held down then we ask user for
 	// the IP address, etc. Bring up the preference dialog
+	//
+	// Else we transfer the current setup configuration data
+	// in the gDeviceSetup structure.  For OFFLINE work
+	// this needs to be operator controled.
+	//////////////////////////////////////////////////////////
 
 	CTRL_key = GetKeyState (VK_CONTROL);
 
@@ -160,6 +173,67 @@ int   InitializeProc(void)
 		gInitialized = TRUE;
 	}
 
+
+/*****************************************************************
+DCX System Types:
+
+DCX Cabaret       12 Inputs and 2 Sub/Martix (Total 14 module strips)
+DCX Showtime    24 Inputs and 6 Sub/Matrix (Total 30 module strips)
+DCX Event 40     40 Inputs and 8 Sub/Matrix (Total 48 module strips)
+DCX Event 60     60 Inputs and 8 Sub/Matrix (Total 68 module strips)
+
+So the formula to determine what DCX System Type Vacs has running would
+be:
+
+<15 strips = DCX Cabaret
+>14 strips but <31 strips = DCX Showtime
+>29 strips but <49 strips = DCX Event 40
+>48 strips = DCX Event 60
+
+******************************************************************/
+
+	// Count the number of input channels so we can determine
+	// what type of console it is.
+
+	for(i=0;i<MAX_CHANNELS;i++)
+	{
+		if(gDeviceSetup.iaChannelTypes[i] == DCX_DEVMAP_MODULE_INPUT)
+			iChannelCount++;
+	}
+
+	// Set what type of mixer we are connected to
+	// or what was chosen in the offline option
+
+	switch(iChannelCount)
+	{
+		case 12:
+			giMixerType = DCX_CABARET;
+			break;
+		case 24:
+			giMixerType = DCX_SHOWTIME;
+			break;
+
+		case 40:
+			giMixerType = DCX_EVENT_40;
+			break;
+
+		case 60:
+			giMixerType = DCX_EVENT_60;
+			break;
+
+		default:
+			giMixerType = DCX_CUSTOM;
+			break;
+
+			break;
+
+	}
+
+	// We know what type of mixer it is, now set the window title.
+
+	wsprintf(gszMainWndTitle, "%s %s", gszMainWndTitle, GetMixerTypeName(giMixerType));
+	SetWindowText(ghwndMain, gszMainWndTitle);
+
   // Load Some default Strings
   //--------------------------
   //if(LoadString(ghInstStrRes, IDS_FILE_DEFEXT, gstrDefExt, sizeof(gstrDefExt)) == 0)
@@ -177,6 +251,7 @@ int   InitializeProc(void)
 
 
 
+  //-----------------
   // Load the Pallete
   // and realize it
   //-----------------
@@ -184,6 +259,7 @@ int   InitializeProc(void)
   if(ghPalette == NULL)
       return IDS_ERR_CREATING_PALETTE;
 
+  //--------------------------------
   // Create the window which we are
   // going to use for the 256 colors
   // .. it will free its resources
@@ -196,6 +272,7 @@ int   InitializeProc(void)
   UpdatePalette(TRUE, ghdc256);
 
 
+  //----------------------------------
   // Load Bitmap for the Client Window
   //
   // The Bitmap is deleted in the
@@ -205,10 +282,12 @@ int   InitializeProc(void)
   if(ghbmpClientBk == NULL)
       return IDS_ERR_IN_RES2_FILE;
 
+  //-----------------------------------
   // and now get the size of the bitmap
   //-----------------------------------
   GetObject(ghbmpClientBk, sizeof(BITMAP), &gbmpClientInfoBk);
 
+  //-----------------------------------
   // Load the VU bitmap
   //-----------------------------------
   ghbmpVUONVert = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_VU_ON_VERTICAL));
@@ -218,24 +297,29 @@ int   InitializeProc(void)
   if(ghbmpVUONHoriz == NULL)
       return IDS_ERR_IN_RES3_FILE;
 
+  //-----------------------------------
   // and now get the size of the bitmap
   //-----------------------------------
   GetObject(ghbmpVUONVert, sizeof(BITMAP), &gbmpVUONVert);
   GetObject(ghbmpVUONHoriz, sizeof(BITMAP), &gbmpVUONHoriz);
   InitVULookupTables(FALSE);  // Log VU data - NOT linear
 
+  //---------------------------------------
   // Load the Bitmap for the Number Display
   //---------------------------------------
   g_hbmpNumbers = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_NUMBERS_200_40));
   //g_hbmpNumbers = Load256Bitmap(ghInstConsoleDef, ghdc256, MAKEINTRESOURCE(IDB_NUMBERS_200_40));
   if(g_hbmpNumbers == NULL)
       return IDS_ERR_IN_RES4_FILE;
+
+  //-----------------------------------
   // and now get the size of the bitmap
   //-----------------------------------
   GetObject(g_hbmpNumbers, sizeof(BITMAP), &g_bmpNumbersInfo);
 
 
 
+  //------------------------------------
   // Register Some Of the Window Classes
   //------------------------------------
   iReturn = RegisterFullViewClass();
@@ -276,6 +360,7 @@ int   InitializeProc(void)
       return iReturn;
 
 
+  //------------------------
   // Display the Main Window
   //------------------------
   ShowWindow(ghwndMain, SW_SHOWMAXIMIZED);
@@ -293,12 +378,16 @@ int   InitializeProc(void)
     return iReturn;
 
 
+  //----------------------------------------
 	// prepare the External controls lookup
+  //----------------------------------------
 	InitExternalIface();
 	SetDataInWindow(ghwndMain);
 
+  //----------------------------------------
 	// now try to open the External interface
 	//
+  //----------------------------------------
 	if (OpenCommPort("\\\\.\\COM1"))
 	{
 //		unsigned char enable_time[6] = { 0xF0,0x15,0x25,0x31,0x01,0xF7};
@@ -311,11 +400,13 @@ int   InitializeProc(void)
 };
 
 
-//////////////////////
+//----------------------------------------
 // Init_MixerData
 //
 //
 //
+//----------------------------------------
+
 int     Init_MixerData(void)
 {
   int     iReturn;
@@ -332,6 +423,7 @@ int     Init_MixerData(void)
   // mixer *** BEGIN ***
   //--------------------------------
 
+  //--------------------------------------
   // Get Global Mixer Phisical Description
   //--------------------------------------
   iReturn = GetGlobalMixerPhisDesc(ghInstConsoleDef);
@@ -339,18 +431,20 @@ int     Init_MixerData(void)
       return iReturn;
 
 
+  //------------------------------------------------------
   // Use the data from the Server ... before InitMemoryMap
   // so we will allocate enough memory
   //------------------------------------------------------
 
 
+  //----------------------------------------
   // Initialize the Memory map
   //----------------------------------------
   iReturn = InitMemoryMap();
   if(iReturn)
       return iReturn;
 
-
+  //---------------------------------
   // Init the Global Resource Storage
   // for different types
   //---------------------------------
@@ -366,12 +460,14 @@ int     Init_MixerData(void)
   if(iReturn)
       return iReturn;
 
+  //-------------------------------
   // Time to apply the Prefferences
   //-------------------------------
   if(ApplyPreferences(TRUE) == FALSE)
       return IDS_ERR_APPLY_PREF;
 
 
+  //--------------------------
   // Load the Zonemaps and the
   // respective bitmaps
   //--------------------------
@@ -379,6 +475,7 @@ int     Init_MixerData(void)
   if(iReturn)
       return iReturn;
 
+  //-------------------------------
   // Now Load the actual Zone maps
   // this will also load all of the
   // bitmaps needed to assemble
@@ -389,34 +486,41 @@ int     Init_MixerData(void)
       return iReturn;
 
 
+  //----------------------------------------------------------------------------
   // Prepare the map for the physical modules
   // Sub-Aux has the Matrix module mapped to it ....
   // The Master has the Cue Module mapped to it on the screen .. 
   // ... 
   // We need to this after the Zonemaps have been loaded 
   // since this function will affect a member variable of the Zonemap Structure
-  //
+  //----------------------------------------------------------------------------
+
   iReturn = InitPhysicalModuleMap();
   if(iReturn)
     return iReturn;
 
+  //--------------------------
   // initialize the Memory Map
   //--------------------------
   SetMemoryMapDefaults();
 
 // FDS NOT NEEDED HERE  ShowSeqWindow(FALSE);  // Make sure we have all index tables initialized ...
   
+  //--------------------------
   // Show the Master Window
+  //--------------------------
   CreateMasterViewWindow("Zoom Master View", NULL); 
 
 
 
+  //--------------------------
   // ZoneMaps and other stuff
   // *** END ***
   //-------------------------
 
+  //--------------------------
   //Enable the menu Items 
-  //---------------------
+  //--------------------------
   EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM, MF_ENABLED);
   EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM_AUX, MF_ENABLED);
   EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM_MASTER, MF_ENABLED);
@@ -425,6 +529,7 @@ int     Init_MixerData(void)
 
   return iReturn;
 }
+
 
 //========================
 // the ShutDown procedure
@@ -444,62 +549,64 @@ int     iCount = 0;
 
 	CloseHandle(gDisplayEvent);
 
-// Free the memory for the menu
-//-----------------------------
-DestroyMenu(ghMainMenu);
+	// Free the memory for the menu
+	//-----------------------------
+	DestroyMenu(ghMainMenu);
 
-CloseComm();
-// Close the Midi Drivers
-//-----------------------
-//CloseAllMIDIInDev();
-//CloseAllMIDIOutDev();
+	CloseComm();
+	// Close the Midi Drivers
+	//-----------------------
+	//CloseAllMIDIInDev();
+	//CloseAllMIDIOutDev();
 
-// Close all of the buffers
-// after the drivers have been closed
-//===================================
-//UnPrepareMidiDataTransferBuffers(&gMidiDev);
-//UnPrepareMidiDataTransferBuffers(&gMTCDev);
-
-
-// Free the memory for the MemoryMap
-//----------------------------------
-FreeMemoryMap();
+	// Close all of the buffers
+	// after the drivers have been closed
+	//===================================
+	//UnPrepareMidiDataTransferBuffers(&gMidiDev);
+	//UnPrepareMidiDataTransferBuffers(&gMTCDev);
 
 
-// DeInitialize the Groups
-//
-DeInitGroups();
-
-// Dealocate the zone maps buffers
-//--------------------------------
-FreeZoneMapsMemory();
-
-// Free the Znone Map IDs
-//-----------------------
-FreeZoneMapIDs();
+	// Free the memory for the MemoryMap
+	//----------------------------------
+	FreeMemoryMap();
 
 
-// Free the Global Resource Storage
-// for different types
-//---------------------------------
-FreeBinResGlobal();
-FreeRdOutResGlobal();
-FreeBMPResGlobal();
+	// DeInitialize the Groups
+	//
+	DeInitGroups();
+
+	// Dealocate the zone maps buffers
+	//--------------------------------
+	FreeZoneMapsMemory();
+
+	// Free the Znone Map IDs
+	//-----------------------
+	FreeZoneMapIDs();
 
 
-// Free the Double Linked List
-// for the Mixer_Windows
-//----------------------------
-//FreeDLListRootAll(gpMixerWindows_DL_List);
+	// Free the Global Resource Storage
+	// for different types
+	//---------------------------------
+	FreeBinResGlobal();
+	FreeRdOutResGlobal();
+	FreeBMPResGlobal();
 
 
-// Free the Palette
-//-----------------
-if(ghPalette)
-    DeleteObject(ghPalette);
+	// Free the Double Linked List
+	// for the Mixer_Windows
+	//----------------------------
+	//FreeDLListRootAll(gpMixerWindows_DL_List);
 
+
+	// Free the Palette
+	//-----------------
+	if(ghPalette)
+			DeleteObject(ghPalette);
+
+//-------------------
 // delete few bitmaps
 //-------------------
+
   if(gbmpVUVertBuffer)
     DeleteObject(gbmpVUVertBuffer);
   if(gbmpVUHorzBuffer)
@@ -532,13 +639,16 @@ if(ghPalette)
   if(g_hConsoleFont)
     DeleteObject(g_hConsoleFont);
 
-// Close the Dlls
-// with resources
-//---------------
-FreeLibrary(ghInstConsoleDef);
-FreeLibrary(ghInstStrRes);
+	//-------------------
+	// Close the Dlls
+	// with resources
+	//-------------------
+
+	FreeLibrary(ghInstConsoleDef);
+	FreeLibrary(ghInstStrRes);
 
 return;
+
 }
 
 
@@ -621,44 +731,40 @@ int  GetDeviceChannelCount(void)
 void    ShowSplashScreen(BOOL bShow)
 {
 
-if(bShow)
-  {
-  if(g_hwndSplashScreen == NULL)
-    {
-    g_hwndSplashScreen = CreateDialog(ghInstMain, MAKEINTRESOURCE(IDD_SPLASH), NULL, dlgProcSplash);
-    ShowWindow(g_hwndSplashScreen, SW_SHOW);
-    }
+	if(bShow)
+	{
+		if(g_hwndSplashScreen == NULL)
+		{
+			g_hwndSplashScreen = CreateDialog(ghInstMain, MAKEINTRESOURCE(IDD_SPLASH), NULL, dlgProcSplash);
+			ShowWindow(g_hwndSplashScreen, SW_SHOW);
+		}
 
-  }
-else
-  {
-  if(g_hwndSplashScreen)
-    DestroyWindow(g_hwndSplashScreen);
-  g_hwndSplashScreen = NULL;
-  }
+	}
+	else
+	{
+		if(g_hwndSplashScreen)
+			DestroyWindow(g_hwndSplashScreen);
+		g_hwndSplashScreen = NULL;
+	}
 
 return;
 }
 
 //=======================================
 //
-//
-//
 // Property Sheet Dialog box routines
-//
-//
 //
 //=======================================
 //=======================================
 BOOL APIENTRY dlgProcSplash(HWND hDlg,UINT message, UINT wParam, LONG lParam)
 {
 
-switch (message)
-  {
-	case WM_INITDIALOG:	
-//		return (TRUE);
-    break;
-  }
+	switch (message)
+	{
+		case WM_INITDIALOG:	
+	//		return (TRUE);
+			break;
+	}
 
 return (FALSE);   
 }
