@@ -1,11 +1,11 @@
 //=================================================
-// Copyright 1998-2001 CorTek Software, Inc.
+// Copyright 1998-2002 CorTek Software, Inc.
 //=================================================
 //
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Mix Files.c        $
-// $Revision:: 23                                 $
+// $Revision:: 24                                 $
 //
 
 #include "SAMM.H"
@@ -71,7 +71,8 @@ int	iRet;
 	char								szTempSeq[MAX_PATH];
 
 	char                szProgDir[MAX_PATH];
-  LPSTR   lpstrFName = NULL;
+
+  LPSTR   lpstrFName;
 
 	if (gfsMix.szFileDir[0] == 0)
 		sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
@@ -114,7 +115,7 @@ int	iRet;
 
 		// We have the whole path now just get the filename
 
-		GetFullPathName(szTempSeq, 256, szProgDir, &lpstrFName);
+//		GetFullPathName(szTempSeq, 256, szProgDir, &lpstrFName);
 
 	}
 
@@ -125,7 +126,8 @@ int	iRet;
 	ofn.lpstrFilter = "VACS Mix Files\0*.mix\0All Files\0*.*\0\0";//(LPSTR)szFilter;  // See previous note concerning string
 	ofn.lpstrCustomFilter = NULL;
 	ofn.nFilterIndex = 1; // Always pick the first one
-	ofn.lpstrFile = lpstrFName;		// This is filename with path => (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
+	ofn.lpstrFile = (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
+// fds for single file	ofn.lpstrFile = lpstrFName;		// This is filename with path => (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
 	ofn.nMaxFile = 512;
 	ofn.lpstrFileTitle = NULL;//(LPSTR)fsTemp.szFileName;
 	ofn.nMaxFileTitle = 0;//512;
@@ -149,7 +151,11 @@ int	iRet;
 
     CloseAllMDI();
 		ShowSeqWindow(FALSE);
+
+		// This is NOT using the loaded filename stored in lpstrFName (when we use it)
+
     wsprintf(gfsMix.szFileName, "%s", &gfsTemp.szFileName[ofn.nFileOffset]);
+
     gfsTemp.szFileName[ofn.nFileOffset] = 0;
     wsprintf(gfsMix.szFileDir, "%s", gfsTemp.szFileName);
 		iRet = LoadMixFile(&gfsMix, TRUE);
