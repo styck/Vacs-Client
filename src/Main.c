@@ -85,7 +85,7 @@ shift_key = GetKeyState (VK_SHIFT);
 
 if ( shift_key & 0x8000)
 {
-	CreateZoomViewWindow("Zoom Input View", NULL, 1);
+	CreateZoomViewWindow("Zoom View", NULL, 1);
 }
 else
 {
@@ -99,7 +99,7 @@ else
 	{
 		// Ok... LA$T.mix file did NOT load
 		// so open a new Zoom window by default
-		CreateZoomViewWindow("Zoom Input View", NULL, 1);
+		CreateZoomViewWindow("Zoom View", NULL, 1);
 		
 		// If this isn't done then when they try to add a sequence
 		// to the sequence window it will create an exception
@@ -462,7 +462,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
         break;
     //``````````````
     case IDM_V_FULLZOOM:
-        CreateZoomViewWindow("Zoom Input View", NULL, 1);
+        CreateZoomViewWindow("Zoom View", NULL, 1);
         break;
     //``````````````
     case IDM_V_FULLZOOM_MASTER:
