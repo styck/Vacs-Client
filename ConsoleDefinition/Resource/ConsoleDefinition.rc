@@ -46,15 +46,18 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "Definition for DCX(Gamble)\0"
+            VALUE "Comments", "Definition for Gamble DCX\0"
             VALUE "CompanyName", "CorTek Software, Inc.\0"
             VALUE "FileDescription", "ConsoleDefinition\0"
             VALUE "FileVersion", "1, 0, 0, 1\0"
             VALUE "InternalName", "ConsoleDefinition\0"
-            VALUE "LegalCopyright", "Copyright © 1998, CorTek Software, Inc.\0"
+            VALUE "LegalCopyright", "Copyright © 2001, CorTek Software, Inc.\0"
+            VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "ConsoleDefinition.dll\0"
+            VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "CorTek Software, Inc.: ConsoleDefinition\0"
             VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "SpecialBuild", "\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -103,14 +106,15 @@ END
 // Dialog
 //
 
-IDD_ABOUT_CONSOLEDEFINITION DIALOG DISCARDABLE  0, 0, 186, 77
+IDD_ABOUT_CONSOLEDEFINITION DIALOG DISCARDABLE  0, 0, 210, 119
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
 CAPTION "About"
 FONT 8, "MS Sans Serif"
 BEGIN
-    CTEXT           "Copyright 1998, CorTek Software, Inc.",IDC_STATIC,33,53,
+    CTEXT           "Copyright 2001 CorTek Software, Inc.",IDC_STATIC,47,55,
                     117,8
-    CTEXT           "Console Definition DLL",IDC_STATIC,33,22,117,8
+    CTEXT           "Console Definition DLL \n Graphics and Client/Server Setup",
+                    IDC_STATIC,47,24,117,24
 END
 
 IDD_CONFIGURATION DIALOGEX 0, 0, 210, 119
@@ -124,8 +128,10 @@ BEGIN
     EDITTEXT        IDC_PORT,46,23,40,12,ES_AUTOHSCROLL
     PUSHBUTTON      "Test Connection",IDC_BTN_TEST_CONNECTION,120,8,50,28,
                     BS_MULTILINE,WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE
-    LTEXT           "...",IDC_STAT_1,2,60,170,8
-    LTEXT           "...",IDC_STAT_2,2,70,170,8
+    LTEXT           "Enter the IP Address and TCP/IP Port that has been configured on the GServer",
+                    IDC_STAT_1,23,82,155,20,SS_SUNKEN
+    LTEXT           "Ensure that the ""Start Server"" button is pressed on the GServer program.",
+                    IDC_STATIC,23,46,155,23
 END
 
 IDD_TABLE DIALOG DISCARDABLE  0, 0, 230, 114
@@ -165,9 +171,9 @@ BEGIN
     IDD_ABOUT_CONSOLEDEFINITION, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 179
+        RIGHTMARGIN, 203
         TOPMARGIN, 7
-        BOTTOMMARGIN, 70
+        BOTTOMMARGIN, 112
     END
 
     IDD_CONFIGURATION, DIALOG
