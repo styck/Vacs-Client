@@ -1,5 +1,5 @@
 //=================================================
-// Copyright 1998, CorTek Software, Inc.
+// Copyright 2001, CorTek Software, Inc.
 //=================================================
 
 //=================================================
@@ -206,7 +206,7 @@ LRESULT CALLBACK   MDIClientProc(HWND hWnd, UINT wMessage,
 switch (wMessage)
  {
   case WM_MOUSEMOVE:
-    UpdateTrackingWindow(NULL);
+//    UpdateTrackingWindow(NULL);
     break;
   case WM_PAINT:
     ClientWindowPaint();
