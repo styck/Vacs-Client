@@ -1,11 +1,11 @@
 //=================================================
-// Copyright 1998-2001 CorTek Software, Inc.
+// Copyright 1998-2003 CorTek Software, Inc.
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author:: Styck                                $
+// $Archive:: /Vacs Client/src/CreateMain.c       $
+// $Revision:: 20                                 $
 //
 
 #include "SAMM.h"
@@ -13,17 +13,19 @@
 #include "MACRO.h"
 
 
+void GroupedStatus(BOOL);
 
 HWND		ghwndTBSeqReadout = NULL;
 HWND		ghwndTBSeqReadout2 = NULL;
 HWND		ghwndTBZoomWinCntReadout = NULL;
 HWND		ghwndTBSeqSceneNumber = NULL;
+HWND		ghwndTBGroupStatus = NULL;
 
 int			giTBSeqReadout = 9512;
 int			giTBSeqReadout2 = 9513;
 int			giTBZoomWinCntReadout = 9514;		
 int			giTBSeqSceneNumber = 9515;
-
+int			giTBGroupStatus = 9516;			// Group status indicator
 
 
 
@@ -87,8 +89,10 @@ SetMenu(ghwndMain, ghMainMenu);
 return 0;
 };
 
+
 ////////////////////////////////// 
 #define TB_BUTTONS_COUNT	27	// was 28 with all the buttons
+
 
 /////////////////////////////////////////////////////////////////////
 //	MEMBER FUNCTION: CreateToolbars
@@ -98,9 +102,11 @@ return 0;
 int		CreateToolBars(HWND		hwndParent)
 {
   int					iRet = 0;
-  TBBUTTON		tbb[TB_BUTTONS_COUNT];
 	TBBUTTONINFO tbinfo = {0};
-  int					iCount = 0, iButtonCount = 0, iSeqScenNumber, iSeqButton,iSeqButton2, iNumZoomWindowsButton, i;
+	static  TBBUTTON		tbb[TB_BUTTONS_COUNT];
+
+  int					iCount = 0, iButtonCount = 0, iSeqScenNumber, 
+							iSeqButton,iSeqButton2, iNumZoomWindowsButton, iGroupStatusWindow, i;
   RECT				r;                      
   HWND        hToolTips;
 
@@ -301,6 +307,18 @@ int		CreateToolBars(HWND		hwndParent)
   tbb[iCount].iString = -1; 
   iCount++;
 
+	//////////////////
+	// Grouped Status Window
+	//////////////////
+	iGroupStatusWindow = iCount;
+  tbb[iCount].iBitmap = -1; // account for the separator
+  tbb[iCount].idCommand = giTBGroupStatus;
+  tbb[iCount].fsState = TBSTATE_ENABLED;
+  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+  tbb[iCount].dwData = 0;
+  tbb[iCount].iString = -1;
+  iCount++;
+
 	////////////////////////////////////////////////
   // Groups Selector starts after this separartor
   //
@@ -335,6 +353,7 @@ int		CreateToolBars(HWND		hwndParent)
   tbb[iCount].dwData = 0;
   tbb[iCount].iString = -1; 
   iCount++;
+
 
 	//////////////////
 	// Number of Zoom windows open
@@ -371,7 +390,7 @@ int		CreateToolBars(HWND		hwndParent)
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
-	tbinfo.cx = 35;	// 175	SIZE OF THE SEQUENCE SCENE NUMBER WINDOW
+	tbinfo.cx = 35;	// SIZE OF THE SEQUENCE SCENE NUMBER WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBSeqSceneNumber, (LPARAM)&tbinfo);
 
@@ -431,7 +450,7 @@ int		CreateToolBars(HWND		hwndParent)
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
-	tbinfo.cx = 185;	// 175	SIZE OF THE SEQUENCE WINDOW
+	tbinfo.cx = 185;	// SIZE OF THE SEQUENCE WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBSeqReadout2, (LPARAM)&tbinfo);
 	
@@ -460,7 +479,7 @@ int		CreateToolBars(HWND		hwndParent)
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
-	tbinfo.cx = 120;	// 155	SIZE OF THE NUM ZOOM WINDOW
+	tbinfo.cx = 130;	// 155	SIZE OF THE NUM ZOOM WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBZoomWinCntReadout, (LPARAM)&tbinfo);
 
@@ -471,6 +490,7 @@ int		CreateToolBars(HWND		hwndParent)
 
 	SendMessage(ghwndTBPlay, TB_GETITEMRECT, (WPARAM)iNumZoomWindowsButton, (LPARAM)&r);
 	r.top = 2;
+	r.left = r.left+20; // Position of Number of Zoom Windows
 
 	//////////////////////////////////////////////////
 	// Create Number of Zoom Windows on toolbar
@@ -480,7 +500,35 @@ int		CreateToolBars(HWND		hwndParent)
 																	r.left, r.top, r.right - r.left, r.bottom - r.top,
 																	ghwndTBPlay, NULL, ghInstMain, NULL);
 	
-	SetWindowText(ghwndTBZoomWinCntReadout, " Zoom Views: 0");
+	SetWindowText(ghwndTBZoomWinCntReadout, "Zoom Views: 0");
+
+//////////////////////////////////////////
+// GROUP STATUS WINDOW
+
+	tbinfo.cbSize = sizeof(TBBUTTONINFO);
+	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
+	tbinfo.fsStyle = TBSTYLE_SEP;
+	tbinfo.cx = 80;	// SIZE OF THE NUM GROUP STATUS WINDOW
+
+	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBGroupStatus, (LPARAM)&tbinfo);
+
+  SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+  SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
+
+	// Get the size of the number of GROUP STATUS windows open button passed in WPARAM
+
+	SendMessage(ghwndTBPlay, TB_GETITEMRECT, (WPARAM)iGroupStatusWindow, (LPARAM)&r);
+	r.top = 2;
+
+	//////////////////////////////////////////////////
+	// Create Number of GROUP STATUS Window on toolbar
+	//////////////////////////////////////////////////
+
+	ghwndTBGroupStatus = CreateWindow("STATIC", "", WS_VISIBLE | WS_CHILD | WS_BORDER,//CBS_DROPDOWNLIST | CBS_HASSTRINGS,
+																	r.left, r.top, r.right - r.left, r.bottom - r.top,
+																	ghwndTBPlay, NULL, ghInstMain, NULL);
+	
+	GroupedStatus(FALSE);		// NOTHING IS GROUPED WHEN CREATING
 
 //////////////////////////////////////////
 
@@ -539,6 +587,30 @@ void ShowTBZoomWinCnt(LPSTR pName)
 	if(ghwndTBZoomWinCntReadout)
 		SetWindowText(ghwndTBZoomWinCntReadout, pName);
 }
+
+// bStatus == TRUE indicates we are grouped
+// bStatus == FALSE indicates nothing is grouped
+
+void GroupedStatus(BOOL bStatus)
+{
+	if(bStatus == TRUE)
+	{
+		if(ghwndTBGroupStatus)
+		{
+			SetWindowText(ghwndTBGroupStatus, "GROUPED");
+		}
+	}
+	else
+	{
+		if(ghwndTBGroupStatus)
+		{
+			SetWindowText(ghwndTBGroupStatus, "       ");
+		}
+	}
+
+
+}
+
 
 void EnableTBGroupButtons(int iLast)
 {
