@@ -12,6 +12,7 @@
 #include "MACRO.h"
 
 extern int g_iMasterModuleIdx;
+void	HandleRemoteSequenceControl(WORD wControl);
 
 //=================================
 // FUNCTION: CreateMainWindow
@@ -28,10 +29,11 @@ GetClientRect(hwnd, &rcClient);
 ccs.hWindowMenu  = GetSubMenu(ghMainMenu, WINDOWMENU);
 ccs.idFirstChild = IDM_WINDOWCHILD;
 
+
 // Create the MDI client filling the client area
 ghwndMDIClient = CreateWindow("MDICLIENT",
                              NULL,
-                             WS_CHILD | WS_CLIPCHILDREN ,
+                             MDIS_ALLCHILDSTYLES |WS_CHILD | WS_CLIPCHILDREN,
                              0, 0, 0, 0,
                              hwnd,
                              NULL,
@@ -197,6 +199,9 @@ return;
 LRESULT CALLBACK   MDIClientProc(HWND hWnd, UINT wMessage,
                                WPARAM wParam, LPARAM  lParam)
 {
+	HWND				focus_wnd;
+	HWND				last_wnd;
+	BOOL				is_mdi_child = FALSE;
 
 switch (wMessage)
  {
@@ -211,6 +216,30 @@ switch (wMessage)
     ClientWindowPaint();
     return 0;
     break;
+
+	case WM_KEYUP:
+		if (wParam == VK_SPACE)
+		{
+			HandleRemoteSequenceControl(IDM_S_NEXT);
+		}
+		break;
+		
+	case WM_KILLFOCUS:
+		focus_wnd = (HWND)wParam;
+		if (focus_wnd){
+			while (focus_wnd = GetParent(focus_wnd)){
+				if (focus_wnd != ghwndMDIClient)
+					last_wnd = focus_wnd;
+				else {
+					is_mdi_child = TRUE;
+					break;
+				}
+			}
+			if (last_wnd && is_mdi_child)
+				SetActiveWindow (last_wnd);
+		}
+		return 0;										
+		break;
 
   default:
        return gorigMDIProc(hWnd, wMessage, wParam, lParam);
@@ -396,7 +425,8 @@ void      UpdateSameMixWndByCtrlNum(HWND  hwnd,
   HDC                 hdcSrcBuffer;
   BOOL                bForceToMaster = FALSE;
 	int									iBMPIndexLast = -1;
-	//HBITMAP							hbmp;
+	HBITMAP							hbmp;
+	BOOL								reselect_old_buffer_bmp = FALSE;
 
   if(hdcBuffer != NULL)
     hdcSrcBuffer = hdcBuffer;
@@ -479,21 +509,25 @@ void      UpdateSameMixWndByCtrlNum(HWND  hwnd,
             {
 							// well the window we are about to update might be different than the last window
 							// so make sure we select the correct bitmap for it .... ??
-							/*
-							if(iBMPIndexLast != lpmwd->lpZoneMap[iPhisChannel].iBmpIndx && iBMPIndexLast >= 0)
+							if(iBMPIndexLast != lpmwd->lpZoneMap[iPhisChannel].iBmpIndx)// && iBMPIndexLast >= 0)
 							{
 								iBMPIndexLast = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
 								hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndexLast].hbmp);
 								BitBlt(hdcSrcBuffer, 0, 0, gpBMPTable[iBMPIndexLast].iWidth, gpBMPTable[iBMPIndexLast].iHeight,
 											 g_hdcBuffer, 0, 0, SRCCOPY);
-								SelectObject(g_hdcBuffer, hbmp);
-							};
-							*/
-              hdcScr = GetDC(lpmwd->hwndImg);
+								reselect_old_buffer_bmp = TRUE;
+								//SelectObject(g_hdcBuffer, hbmp);
+							}
+							else
+								reselect_old_buffer_bmp = FALSE;
 
+              hdcScr = GetDC(lpmwd->hwndImg);
               UpdateControlsByCtrlNum(hdcScr, hdcSrcBuffer, lpmwd, rScrPos.left,
                                       iPhisChannel, lpctrlZMSource, iVal, DIRECTIONS_ALL, FALSE);
               ReleaseDC(lpmwd->hwndImg , hdcScr);
+
+							if (reselect_old_buffer_bmp)
+								SelectObject(g_hdcBuffer, hbmp);
             }
           }
         }
