@@ -21,7 +21,6 @@ BOOL    g_bReversDirection = FALSE;
 int			FindConsecutiveGroupIndex(int iNum, int iType);
 void		CancelAllCues (HWND);
 
-
 //======================
 // Windows Main Routine
 //
@@ -44,6 +43,7 @@ FILESTRUCT	fsTemp;
 UINT				timerID;
 int					shift_key;	 
 WORD	wKeyFlags=0;
+int			iRet;
 
 	ghInstMain = hInstance;
 
@@ -108,19 +108,33 @@ WORD	wKeyFlags=0;
 		wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 		wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
 
-		if(LoadMixFile(&fsTemp, FALSE) != 0)
+		iRet = LoadMixFile(&fsTemp, FALSE);
+		if( iRet != 0)
 		{
-			// Ok... LA$T.mix file did NOT load
-			// so open a new Zoom window by default
-			CreateZoomViewWindow("Zoom View", NULL, 1);
-			
-			// If this isn't done then when they try to add a sequence
-			// to the sequence window it will create an exception
 
-			wsprintf(g_sequence_file_name,"%smix\\%s",gszProgDir, fsTemp.szFileName);
-	 		OpenSequenceFiles (g_sequence_file_name);
+			if(iRet !=2)
+			{
+				// Ok... LA$T.mix file did NOT load
+				// so open a new Zoom window by default
+				CreateZoomViewWindow("Zoom View", NULL, 1);
+				
+				// If this isn't done then when they try to add a sequence
+				// to the sequence window it will create an exception
 
-			ShowSeqWindow(FALSE);
+				wsprintf(g_sequence_file_name,"%smix\\%s",gszProgDir, fsTemp.szFileName);
+	 			OpenSequenceFiles (g_sequence_file_name);
+
+				ShowSeqWindow(FALSE);
+			}
+			else	// Mix File did not match GServer settings, we MUST exit
+			{
+				// Just open as if SHIFT key was pressed
+//				CreateZoomViewWindow("Zoom View", NULL, 1);
+
+				ShutdownProc();
+				return FALSE;
+			}
+
 
 		}
 	}
@@ -162,10 +176,12 @@ WORD	wKeyFlags=0;
 			if(msg.message == WM_KEYDOWN)
 			{
 				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
+				iRet=0;	// Just in case it was not initialized
 
 				switch(msg.wParam)
 				{
 							
+
 					case VK_SHIFT:
 					wKeyFlags |= VK_SHIFT;
 					break;
@@ -175,7 +191,7 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F1);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F1);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F1);
 					break;
 
 					case VK_F2:
@@ -183,7 +199,7 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F2);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F2);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F2);
 					break;
 
 					case VK_F3:
@@ -191,7 +207,7 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F3);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F3);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F3);
 					break;
 
 					case VK_F4:
@@ -199,7 +215,7 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F4);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F4);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F4);
 					break;
 
 					case VK_F5:
@@ -207,7 +223,7 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F5);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F5);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F5);
 
 					break;
 
@@ -216,7 +232,7 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F6);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F6);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F6);
 					break;
 
 					case VK_F7:
@@ -224,7 +240,7 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F7);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F4);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F4);
 					break;
 
 					case VK_F8:
@@ -232,7 +248,7 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F8);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F8);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F8);
 					break;
 
 					case VK_F9:
@@ -240,7 +256,7 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F9);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F9);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F9);
 					break;
 #ifdef NOT_USEDSYSTEMKEY
 					case VK_F10:
@@ -248,11 +264,21 @@ WORD	wKeyFlags=0;
 						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
 							WriteFkeyFile(&fsTemp, (int) VK_F10);
 						else	// Restore window
-							LoadFkeyFile(&fsTemp, (int) VK_F10);
+							iRet=LoadFkeyFile(&fsTemp, (int) VK_F10);
 					break;
 #endif
 
 				}
+				
+				////////////////////////////////////////////////////////////////////
+				// Trying to load an FKEY file that is incompatible with the RACK setting
+				// Shutdown and EXIT
+				if(iRet==2)	
+				{
+					ShutdownProc();
+					return FALSE;
+				}
+
 			}
 
 			if(msg.message == WM_SYSKEYDOWN)
@@ -454,7 +480,8 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
     //``````````````
     case IDM_F_OPEN_FILE:
-        OpenMixFile();
+        if(OpenMixFile()==FALSE)	// MOST LIKELY INCOMPATIBLE MIXFILE AND RACK
+			        PostQuitMessage(0);
         break;
     //``````````````
     case IDM_F_SAVE_FILE:
@@ -992,9 +1019,9 @@ return MessageBox(hwnd, szMsg, "Information", MB_OK);
 //====================================
 int   ErrorBox(HWND hwnd, HINSTANCE hinst, int iResource)
 {
-char    szMsg[128];
+char    szMsg[256];
 
-	LoadString(hinst, iResource, szMsg, 128);
+	LoadString(hinst, iResource, szMsg, 256);
 
 	return MessageBox(hwnd, szMsg, "Error!", MB_ICONSTOP);
 };
