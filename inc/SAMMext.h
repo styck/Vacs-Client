@@ -128,6 +128,7 @@ extern BOOL                gbFullImageWndClassReg;
 // Zoom View Child Window
 //-----------------------
 extern char                gszZoomViewClass[];
+extern char								giMixerType;				// Mixer type, cabaret, event, showtime, etc.
 
 extern char								 gszStereoCueMetersClass[];
 

@@ -75,6 +75,21 @@ enum
 	PROP_CUSTOM
 }PROPAGATE_OPTS;
 
+
+// Types of mixer supported on the GServer side.
+
+enum 
+{
+	DCX_CABARET = 0,
+	DCX_SHOWTIME,
+	DCX_EVENT_40,
+	DCX_EVENT_60,
+	DCX_CUSTOM
+} MIXER_TYPES;
+
+
+
+
 // Max Mixer Window Opened
 //------------------------
 #define     MAX_MIXER_WINDOW_OPENED       100
@@ -344,7 +359,7 @@ int							LoadFkeyFile(LPFILESTRUCT , int );
 int             WriteMixerWndDataToFile(HWND , HANDLE);
 int             WriteSequenceWndDataToFile(HWND , HANDLE);
 int             ReadMixerWndDataFromFile(HANDLE , LPFILESECTIONHEADER);
-int             ReadSequenceWndDataFromFile(HANDLE , LPFILESECTIONHEADER);
+int             ReadSequenceWndDataFromFile(HANDLE , LPFILESECTIONHEADER, BOOL);
 
 
 // Module 2

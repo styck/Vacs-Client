@@ -465,7 +465,8 @@ typedef struct FILESECTIONHEADERtag
     DWORD       dwID;
     LONG        lSize;
     DWORD       dwVersion;
-    char        achReserved[20];
+		DWORD				dwCurrentSeqSelection;	// The current selected sequence
+    char        achReserved[16];
     }FILESECTIONHEADER;
 typedef FILESECTIONHEADER * LPFILESECTIONHEADER;
 
