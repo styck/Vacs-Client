@@ -1,11 +1,11 @@
 //=================================================
 //
-// Copyright 1998-2001, CorTek Software, Inc
+// Copyright 1998-2002, CorTek Software, Inc
 //=================================================
 //
-// $Author: $
-// $Archive: $
-// $Revision: $
+// $Author: Styck $
+// $Archive: /Vacs Client/src/Controls.c $
+// $Revision: 31 $
 //
 //
 //=================================================
@@ -590,7 +590,7 @@ int				iScrVisible = 0;
 
 				//lpMWD->iYOffset = iYOffset;//gpRdOutTable[lpczm->iRdOutIndx].lpRdOut->iDefault;
 
-				ScrollImgWindow(ghwndZoom, lpMWD);
+				ScrollImgWindow(ghwndZoom, lpMWD,0);
 
         InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
         UpdateWindow(lpMWD->hwndImg);
@@ -941,6 +941,7 @@ int									sum_in_flag = 0;
 	ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
 	ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
 	ctrlData.wVal     = iV;
+
 	SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE, 
 									 lpctrlZM, iV - ivalue, lpmwd, TRUE);
 
@@ -1052,6 +1053,7 @@ void    LeftRightControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDA
   ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
   ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
   ctrlData.wVal     = iV;
+
   SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE, 
                    lpctrlZM, iV - ivalue, lpmwd, TRUE);
                                                
@@ -1199,7 +1201,7 @@ HWND			hWnd;
 					lpMWD->pntMouseCur.y = iYOffset - lpMWD->iYOffset;
 					lpMWD->pntMouseLast.y = 0;
 
-					ScrollImgWindow(ghwndZoom, lpMWD);		// Position the Zoom view as requested.
+					ScrollImgWindow(ghwndZoom, lpMWD, 0);		// Position the Zoom view as requested.
 
 					InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
 					UpdateWindow(lpMWD->hwndImg);
@@ -1237,7 +1239,7 @@ HWND			hWnd;
 				lpMWD->pntMouseCur.y = iYOffset - lpMWD->iYOffset;
 				lpMWD->pntMouseLast.y = 0;
 
-				ScrollImgWindow(ghwndZoom, lpMWD);
+				ScrollImgWindow(ghwndZoom, lpMWD, 0);
 
         InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
         UpdateWindow(lpMWD->hwndImg);
