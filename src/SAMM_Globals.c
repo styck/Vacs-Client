@@ -1,6 +1,14 @@
 //=================================================
-// Global Definitions
 // Copyright 1998-2001 CorTek Software, Inc.
+//=================================================
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
+//=================================================
+// Global Definitions
 //=================================================
 
 #include "SAMM.H"
@@ -62,7 +70,8 @@ HWND                ghwndMain = NULL;
 HWND								ghwndTBPlay = NULL;
 HWND								ghwndTBGeneral = NULL;
 char                gszMainWndClass[] = "MAIN_WND_CLASS";
-char                gszMainWndTitle[] = "CorTek -VACS-";
+//char                gszMainWndTitle[] = "CorTek -VACS-                 "; was overwritting stuff after it
+char                gszMainWndTitle[128]; // Build this dynamically during the init process
 char                gszFullViewImageClass[] = "FULL_VIEW_IMAGE";
 char                gszLblGroupClass[] = "LABEL_GROUP_CLASS";
 char                gszSeqClass[] = "SEQUENCE MDI WINDOW";
@@ -149,7 +158,7 @@ BOOL                gbFullImageWndClassReg = FALSE;
 //-----------------------
 char                gszZoomViewClass[] = "ZOOM_VIEW_CLASS";
 int 								giMixerType;				// Mixer type, cabaret, event, showtime, etc.
-int									giMixerTypeOffline;	// Same as above but only if OFFLINE, else will be -1
+int									giMixerTypeOffline=NULL;	// Same as above but only if OFFLINE, else will be -1
 
 char								 gszStereoCueMetersClass[] = "STEREOCUEMETERSCLASS";
 
