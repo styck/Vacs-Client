@@ -359,10 +359,13 @@ void    GroupRenameItem(void)
 {
 int iListItem;
 HWND      hwnd;
+int iRet;
 
   hwnd = GetDlgItem(ghwndGroupsDlg, IDC_GROUP_LIST);
 	iListItem =  GetLisControlSelection();
-	ListView_EditLabel(hwnd, iListItem);
+
+	SetFocus(hwnd);	// Make sure it has the focus
+	iRet = ListView_EditLabel(hwnd, iListItem);
 
 return;
 }
@@ -424,6 +427,7 @@ BOOL CALLBACK   GroupsProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
       // Handle some General Notification messages
       //------------------------------------------
       case NM_RCLICK:
+	          SendMessage(hwnd, NM_SETFOCUS, (WPARAM)wParam, (LPARAM)lParam);
           break;
 
       case NM_DBLCLK:
