@@ -220,30 +220,30 @@ BEGIN
 
     // The MASTER CUE LT Fader	#############################################
 	//--------------------
-    26, 2916,    45,3208,
-    CTRL_NUM_MASTERLT_CUE_A_LT, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
-	"CUE A LT FADER\0           ",  // the control name ....
-	"\0                         ",  // the control name .... Alternative
-    RDOUT_STRING_TABLE,
-    IDB_ZOOM_MEDKNOB_YELLOW, 0x0000, 0x0000,
+//  26, 2916,    45,3208,
+//  CTRL_NUM_MASTERLT_CUE_A_LT, CTRL_TYPE_FADER_VERT, DISP_TYPE_NORMAL,
+//	"CUE A LT FADER\0           ",  // the control name ....
+//	"\0                         ",  // the control name .... Alternative
+//  RDOUT_STRING_TABLE,
+//  IDB_ZOOM_MEDKNOB_YELLOW, 0x0000, 0x0000,
 
     // The MASTER CUE LT UpDown
 	//--------------------
-    44, 2988,	60,3008,
-    CTRL_NUM_MASTERLT_CUE_A_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
-	"CUE A LT FADER\0           ",  // the control name ....
-	"\0                         ",  // the control name .... Alternative
-    RDOUT_STRING_TABLE,
-    0x0000, 0x0000, 0x0000,
+//    44, 2988,	60,3008,
+//    CTRL_NUM_MASTERLT_CUE_A_LT, CTRL_TYPE_UPDOWN, DISP_TYPE_NULL,
+//	"CUE A LT FADER\0           ",  // the control name ....
+//	"\0                         ",  // the control name .... Alternative
+//    RDOUT_STRING_TABLE,
+//    0x0000, 0x0000, 0x0000,
 
 	// The MASTER CUE A LT ReadOut 
     //----------------------------
-    9,2879,  45,2896,
-    CTRL_NUM_MASTERLT_CUE_A_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
-	"CUE A LT FADER\0           ",  // the control name ....
-	"\0                         ",  // the control name .... Alternative
-    RDOUT_STRING_TABLE,
-    0x0000, 0x0000, 0x0000,
+	//  9,2879,  45,2896,
+	//  CTRL_NUM_MASTERLT_CUE_A_LT, CTRL_TYPE_STRING_UPDATE, DISP_TYPE_NORMAL,
+	//	"CUE A LT FADER\0           ",  // the control name ....
+	//	"\0                         ",  // the control name .... Alternative
+	//  RDOUT_STRING_TABLE,
+	//  0x0000, 0x0000, 0x0000,
 
 
 
