@@ -219,6 +219,8 @@ extern PREFERENCES         gprfEdit; // Null the Entire thing
 extern PREFERENCES         gprfPref;
 extern HBITMAP             ghbmpPrefBkgnd;
 extern int                 giPrefCurDlg;
+extern BOOL								 g_mixer_state_changed;
+extern BOOL						     g_monitor_mix_file_changes;
 
 //--------------------------
 // MultiMedia Midi Variables
