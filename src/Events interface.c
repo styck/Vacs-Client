@@ -39,51 +39,54 @@ int     iChan;
 int     iCtrlMode;
 POINT   pnt;
 
-WaitForSingleObject(gDisplayEvent, 90);
+	WaitForSingleObject(gDisplayEvent, 90);
 
-if(lpmwd == NULL)
-    return;
+	if(lpmwd == NULL)
+			return;
 
-pnt.x = pnts.x;
-pnt.y = pnts.y;
+	pnt.x = pnts.x;
+	pnt.y = pnts.y;
 
-lpmwd->wKeyFlags = wKeyFlags;
+	lpmwd->wKeyFlags = wKeyFlags;
 
-if(lpmwd->iCurMode == MW_SCROLL)
-    {
+	if(lpmwd->iCurMode == MW_SCROLL)
+  {
 		//WaitForSingleObject(gDisplayEvent, 90);
     lpmwd->pntMouseLast = lpmwd->pntMouseCur;
     lpmwd->pntMouseCur = pnt;
     ScrollImgWindow(hwnd, lpmwd);
 		SetEvent(gDisplayEvent);
     return;
-    }
+  }
 
-if(lpmwd->iCurMode == MW_SCROLL_RELATIVE)
-    {
+	if(lpmwd->iCurMode == MW_SCROLL_RELATIVE)
+  {
 		//WaitForSingleObject(gDisplayEvent, 90);
     lpmwd->pntMouseLast = pnt;
     ScrollImgWindowRelative(hwnd, lpmwd);
 		SetEvent(gDisplayEvent);
     return;
-    }
-
-// If we are in some sort of mode
-// then call the function that
-// handles this mode
-//-------------------------------
-iCtrlMode = lpmwd->iCtrlMode;
-if(iCtrlMode != MW_NOTHING_MODE)
-  {
-	//WaitForSingleObject(gDisplayEvent, 90);
-  switch(iCtrlMode){
-		case    CTRL_TYPE_FADER_VERT:
-			HandleFaderMoveVert(hwnd, pnt, wKeyFlags, lpmwd);
-			break;
-		case    CTRL_TYPE_FADER_HORZ:
-			HandleFaderMoveHorz(hwnd, pnt, wKeyFlags, lpmwd);
-			break;
   }
+
+	// If we are in some sort of mode
+	// then call the function that
+	// handles this mode
+	//-------------------------------
+	iCtrlMode = lpmwd->iCtrlMode;
+	if(iCtrlMode != MW_NOTHING_MODE)
+  {
+		//WaitForSingleObject(gDisplayEvent, 90);
+		switch(iCtrlMode)
+		{
+			case    CTRL_TYPE_FADER_VERT:
+				HandleFaderMoveVert(hwnd, pnt, wKeyFlags, lpmwd);
+				break;
+			case    CTRL_TYPE_FADER_HORZ:
+				HandleFaderMoveHorz(hwnd, pnt, wKeyFlags, lpmwd);
+				break;
+		}
+
+	////////////////////////////////
   // save the last mouse position
   // and then store the new one
   //-----------------------------
@@ -94,14 +97,16 @@ if(iCtrlMode != MW_NOTHING_MODE)
   return;
   }
 
+	///////////////////////////////
   // save the last mouse position
   // and then store the new one
   //-----------------------------
   lpmwd->pntMouseLast = lpmwd->pntMouseCur;
   lpmwd->pntMouseCur = pnt;
   iChan = GetMWScrChanNum(lpmwd);
+
   if(iChan != lpmwd->iCurChan)
-    {
+  {
 		//WaitForSingleObject(gDisplayEvent, 90);
     lpmwd->iLastChan = lpmwd->iCurChan;
     lpmwd->iCurChan = iChan;
@@ -109,10 +114,11 @@ if(iCtrlMode != MW_NOTHING_MODE)
     //--------------------------------------------------------
     ShowMousePos(hwnd, lpmwd);
 		//SetEvent(gDisplayEvent);
-    }
+  }
 
   UpdateTrackingWindow(lpmwd);
 	SetEvent(gDisplayEvent);
+
 return;
 }
 
@@ -128,45 +134,45 @@ LPCTRLZONEMAP       lpczm;
 POINT               pnt;
 LPCTRLZONEMAP				lpczmChan;
 
-if(lpmwd == NULL)
-    return;
+	if(lpmwd == NULL)
+			return;
 
-lpmwd->wKeyFlags = wKeyFlags;
+	lpmwd->wKeyFlags = wKeyFlags;
 
-if(lpmwd->iCurMode != MW_NOTHING_MODE)
-    return;
+	if(lpmwd->iCurMode != MW_NOTHING_MODE)
+			return;
 
-pnt.x = pnts.x;
-pnt.y = pnts.y;
+	pnt.x = pnts.x;
+	pnt.y = pnts.y;
             
-SetCapture(hwnd);
+	SetCapture(hwnd);
 
-iChan = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + 
-					                          lpmwd->iStartScrChan]); //lpmwd->iCurChan;
+	iChan = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + 
+																			lpmwd->iStartScrChan]); //lpmwd->iCurChan;
 
-// adjust the point to be usable with the
-// zone map. So we can scan
-//---------------------------------------
-pnt.x -= lpmwd->iXadj;
-pnt.y += lpmwd->iYOffset;
+	// adjust the point to be usable with the
+	// zone map. So we can scan
+	//---------------------------------------
+	pnt.x -= lpmwd->iXadj;
+	pnt.y += lpmwd->iYOffset;
 
 
-// Scan for Controls
-//------------------
-lpczmChan = lpmwd->lpZoneMap[iChan].lpZoneMap;
+	// Scan for Controls
+	//------------------
+	lpczmChan = lpmwd->lpZoneMap[iChan].lpZoneMap;
 
-if(lpczmChan != NULL)
-{
+	if(lpczmChan != NULL)
+	{
 
-	lpczm = ScanCtrlZonesPnt(lpczmChan, pnt);
+		lpczm = ScanCtrlZonesPnt(lpczmChan, pnt);
 
-	// Check the CTRL flag
-	//---------------------
-	if(wKeyFlags & MK_CONTROL)
-			{
+		// Check the CTRL flag
+		//---------------------
+		if(wKeyFlags & MK_CONTROL)
+		{
 			lpmwd->iCurMode = MW_DRAGDROP_MODE;
-			}
-	else
+		}
+		else
 			if(lpczm)
 					{
 					lpmwd->lpCtrlZM = lpczm;
@@ -175,8 +181,9 @@ if(lpczmChan != NULL)
 			else
 					return;
 
-	ActivateMWMode(hwnd, lpmwd);
-}
+		ActivateMWMode(hwnd, lpmwd);
+
+	}
 
 return;
 }
@@ -190,24 +197,25 @@ void    HandleMBDown(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
 {
 POINT               pnt;
 
-if(lpmwd == NULL)
-    return;
+	if(lpmwd == NULL)
+			return;
 
-lpmwd->wKeyFlags = wKeyFlags;
+	lpmwd->wKeyFlags = wKeyFlags;
 
-if(lpmwd->iCurMode != MW_NOTHING_MODE)
-    return;
+	if(lpmwd->iCurMode != MW_NOTHING_MODE)
+			return;
 
-pnt.x = pnts.x;
-pnt.y = pnts.y;
+	pnt.x = pnts.x;
+	pnt.y = pnts.y;
 
-SetCapture(hwnd);
+	SetCapture(hwnd);
 
-// Activate the Scroll Mode for this Window
-//-----------------------------------------
-lpmwd->iCurMode = MW_SCROLL;
-lpmwd->pntMouseCur = pnt;
-ActivateMWMode(hwnd, lpmwd);
+	////////////////////////////////////////////
+	// Activate the Scroll Mode for this Window
+	//-----------------------------------------
+	lpmwd->iCurMode = MW_SCROLL;
+	lpmwd->pntMouseCur = pnt;
+	ActivateMWMode(hwnd, lpmwd);
 
 return;
 }
@@ -219,27 +227,29 @@ return;
 void    HandleRBDown(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
                                 LPMIXERWNDDATA lpmwd)
 {
-POINT       pnt;
+	POINT       pnt;
 
-if(lpmwd == NULL)
-    return;
+	if(lpmwd == NULL)
+			return;
 
-lpmwd->wKeyFlags = wKeyFlags;
+	lpmwd->wKeyFlags = wKeyFlags;
 
-if(lpmwd->iCurMode != MW_NOTHING_MODE)
-    return;
+	if(lpmwd->iCurMode != MW_NOTHING_MODE)
+			return;
 
-pnt.x = pnts.x;
-pnt.y = pnts.y;
+	pnt.x = pnts.x;
+	pnt.y = pnts.y;
 
-SetCapture(hwnd);
+	SetCapture(hwnd);
 
-// Activate the Relative Scroll Mode for this Window
-lpmwd->iCurMode = MW_SCROLL_RELATIVE;
-lpmwd->pntMouseCur = pnt;
-lpmwd->pntMouseLast = pnt;
+	/////////////////////////////////////////////////////
+	// Activate the Relative Scroll Mode for this Window
 
-ActivateMWMode(hwnd, lpmwd);
+	lpmwd->iCurMode = MW_SCROLL_RELATIVE;
+	lpmwd->pntMouseCur = pnt;
+	lpmwd->pntMouseLast = pnt;
+
+	ActivateMWMode(hwnd, lpmwd);
 
 return;
 }
@@ -252,18 +262,18 @@ void     HandleLBUp(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
 {
 POINT       pnt;
 
-ReleaseCapture(); // Release the mouse capture in any case
-if(lpmwd == NULL)
-    return;
+	ReleaseCapture(); // Release the mouse capture in any case
+	if(lpmwd == NULL)
+			return;
 
-lpmwd->wKeyFlags = wKeyFlags;
+	lpmwd->wKeyFlags = wKeyFlags;
 
-pnt.x = pnts.x;
-pnt.y = pnts.y;
+	pnt.x = pnts.x;
+	pnt.y = pnts.y;
 
 
-if(lpmwd->iCurMode != MW_NOTHING_MODE)
-    StopMWMode(hwnd, lpmwd,  wKeyFlags);
+	if(lpmwd->iCurMode != MW_NOTHING_MODE)
+			StopMWMode(hwnd, lpmwd,  wKeyFlags);
 
 return;
 }
@@ -276,16 +286,16 @@ void     HandleMBUp(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
 {
 POINT       pnt;
 
-ReleaseCapture(); // Release the mouse capture in any case
-if(lpmwd == NULL)
-    return;
+	ReleaseCapture(); // Release the mouse capture in any case
+	if(lpmwd == NULL)
+			return;
 
-pnt.x = pnts.x;
-pnt.y = pnts.y;
+	pnt.x = pnts.x;
+	pnt.y = pnts.y;
 
 
-if(lpmwd->iCurMode != MW_NOTHING_MODE)
-    StopMWMode(hwnd, lpmwd,  wKeyFlags);
+	if(lpmwd->iCurMode != MW_NOTHING_MODE)
+			StopMWMode(hwnd, lpmwd,  wKeyFlags);
 
 return;
 }
@@ -299,17 +309,17 @@ void     HandleRBUp(HWND hwnd, POINTS pnts, WPARAM wKeyFlags,
 {
 POINT           pnt;
 
-ReleaseCapture(); // Release the mouse capture in any case
-if(lpmwd == NULL)
-    return;
+	ReleaseCapture(); // Release the mouse capture in any case
+	if(lpmwd == NULL)
+			return;
 
-lpmwd->wKeyFlags = wKeyFlags;
+	lpmwd->wKeyFlags = wKeyFlags;
 
-pnt.x = pnts.x;
-pnt.y = pnts.y;
+	pnt.x = pnts.x;
+	pnt.y = pnts.y;
 
-if(lpmwd->iCurMode != MW_NOTHING_MODE)
-    StopMWMode(hwnd, lpmwd,  wKeyFlags);
+	if(lpmwd->iCurMode != MW_NOTHING_MODE)
+			StopMWMode(hwnd, lpmwd,  wKeyFlags);
 
 return;
 }
@@ -334,26 +344,26 @@ int     iAdjWidth, iAdjHeight;
 int     iWndMinWidth;
 int     iPrevStart, iPrevEnd;
 
-if(lpmwd == NULL)
-    return;
+	if(lpmwd == NULL)
+			return;
 
-if((wFlags == SIZE_MINIMIZED) || (wFlags == SIZE_MAXHIDE))
-    return;
-
-
-	WaitForSingleObject(gDisplayEvent, 70);
-
-TurnOffAllVUforMixerWindow(lpmwd);
-
-iWndMinWidth = GetSystemMetrics(SM_CXMIN);
-
-iPrevStart = lpmwd->iStartScrChan;
-iPrevEnd = lpmwd->iEndScrChan;
-
-iStartScrChan = lpmwd->iStartScrChan;
-iOldWidth = lpmwd->rWndPos.right;
+	if((wFlags == SIZE_MINIMIZED) || (wFlags == SIZE_MAXHIDE))
+			return;
 
 
+		WaitForSingleObject(gDisplayEvent, 70);
+
+	TurnOffAllVUforMixerWindow(lpmwd);
+
+	iWndMinWidth = GetSystemMetrics(SM_CXMIN);
+
+	iPrevStart = lpmwd->iStartScrChan;
+	iPrevEnd = lpmwd->iEndScrChan;
+
+	iStartScrChan = lpmwd->iStartScrChan;
+	iOldWidth = lpmwd->rWndPos.right;
+
+////////////////////////////////////////////
 // this is set to -1 only if we have just
 // isued the resize command
 // so there is nothing more to do here
@@ -365,35 +375,41 @@ iOldWidth = lpmwd->rWndPos.right;
 //    return;
 //    }
 
-CALC_WIDTH:
-lZMCount = lpmwd->lZMCount;
-iCX = 0;
-//for(iCount=iStartScrChan; iCount < lZMCount; iCount++)
-for(iCount=0; iCount < lZMCount; iCount++)
-    {
+	CALC_WIDTH:
+	lZMCount = lpmwd->lZMCount;
+	iCX = 0;
+
+	//for(iCount=iStartScrChan; iCount < lZMCount; iCount++)
+	for(iCount=0; iCount < lZMCount; iCount++)
+  {
+		//////////////////////////////////
     // Get the actual phis channel
     // because they might be remaped
     //------------------------------
+
     iPhisChannel = LOBYTE(lpmwd->lpwRemapToScr[iCount]);
     iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
     iW = gpBMPTable[iBMPIndex].iWidth-1;
+
     if((iW+iCX)> wWidth)
         break;
 
     iCX += iW+1;
-    }
+  }
 
-// Check it not to be below the minimum Width for the Window
-//-----------------------------------------------------------
-if(iCX <  iWndMinWidth)
-    {
+	////////////////////////////////////////////////////////////
+	// Check it not to be below the minimum Width for the Window
+	//-----------------------------------------------------------
+	if(iCX <  iWndMinWidth)
+  {
     wWidth = iWndMinWidth + iW + 1;
     iWndMinWidth = 0; // Make it 0 .. to avoid endless loop
     goto CALC_WIDTH;
-    }
+  }
 
-iCount--;
+	iCount--;
 
+	/////////////////////////////
   // store the new End channel
   //-------------------------
   if(iCount <= 0)
@@ -407,48 +423,51 @@ iCount--;
     lpmwd->iEndScrChan = iStartScrChan + iCount;
   }
 
+	////////////////////////////////////////////
+	// Store the new size of the visible window
+	//-----------------------------------------
+	lpmwd->rVisible.right = iCX;
+	lpmwd->rVisible.bottom = wHeight - HEIGHT_FULL_LABEL_WND;
 
-// Store the new size of the visible window
-//-----------------------------------------
-lpmwd->rVisible.right = iCX;
-lpmwd->rVisible.bottom = wHeight - HEIGHT_FULL_LABEL_WND;
-
-iAdjWidth = iCX+(GetSystemMetrics(SM_CXFRAME)*2);
-iAdjHeight = wHeight + GetSystemMetrics(SM_CYFRAME) +
-                       (GetSystemMetrics(SM_CYBORDER)*4) +
-                       GetSystemMetrics(SM_CYCAPTION);
+	iAdjWidth = iCX+(GetSystemMetrics(SM_CXFRAME)*2);
+	iAdjHeight = wHeight + GetSystemMetrics(SM_CYFRAME) +
+												 (GetSystemMetrics(SM_CYBORDER)*4) +
+												 GetSystemMetrics(SM_CYCAPTION);
 
 
-lpmwd->rWndPos.right = iAdjWidth;
-lpmwd->rWndPos.bottom = iAdjHeight;
+	lpmwd->rWndPos.right = iAdjWidth;
+	lpmwd->rWndPos.bottom = iAdjHeight;
 
-// Size it only if it has changed the ammount of
-// visible Chanels. Here we care only about
-// the width.
-//----------------------------------------------
-//if((wWidth != iCX) || (iAdjWidth == lpmwd->rMaxSize.right))
-//    {
-//    lpmwd->rVisible.right = -1; // use it as a flag so the second time arround
-                                // we will not get to here
+	// Size it only if it has changed the ammount of
+	// visible Chanels. Here we care only about
+	// the width.
+	//----------------------------------------------
+	//if((wWidth != iCX) || (iAdjWidth == lpmwd->rMaxSize.right))
+	//    {
+	//    lpmwd->rVisible.right = -1; // use it as a flag so the second time arround
+																	// we will not get to here
+
     SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, iAdjWidth,
                  iAdjHeight, SWP_NOMOVE | SWP_NOZORDER);
     if(lpmwd->hwndImg)
-        {
-        if(ImageWindowSize(hwnd, &lpmwd->rVisible, lpmwd) == FALSE)
-            {
-            InvalidateRect(lpmwd->hwndImg, NULL, FALSE);
-            }
+    {
+			if(ImageWindowSize(hwnd, &lpmwd->rVisible, lpmwd) == FALSE)
+      {
+          InvalidateRect(lpmwd->hwndImg, NULL, FALSE);
+      }
+
         SetWindowPos(lpmwd->hwndImg, HWND_NOTOPMOST, 
                      lpmwd->rVisible.left, lpmwd->rVisible.top, 
                      lpmwd->rVisible.right, lpmwd->rVisible.bottom, 
                      SWP_NOMOVE | SWP_NOZORDER);
-        }
+    }
+
 //    }
 
   //RequestVisibleVU(lpmwd, iPrevStart, iPrevEnd);
 	RequestVisibleVU(lpmwd, -1, 0);
-
 	SetEvent(gDisplayEvent);
+
 return;
 }
 
@@ -548,7 +567,7 @@ return;
 //==================================================
 void    HandleCtrlTimer(HWND hwnd, LPMIXERWNDDATA lpmwd)
 {
-if(lpmwd->iCtrlMode != MW_NOTHING_MODE)
+	if(lpmwd->iCtrlMode != MW_NOTHING_MODE)
   {
   switch(lpmwd->iCtrlMode)
     {
@@ -561,14 +580,14 @@ if(lpmwd->iCtrlMode != MW_NOTHING_MODE)
       break;
     }
   }
-else
+	else
   if(lpmwd->iCurMode != MW_NOTHING_MODE)
     switch(lpmwd->iCurMode)
-      {
+    {
       case MW_SCROLL_RELATIVE:
         HandleScrollImgWindowRelative(hwnd, lpmwd);
         break;
-      }
+    }
 
 
 return;
@@ -590,92 +609,92 @@ int             iVal, iCurVal;
 CONTROLDATA     ctrlData;
 RECT            r;
 
-if(pnt.y == lpmwd->pntMouseCur.y)
-    return; // There is nothing to do here
+	if(pnt.y == lpmwd->pntMouseCur.y)
+			return; // There is nothing to do here
 
-hdc = GetDC(hwnd);
+	hdc = GetDC(hwnd);
 
-// Load the Module Bitmap in the Memory DC
-//----------------------------------------
-iPhisChannel = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + 
-					                                 lpmwd->iStartScrChan]);
-iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
-iChanWidth = gpBMPTable[iBMPIndex].iWidth;
-iChanHeight = gpBMPTable[iBMPIndex].iHeight;
-
-
-
-// Get the Control ZoneMap
-//------------------------
-lpctrlZM = lpmwd->lpCtrlZM;// assigned to local for speed
-
-// Get relative Screen Position
-//-----------------------------
-iVal = (pnt.y + lpmwd->iYOffset) - lpctrlZM->iMinScrPos;
+	// Load the Module Bitmap in the Memory DC
+	//----------------------------------------
+	iPhisChannel = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + 
+																						 lpmwd->iStartScrChan]);
+	iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
+	iChanWidth = gpBMPTable[iBMPIndex].iWidth;
+	iChanHeight = gpBMPTable[iBMPIndex].iHeight;
 
 
-// now calculate the value against the scaling factors
-//----------------------------------------------------
-if(lpctrlZM->iNumScrPos > 0)
-  {
-  CONVERTSCREENTOPHISICAL(lpctrlZM, iVal);
-  }
-else
-  iVal = 0;
 
-// do not go further if value is the same
-//---------------------------------------
-iCurVal = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
-if(iVal == iCurVal)
-  return;
+	// Get the Control ZoneMap
+	//------------------------
+	lpctrlZM = lpmwd->lpCtrlZM;// assigned to local for speed
 
-// The Zone
-r = lpctrlZM->rZone;
+	// Get relative Screen Position
+	//-----------------------------
+	iVal = (pnt.y + lpmwd->iYOffset) - lpctrlZM->iMinScrPos;
 
-// Set the Physical Data Value
-//-----------------------------
-SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
 
-// Update the Fader Position
-//--------------------------
-DrawVertFader(g_hdcMemory, lpctrlZM, iVal, lpmwd, iPhisChannel);
+	// now calculate the value against the scaling factors
+	//----------------------------------------------------
+	if(lpctrlZM->iNumScrPos > 0)
+		{
+		CONVERTSCREENTOPHISICAL(lpctrlZM, iVal);
+		}
+	else
+		iVal = 0;
 
-// BitBlit it to the screen
-//-------------------------
+	// do not go further if value is the same
+	//---------------------------------------
+	iCurVal = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
+	if(iVal == iCurVal)
+		return;
 
-BitBlt(hdc, r.left + lpmwd->iXadj,
-            r.top - lpmwd->iYOffset,
-            r.right - r.left,
-            r.bottom - r.top,
-       g_hdcMemory, r.left, r.top,
-       SRCCOPY);
+	// The Zone
+	r = lpctrlZM->rZone;
 
-// Send the Data out
-//------------------
-ctrlData.wMixer   = lpmwd->iMixer;
-ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
-ctrlData.wVal     = iVal;
-SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
-                 lpctrlZM, iVal - iCurVal, lpmwd, TRUE);
+	// Set the Physical Data Value
+	//-----------------------------
+	SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
 
-//  Now update all of the other
-// controls that have the same
-// iCtrlNum and are Capable of
-// display on this Mixer_Window
-//-----------------------------
-UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
+	// Update the Fader Position
+	//--------------------------
+	DrawVertFader(g_hdcMemory, lpctrlZM, iVal, lpmwd, iPhisChannel);
 
-// now update all of the other mixers
-// windows that represent this mixer
-// using the iMixer, iPhisChannel
-// and iVal
-//-----------------------------------
-UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
+	// BitBlit it to the screen
+	//-------------------------
 
-// Clean up the mess
-//------------------
-ReleaseDC(hwnd, hdc);
+	BitBlt(hdc, r.left + lpmwd->iXadj,
+							r.top - lpmwd->iYOffset,
+							r.right - r.left,
+							r.bottom - r.top,
+				 g_hdcMemory, r.left, r.top,
+				 SRCCOPY);
+
+	// Send the Data out
+	//------------------
+	ctrlData.wMixer   = lpmwd->iMixer;
+	ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
+	ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
+	ctrlData.wVal     = iVal;
+	SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
+									 lpctrlZM, iVal - iCurVal, lpmwd, TRUE);
+
+	//  Now update all of the other
+	// controls that have the same
+	// iCtrlNum and are Capable of
+	// display on this Mixer_Window
+	//-----------------------------
+	UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
+
+	// now update all of the other mixers
+	// windows that represent this mixer
+	// using the iMixer, iPhisChannel
+	// and iVal
+	//-----------------------------------
+	UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
+
+	// Clean up the mess
+	//------------------
+	ReleaseDC(hwnd, hdc);
 
 
 return;
@@ -699,95 +718,95 @@ CONTROLDATA     ctrlData;
 RECT            r;
 
 
-if(pnt.x == lpmwd->pntMouseCur.x)
-    return; // There is nothing to do here
+	if(pnt.x == lpmwd->pntMouseCur.x)
+			return; // There is nothing to do here
 
-hdc = GetDC(hwnd);
+	hdc = GetDC(hwnd);
 
-// Load the Module Bitmap in the Memory DC
-//----------------------------------------
-iPhisChannel = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + 
-					                                 lpmwd->iStartScrChan]);
-iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
-iChanWidth = gpBMPTable[iBMPIndex].iWidth;
-iChanHeight = gpBMPTable[iBMPIndex].iHeight;
-
-
-// Get the Control ZoneMap
-//------------------------
-lpctrlZM = lpmwd->lpCtrlZM;// assigned to local for speed
+	// Load the Module Bitmap in the Memory DC
+	//----------------------------------------
+	iPhisChannel = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + 
+																						 lpmwd->iStartScrChan]);
+	iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
+	iChanWidth = gpBMPTable[iBMPIndex].iWidth;
+	iChanHeight = gpBMPTable[iBMPIndex].iHeight;
 
 
-// Get relative Screen Position
-//-----------------------------
-iVal = (pnt.x - lpmwd->iXadj) - lpctrlZM->iMinScrPos;
-
-// now calculate the value against the scaling factors
-//----------------------------------------------------
-if(lpctrlZM->iNumScrPos > 0)
-  {
-  CONVERTSCREENTOPHISICAL(lpctrlZM, iVal);
-  }
-else
-  iVal = 0;
-
-// do not go further if value is the same
-//---------------------------------------
-iCurVal = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
-if(iVal == iCurVal)
-  return;
+	// Get the Control ZoneMap
+	//------------------------
+	lpctrlZM = lpmwd->lpCtrlZM;// assigned to local for speed
 
 
-r = lpctrlZM->rZone;
+	// Get relative Screen Position
+	//-----------------------------
+	iVal = (pnt.x - lpmwd->iXadj) - lpctrlZM->iMinScrPos;
+
+	// now calculate the value against the scaling factors
+	//----------------------------------------------------
+	if(lpctrlZM->iNumScrPos > 0)
+		{
+		CONVERTSCREENTOPHISICAL(lpctrlZM, iVal);
+		}
+	else
+		iVal = 0;
+
+	// do not go further if value is the same
+	//---------------------------------------
+	iCurVal = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
+	if(iVal == iCurVal)
+		return;
 
 
-// Set the Phisiacal Data Value
-//-----------------------------
-SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
-
-// Update the Fader Position
-//--------------------------
-DrawHorizFader(g_hdcMemory, lpctrlZM, iVal, lpmwd, iPhisChannel);
-
-BitBlt(hdc, r.left + lpmwd->iXadj,
-            r.top - lpmwd->iYOffset,
-            r.right - r.left,
-            r.bottom - r.top,
-       g_hdcMemory, r.left, r.top,
-       SRCCOPY);
+	r = lpctrlZM->rZone;
 
 
-// Send the Data out
-//------------------
-ctrlData.wMixer   = lpmwd->iMixer;
-ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll 
-                                           //these(our) control Numbers are meaningless
-ctrlData.wVal     = iVal;
-SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
-                 lpctrlZM, iVal - iCurVal, lpmwd, TRUE);
+	// Set the Phisiacal Data Value
+	//-----------------------------
+	SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
+
+	// Update the Fader Position
+	//--------------------------
+	DrawHorizFader(g_hdcMemory, lpctrlZM, iVal, lpmwd, iPhisChannel);
+
+	BitBlt(hdc, r.left + lpmwd->iXadj,
+							r.top - lpmwd->iYOffset,
+							r.right - r.left,
+							r.bottom - r.top,
+				 g_hdcMemory, r.left, r.top,
+				 SRCCOPY);
+
+
+	// Send the Data out
+	//------------------
+	ctrlData.wMixer   = lpmwd->iMixer;
+	ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
+	ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll 
+																						 //these(our) control Numbers are meaningless
+	ctrlData.wVal     = iVal;
+	SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
+									 lpctrlZM, iVal - iCurVal, lpmwd, TRUE);
 
 
 
 
-//  Now update all of the other
-// controls that have the same
-// iCtrlNum and are Capable of
-// display on this Mixer_Window
-//-----------------------------
-UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, 
-                        lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
+	//  Now update all of the other
+	// controls that have the same
+	// iCtrlNum and are Capable of
+	// display on this Mixer_Window
+	//-----------------------------
+	UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, 
+													lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
 
-// now update all of the other mixers
-// windows that represent this mixer
-// using the iMixer, iPhisChannel
-// and iVal
-//-----------------------------------
-UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
+	// now update all of the other mixers
+	// windows that represent this mixer
+	// using the iMixer, iPhisChannel
+	// and iVal
+	//-----------------------------------
+	UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
 
-// Clean up the mess
-//------------------
-ReleaseDC(hwnd, hdc);
+	// Clean up the mess
+	//------------------
+	ReleaseDC(hwnd, hdc);
 
 
 return;
@@ -834,29 +853,35 @@ LPCTRLZONEMAP       lpctrlZM;
 CONTROLDATA         ctrlData;
 int                 iPhisChannel, iVal, ivalue;
 HDC                 hdc;
-RECT                r;
+RECT                r,rInvalidate;
 HBITMAP             hbmp;
 int                 iBMPIndex;
 BOOL                bIsOn;
 WORD								wVal;
 
-if(hwnd == NULL)
-  hwnd = lpmwd->hwndImg; // Grab the image Window from the MixerWindow data
+	if(hwnd == NULL)
+		hwnd = lpmwd->hwndImg; // Grab the image Window from the MixerWindow data
 
-// Handle the button Up down
-//--------------------------
-iPhisChannel = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + 
-					            lpmwd->iStartScrChan]);
+	// Handle the button Up down
+	//--------------------------
+	iPhisChannel = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + 
+												lpmwd->iStartScrChan]);
 
-// get the zone map pointer
-//-------------------------
-lpctrlZM = lpmwd->lpCtrlZM;
+	// get the zone map pointer
+	//-------------------------
+	lpctrlZM = lpmwd->lpCtrlZM;
 
-ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
 
-iVal = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
+	////////////////////////////////////////////////////
+	// Get the current value and the minimum value
 
-if(iVal != ivalue)
+	ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+	iVal = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
+
+	////////////////////////////////////////////////////////////////////
+	// If they are not equal then we are turning the button ON
+
+	if(iVal != ivalue)
   {
 		bIsOn = TRUE;
 
@@ -877,13 +902,13 @@ if(iVal != ivalue)
 		if((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE) && (ctrlData.wCtrl < 0x8000))
 		{
 			for(iVal; iVal >= ivalue; iVal --)
-				{
+			{
 				// Send the Data out
 				//------------------
 				ctrlData.wVal     = iVal;
 				SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
 												 lpctrlZM, -1, lpmwd, TRUE);
-				}
+			}
 		}
 		iVal = ivalue;
 
@@ -917,98 +942,123 @@ if(iVal != ivalue)
 		}
 
   }
-else
+	else	// We must be turning the BUTTON OFF
   {
-  bIsOn = FALSE;
+		bIsOn = FALSE;
 
-  // Do the Toggle stuff ..
-  //
-  CheckForToggleSwitches(lpmwd, lpctrlZM);
+		// Do the Toggle stuff ..
+		//
+		CheckForToggleSwitches(lpmwd, lpctrlZM);
 
-  ctrlData.wMixer   = lpmwd->iMixer;
-  ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-  ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
-  // ok we need to go up to max value
-  ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
-  iVal   = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
-  iVal++;// skip this value since the control is already there
-  if((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE) && (ctrlData.wCtrl < 0x8000))
-  {
-    for(iVal; iVal < ivalue; iVal++)
-      {
-      // Send the Data out
-      //------------------
-      ctrlData.wVal     = iVal;
-      SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
-                      lpctrlZM, 1, lpmwd, TRUE);
-      }
-    iVal --; // this would be the correct control value
-  }
-  else
-  {
-    iVal = ivalue - 1;
-    if(iVal == 1)
-      iVal ++;
-  }
-  // Handle possible Filter buttons ... like MUTE and such
-  //
-  StartControlDataFilter(iPhisChannel, lpmwd, lpctrlZM, bIsOn, TRUE);
-  }
+		ctrlData.wMixer   = lpmwd->iMixer;
+		ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
+		ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
+		// ok we need to go up to max value
+		ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
+		iVal   = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+		iVal++;// skip this value since the control is already there
 
-// Set the Phisical Data Value
-//----------------------------
-SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
-
-// update the screen part
-//-----------------------
-r = lpctrlZM->rZone;
-hdc = GetDC(hwnd);
-if(iVal == CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs))
-  {
-  PushBtn(g_hdcMemory, lpctrlZM, iVal, lpmwd, iPhisChannel);
-  BitBlt(hdc, r.left + lpmwd->iXadj,
-              r.top - lpmwd->iYOffset,
-              r.right - r.left,
-              r.bottom - r.top,
-         g_hdcMemory, r.left, r.top,
-         SRCCOPY);
-  // now update all of the other mixers
-  // windows that represent this mixer
-  // using the iMixer, iPhisChannel
-  // and iVal
-  //-----------------------------------
-  UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
-  UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, 
-                          iPhisChannel, lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
-  }
-else
-  {
-  iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
-
-  hbmp = SelectObject(g_hdcBuffer,  gpBMPTable[iBMPIndex].hbmp);
-
-  BitBlt(hdc, r.left + lpmwd->iXadj,
-              r.top - lpmwd->iYOffset,
-              r.right - r.left,
-              r.bottom - r.top,
-         g_hdcBuffer, r.left, r.top,
-         SRCCOPY);
-
-
-  // now update all of the other mixers
-  // windows that represent this mixer
-  // using the iMixer, iPhisChannel
-  // and iVal
-  //-----------------------------------
-  UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, 
-                          iPhisChannel, lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
-  UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, g_hdcBuffer);
-
-  SelectObject(g_hdcBuffer, hbmp);
+		if((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE) && (ctrlData.wCtrl < 0x8000))
+		{
+			for(iVal; iVal < ivalue; iVal++)
+			{
+				// Send the Data out
+				//------------------
+				ctrlData.wVal     = iVal;
+				SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE,
+												lpctrlZM, 1, lpmwd, TRUE);
+			}
+			iVal --; // this would be the correct control value
+		}
+		else
+		{
+			iVal = ivalue - 1;
+			if(iVal == 1)
+				iVal ++;
+		}
+		// Handle possible Filter buttons ... like MUTE and such
+		//
+		StartControlDataFilter(iPhisChannel, lpmwd, lpctrlZM, bIsOn, TRUE);
   }
 
-ReleaseDC(hwnd, hdc);
-syncInputPriority (lpctrlZM, g_inputCueActiveCounter, lpmwd);
+	// Set the Phisical Data Value
+	//----------------------------
+	SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
+
+	// update the screen part
+	//-----------------------
+	r = lpctrlZM->rZone;		// THIS IS RECTANGLE FOR CHANNEL 1 !!!
+	hdc = GetDC(hwnd);
+
+
+	/////////////////////////////////////////////////////////
+	// Compare current value with the minimum value
+	// If they are equal then we are turning the button ON
+
+	if(iVal == CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs))
+  {
+		PushBtn(g_hdcMemory, lpctrlZM, iVal, lpmwd, iPhisChannel);
+
+		BitBlt(hdc, r.left + lpmwd->iXadj,		// iXadj IS OFFSET FOR CHANNEL WE ARE PROCESSING
+								r.top - lpmwd->iYOffset,	// iYOffset IS OFFSET FOR CHANNEL WE ARE PROCESSING
+								r.right - r.left,
+								r.bottom - r.top,
+					 g_hdcMemory, r.left, r.top,
+					 SRCCOPY);
+
+		//////////////////////////////////////
+		// now update all of the other mixers
+		// windows that represent this mixer
+		// using the iMixer, iPhisChannel
+		// and iVal
+		//-----------------------------------
+		UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, NULL);
+
+		// PASS THE iXadj FOR THIS CHANNEL BEING UPDATED
+		UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, 
+														iPhisChannel, lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
+  }
+	else
+  {
+		iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
+
+		hbmp = SelectObject(g_hdcBuffer,  gpBMPTable[iBMPIndex].hbmp);
+
+		BitBlt(hdc, r.left + lpmwd->iXadj,
+								r.top - lpmwd->iYOffset,
+								r.right - r.left,
+								r.bottom - r.top,
+					 g_hdcBuffer, r.left, r.top,
+					 SRCCOPY);
+
+
+		// now update all of the other mixers
+		// windows that represent this mixer
+		// using the iMixer, iPhisChannel
+		// and iVal
+		//-----------------------------------
+		UpdateControlsByCtrlNum(hdc, g_hdcMemory, lpmwd, lpmwd->iXadj, 
+														iPhisChannel, lpctrlZM, iVal, DIRECTIONS_ALL, TRUE);
+		UpdateSameMixWndByCtrlNum(hwnd, lpmwd->iMixer, iPhisChannel, lpctrlZM, iVal, g_hdcBuffer);
+
+		SelectObject(g_hdcBuffer, hbmp);
+  }
+
+	////////////////////////////////////////////////////
+	// FDS
+	//
+	// Invalidate rectangle for THIS button
+	// so that it is updated without redrawing screen
+
+	rInvalidate.left = r.left + lpmwd->iXadj;
+	rInvalidate.top  = r.top - lpmwd->iYOffset;
+	rInvalidate.right = r.right + lpmwd->iXadj;
+	rInvalidate.bottom = (r.bottom - r.top) + rInvalidate.top;
+
+	InvalidateRect(lpmwd->hwndImg,&rInvalidate,FALSE);		// FDS - MAKE SURE BUTTON GETS UPDATED BY INVALIDATING THE RECTANGLE
+
+	ReleaseDC(hwnd, hdc);
+	syncInputPriority (lpctrlZM, g_inputCueActiveCounter, lpmwd);
 
 return;
 }
@@ -1050,19 +1100,22 @@ void     UpdateControlsByCtrlNum(HDC hdcScreen, HDC hdcMem,
   // Do the Forward search and update
   //---------------------------------
   if((iDirection == DIRECTIONS_ALL) || (iDirection == DIRECTIONS_FORWARD))
-    {
+   {
       lpctrlZM_Special = lpctrlZM_Cur = lpctrlZM; // Get the one that called us
 
       if(bSkipCurrent)
         lpctrlZM_Cur ++; // start with the next Control item
+
       lpctrlZM_Cur = ScanCtrlZonesNum(lpctrlZM_Cur, iCtrlNum);
+
       if(lpctrlZM_Cur == NULL)
         goto SPECIAL_CONTROL;
+
       while(lpctrlZM_Cur)
       {
         if((lpctrlZM_Cur->CtrlFunc) && (lpctrlZM_Cur->iDispType != DISP_TYPE_NULL))
         {
-          rZone.left = lpctrlZM_Cur->rZone.left + iXAdj;//lpmwd->iXadj;
+          rZone.left = lpctrlZM_Cur->rZone.left + iXAdj;		//lpmwd->iXadj;
           rZone.top = lpctrlZM_Cur->rZone.top - lpmwd->iYOffset;
           rZone.right = lpctrlZM_Cur->rZone.right - lpctrlZM_Cur->rZone.left;
           rZone.bottom = lpctrlZM_Cur->rZone.bottom - lpctrlZM_Cur->rZone.top;
@@ -1119,10 +1172,10 @@ SPECIAL_CONTROL:
       }
     }
 
-// Do the Backward search and update
-//----------------------------------
-if((iDirection == DIRECTIONS_ALL) || (iDirection == DIRECTIONS_BACK))
-    {
+		// Do the Backward search and update
+		//----------------------------------
+	if((iDirection == DIRECTIONS_ALL) || (iDirection == DIRECTIONS_BACK))
+  {
     // load the first pointer
     // so we know when to stop
     //------------------------
@@ -1169,7 +1222,7 @@ if((iDirection == DIRECTIONS_ALL) || (iDirection == DIRECTIONS_BACK))
                 lpctrlZM_Cur = lpctrlZM_Root;
 
             } while(lpctrlZM_Cur != lpctrlZM_Root);
-    }
+  }
 
 
 return;
@@ -1346,6 +1399,7 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD iCtrlAbs, int iVal, BOOL 
 
 		// THIS really slows things down
 		// Doesn't seem to be needed????
+
 
     UpdateSameMixWndByCtrlNum(NULL, 0, iPhisChannel, lpctrlZM, iVal, NULL);
 
