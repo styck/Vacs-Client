@@ -300,6 +300,7 @@
 #define CTRL_NUM_CLIP_PRE_FADER							0x00be
 #define CTRL_NUM_CLIP_POST_FADER						0x00bf
 
+#define CTRL_NUM_RESET_EQ										0x00c0		// fds added 9/4/2000, reset eq button
  
 #define CTRL_NUM_NULL                      0xffff
 
@@ -764,6 +765,8 @@
 #define CTRL_NUM_MASTER_POST_RT_VU            217
 
 #define CTRL_NUM_MASTER_CLIP_LIGHT						218
+#define CTRL_NUM_CUE_CLIP_LIGHT								219
+
 
 //////////////////////////////////////////
 // Control Types
@@ -836,6 +839,8 @@
 
 #define CTRL_TYPE_DISP_INPUT_EQ_FILTER            0x0050
 #define CTRL_TYPE_DISP_SUB_EQ_FILTER              0x0051
+
+#define CTRL_TYPE_BTN_EQ_RESET_FILTER              0x0052
 
 #define CTRL_TYPE_CHANNEL_NAME_DISPLAY_VERTICAL	0x8000
 #define CTRL_TYPE_CHANNEL_NUMBER_DISPLAY_VERTICAL 0x8001
