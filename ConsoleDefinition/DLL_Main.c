@@ -66,9 +66,9 @@ return TRUE;
 //
 BOOL    CDEF_GetCSData(HWND hwnd)
 {
-  g_bServerSetupData = FALSE;
-  g_bServerTableData = FALSE;
-  g_bTimerLockOut = FALSE;
+  g_bServerSetupData = FALSE;	/////////////////////////////////////
+  g_bServerTableData = TRUE;	// <=== FORCE THAT WE ALREADY GOT IT
+  g_bTimerLockOut = FALSE;		/////////////////////////////////////
 
   return (BOOL)(DialogBox(g_hinstCDef, MAKEINTRESOURCE(IDD_CLIENTSERVER_SETUP), hwnd, dlgCS_Display) >0)?TRUE:FALSE;
 //  return (BOOL)DialogBox(g_hinstApp, MAKEINTRESOURCE(IDD_CLIENTSERVER_SETUP), hwnd, dlgCS_Display);
@@ -117,7 +117,7 @@ switch (message)
         
         if(g_bServerTableData == FALSE)
         {
-          g_bTimerLockOut = TRUE;
+          g_bTimerLockOut = FALSE;	// <===== FORCE TO FALSE TO SKIP TABLE DATA =======
           SetDlgItemText(hdlg, IDC_ADDMESSAGE, "Request Server Bin Table Data!");
           PostMessage(g_hwndIO, WM_GET_SERVER_TABLE_DATA, 0, 0);
         }
