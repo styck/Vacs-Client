@@ -1,7 +1,13 @@
 
 //=================================================
-// Copyright 1998-2001, CorTek Software, Inc.
+// Copyright 1998 - 2001, CorTek Softawre, Inc.
 //=================================================
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
 
 #include "SAMM.h"
 #include "SAMMEXT.h"
@@ -21,6 +27,8 @@ extern int  g_iCueModuleIdx;
 //
 int						g_inputCueActiveCounter = 0;
 CUE_PRIORITY	g_cue_priority = {0,0,0,0,0};
+
+BOOL bCancelCuesActive = FALSE;
 
 
 BOOL CheckForSpecialFilters(/*LPMIXERWNDDATA lpwmd, */LPCTRLZONEMAP pctrlzm);
@@ -3387,23 +3395,36 @@ void ResendControlData(LPCTRLZONEMAP  lpctrlZM){
   SendDataToDevice(&ctrlData, TRUE, lpctrlZM, -1, NULL, FALSE);
 }
 
+
+BOOL IsCancellingCues(void)
+{
+	return bCancelCuesActive;
+}
+
 /////////////////////////////////////////////////////////////////////
-// FUNCTION: ResendControlData
+// FUNCTION: CancelAllCues(HWND)
 //
 // purpose: 
-//	CancelAllCues
+//	CancelAllCues - scan the entire mixer for cue buttons and turn
+//  them all OFF
 //
 //
+//	input:
+//			ghwndMain should be the paramter passed or this WON'T work
+
 void	CancelAllCues (HWND hWnd)
 {
 
-// #ifdef NOTUSED	//////////////////////////////////////NOT WORKING YET, CAUSES INPUT LABELS TO OVERWRITE
 
 	LPMIXERWNDDATA			lpmwd; // temp memory for the Mixer Window data
 	int							channel;
   LPCTRLZONEMAP   lpctrlZM;
   LPCTRLZONEMAP   pctrlzm;
 	int i;
+
+	int     iPhisChannel, iBMPIndex;
+	int     iWidth;
+
 
 	/////////////////////////////////////////////
 	// Table of CUE's that we handle
@@ -3475,6 +3496,7 @@ void	CancelAllCues (HWND hWnd)
 	size_t sizeAux = sizeof(iAuxCueTable)/sizeof(iAuxCueTable[0]);
 	size_t sizeMaster = sizeof(iMasterCueTable)/sizeof(iMasterCueTable[0]);
 
+
 	/////////////////////////////////////////////////
 	// If there are active cues then scan through
 	// all the channels looking for them, if they
@@ -3484,7 +3506,11 @@ void	CancelAllCues (HWND hWnd)
 	if(gCueActiveCount)
 	{
 
-		lpmwd = GetValidMixerWindowData ();
+		lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
+		if(lpmwd == NULL)
+				lpmwd = GetValidMixerWindowData();
+
+		bCancelCuesActive = TRUE;	// need to keep the HandleCtrlBtnClick() from recursivelly calling until done.
 
 		for (channel = 0; channel < MAX_CHANNELS; channel ++)
 		{
@@ -3494,21 +3520,29 @@ void	CancelAllCues (HWND hWnd)
 			{
 				switch (gDeviceSetup.iaChannelTypes[channel])
 				{
-					case DCX_DEVMAP_MODULE_INPUT: // input module
+					case DCX_DEVMAP_MODULE_INPUT: // INPUT MODULE CUES
 						for(i=0;i<sizeInput;i++)
 						{
 							if(isCtrlValueNotEqualToDefault(lpctrlZM, iInputCueTable[i]))
 							{
+
+									iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[channel]);
+									iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
+									iWidth = gpBMPTable[iBMPIndex].iWidth-1;
+
 									pctrlzm = ScanCtrlZonesNum (lpctrlZM, iInputCueTable[i]);
 									lpmwd->lpCtrlZM = pctrlzm;
 									lpmwd->iCurMode = MW_CONTROL_ACTIVE;	// Make this button ACTIVE again
 									lpmwd->iCurChan = channel;
-									ActivateMWMode(ghwndMain, lpmwd);			// Let the normal button press login handle it.
+									lpmwd->hwndImg = hWnd; //fds
+									lpmwd->iXadj = channel * (iWidth+1);	// Move over to that channel
+
+									ActivateMWMode(hWnd, lpmwd);			// Let the normal button press login handle it.
 							}
 						}
 						break;
 					
-					case DCX_DEVMAP_MODULE_AUX:
+					case DCX_DEVMAP_MODULE_AUX:		// AUX MODULE CUES
 						for(i=0;i<sizeAux;i++)
 						{
 							if(isCtrlValueNotEqualToDefault(lpctrlZM, iAuxCueTable[i]))
@@ -3517,7 +3551,9 @@ void	CancelAllCues (HWND hWnd)
 									lpmwd->lpCtrlZM = pctrlzm;
 									lpmwd->iCurMode = MW_CONTROL_ACTIVE;	// Make this button ACTIVE again
 									lpmwd->iCurChan = channel;
-								ActivateMWMode(ghwndMain, lpmwd);			// Let the normal button press login handle it.
+									lpmwd->hwndImg = hWnd; //fds
+									lpmwd->iXadj = channel * (iWidth+1);	// Move over to that channel
+								ActivateMWMode(hWnd, lpmwd);			// Let the normal button press login handle it.
 							}
 						}
 						break;
@@ -3525,8 +3561,9 @@ void	CancelAllCues (HWND hWnd)
 					case DCX_DEVMAP_MODULE_CUE:
 						break;
 
+					// MUST use the window handle to the MASTER or it won't be updated
 					//
-					case DCX_DEVMAP_MODULE_MASTER:
+					case DCX_DEVMAP_MODULE_MASTER:	// MASTER MODULE CUES
 						for(i=0;i<sizeMaster;i++)
 						{
 							if(isCtrlValueNotEqualToDefault(lpctrlZM, iMasterCueTable[i]))
@@ -3534,7 +3571,9 @@ void	CancelAllCues (HWND hWnd)
 									pctrlzm = ScanCtrlZonesNum (lpctrlZM, iMasterCueTable[i]);
 									lpmwd->lpCtrlZM = pctrlzm;
 									lpmwd->iCurMode = MW_CONTROL_ACTIVE;	// Make this button ACTIVE again
-									ActivateMWMode(ghwndMain, lpmwd);			// Let the normal button press login handle it.
+									lpmwd->hwndImg = ghwndMaster; //fds
+									lpmwd->iXadj = channel * (iWidth+1);	// Move over to that channel
+									ActivateMWMode(ghwndMaster, lpmwd);			// Let the normal button press login handle it.
 							}
 						}		
 						break;
@@ -3548,7 +3587,8 @@ void	CancelAllCues (HWND hWnd)
 		}
 
 	}
-//#endif		// NOTUSED
+	
+	bCancelCuesActive = FALSE;	// done cancelling cues
 
 };
 
