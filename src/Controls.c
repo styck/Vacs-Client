@@ -48,16 +48,16 @@ iPhisChannel = iChan;
 iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
 // Select the Original Bitmap
 //---------------------------
-hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
+hbmp = SelectObject(g_hdcTempBuffer, gpBMPTable[iBMPIndex].hbmp);
 
 // copy the Control bitmap to the memory
 //--------------------------------------
 BitBlt(hdc, rZone.left, rZone.top, rZone.right - rZone.left, rZone.bottom - rZone.top,
-       g_hdcBuffer, rZone.left, rZone.top, SRCCOPY);
+       g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
 
 // Clean the buffer so others can use it freely
 //---------------------------------------------
-SelectObject(g_hdcBuffer, hbmp);
+SelectObject(g_hdcTempBuffer, hbmp);
 
 // Get this Controls Bitmap
 //-------------------------
@@ -65,7 +65,7 @@ hbmp = gpBMPTable[lpctrlZM->iCtrlBmp[0]].hbmp;
 iHeight = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iHeight;
 iWidth  = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iWidth;
 
-hbmpOld = SelectObject(g_hdcBuffer, hbmp);
+hbmpOld = SelectObject(g_hdcTempBuffer, hbmp);
 
 if(lpctrlZM->iNumValues > 0)
   CONVERTPHISICALTOSCREEN(lpctrlZM, iVal);
@@ -81,9 +81,9 @@ iTop = rZone.top + iVal;
 iLeft = rZone.left +(((rZone.right-rZone.left)-iWidth)/2);
 
 BitBlt(hdc, iLeft, iTop, iWidth, iHeight,
-       g_hdcBuffer, 0, 0, SRCCOPY);
+       g_hdcTempBuffer, 0, 0, SRCCOPY);
 
-SelectObject(g_hdcBuffer, hbmpOld);
+SelectObject(g_hdcTempBuffer, hbmpOld);
 return;
 }
 
@@ -112,16 +112,16 @@ iPhisChannel = iChan;
 iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
 // Select the Original Bitmap
 //---------------------------
-hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
+hbmp = SelectObject(g_hdcTempBuffer, gpBMPTable[iBMPIndex].hbmp);
 
 // copy the Control bitmap to the memory
 //--------------------------------------
 BitBlt(hdc, rZone.left, rZone.top, rZone.right - rZone.left, rZone.bottom - rZone.top,
-       g_hdcBuffer, rZone.left, rZone.top, SRCCOPY);
+       g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
 
 // Clean the buffer so others can use it freely
 //---------------------------------------------
-SelectObject(g_hdcBuffer, hbmp);
+SelectObject(g_hdcTempBuffer, hbmp);
 
 // Get this Controls Bitmap
 //-------------------------
@@ -131,7 +131,7 @@ iWidth  = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iWidth;
 
 //hdcMem = CreateCompatibleDC(hdc);
 //hbmpOld= SelectObject(hdcMem,hbmp);
-hbmpOld = SelectObject(g_hdcBuffer, hbmp);
+hbmpOld = SelectObject(g_hdcTempBuffer, hbmp);
 
 
 // Calculate the Horizontal Position
@@ -150,9 +150,9 @@ iLeft = rZone.left + iVal;//(int)lValue;
 iTop = rZone.top +(((rZone.bottom-rZone.top)-iHeight)/2);
 
 BitBlt(hdc, iLeft, iTop, iWidth, iHeight,
-       g_hdcBuffer, 0, 0, SRCCOPY);
+       g_hdcTempBuffer, 0, 0, SRCCOPY);
 
-SelectObject(g_hdcBuffer, hbmpOld);
+SelectObject(g_hdcTempBuffer, hbmpOld);
 
 return;
 }
@@ -378,6 +378,9 @@ HBITMAP         hbmp;
 int             iHeight, iWidth;
 RECT            rZone;
 int             ivalue;
+	int             iBMPIndex;
+	//HDC							temp_dc;
+
 
 // Get this Control Zone
 //----------------------
@@ -394,14 +397,32 @@ if(ivalue == iVal)
     iHeight = gpBMPTable[lpczm->iCtrlBmp[1]].iHeight;
     iWidth  = gpBMPTable[lpczm->iCtrlBmp[1]].iWidth;
 
-    hbmpOld = SelectObject(g_hdcBuffer, hbmp);
+		hbmpOld = SelectObject(g_hdcTempBuffer, hbmp);
 
     // Put the Bitmap on the Screen
     //-----------------------------
     BitBlt(hdc, rZone.left, rZone.top, iWidth, iHeight,
-           g_hdcBuffer, 0, 0, SRCCOPY);
+					 g_hdcTempBuffer, 0, 0, SRCCOPY);
 
-    SelectObject(g_hdcBuffer, hbmpOld);
+		SelectObject(g_hdcTempBuffer, hbmpOld);
+	}else{
+		//temp_dc = CreateCompatibleDC (hdc);
+		iBMPIndex = lpmwd->lpZoneMap[iChan].iBmpIndx;
+		// Select the Original Bitmap
+		//---------------------------
+		hbmpOld = SelectObject(g_hdcTempBuffer, gpBMPTable[iBMPIndex].hbmp);
+
+		// copy the Control bitmap to the memory
+		//--------------------------------------
+		BitBlt(hdc, rZone.left, rZone.top, 
+								rZone.right - rZone.left, 
+								rZone.bottom - rZone.top,
+					 g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
+		// Clean the buffer so others can use it freely
+		//---------------------------------------------
+		SelectObject(g_hdcTempBuffer, hbmpOld);
+
+		//DeleteDC (temp_dc);
     }
 
 return;
