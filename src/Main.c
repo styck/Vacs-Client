@@ -1,11 +1,11 @@
 //=================================================
-// Copyright 1998 - 2001, CorTek Softawre, Inc.
+// Copyright 1998 - 2002, CorTek Softawre, Inc.
 //=================================================
 //
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Main.c             $
-// $Revision:: 48                                 $
+// $Revision:: 49                                 $
 //
 
 
@@ -17,7 +17,6 @@
 
 
 extern HWND			g_stereoCueMetersWindow;
-extern char	g_sequence_file_name[MAX_PATH];
 
 LPSTR		GetListItemGroupName(int iItem);	// SEE GROUPS.C
 
@@ -28,12 +27,16 @@ int			FindConsecutiveGroupIndex(int iNum, int iType);
 
 void		CancelAllCues (HWND);
 
+// Prototypes for functions in this file
+
+LPSTR GetLastMixFileName(void);	
+void ExtractFileName(char * , char * );
+
 
 BOOL		g_bIsSoloCueMode;	// Default as true
-
 BOOL		g_bUpDownScollSpeedFAST = TRUE;	// Flag for fast/slow updown scroll speed for touchscreen
 
-WORD	wKeyFlags=0;				// Shift Key Flag
+static WORD	wKeyFlags=0;				// LOCAL Shift Key Flag
 
 //======================
 // Windows Main Routine
@@ -53,6 +56,7 @@ FILESTRUCT	fsTemp;
 int					shift_key;	 
 int			iRet;
 HANDLE	hAccel;
+char            szBuff[MAX_PATH];
 
 	ghInstMain = hInstance;
 
@@ -113,13 +117,16 @@ HANDLE	hAccel;
 
 		CloseAllMDI();
 
-		///////////////////////////////////////////////////////////////////
-		// go to the right directory and Load the LA$T state of the mixer..
+		/////////////////////////////////////////////////////////////////////////
+		// go to the right directory and Load the last mix file loaded or
+		// the LA$T.mix file if one wasn't loaded before
 
-		wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
-		wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
+		//  <== WRONG, MAY NOT BE DIRECTORY OF LAST MIX FILE LOADED ==>>
+		wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);	// <== WRONG, MAY NOT BE DIRECTORY OF LAST MIX FILE LOADED
+    wsprintf(fsTemp.szFileName, "%s", GetLastMixFileName());
 
-		iRet = LoadMixFile(&fsTemp, FALSE);
+
+		iRet = LoadMixFile(&fsTemp, TRUE);			// ?? why not OpenMixFile() and do everything
 		if( iRet != 0)
 		{
 
@@ -132,8 +139,8 @@ HANDLE	hAccel;
 				// If this isn't done then when they try to add a sequence
 				// to the sequence window it will create an exception
 
-				wsprintf(g_sequence_file_name,"%smix\\%s",gszProgDir, fsTemp.szFileName);
-	 			OpenSequenceFiles (g_sequence_file_name);
+				wsprintf(szBuff,"%smix\\%s",gszProgDir, fsTemp.szFileName);
+	 			OpenSequenceFiles (szBuff);
 
 				ShowSeqWindow(FALSE);
 			}
@@ -148,6 +155,7 @@ HANDLE	hAccel;
 
 
 		}
+
 	}
 
 			// As per Gamble 10/19/2001
@@ -166,8 +174,7 @@ HANDLE	hAccel;
 	// Process Until WM_QUIT Message Is Received
 	//------------------------------------------
 
-
-	while((ghwndMain != NULL) && GetMessage(&msg,NULL,/*ghwndMain,*/ 0, 0) == TRUE)
+	while((ghwndMain != NULL) && GetMessage(&msg,NULL, 0, 0) == TRUE)
   {
 
 		iMessage = msg.message;
@@ -195,10 +202,9 @@ HANDLE	hAccel;
 				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 				iRet=0;	// Just in case it was not initialized
 
+
 				switch(msg.wParam)
 				{
-							
-
 					case VK_SHIFT:
 					wKeyFlags |= VK_SHIFT;
 					break;
@@ -363,7 +369,6 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 	HWND				last_wnd;
 	static UINT				timerID;
 
-  //RECT    TempDesktopRect, TempMainRect;
   int     iRet;
 	BOOL bResult;
 	
@@ -376,389 +381,385 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 	static LPCTSTR szRegValue; 
 	DWORD dwType;
 	DWORD rc;
-	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
+	DWORD dwBufferSize;
 	char	szTempSeq[MAX_PATH];
 	char  szBuff[MAX_PATH];
+	char  szScratch[MAX_PATH];
 
 	LPMIXERWNDDATA      lpmwd;
 
 
   switch (wMessage)
 	{
-//  case WM_MOUSEMOVE:
-//    UpdateTrackingWindow(NULL);
-//    break;
 
-	case WM_KEYUP:
+		case WM_KEYUP:
 
+			g_bReversDirection = FALSE;	//  Controls Stereo-linked control panning 
 
-		g_bReversDirection = FALSE;	//  Controls Stereo-linked control panning 
-
-    switch(LOWORD(wParam))
-		{
-				case VK_SHIFT:
-				wKeyFlags &= ~VK_SHIFT;
-				break;
-
-		}
-		break;
-
-	case WM_KEYDOWN:
-
-		wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
-		iRet=0;	// Just in case it was not initialized
-
-    switch(LOWORD(wParam))
-		{
-
+			switch(LOWORD(wParam))
+			{
 					case VK_SHIFT:
-						wKeyFlags |= VK_SHIFT;
+					wKeyFlags &= ~VK_SHIFT;
 					break;
 
-					///////////////////////////////////////////////////////////
-					// Processes SCREEN buttons
-
-					case VK_F1:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",1 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F1);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F1);
-					break;
-
-					case VK_F2:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",2 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F2);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F2);
-					break;
-
-					case VK_F3:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",3 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F3);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F3);
-					break;
-
-					case VK_F4:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",4 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F4);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F4);
-					break;
-
-					case VK_F5:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",5 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F5);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F5);
-
-					break;
-
-					case VK_F6:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",6 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F6);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F6);
-					break;
-
-					case VK_F7:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",7 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F7);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F4);
-					break;
-
-					case VK_F8:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",8 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F8);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F8);
-					break;
-
-					case VK_F9:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",9 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F9);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F9);
-					break;
-#ifdef NOT_USEDSYSTEMKEY
-					case VK_F10:
-						wsprintf(fsTemp.szFileName, "fkey%d.dat",10 );
-						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
-							WriteFkeyFile(&fsTemp, (int) VK_F10);
-						else	// Restore window
-							iRet=LoadFkeyFile(&fsTemp, (int) VK_F10);
-					break;
-#endif
-
-				}
-				
-
-				////////////////////////////////////////////////////////////////////
-				// Trying to load an FKEY file that is incompatible with the RACK setting
-				// Shutdown and EXIT
-				if(iRet==2)	
-				{
-					ShutdownProc();
-					return FALSE;
-				}
-		
-		break;
-
-	//````````````````````````````
-	case WM_U_COMIO_IN_DONE:
-		UpdateFromExternalInterface();
-		break;
-  //````````````````````````````
-  case WM_COMMAND:
-    switch(LOWORD(wParam))
-    {
-    case IDM_START_TRACKING_WINDOW:
-      if(IsTrackingActive() == TRUE)
-			{
-				CheckMenuItem(ghMainMenu, IDM_START_TRACKING_WINDOW, MF_UNCHECKED);
-        StopTrackingWindow();
-			}	
-			else
-			{
-				CheckMenuItem(ghMainMenu, IDM_START_TRACKING_WINDOW, MF_CHECKED);
-        ActivateTrackingWindow();
 			}
-      break;
+			break;
 
+		case WM_KEYDOWN:		// this will get the SCREEN BUTTONS
 
-		//////////////////////////////////
-		// Set global flag to indicate that
-		// Solo Mute Mode is enabled for the
-		// CUES, this will cause the
-		// CancelCue() routine to be called
-		// whenever a cue button is processed
-		// See Events interface.c
+			wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
+			iRet=0;	// Just in case it was not initialized
 
-    case IDM_SOLO_CUE_MODE:
-      if(g_bIsSoloCueMode == TRUE)
+			switch(LOWORD(wParam))
 			{
-				CheckMenuItem(ghMainMenu, IDM_SOLO_CUE_MODE, MF_UNCHECKED);
-				g_bIsSoloCueMode = FALSE;
-			}	
-			else
-			{
-				CheckMenuItem(ghMainMenu, IDM_SOLO_CUE_MODE, MF_CHECKED);
-				g_bIsSoloCueMode = TRUE;
-			}
-      break;
 
-		///////////////////////////////////
-		// Let user select the scroll speed
-		// for the updown scroll control
-		// (the value box one)
-		// Used for touchscreen, default
-		// is fast speed
+						case VK_SHIFT:
+							wKeyFlags |= VK_SHIFT;
+						break;
 
-		case IDM_UPDOWNSCROLL_SPEED:
-      if(g_bUpDownScollSpeedFAST == TRUE)
-			{
-				CheckMenuItem(ghMainMenu, IDM_UPDOWNSCROLL_SPEED, MF_CHECKED);	//MAKE IT SLOW
-				g_bUpDownScollSpeedFAST = FALSE;
-			}	
-			else
-			{
-				CheckMenuItem(ghMainMenu, IDM_UPDOWNSCROLL_SPEED, MF_UNCHECKED);
-				g_bUpDownScollSpeedFAST = TRUE;
-			}
-      break;
+						///////////////////////////////////////////////////////////
+						// Processes SCREEN buttons
 
+						case VK_F1:
+							wsprintf(fsTemp.szFileName, "fkey%d.dat",1 );
+							if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+								WriteFkeyFile(&fsTemp, (int) VK_F1);
+							else	// Restore window
+								iRet=LoadFkeyFile(&fsTemp, (int) VK_F1);
+						break;
 
+						case VK_F2:
+							wsprintf(fsTemp.szFileName, "fkey%d.dat",2 );
+							if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+								WriteFkeyFile(&fsTemp, (int) VK_F2);
+							else	// Restore window
+								iRet=LoadFkeyFile(&fsTemp, (int) VK_F2);
+						break;
 
-    case IDM_V_PROP_FILTER:
-      GetSeqUpdateProps(NULL);
-      break;
-		// Toolbar control and menu control for the Sequence 
-		case IDM_S_PLAY:
-		case IDM_S_RECALL_CURRENT:
-		case IDM_S_PAUSE:
-		case IDM_S_GOTO_FIRST:
-		case IDM_S_BACK:
-		case IDM_S_NEXT:
-		case IDM_S_GOTO_LAST:
-			HandleRemoteSequenceControl(LOWORD(wParam));
+						case VK_F3:
+							wsprintf(fsTemp.szFileName, "fkey%d.dat",3 );
+							if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+								WriteFkeyFile(&fsTemp, (int) VK_F3);
+							else	// Restore window
+								iRet=LoadFkeyFile(&fsTemp, (int) VK_F3);
+						break;
+
+						case VK_F4:
+							wsprintf(fsTemp.szFileName, "fkey%d.dat",4 );
+							if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+								WriteFkeyFile(&fsTemp, (int) VK_F4);
+							else	// Restore window
+								iRet=LoadFkeyFile(&fsTemp, (int) VK_F4);
+						break;
+
+						case VK_F5:
+							wsprintf(fsTemp.szFileName, "fkey%d.dat",5 );
+							if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+								WriteFkeyFile(&fsTemp, (int) VK_F5);
+							else	// Restore window
+								iRet=LoadFkeyFile(&fsTemp, (int) VK_F5);
+
+						break;
+
+						case VK_F6:
+							wsprintf(fsTemp.szFileName, "fkey%d.dat",6 );
+							if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+								WriteFkeyFile(&fsTemp, (int) VK_F6);
+							else	// Restore window
+								iRet=LoadFkeyFile(&fsTemp, (int) VK_F6);
+						break;
+
+						case VK_F7:
+							wsprintf(fsTemp.szFileName, "fkey%d.dat",7 );
+							if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+								WriteFkeyFile(&fsTemp, (int) VK_F7);
+							else	// Restore window
+								iRet=LoadFkeyFile(&fsTemp, (int) VK_F4);
+						break;
+
+						case VK_F8:
+							wsprintf(fsTemp.szFileName, "fkey%d.dat",8 );
+							if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+								WriteFkeyFile(&fsTemp, (int) VK_F8);
+							else	// Restore window
+								iRet=LoadFkeyFile(&fsTemp, (int) VK_F8);
+						break;
+
+						case VK_F9:
+							wsprintf(fsTemp.szFileName, "fkey%d.dat",9 );
+							if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+								WriteFkeyFile(&fsTemp, (int) VK_F9);
+							else	// Restore window
+								iRet=LoadFkeyFile(&fsTemp, (int) VK_F9);
+						break;
+
+					}
+			
+
+					////////////////////////////////////////////////////////////////////
+					// Trying to load an FKEY file that is incompatible with the RACK setting
+					// Shutdown and EXIT
+					if(iRet==2)	
+					{
+						ShutdownProc();
+						return FALSE;
+					}
+			
+			break;
+
+		//````````````````````````````
+		case WM_U_COMIO_IN_DONE:
+			UpdateFromExternalInterface();
 			break;
 		//````````````````````````````
-		case IDM_RESETBUS:
-			CDef_ResetBus ();
-			break;
-    //````````````````````````````
-    case IDM_RESET_ALL_CONTROLS:
-        // Reset all mixer Cotrol Values .. to Reg0 value
-		if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_RECALL_ALL_CONTROLS) == IDYES)
-		{
-			CDef_StopVuData();
-			SetMemoryMapDefaults();
-			RecallMemoryMapBuffer(TRUE,0);// Force the Control data to the Mixer
-			CDef_StartVuData ();
-		}
-        break;
-    //````````````````````````````
-		case IDM_RECAL_ALL_CONTROLS:
-				// Force the Control data to the mixer
-				// regardles of the Current settings
-				// Al Filters will remainengaged so 
-				// the controls that are filtered-out 
-				// willnot be recalled until the filters
-				// are removed ...
-				// 
+		case WM_COMMAND:
+			switch(LOWORD(wParam))
+			{
+			case IDM_START_TRACKING_WINDOW:
+				if(IsTrackingActive() == TRUE)
+				{
+					CheckMenuItem(ghMainMenu, IDM_START_TRACKING_WINDOW, MF_UNCHECKED);
+					StopTrackingWindow();
+				}	
+				else
+				{
+					CheckMenuItem(ghMainMenu, IDM_START_TRACKING_WINDOW, MF_CHECKED);
+					ActivateTrackingWindow();
+				}
+				break;
+
+
+			//////////////////////////////////
+			// Set global flag to indicate that
+			// Solo Mute Mode is enabled for the
+			// CUES, this will cause the
+			// CancelCue() routine to be called
+			// whenever a cue button is processed
+			// See Events interface.c
+
+			case IDM_SOLO_CUE_MODE:
+				if(g_bIsSoloCueMode == TRUE)
+				{
+					CheckMenuItem(ghMainMenu, IDM_SOLO_CUE_MODE, MF_UNCHECKED);
+					g_bIsSoloCueMode = FALSE;
+				}	
+				else
+				{
+					CheckMenuItem(ghMainMenu, IDM_SOLO_CUE_MODE, MF_CHECKED);
+					g_bIsSoloCueMode = TRUE;
+				}
+				break;
+
+			///////////////////////////////////
+			// Let user select the scroll speed
+			// for the updown scroll control
+			// (the value box one)
+			// Used for touchscreen, default
+			// is fast speed
+
+			case IDM_UPDOWNSCROLL_SPEED:
+				if(g_bUpDownScollSpeedFAST == TRUE)
+				{
+					CheckMenuItem(ghMainMenu, IDM_UPDOWNSCROLL_SPEED, MF_CHECKED);	//MAKE IT SLOW
+					g_bUpDownScollSpeedFAST = FALSE;
+				}	
+				else
+				{
+					CheckMenuItem(ghMainMenu, IDM_UPDOWNSCROLL_SPEED, MF_UNCHECKED);
+					g_bUpDownScollSpeedFAST = TRUE;
+				}
+				break;
+
+
+
+			case IDM_V_PROP_FILTER:
+				GetSeqUpdateProps(NULL);
+				break;
+			// Toolbar control and menu control for the Sequence 
+			case IDM_S_PLAY:
+			case IDM_S_RECALL_CURRENT:
+			case IDM_S_PAUSE:
+			case IDM_S_GOTO_FIRST:
+			case IDM_S_BACK:
+			case IDM_S_NEXT:
+			case IDM_S_GOTO_LAST:
+				HandleRemoteSequenceControl(LOWORD(wParam));
+				break;
+			//````````````````````````````
+			case IDM_RESETBUS:
+				CDef_ResetBus ();
+				break;
+			//````````````````````````````
+			case IDM_RESET_ALL_CONTROLS:
+					// Reset all mixer Cotrol Values .. to Reg0 value
 			if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_RECALL_ALL_CONTROLS) == IDYES)
 			{
 				CDef_StopVuData();
-				MoveMemory(gpwMemMapBuffer, gpwMemMapMixer, giMemMapSize);
+				SetMemoryMapDefaults();
 				RecallMemoryMapBuffer(TRUE,0);// Force the Control data to the Mixer
 				CDef_StartVuData ();
 			}
-			break;
-    case IDM_REQUEST_SETUPDATA:
-        if(CDEF_GetCSData(hWnd))
-          Init_MixerData();
-        break;
+					break;
+			//````````````````````````````
+			case IDM_RECAL_ALL_CONTROLS:
+					// Force the Control data to the mixer
+					// regardles of the Current settings
+					// Al Filters will remainengaged so 
+					// the controls that are filtered-out 
+					// willnot be recalled until the filters
+					// are removed ...
+					// 
+				if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_RECALL_ALL_CONTROLS) == IDYES)
+				{
+					CDef_StopVuData();
+					MoveMemory(gpwMemMapBuffer, gpwMemMapMixer, giMemMapSize);
+					RecallMemoryMapBuffer(TRUE,0);// Force the Control data to the Mixer
+					CDef_StartVuData ();
+				}
+				break;
+			case IDM_REQUEST_SETUPDATA:
+					if(CDEF_GetCSData(hWnd))
+						Init_MixerData();
+					break;
 
-    case IDM_START_VU_READ:
-      CDef_StartVuData();
-      break;
-    case IDM_STOP_VU_READ:
-      CDef_StopVuData();
-      break;
+			case IDM_START_VU_READ:
+				CDef_StartVuData();
+				break;
+			case IDM_STOP_VU_READ:
+				CDef_StopVuData();
+				break;
 
-#ifdef NOTUSED_ANYMORE    // Currently only using the log VU version
+	#ifdef NOTUSED_ANYMORE    // Currently only using the log VU version
 
-    case IDM_VU_LINEAR:
-      CDef_StopVuData();
-      Sleep(10);
+			case IDM_VU_LINEAR:
+				CDef_StopVuData();
+				Sleep(10);
 
-      InitVULookupTables(TRUE);
-      CDef_StartVuData();
-      break;
+				InitVULookupTables(TRUE);
+				CDef_StartVuData();
+				break;
 
-    case IDM_VU_LOG:
-      CDef_StopVuData();
-      Sleep(10);
+			case IDM_VU_LOG:
+				CDef_StopVuData();
+				Sleep(10);
 
-      InitVULookupTables(FALSE);
-      CDef_StartVuData();
-      break;
-#endif
+				InitVULookupTables(FALSE);
+				CDef_StartVuData();
+				break;
+	#endif
 
-    //``````````````
-    case IDM_F_OPEN_FILE:
-						if(OpenMixFile()==FALSE)	// MOST LIKELY INCOMPATIBLE MIXFILE AND RACK
-									PostQuitMessage(0);
-        break;
-    //``````````````
-    case IDM_F_SAVE_FILE:
-				if(lstrlen(gfsMix.szFileName) > 0)
-					WriteMixFile(&gfsMix, TRUE);
-				else
+			//``````````````
+			case IDM_F_OPEN_FILE:
+							if(OpenMixFile()==FALSE)	// MOST LIKELY INCOMPATIBLE MIXFILE AND RACK
+										PostQuitMessage(0);
+					break;
+			//``````````````
+			case IDM_F_SAVE_FILE:
+
+				// Save the currently loaded mix file
+				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
+				ExtractFileName(GetSequenceFileName(), szScratch);	// get the filename
+				wsprintf(fsTemp.szFileName, "%s", szScratch);
+				WriteMixFile(&fsTemp, FALSE);
+
+//fds					if(lstrlen(gfsMix.szFileName) > 0)
+//						WriteMixFile(&gfsMix, TRUE);
+//					else
+//						SaveMixFile();
+					break;
+
+			case IDM_F_SAVE_FILE_AS:
 					SaveMixFile();
-        break;
-    case IDM_F_SAVE_FILE_AS:
-        SaveMixFile();
-        break;
-    //``````````````
-#ifdef NOTUSED		// removed 1/7/2001 as per Gamble - Same as Save Mix
-    case IDM_F_UPDATE_FILE:
-        UpdateMixFile();
-        break;
-#endif
-    //``````````````
-    case IDM_F_EXIT:
-				PostMessage(hWnd,WM_CLOSE,wParam,lParam);	// Handle it like the WM_CLOSE - save mix file in registry
-        break; 
-    //``````````````
-    case IDM_V_FULLCONSOLE:
-        CreateFullViewWindow("Full View", NULL);
-        break;
-    //``````````````
-    case IDM_V_FULLZOOM:
-        CreateZoomViewWindow(hWnd, "Zoom View", NULL, DCX_DEVMAP_MODULE_INPUT);
-        break;
-    //``````````````
-    case IDM_V_FULLZOOM_MASTER:
-        if(ghwndMaster == NULL)
-          CreateMasterViewWindow("Zoom Master View", NULL);
-        else
-        {
-          DestroyMasterViewWindow(ghwndMaster);
-        }
-        break;
-    //``````````````````
-    case IDM_V_SEQUENCE:
-        ShowSeqWindow(TRUE);
-        break;
-    //```````````````
-    case IDM_V_GROUP:
-        ShowGroupWindow(TRUE);
-        break;
-    //```````````````````
-    case IDM_WINDOWICONS:
-        SendMessage(ghwndMDIClient, WM_MDIICONARRANGE, 0, 0l);
-        break;
-    //``````````````
-    case IDM_WINDOWCASCADE:
-        SendMessage(ghwndMDIClient, WM_MDICASCADE, 0, 0l);
-        break;
-    //``````````````
-    case IDM_WINDOWTILE:
-      SendMessage(ghwndMDIClient, WM_MDITILE, 0, 0l);
-      break;
-    //``````````````
-    case IDM_WINDOWCLOSEALL:
-        CloseAllMDI();
-        break;
+					break;
+			//``````````````
+	#ifdef NOTUSED		// removed 1/7/2001 as per Gamble - Same as Save Mix
+			case IDM_F_UPDATE_FILE:
+					UpdateMixFile();
+					break;
+	#endif
+			//``````````````
+			case IDM_F_EXIT:
+					PostMessage(hWnd,WM_CLOSE,wParam,lParam);	// Handle it like the WM_CLOSE - save mix file in registry
+					break; 
+			//``````````````
+			case IDM_V_FULLCONSOLE:
+					CreateFullViewWindow("Full View", NULL);
+					break;
+			//``````````````
+			case IDM_V_FULLZOOM:
+					CreateZoomViewWindow(hWnd, "Zoom View", NULL, DCX_DEVMAP_MODULE_INPUT);
+					break;
+			//``````````````
+			case IDM_V_FULLZOOM_MASTER:
+					if(ghwndMaster == NULL)
+						CreateMasterViewWindow("Zoom Master View", NULL);
+					else
+					{
+						DestroyMasterViewWindow(ghwndMaster);
+					}
+					break;
+			//``````````````````
+			case IDM_V_SEQUENCE:
+					ShowSeqWindow(TRUE);
+					break;
+			//```````````````
+			case IDM_V_GROUP:
+					ShowGroupWindow(TRUE);
+					break;
+			//```````````````````
+			case IDM_WINDOWICONS:
+					SendMessage(ghwndMDIClient, WM_MDIICONARRANGE, 0, 0l);
+					break;
+			//``````````````
+			case IDM_WINDOWCASCADE:
+					SendMessage(ghwndMDIClient, WM_MDICASCADE, 0, 0l);
+					break;
+			//``````````````
+			case IDM_WINDOWTILE:
+				SendMessage(ghwndMDIClient, WM_MDITILE, 0, 0l);
+				break;
+			//``````````````
+			case IDM_WINDOWCLOSEALL:
+					CloseAllMDI();
+					break;
     
-    //```````````````
-    case IDM_F_SAVEPREFERENCES:
-        DoPreferences();
-        break;
-    case IDM_F_CONDEF_PREFERENCES:
-        // display the preferances for the ConsoleDefinition DLL
-        CDef_Preferences(hWnd);
-        break;
-    //```````````````
-    case IDM_GENERATE_DLLIST:
-        GenerateLL();
-        break;
-		//```````````````
-		case IDM_V_CANCELCUES:
-			CancelAllCues (hWnd);
-			break;
-		//```````````````
-    case IDM_V_CANCELGROUPS:
-      DeactivateGroup();
-      break;
-		case IDM_V_CANCELGROUPS+1:
-		case IDM_V_CANCELGROUPS+2:
-		case IDM_V_CANCELGROUPS+3:
-		case IDM_V_CANCELGROUPS+4:
-		case IDM_V_CANCELGROUPS+5:
-		case IDM_V_CANCELGROUPS+6:
-		case IDM_V_CANCELGROUPS+7:
-		case IDM_V_CANCELGROUPS+8:
-			
-			ActivateGroup(-1, FADERS_GROUPS, FindConsecutiveGroupIndex(LOWORD(wParam) - IDM_V_CANCELGROUPS - 1, FADERS_GROUPS));
-			break;
+			//```````````````
+			case IDM_F_SAVEPREFERENCES:
+					DoPreferences();
+					break;
+			case IDM_F_CONDEF_PREFERENCES:
+					// display the preferances for the ConsoleDefinition DLL
+					CDef_Preferences(hWnd);
+					break;
+			//```````````````
+			case IDM_GENERATE_DLLIST:
+					GenerateLL();
+					break;
+			//```````````````
+			case IDM_V_CANCELCUES:
+				CancelAllCues (hWnd);
+				break;
+			//```````````````
+			case IDM_V_CANCELGROUPS:
+				DeactivateGroup();
+				break;
+			case IDM_V_CANCELGROUPS+1:
+			case IDM_V_CANCELGROUPS+2:
+			case IDM_V_CANCELGROUPS+3:
+			case IDM_V_CANCELGROUPS+4:
+			case IDM_V_CANCELGROUPS+5:
+			case IDM_V_CANCELGROUPS+6:
+			case IDM_V_CANCELGROUPS+7:
+			case IDM_V_CANCELGROUPS+8:
+				
+				ActivateGroup(-1, FADERS_GROUPS, FindConsecutiveGroupIndex(LOWORD(wParam) - IDM_V_CANCELGROUPS - 1, FADERS_GROUPS));
+				break;
 
-	case IDM_H_INFO:
-			bResult = WinHelp(hWnd,"VACSKEYS.HLP",HELP_FINDER,0);
-			if(bResult == 0)
-			MessageBox(ghwndMain,"Help Failed: VACSKEYS.HLP NOT FOUND","Info",MB_OK);
-	break;
+		case IDM_H_INFO:
+				bResult = WinHelp(hWnd,"VACSKEYS.HLP",HELP_FINDER,0);
+				if(bResult == 0)
+				MessageBox(ghwndMain,"Help Failed: VACSKEYS.HLP NOT FOUND","Info",MB_OK);
+		break;
 
     case IDM_H_ABOUT:
 
@@ -771,16 +772,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
     }
     break;  // BREAK FROM WM_COMMAND
+
 		// handle this when we are losing focus
 		// to prevent some strange effects of "alt-tab" switching
 		//
-		case WM_SETFOCUS:
-			if ( hWnd == (HWND)wParam){
-				//wKeyFlags = 0;
-			}
-      return DefFrameProc(hWnd, ghwndMDIClient, wMessage, wParam, lParam);
-			break;
-		//
+
 		case WM_KILLFOCUS:
 			focus_wnd = (HWND)wParam;
 
@@ -799,6 +795,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 			}
 											
 			break;
+
     //-------------
     case WM_NOTIFY:
 			pnotify = (LPNMHDR) lParam;
@@ -887,8 +884,6 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
           CreateMasterViewWindow("Zoom Master View", NULL);
 				}
 
-			// Size the MASTER window too - this doesn't seem to work
-//				PostMessage(ghwndMaster,WM_SIZE,wParam,lParam);
      break;
 
     //////////////////////////////////////////////////////////////
@@ -931,18 +926,22 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 		///////////////////////////////////////////////////////////////
 		case WM_TIMER:
 			
-			// Our timer to update the LA$T.mix file
-
 			///////////////////////////////////////////////////////////
-			// Need to check if we do not have any open dialog boxes
-			// so that we don't lock up
-			// Maybe the SaveMix file dialog should be a different type?
+			// Our timer to update the LA$T.mix file
+			// and the currently loaded MIX file.
 
 			if(giMixerTypeOffline != NULL)	// Don't try to save unless mixer type has been set
-			{
+			{	// Save into LA$T.mix
 				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
 				WriteMixFile(&fsTemp, FALSE);
+
+				// Save the currently loaded mix file
+				ExtractFileName(GetSequenceFileName(), szScratch);	// get the filename
+				wsprintf(fsTemp.szFileName, "%s", szScratch);
+				WriteMixFile(&fsTemp, FALSE);
+
+#ifdef AUTOSAVE
 
 				////////////////////////////////////////////////
 				// Jims AutoSave mix file logic
@@ -972,6 +971,9 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 												&dwDisposition );
 
 						szRegValue = "MRUmix";
+
+						dwBufferSize = sizeof(szTempSeq);
+
 						rc = RegQueryValueEx( 
 									hKey, 
 									szRegValue, 
@@ -995,31 +997,25 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 						SaveMixFile();									// 
 						timerID = SetTimer(hWnd, 33, 200000, NULL);
 					}
-
+#endif	// AUTOSAVE
 			}
 			break;
 
     //////////////////////////////////////////////////////////////
     case WM_CLOSE:
 
-		 ///////////////////////////////////////
-		 // Removed confirmation on exist as
-		 // per Gamble 12/12/2001 email
-		 //
-     // fds if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_QUIT_MESSAGE) == IDNO)
-     // fds    break;
+		///////////////////////////////////////
+		// Removed confirmation on exist as
+		// per Gamble 12/12/2001 email
+		// 
+		// 1/17/2002 only of AUTOSAVE is it removed
+		//
+		//      if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_QUIT_MESSAGE) == IDNO)
+		//         break;
 
 				// Kill the 3 minute timer to save mix file
 				
 				KillTimer(hWnd, timerID);
-
-
-			if (g_mixer_state_changed)
-			{	
-			// fds	if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
-					SaveMixFile ();
-			}								  
-			
 
 			/////////////////////////////////////////////////////////////
 			// Store the last loaded mix file into the registry so that
@@ -1027,7 +1023,9 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
 			wsprintf(szBuff, "%smix\\%s", gszProgDir, "LA$T.mix");
 
-			if(lstrcmp(szBuff, g_sequence_file_name) != 0)
+			wsprintf(szScratch,"%s",GetSequenceFileName());
+
+			if(lstrcmp(szBuff, GetSequenceFileName()) != 0)
 			{
 				lnResult = RegCreateKeyEx(
 										HKEY_CURRENT_USER,
@@ -1042,23 +1040,31 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
 				// Save the mix file name in the registry if it isn't the LA$T.mix file
 
+				dwBufferSize = sizeof(szScratch);
+
 				lnResult = RegSetValueEx(
 										 hKey, 
 										 "MRUmix",
 										 REG_OPTION_RESERVED,
 										 REG_SZ,
-										 g_sequence_file_name,
-										 sizeof(g_sequence_file_name) );
+										 GetSequenceFileName(),
+										 dwBufferSize );
 
 				RegCloseKey(hKey);
 			}
 
 			///////////////////////////////////////////
-			// We are exiting, write the LA$T.mis file
+			// We are exiting, write the LA$T.mix file
+			// and the currently loaded MIX file
 			///////////////////////////////////////////
 
 			wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 			wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
+			WriteMixFile(&fsTemp, FALSE);
+
+			// Save the currently loaded mix file
+			ExtractFileName(GetSequenceFileName(), szScratch);	// get the filename
+			wsprintf(fsTemp.szFileName, "%s", szScratch);
 			WriteMixFile(&fsTemp, FALSE);
 
       CloseAllMDI();
@@ -2023,5 +2029,121 @@ return FALSE;
 }
 
 
+/////////////////////////////////
+// NOT USED YET
+
+static WORD wShiftKeyFlag = 0;
+
+void SetShiftKeyFlag(BOOL bSet)
+{
+
+	switch(bSet)
+	{
+		case TRUE:
+			wShiftKeyFlag |= wShiftKeyFlag;
+			break;
+		
+		case FALSE:
+			wShiftKeyFlag &= ~VK_SHIFT;
+			break;
+	}
+
+}
+
+BOOL GetShiftKeyState(void)
+{
+	BOOL bRet;
+
+	if(wShiftKeyFlag & VK_SHIFT)
+		bRet = TRUE;
+	else
+		bRet = FALSE;
+
+	return bRet;
+
+}
+
+WORD GetShiftKeyFlag(void)
+{
+	return wShiftKeyFlag;
+
+}
 
 
+//======================================================================
+// 
+//======================================================================
+
+void ExtractFileName(char * szPathAndFilename, char * szFilename)
+{
+	int i;
+
+// find begining of filename ex: c:\windows\arches.bmp by searching
+// backwards for the slash
+	
+	i = lstrlen(szPathAndFilename) - 1;
+	while( (i) && (szPathAndFilename[i] !='\\') ) i--;
+	if(szPathAndFilename[i] != '\\')
+		lstrcpy(szFilename, szPathAndFilename+i);
+	else
+		lstrcpy(szFilename, szPathAndFilename+i+1);
+
+}
+  
+
+LPSTR GetLastMixFileName(void)
+{
+	// Registry variables 
+
+	LONG lnResult;
+	HKEY hKey = NULL;
+	DWORD dwDisposition;
+	static LPCTSTR szRegKey = "Software\\CorTek\\VACS"; 
+	static LPCTSTR szRegValue; 
+	DWORD dwType;
+	DWORD rc;
+	char	szTempSeq[MAX_PATH];
+	DWORD dwBufferSize = sizeof( szTempSeq );  
+
+	static char			szText[MAX_PATH] = "LA$T.mix";
+
+	char szScratch[MAX_PATH];
+
+						////////////////////////////////////
+						// Get the last mix file that was
+						// saved and set the global filename
+						// structure
+
+						lnResult = RegCreateKeyEx(
+												HKEY_CURRENT_USER,
+												szRegKey,
+												0, 
+												REG_NONE, 
+												0, 
+												KEY_ALL_ACCESS, 
+												NULL, 
+												&hKey,
+												&dwDisposition );
+
+						szRegValue = "MRUmix";
+						rc = RegQueryValueEx( 
+									hKey, 
+									szRegValue, 
+									NULL, 
+									&dwType, 
+									&szTempSeq, 
+									&dwBufferSize ); 
+
+						// Set our global filename name to the last loaded mix file
+						// so that when we ask them to save the mix file it is the
+						// defailt name 
+
+						if(rc == ERROR_SUCCESS)
+						{
+							ExtractFileName(szTempSeq, szScratch);	// get the filename
+							return &szScratch[0];
+						}
+						else
+							return &szText[0];
+
+}
