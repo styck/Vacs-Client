@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Labels and Groups. $
-// $Revision:: 24                                 $
+// $Revision:: 25                                 $
 //
 
 //=================================================
@@ -230,8 +230,17 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 
 		//////////////////////////////////////////////////////////////
 		case WM_PAINT:
+
 				hdc = BeginPaint(hWnd, &ps);
-				DrawLbl(hdc, lpmwd);
+				DrawLbl(hdc, lpmwd);	// Update the lables
+
+				////////////////////////////
+				// Update the GROUPED status box
+					if(IsAnyGrouped())
+						GroupedStatus(TRUE);
+					else
+						GroupedStatus(FALSE);
+
 				EndPaint(hWnd, &ps);
 				break;
 
