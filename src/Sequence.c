@@ -35,6 +35,7 @@ MMRESULT    g_TimeEvent = 0;
 int         g_iStopTimeEvent = 0;
 LPDLROOTPTR g_pdlrSequence = NULL;
 SEQ_PROPAGATE g_SeqPropagate = {0};
+char				g_sequence_file_name[MAX_PATH];
 
 void    CALLBACK MTC_EmulateProc(UINT , UINT , DWORD , DWORD , DWORD);
 void    StopTimeEvent(void);
@@ -49,10 +50,12 @@ BOOL    SeqGoToNext(void);
 BOOL    SeqGoToPrev(void);
 BOOL    SeqGoToFirst(void);
 BOOL    SeqGoToLast(void);
-
+HTREEITEM g_current_item_before_next = NULL;
 
 void  SetSeqUpdateAllProps(HWND hwnd, BOOL bSet);
 void  DisableSeqUpdateAllProps(HWND hwnd, BOOL bDisable);
+void	CloseSequenceFiles (void);
+BOOL	OpenSequenceFiles (void);
 
 //=================================================
 //function: RegisterSeqWindowClass
@@ -100,22 +103,28 @@ int     ShowSeqWindow(BOOL bShow)
 char                    szTitle[128];
 LPSEQUENCEWINDOWFILE    lpSeqWF;
 RECT										r;
+	DWORD										style;
 
 if(ghwndSeq == NULL)
     {
     lpSeqWF = GlobalAlloc(GPTR, sizeof(SEQUENCEWINDOWFILE));
-    if(lpSeqWF == NULL)
-        {
+    if(lpSeqWF == NULL){
         ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
         return 1;
         }
     lpSeqWF->iWndID = SEQUENCE_WINDOW_FILE_ID;        
 
+
+		style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE 
+																| WS_THICKFRAME | WS_MINIMIZEBOX// | WS_MAXIMIZEBOX
+																| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+		style &= ~WS_MAXIMIZEBOX;
+
     LoadString(ghInstStrRes, IDS_SEQUENCE_WINDOW_TITLE, szTitle, 128);
     ghwndSeq = CreateMDIWindow (
                             gszSeqClass,
                             szTitle,
-                            WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_BORDER,
+														style,
                             10000,//CW_USEDEFAULT,
                             10000,//CW_USEDEFAULT,
                             CW_USEDEFAULT,
@@ -125,8 +134,7 @@ if(ghwndSeq == NULL)
                             (LPARAM)NULL
                             );			 
 
-    if(ghwndSeq == NULL)
-        {
+    if(ghwndSeq == NULL){
         GlobalFree(lpSeqWF);
         ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATE_WINDOW);
         return 1;
@@ -167,12 +175,13 @@ BOOL CALLBACK   SeqProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
 HWND            hwndCtrl;
 RECT            rect, rectCtrl;
-char            szBuff[MAX_PATH];
+//char            szBuff[MAX_PATH];
 
 switch(uiMsg)
     {
     /////////////////////////////////////////////////////////////
-    case WM_NOTIFY:
+	case WM_NOTIFY:	{
+		//SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
         switch (((LPNMHDR) lParam)->code)
             {
             //----------------
@@ -201,9 +210,10 @@ switch(uiMsg)
                     DisplayTVNPopupMenu(hwnd);
                 break;
             //----------------
-//            case NM_SETFOCUS:
-//                SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
-//                break;
+      case NM_SETFOCUS:
+          SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
+          break;
+      }
             }
         break;
 
@@ -329,11 +339,14 @@ switch(uiMsg)
     
     /////////////////////////////////////////////////////
     case WM_INITDIALOG:
+			ghwndSeqDlg = hwnd;
 
+/*
       // Prepare the Critical Section
       // for the MTC Emulate
       //-----------------------------
-      wsprintf(szBuff, "%s\\data\\sequence.ctek",gszProgDir);      
+      wsprintf(szBuff, "%s.ctek", g_sequence_file_name);
+      //wsprintf(szBuff, "%s\\data\\sequence.ctek",gszProgDir);      
       g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szBuff);
       
       if(g_pdlrSequence == NULL)
@@ -343,7 +356,8 @@ switch(uiMsg)
       }
 
 
-      wsprintf(szBuff, "%s\\data\\vacs_device.data",gszProgDir);      
+      //wsprintf(szBuff, "%s\\data\\vacs_device.data",gszProgDir);      
+      wsprintf(szBuff, "%s.data",g_sequence_file_name);
       if(OpenDataFile(szBuff))
       {
 
@@ -358,10 +372,16 @@ switch(uiMsg)
       hwndCtrl = GetDlgItem(hwnd, IDLIST_SEQ_EVENTS);
       if(hwndCtrl)
           InitSeqList(hwndCtrl);
+*/
+      if(OpenSequenceFiles () == FALSE){
+				CloseSequenceFiles ();
+        DestroyWindow(ghwndSeqDlg);
+        return FALSE;
+      }
+			
       
       g_hwndMTCReadout = GetDlgItem(hwnd, IDC_MTC_READOUT);
-      if(g_hwndMTCReadout)
-          {
+      if(g_hwndMTCReadout) {
           GetClientRect(g_hwndMTCReadout, &g_rMTCReadout);
           PrepareMTCReadout();
           }
@@ -373,12 +393,14 @@ switch(uiMsg)
         if(g_TimeEvent)
             g_iStopTimeEvent = 1;
 
+				CloseSequenceFiles ();
+/*
         // Free the Linked list
         //---------------------
         FreeDLListRootAll(&g_pdlrSequence);
         g_pdlrSequence = NULL;
         CloseDataFile();
-
+*/
 
         ghwndSeqDlg = NULL;
         FreeMTCReadout();
@@ -414,8 +436,7 @@ switch(uiMsg)
 				ShowWindow(hwnd, SW_HIDE);
 
         ghwndSeqDlg = CreateDialog(ghInstStrRes, MAKEINTRESOURCE(IDD_SEQUENCE_WINDOW), hwnd, SeqProc);
-        if(ghwndSeqDlg == NULL)
-            {
+        if(ghwndSeqDlg == NULL){
             return -1;
             }
         
@@ -615,6 +636,8 @@ g_hwndTV = hwnd;
 if(InitTreeViewImageLists(hwnd) == FALSE)
     return 0;
 
+TreeView_DeleteAllItems (hwnd);
+
 lItemPos = GetFirstEntry(g_pdlrSequence);
 if(lItemPos > 0)
     {
@@ -661,6 +684,7 @@ BOOL  SeqGoToNext(void)
   HTREEITEM           htreeitem;
 
   htreeitem = TreeView_GetSelection(g_hwndTV);
+	g_current_item_before_next = htreeitem;
   htreeitem = TreeView_GetNextItem(g_hwndTV, htreeitem, TVGN_NEXT);
 
   if(htreeitem != NULL)
@@ -1929,11 +1953,66 @@ void	HandleRemoteSequenceControl(WORD wControl)
 			//SeqGoToFirst();
 		break;
 	case IDM_S_NEXT:
-		if(SeqGoToNext() == FALSE);
-			//SeqGoToFirst();
+		if (SeqGoToNext() == FALSE){
+			if (g_current_item_before_next == NULL)
+			SeqGoToFirst();
+		}
 		break;
 	case IDM_S_GOTO_LAST:
 		SeqGoToLast();
 		break;
 	}
 };
+/////////////////////////////////////////////////////
+//
+//
+void	CloseSequenceFiles (void){
+  if(g_TimeEvent)
+      g_iStopTimeEvent = 1;
+
+  // Free the Linked list
+  //---------------------
+	if (g_pdlrSequence != NULL)
+		FreeDLListRootAll(&g_pdlrSequence);
+  g_pdlrSequence = NULL;
+  CloseDataFile();
+}
+/////////////////////////////////////////////////////
+//
+//
+BOOL	OpenSequenceFiles (void){
+	HWND						hwndCtrl;
+	char            szBuff[MAX_PATH];
+
+	CloseSequenceFiles ();
+
+   // Prepare the Critical Section
+  // for the MTC Emulate
+  //-----------------------------
+  wsprintf(szBuff, "%s.ctek", g_sequence_file_name);
+  //wsprintf(szBuff, "%s\\data\\sequence.ctek",gszProgDir);      
+  g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szBuff);
+  
+  if(g_pdlrSequence == NULL)
+  {
+    return FALSE;
+  }
+
+  //wsprintf(szBuff, "%s\\data\\vacs_device.data",gszProgDir);      
+  wsprintf(szBuff, "%s.data",g_sequence_file_name);
+  if(OpenDataFile(szBuff))
+  {
+
+  }
+  // init the Tree and the List View
+  //--------------------------------
+  hwndCtrl = GetDlgItem(ghwndSeqDlg, IDTREE_SEQUENCE);
+  if(hwndCtrl)
+      FillSeqTree(hwndCtrl);
+
+  hwndCtrl = GetDlgItem(ghwndSeqDlg, IDLIST_SEQ_EVENTS);
+  if(hwndCtrl)
+      InitSeqList(hwndCtrl);
+  
+	return TRUE;
+}
