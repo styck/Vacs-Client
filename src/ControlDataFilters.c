@@ -6,7 +6,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/ControlDataFilters.c $
-// $Revision: 39 $
+// $Revision: 40 $
 //
 
 
@@ -400,18 +400,7 @@ void HandleCueMasterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
     return;
 
   if(bIsOn == TRUE)
-  {         
-    lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MASTERLT_CUE_A_LT);
-    // Send the Data out
-    //------------------
-    ctrlData.wMixer   = 0;
-    ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
-    ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
-    SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-    
-    SetFilteredControlsByNumber(lpctrl, YES_FILTER);
-		SetAlternativeZMFilter(lpctrl, YES_FILTER, lpmwd, iPhisChann);
+  { 
 
     lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MASTERLT_CUE_A_RT);
     // Send the Data out
@@ -432,18 +421,6 @@ void HandleCueMasterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
 		//
 		if(gCueActiveCount > 0)
 		{
-			lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MASTERLT_CUE_A_LT);
-			// Send the Data out
-			//------------------
-			ctrlData.wMixer   = 0;
-			ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
-			ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
-			SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-
-			SetFilteredControlsByNumber(lpctrl, NO_FILTER);
-			SetAlternativeZMFilter(lpctrl, NO_FILTER, lpmwd, iPhisChann);
-
 			lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MASTERLT_CUE_A_RT);
 			// Send the Data out
 			//------------------
@@ -870,18 +847,6 @@ void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd_work,
 	{
 		ShowStereoCueMetersWindow (FALSE);
 
-    lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MASTERLT_CUE_A_LT);
-    // Send the Data out
-    //------------------
-    ctrlData.wMixer   = 0;
-    ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
-    ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
-    SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-    
-    SetFilteredControlsByNumber(lpctrl, YES_FILTER);
-		SetAlternativeZMFilter(lpctrl, YES_FILTER, lpmwd, iPhisChann);
-
     lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MASTERLT_CUE_A_RT);
     // Send the Data out
     //------------------
@@ -897,18 +862,6 @@ void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd_work,
 	else
 	{
 		ShowStereoCueMetersWindow (TRUE);
-
-		lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MASTERLT_CUE_A_LT);
-		// Send the Data out
-		//------------------
-		ctrlData.wMixer   = 0;
-		ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-		ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
-		ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
-		SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-
-		SetFilteredControlsByNumber(lpctrl, NO_FILTER);
-		SetAlternativeZMFilter(lpctrl, NO_FILTER, lpmwd, iPhisChann);
 
 		lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MASTERLT_CUE_A_RT);
 		// Send the Data out
@@ -1179,81 +1132,117 @@ void HandleMasterAuxMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
 //
 // purpose: 
 //
-//
+//  CURRENT ONE THAT I'M WORKING ON
 //
 void    HandleSubAuxMasterMatrixFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP lpctrlZM, BOOL bIsOn)
 {
   CONTROLDATA         ctrlData;
-  LPCTRLZONEMAP       lpctrl, lpctrl2;
+  LPCTRLZONEMAP       lpctrl, lpctrlTemp;
   int                 i_ctrl_pos;
   int                 i_temp1;
   BOOL                bUpdateCtrl = TRUE;
 
-  
+
+	//////////////////////////////////////////////////
+	// Safety check
   if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
     return;
 
-  if(lpctrlZM->iCtrlType == CTRL_TYPE_BTN_AUX_MMATRIX_LT_POST_FILTER)
-    i_ctrl_pos = CTRL_NUM_MATRIX_MASTER_PRELT;
-  else
-    i_ctrl_pos = CTRL_NUM_MATRIX_MASTER_PRERT;
 
+	////////////////////////////////////////////////
+	// Need to send the info to toggle the buttons
+	// on the remote clients
+#ifdef TEST
+  lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MATRIX_MASTERLT_PRE);
+  ctrlData.wMixer   = 0;
+  ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
+  ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
+  ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
+  SendDataToDevice(&ctrlData, TRUE, lpctrl, 0, lpmwd, TRUE);
+#endif
+	///////////////////////////////////////////////////
+	// Need to determine if its the LEFT or RIGHT
+	// post button that was pressed and set what
+	// fader needs to be pulled down
+
+  if(lpctrlZM->iCtrlType == CTRL_TYPE_BTN_AUX_MMATRIX_LT_POST_FILTER)	// POST LEFT
+    i_ctrl_pos = CTRL_NUM_MATRIX_MASTER_PRELT;	// PRE LEFT
+  else
+    i_ctrl_pos = CTRL_NUM_MATRIX_MASTER_PRERT;	// PRE RIGHT
     
   lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, i_ctrl_pos);
 
-  if(bIsOn == TRUE)
-    i_temp1 = lpctrlZM->iCtrlNumAbsAlt1;
-  else
-    i_temp1 = lpctrlZM->iCtrlNumAbs;
+
 
 	////////////////////////////////
   // Send the Data out
-  // turn off the Current control
+  // turn OFF the Current PRE control
   //-----------------------------
+
   ctrlData.wMixer   = 0;
-  ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
+  ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
   ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
   ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
-//ORIGINAL  SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-  SendDataToDevice(&ctrlData, TRUE, lpctrl, 0, lpmwd, TRUE);
-
+  SendDataToDevice(&ctrlData, FALSE, lpctrl, 0, lpmwd, TRUE);
 
   if(lpctrl)
   {
-    lpctrl2 = lpctrl;
+    lpctrlTemp = lpctrl;
     bUpdateCtrl = TRUE;
   }
-  else
+  else		// THIS CASE NEVER HAPPENS????
   {
-    lpctrl2 = NULL;
+    lpctrlTemp = NULL;
     bUpdateCtrl = FALSE;
   }
 
-	////////////////
-  // main stuff ....
+	////////////////////////////////////////////////
+	// If clicked on POST and is pressed down then
+	// we set the alternate control first, in this
+	// case it would be the LT/RT PRE
 
-  while(lpctrl)
+  if(bIsOn == TRUE)
+    i_temp1 = lpctrlZM->iCtrlNumAbsAlt1;	// Alternate control when going down, POST
+  else
+    i_temp1 = lpctrlZM->iCtrlNumAbs;			// else PRE
+
+	///////////////////////////////////////////////////
+  // Loop through to see if the control is filtered
+	// if so then set flag to FALSE so we do not send
+	// any data
+
+  while(lpctrlTemp)
   {
-    lpctrl->iCtrlNumAbs = i_temp1;
-    if(lpctrl->iFiltered == YES_FILTER)
-      bUpdateCtrl = FALSE;
+    lpctrlTemp->iCtrlNumAbs = i_temp1;
+    if(lpctrlTemp->iFiltered == YES_FILTER)
+      bUpdateCtrl = FALSE;		// IF ITS FILTERED THEN DON'T SEND DATA BELOW
 
-    lpctrl = ScanCtrlZonesNum(++lpctrl, i_ctrl_pos);
+    lpctrlTemp = ScanCtrlZonesNum(++lpctrlTemp, i_ctrl_pos);
   }
 
 	///////////////////////////////
   // now update the control data
+	// that we clicked on
 
-  if(bUpdateCtrl && lpctrl2 != NULL)
+  if(bUpdateCtrl && lpctrl != NULL)
   {
     ctrlData.wMixer   = 0;
-    ctrlData.wChannel = lpctrl2->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl2->iCtrlNumAbs;		// Index into lookup table, currently 0-470
-    ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl2, lpctrl2->iCtrlChanPos);
+    ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
+    ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 
-// ORIGINAL    SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-    SendDataToDevice(&ctrlData, TRUE, lpctrl, 0, lpmwd, TRUE);
+    SendDataToDevice(&ctrlData, FALSE, lpctrl, 0, lpmwd, TRUE);
   }
+
+
+///////////////////////////////////////////////
+// NOW NEED TO HANDLE THE STEREO LINKED CONTROL
+// IF SHIFT KEY WASN'T ENABLED
+
+//  lpctrlZM = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MATRIX_MASTER_PRERT);
+//	HandleSubAuxMasterMatrixFilter(iPhisChann, lpmwd, lpctrlZM, bIsOn);
+
+
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -1361,7 +1350,7 @@ void  HandleMasterAuxPrePostSwtch(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZO
 // purpose: 
 //
 // Reset the EQ to flat
-// Loops through all the EQ settings and setups then to their DEFAULT value
+// Loops through all the EQ settings and setups them to their DEFAULT value
 // Also updates all windows that are displaying the same data.
 //
 
@@ -1398,7 +1387,6 @@ void    HandleResetEQFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP 
 		// using the iMixer, iPhisChannel
 		// and iVal
 
-//		UpdateControlsByCtrlNum(hdcScr, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChann, lpctrl, ctrlData.wVal, DIRECTIONS_ALL, TRUE);
 		UpdateSameMixWndByCtrlNum(lpmwd->hwndImg, lpmwd->iMixer, iPhisChann, lpctrl, ctrlData.wVal, NULL);
 
 		////////////////////////////////////////////
@@ -1420,7 +1408,7 @@ void    HandleResetEQFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP 
 // purpose: Handle the STEREO LINKING of the MATRIX MUTE buttons
 //
 //
-//
+// THIS ONE WORKS!!!
 //    
 void    HandleMatrixMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP lpctrlZM, BOOL bIsOn)
 {
@@ -1491,6 +1479,9 @@ void    HandleMatrixMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
 		iModule = lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan];
 		pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iModule].lpZoneMap, 
 														FindStereoPair(lpctrl));
+
+		// TODO: CHECK pctrl FOR NULL AND CATCH ANY ERRORS!!!!
+
 
 		ctrlData.wCtrl = pctrl->iCtrlNumAbs;	// SET CONTROL NUMBER TO STEREO PAIR
 
@@ -1621,7 +1612,6 @@ void    HandleMatrixMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
 			///////////////////////////////////////////////////
 			// SEND THE DATA THAT WE WERE GOING TO SEND ABOVE
 			// BEFORE THE CHANGES
-			//////////////////// TEST TEST TEST 
 
       iV = GETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos); // + iDelta;
 			ctrlData.wVal = iV;
@@ -1672,8 +1662,19 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 	LPMIXERWNDDATA			lpmwd = lpmwd_work;
 
 
+
+///////////////////////////////////////////////////////
+// This logic was used to detect if we clicked on the
+// FULL VIEW window (<100 zonecounts)
+// This didn't allow the MATRIX MUTE buttons to work
+// with the FULL VIEW and ZOOM VIEW.  Not sure yet
+// if it will cause other problems.
+
+#ifdef NOTUSED
 	if (lpmwd->lpZoneMap->iZonesCount < 100)
 		lpmwd = GetValidMixerWindowData ();
+#endif
+
 
   switch(lpctrlZM->iCtrlType)
   {
@@ -1683,6 +1684,14 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 		// to simulate the mutes
 
 	  case CTRL_TYPE_BTN_INPUTMUTE_FILTER:
+
+
+		///////////////////////////////////////////////////////
+		// This logic used to detect if we clicked on the
+		// FULL VIEW window (<100 zonecounts)
+
+			if (lpmwd->lpZoneMap->iZonesCount < 100)
+				lpmwd = GetValidMixerWindowData ();
 
 			if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
 				break;
@@ -2212,6 +2221,8 @@ void	UpdateFromExternalInterface()
 				{
 					wVal = 0x7f - mmb.s.d2;
 					wVal = (WORD)((float)wVal / gExternalIface[0].fscale);
+
+					// Update the visual of the Input Vol Fader
 					UpdateControlFromNetwork(mmb.s.d1, CTRL_NUM_INPUT_VOL_FADER, wVal, FALSE);
 
 					lpmwd = GetValidMixerWindowData();
@@ -2264,7 +2275,7 @@ void	syncInputPriority (LPCTRLZONEMAP pctrlzm, int	icount, LPMIXERWNDDATA lpmwd)
 							g_cue_priority.master + g_cue_priority.matrix +
 							g_cue_priority.sub;
 	
-	if (gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber] == 1)
+	if (gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT)
 	{
 		chanPos = pctrlzm->iCtrlChanPos;
 		if(chanPos == CTRL_NUM_INPUT_CUE_FAD_PRE || 
@@ -3541,6 +3552,44 @@ int IsSpecialFilter(LPMIXERWNDDATA lpmwd, int iPhisChan, LPCTRLZONEMAP pctrlzm)
   }
 
   return -1;
+};
+
+
+
+/////////////////////////////////////////////////////////////////////
+// FUNCTION: UpdateFromNetwork
+//
+// purpose: 
+// We are filtering some controls so they don't update another
+// client over the network.  UpdateFromNetwork will return
+// FALSE if we should NOT update the control.
+//
+
+BOOL UpdateFromNetwork(int iPhisChan, LPCTRLZONEMAP pctrlzm)
+{
+
+  switch(gDeviceSetup.iaChannelTypes[pctrlzm->iModuleNumber])
+  {
+		case DCX_DEVMAP_MODULE_CUE:
+			switch(pctrlzm->iCtrlChanPos)
+			{
+				case CTRL_NUM_MASTER_CUE_A_INPUT:
+				case CTRL_NUM_MASTER_CUE_A_SUB:
+				case CTRL_NUM_MASTER_CUE_A_AUX:         
+				case CTRL_NUM_MASTER_CUE_A_MATRIX:         
+				case CTRL_NUM_MASTER_CUE_A_MASTER:
+        case CTRL_NUM_MASTERLT_CUE_A_LT:
+        case CTRL_NUM_MASTERLT_CUE_A_RT:
+					return FALSE;			// DON'T UPDATE THESE FROM THE NETWORK
+				break;
+
+			default:
+				return TRUE;
+			}
+    break;
+
+  }
+  return TRUE;
 };
 
 
