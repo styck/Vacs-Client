@@ -37,7 +37,6 @@ FILESTRUCT	fsTemp;
 UINT				timerID;
 int					shift_key;	 
 WORD	wKeyFlags=0;
-char	szBuff[MAX_PATH];
 
 ghInstMain = hInstance;
 
