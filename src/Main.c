@@ -1,5 +1,5 @@
 //=================================================
-// Copyright 1998, CorTek Software, Inc.
+// Copyright 2001, CorTek Software, Inc.
 //=================================================
 
 //#include <windows.h>
@@ -333,7 +333,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
   switch (wMessage)
 	{
   case WM_MOUSEMOVE:
-    UpdateTrackingWindow(NULL);
+//    UpdateTrackingWindow(NULL);
     break;
 
 	//````````````````````````````
@@ -632,7 +632,9 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
     //////////////////////////////////////////////////////////////
     case WM_SIZE:
       SizeClientWindow(hWnd, wMessage, wParam, lParam);
-      break;
+			// Size the MASTER window too
+//				PostMessage(ghwndMaster,WM_SIZE,wParam,lParam);
+     break;
 
     //////////////////////////////////////////////////////////////
     case WM_CREATE:
