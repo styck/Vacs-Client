@@ -61,6 +61,7 @@ BEGIN
         MENUITEM "Save Mix as ...",             IDM_F_SAVE_FILE_AS
         MENUITEM SEPARATOR
         MENUITEM "&Preferences",                IDM_F_SAVEPREFERENCES
+        , GRAYED
         MENUITEM "&Console Definition",         IDM_F_CONDEF_PREFERENCES
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       IDM_F_EXIT
@@ -88,8 +89,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Reset All Mixer Controls",    IDM_RESET_ALL_CONTROLS
         MENUITEM SEPARATOR
-        MENUITEM "Tracking &Window",            IDM_START_TRACKING_WINDOW
-        MENUITEM SEPARATOR
+        MENUITEM "Tracking Window",             IDM_START_TRACKING_WINDOW
+        , CHECKED
         MENUITEM "&Start VU Read",              IDM_START_VU_READ
         MENUITEM "S&top VU Read",               IDM_STOP_VU_READ
         MENUITEM SEPARATOR
@@ -259,7 +260,7 @@ BEGIN
     CONTROL         "Slider1",IDSLIDER_SEQ_MORPH,"msctls_trackbar32",
                     TBS_AUTOTICKS | TBS_VERT | NOT WS_VISIBLE,139,46,25,110,
                     WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE
-    PUSHBUTTON      ">>>",IDBTN_SEQ_EXPAND,136,7,42,15,BS_MULTILINE,
+    PUSHBUTTON      ">>>",IDBTN_SEQ_EXPAND,136,7,37,15,BS_MULTILINE,
                     WS_EX_CLIENTEDGE
     PUSHBUTTON      "&Next",IDBTN_SEQ_NEXT,103,25,35,15,BS_FLAT
     PUSHBUTTON      "&Prev",IDBTN_SEQ_PREV,43,25,35,15,BS_FLAT
@@ -269,8 +270,8 @@ BEGIN
                     WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
     CONTROL         "Tree1",IDTREE_SEQUENCE,"SysTreeView32",TVS_HASBUTTONS | 
                     TVS_HASLINES | TVS_EDITLABELS | TVS_SHOWSELALWAYS | 
-                    WS_TABSTOP,7,45,165,113,WS_EX_DLGMODALFRAME | 
-                    WS_EX_LEFTSCROLLBAR
+                    TVS_INFOTIP | WS_TABSTOP,7,45,165,113,
+                    WS_EX_DLGMODALFRAME | WS_EX_LEFTSCROLLBAR
     CONTROL         "List1",IDLIST_SEQ_EVENTS,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_EDITLABELS | WS_TABSTOP,180,41,115,
                     113,WS_EX_DLGMODALFRAME
@@ -278,7 +279,7 @@ BEGIN
                     180,7,115,29,WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE
     CONTROL         "",ID_DEFAULTBOX,"Static",SS_BLACKRECT | NOT WS_VISIBLE,
                     7,7,125,151
-    PUSHBUTTON      "<<<",IDBTN_SEQ_EXPAND2,135,7,42,15,BS_MULTILINE,
+    PUSHBUTTON      "<<<",IDBTN_SEQ_EXPAND2,135,7,37,15,BS_MULTILINE,
                     WS_EX_CLIENTEDGE
 END
 

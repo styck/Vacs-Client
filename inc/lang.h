@@ -2,6 +2,7 @@
 // Microsoft Developer Studio generated include file.
 // Used by D:\Work\styck\Vacs Client\usengl\usengl.rc
 //
+#define t                               0
 #define IDD_SEQUENCE_WINDOW             101
 #define IDD_PRF_MIDI                    102
 #define MENU_TVN_POPUP                  102

@@ -52,12 +52,12 @@ CAPTION "About Virtual Audio Console System"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,219,210,50,14
-    CONTROL         136,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE,25,
-                    81,173,55,WS_EX_TRANSPARENT
+    CONTROL         136,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | 
+                    SS_REALSIZEIMAGE,51,82,186,55,WS_EX_TRANSPARENT
     LTEXT           "CompanyName",IDT_COMPANY_NAME,21,9,198,12
-    LTEXT           "FileDescription",IDT_FILE_DESC,21,33,87,15
-    LTEXT           "LegalCopyright",IDT_COPYRIGHT,21,57,201,15
-    LTEXT           "ProductVersion",IDT_PROD_VER,132,33,87,15
+    LTEXT           "FileDescription",IDT_FILE_DESC,21,33,140,15
+    LTEXT           "LegalCopyright",IDT_COPYRIGHT,21,57,249,15
+    LTEXT           "ProductVersion",IDT_PROD_VER,181,33,87,15
     LTEXT           "LegalTrademarks",IDT_TRADEMARKS,21,156,231,24
     LTEXT           "www.corteksoft.com      sales@corteksoft.com",
                     IDC_STATIC,16,209,169,14
@@ -151,14 +151,14 @@ BEGIN
             VALUE "Comments", "by CorTek Software, Inc.\0"
             VALUE "CompanyName", "CorTek Software Inc.  www.corteksoft.com\0"
             VALUE "FileDescription", "VACS® Client Workstation\0"
-            VALUE "FileVersion", "2.46L\0"
+            VALUE "FileVersion", "2.47\0"
             VALUE "InternalName", "VACS® Client Workstation\0"
-            VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2000\0"
+            VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2001\0"
             VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc.\0"
             VALUE "OriginalFilename", "VACS.EXE\0"
-            VALUE "PrivateBuild", "Build 11/24/2000\0"
+            VALUE "PrivateBuild", "Build 01/15/2001\0"
             VALUE "ProductName", "CorTek Software VACS\0"
-            VALUE "ProductVersion", "2.46M\0"
+            VALUE "ProductVersion", "2.47\0"
             VALUE "SpecialBuild", "\0"
         END
     END
