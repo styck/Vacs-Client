@@ -297,6 +297,10 @@
 #define CTRL_NUM_INPUT_LABEL                0x00bc
 #define CTRL_NUM_INPUT_SAFE                 0x00bd
  
+#define CTRL_NUM_CLIP_PRE_FADER							0x00be
+#define CTRL_NUM_CLIP_POST_FADER						0x00bf
+
+ 
 #define CTRL_NUM_NULL                      0xffff
 
 
@@ -474,8 +478,9 @@
 #define  CTRL_NUM_SUB_POST_LT_VU                      160
 #define  CTRL_NUM_SUB_POST_RT_VU                      161
 #define  CTRL_NUM_MATRIX_LABEL                        162
+#define  CTRL_NUM_MATRIX_CLIP_LIGHT										163
 #define  __SUB_MATRIX_GROUP_01_START                  CTRL_NUM_MATRIX_HI_FREQ_LT
-#define  __SUB_MATRIX_GROUP_01_END                    CTRL_NUM_MATRIX_LABEL
+#define  __SUB_MATRIX_GROUP_01_END                    CTRL_NUM_MATRIX_CLIP_LIGHT
 //
 // END for the first Matrix group ...  .. there might be another one
 //
@@ -500,8 +505,9 @@
 #define  CTRL_NUM_MATRIX_STERIO_CUE_POST              189
 #define  CTRL_NUM_SUB_SUMIN_LT_MUTE										190
 #define  CTRL_NUM_SUB_SUMIN_RT_MUTE                   191	
+#define  CTRL_NUM_SUB_CLIP_LIGHT										  192
 #define  __SUB_AUX_GROUP_01_START                     CTRL_NUM_MATRIX_SUB_VOL_LT
-#define  __SUB_AUX_GROUP_01_END                       CTRL_NUM_SUB_SUMIN_RT_MUTE
+#define  __SUB_AUX_GROUP_01_END                       CTRL_NUM_SUB_CLIP_LIGHT
 //
 // END for the first sub_aux group ... 
 //
@@ -757,6 +763,8 @@
 #define CTRL_NUM_MASTER_POST_LT_VU            216
 #define CTRL_NUM_MASTER_POST_RT_VU            217
 
+#define CTRL_NUM_MASTER_CLIP_LIGHT						218
+
 //////////////////////////////////////////
 // Control Types
 // they represent the function that
@@ -792,6 +800,8 @@
 */
 
 #define CTRL_TYPE_LEFTRIGHT         0x0016
+
+#define CTRL_TYPE_CLIP_LIGHT				0x001a
 
 #define CTRL_TYPE_LABEL             0x001f
 
