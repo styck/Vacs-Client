@@ -1,7 +1,13 @@
 //=================================================
-// CopyRight 1998 CorTek Software, Inc.
+// Copyright 2001, CorTek Software, Inc.
 //=================================================
-
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
+//
 
 
 // Structures
@@ -440,7 +446,8 @@ typedef GROUPS  *LPGROUP;
 //-------------------------------
 typedef struct  GROUPSTOREtag
     {
-    long        Count; // how many channels are in this group
+    short int   Count; // how many channels are in this group
+		short int		iType; // perm or temp
     char        szGroupName[MAX_STRING_SIZE];
     GROUPS      Group[MAX_CHANNELS];
     }GROUPSTORE;
