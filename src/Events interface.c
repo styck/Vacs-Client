@@ -5,7 +5,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/Events interface.c $
-// $Revision: 36 $
+// $Revision: 37 $
 //
 
 //=================================================
@@ -29,6 +29,7 @@ extern int                 g_iMasterModuleIdx;
 
 extern BOOL									g_bIsSoloCueMode; // see MAIN.C
 
+extern BOOL UpdateFromNetwork(int , LPCTRLZONEMAP );	// see ControlDataFilters.cpp
 
 
 void HandleMasterCueSwitch(LPMIXERWNDDATA lpmwd, WORD wVal);
@@ -1094,8 +1095,8 @@ WORD								wVal;
 	//-------------------------
 	lpctrlZM = lpmwd->lpCtrlZM;
 
-	////////////////////////////////////////////////////
-	// Get the current value and the minimum value
+	////////////////////////////////////////////////////////////////////
+	// Get the current value and compare to the minimum value of 0
 
 	iVal = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
 
@@ -1222,11 +1223,20 @@ WORD								wVal;
 	// Invalidate rectangle for THIS button
 	// so that it is updated without redrawing screen
 
-	rInvalidate.left = r.left + lpmwd->iXadj;
-	rInvalidate.top  = r.top - lpmwd->iYOffset;
-	rInvalidate.right = r.right  + lpmwd->iXadj;
-	rInvalidate.bottom = (r.bottom - r.top) + rInvalidate.top;
-
+	if(lpmwd->hwndImg)	// Clicked on button
+	{
+		rInvalidate.left = r.left + lpmwd->iXadj;
+		rInvalidate.top  = r.top - lpmwd->iYOffset;
+		rInvalidate.right = r.right  + lpmwd->iXadj;
+		rInvalidate.bottom = (r.bottom - r.top) + rInvalidate.top;
+	}
+	else	// we are RECALLING button
+	{
+		rInvalidate.left = r.left + lpmwd->iXadj;
+		rInvalidate.top  = r.top;
+		rInvalidate.right = r.right  + lpmwd->iXadj;
+		rInvalidate.bottom = (r.bottom - r.top) + rInvalidate.top;
+	}
 	/////////////////////////////////////////////////////////
 	// Compare current value with the minimum value
 	// If they are equal then we are turning the button ON
@@ -1288,7 +1298,15 @@ WORD								wVal;
 
   }
 
-	InvalidateRect(lpmwd->hwndImg,&rInvalidate,FALSE);		// FDS - MAKE SURE BUTTON GETS UPDATED BY INVALIDATING THE RECTANGLE
+	/////////////////////////////////////////////////////////////////////////////
+	// If lpmwd->hwndImg is not NULL then we are clicking on the Button 
+	// if not then we are recalling the data and don't have a windows, so use the
+	// global zoom window handle
+
+	if(lpmwd->hwndImg)
+		InvalidateRect(lpmwd->hwndImg,&rInvalidate,FALSE);		// FDS - MAKE SURE BUTTON GETS UPDATED BY INVALIDATING THE RECTANGLE
+	else if(ghwndZoom)
+		InvalidateRect(ghwndZoom,&rInvalidate,FALSE);		// FDS - MAKE SURE BUTTON GETS UPDATED BY INVALIDATING THE RECTANGLE
 
 	ReleaseDC(hwnd, hdc);
 	syncInputPriority (lpctrlZM, g_inputCueActiveCounter, lpmwd);
@@ -1547,12 +1565,24 @@ return;
 // FUNCTION: UpdateControlFromNetwork
 //
 // Recieves control data echoed by the GServer
-// from other clients.
+// from other clients and updates the bitmap
+// for the control on this client.
 //
-// Called from DeinitionCallback() function after 
-// the data is recieved
+// Incoming data from remote client handled in CDef_DevCommnication.c - ProcessTcpData() -  
+// which eventually this routine.
+// 
+// The bIsAbsVal flag is used to determine what type of data is being sent
+// in the wCtrlVal.  
+//
+// If it is true then it is the control index, usually found
+// in the variable CtrlDataCopy.wCtrl.
+//
+// If it is false then is is the channel position, usually found
+// in the variable lpctrlZM->iCtrlChanPos
+// 
 
-void  UpdateControlFromNetwork(WORD iPhisChannel, WORD iCtrlAbs, int iVal, BOOL bIsAbsVal) 
+
+void  UpdateControlFromNetwork(WORD iPhisChannel, WORD wCtrlVal, int iVal, BOOL bIsAbsVal) 
 {
   LPCTRLZONEMAP lpctrlZM;
   HDC           hdcBuffer;
@@ -1584,63 +1614,88 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD iCtrlAbs, int iVal, BOOL 
   if(iPhisChannel >= giMax_CHANNELS)
     return;
 
+	///////////////////////////////////////////////
+	// Check flag if we are sending the index into
+	// the dcx.bin, if true then use the Abs() call
+	// else we are passing the iCtrlChanPos and need
+	// to use the Num() routine instead
+
   if(bIsAbsVal)
-    lpctrlZM = ScanCtrlZonesAbs(gpZoneMaps_Zoom[iPhisChannel].lpZoneMap, iCtrlAbs);
+    lpctrlZM = ScanCtrlZonesAbs(gpZoneMaps_Zoom[iPhisChannel].lpZoneMap, wCtrlVal);
   else
-    lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[iPhisChannel].lpZoneMap, iCtrlAbs);
+    lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[iPhisChannel].lpZoneMap, wCtrlVal);
 
   // Force a search in the Master module if we couldn't find the Control Zone
   // it better be there
   //
   if(lpctrlZM == NULL)
   {
-    if(bIsAbsVal)	// DOESN'T DO ANYTHING WITH THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      lpctrlZM = ScanCtrlZonesAbs(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, iCtrlAbs);
+
+		///////////////////////////////////////////////
+		// Check flag if we are sending the index into
+		// the dcx.bin, if true then use the Abs() call
+		// else we are passing the iCtrlChanPos and need
+		// to use the Num() routine instead
+
+    if(bIsAbsVal)	
+      lpctrlZM = ScanCtrlZonesAbs(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, wCtrlVal);
     else
-      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, iCtrlAbs);
+      lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, wCtrlVal);
   }
 	else	/// if(lpctrlZM != NULL)
   {
-    // Set the Phisical Data Value
-		// This causes the control to be drawn in the new position
-		// If its a fader that has been pulled down because of a mute
-		// then we do NOT want to do this.
-    //-----------------------------------------------------------
 
-			SETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
+		///////////////////////////////////////////////////////////////////
+		// We are filtering some controls so they don't update another
+		// client over the network.  UpdateFromNetwork will return
+		// FALSE if we should NOT update the control.
 
-    r = lpctrlZM->rZone;
-    // Select the appropriate bitmap into the buffer
-    //
-    hdcBuffer = CreateCompatibleDC(ghdc256);
+		if (UpdateFromNetwork( iPhisChannel, lpctrlZM) != FALSE)
+		{
 
-    hbmp = SelectObject(hdcBuffer, gpBMPTable[gpZoneMaps_Zoom[iPhisChannel].iBmpIndx].hbmp);
+			// Set the Phisical Data Value
+			// This causes the control to be drawn in the new position
+			// If its a fader that has been pulled down because of a mute
+			// then we do NOT want to do this.
+			//-----------------------------------------------------------
 
-    BitBlt(g_hdcMemory, r.left,
-                        r.top,
-                        r.right - r.left,
-                        r.bottom - r.top,
-           hdcBuffer,   r.left, r.top,
-           SRCCOPY);
+				SETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
 
-    SelectObject(hdcBuffer, hbmp);
-    DeleteDC(hdcBuffer);
+			r = lpctrlZM->rZone;
+			// Select the appropriate bitmap into the buffer
+			//
+			hdcBuffer = CreateCompatibleDC(ghdc256);
+
+			hbmp = SelectObject(hdcBuffer, gpBMPTable[gpZoneMaps_Zoom[iPhisChannel].iBmpIndx].hbmp);
+
+			BitBlt(g_hdcMemory, r.left,
+													r.top,
+													r.right - r.left,
+													r.bottom - r.top,
+						 hdcBuffer,   r.left, r.top,
+						 SRCCOPY);
+
+			SelectObject(hdcBuffer, hbmp);
+			DeleteDC(hdcBuffer);
 
 
-		// This actually displays the entire movement of the faders
-		// Without this line the faders will 'jump' into their final position
+			// This actually displays the entire movement of the faders
+			// Without this line the faders will 'jump' into their final position
 
-		// now update all of the other mixers
-		// windows that represent this mixer
-		// using the iMixer, iPhisChannel
-		// and iVal
+			// now update all of the other mixers
+			// windows that represent this mixer
+			// using the iMixer, iPhisChannel
+			// and iVal
 
-		// THIS really slows things down
-		// Doesn't seem to be needed????
-		//
-		// without this line Group Faders do NOT work
+			// THIS really slows things down
+			// Doesn't seem to be needed????
+			//
+			// without this line Group Faders do NOT work
 
-    UpdateSameMixWndByCtrlNum(NULL, 0, iPhisChannel, lpctrlZM, iVal, NULL);
+			UpdateSameMixWndByCtrlNum(NULL, 0, iPhisChannel, lpctrlZM, iVal, NULL);
+
+		}
 
   }
 }
+
