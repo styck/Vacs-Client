@@ -1,13 +1,21 @@
 
 //=================================================
-// Copyright 1998 - 2001, CorTek Softawre, Inc.
+// Copyright 1998 - 2002, CorTek Software, Inc.
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author: Styck $
+// $Archive: /Vacs Client/src/ControlDataFilters.c $
+// $Revision: 39 $
 //
+
+
+////////////////////////////////////////////////////////////////////////
+// Handles the filtered controls such as the input and matrix MUTES
+// Cue logic
+//
+//
+
 
 #include "SAMM.h"
 #include "SAMMEXT.h"
@@ -24,7 +32,10 @@ extern int	g_CueMasterSystem;
 extern int  g_iMasterModuleIdx;
 extern int  g_iCueModuleIdx;
 
-//
+
+//	Returns the stereo linked CONTROL number for example
+WORD FindStereoPair(LPCTRLZONEMAP );	// see GROUPS.C
+
 int						g_inputCueActiveCounter = 0;
 CUE_PRIORITY	g_cue_priority = {0,0,0,0,0};
 
@@ -97,7 +108,6 @@ BOOL  IsMuteFilter(LPCTRLZONEMAP pctrlzm)
   case CTRL_MATRIX_CENTER_MUTE_FILTER:
   case CTRL_CUE_MASTER_MUTE_FILTER:
 	case CTRL_SUB_SUMIN_MUTE_FILTER:
-//	case CTRL_TYPE_BTN_EQ_RESET_FILTER:		// fds maybe needs to be commented out????
     bRet = TRUE;
     break;
   }
@@ -117,9 +127,6 @@ void    SetFilteredControlsByNumber(LPCTRLZONEMAP lpctrl, int filtered)//, LPMIX
 {
   LPCTRLZONEMAP       pctrlTemp = lpctrl;
   int                 iCtrlPos = lpctrl->iCtrlChanPos;
-
-//	if(lpmwd)
-//		SetAlternativeZMFilter( lpctrl, filtered, lpmwd);
 
   while(lpctrl->iCtrlChanPos == iCtrlPos)
   {
@@ -194,7 +201,7 @@ void HandleInputSignalInMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZ
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -209,7 +216,7 @@ void HandleInputSignalInMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZ
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -246,7 +253,7 @@ void HandleMatrixAuxMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -261,7 +268,7 @@ void HandleMatrixAuxMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; 		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -301,7 +308,7 @@ void HandleSubSuminMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMA
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -316,7 +323,7 @@ void HandleSubSuminMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMA
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -353,7 +360,7 @@ void HandleMatrixSubMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -367,7 +374,7 @@ void HandleMatrixSubMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -399,7 +406,7 @@ void HandleCueMasterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -411,7 +418,7 @@ void HandleCueMasterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -430,7 +437,7 @@ void HandleCueMasterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
 			//------------------
 			ctrlData.wMixer   = 0;
 			ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 			ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 			SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -442,7 +449,7 @@ void HandleCueMasterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
 			//------------------
 			ctrlData.wMixer   = 0;
 			ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 			ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 			SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -518,7 +525,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -535,7 +542,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
 			//------------------
 			ctrlData.wMixer   = 0;
 			ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 			ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 			SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
   
@@ -554,7 +561,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
 			//------------------
 			ctrlData.wMixer   = 0;
 			ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 			ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 			SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -569,7 +576,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -587,7 +594,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
 			//------------------
 			ctrlData.wMixer   = 0;
 			ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 			ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 			SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -602,7 +609,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -620,7 +627,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
 			//------------------
 			ctrlData.wMixer   = 0;
 			ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 			ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 			SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -635,7 +642,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -653,7 +660,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
 			//------------------
 			ctrlData.wMixer   = 0;
 			ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+			ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 			ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 			SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -668,7 +675,7 @@ void		handleInputCuePriority (LPMIXERWNDDATA lpmwd_work, BOOL	input_cue_on)
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -868,7 +875,7 @@ void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd_work,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -880,7 +887,7 @@ void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd_work,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -896,7 +903,7 @@ void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd_work,
 		//------------------
 		ctrlData.wMixer   = 0;
 		ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-		ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+		ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 		ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 		SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -908,7 +915,7 @@ void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd_work,
 		//------------------
 		ctrlData.wMixer   = 0;
 		ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-		ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+		ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 		ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 		SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -950,11 +957,11 @@ void HandleMatrixMasterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
-    SetFilteredControlsByNumber(lpctrl, YES_FILTER);
+    SetFilteredControlsByNumber(lpctrl, NO_FILTER);
 		SetAlternativeZMFilter(lpctrl, NO_FILTER, lpmwd, iPhisChann);
   }
   else
@@ -964,7 +971,7 @@ void HandleMatrixMasterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1004,7 +1011,7 @@ void HandleMatrixMonoMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -1018,7 +1025,7 @@ void HandleMatrixMonoMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1058,7 +1065,7 @@ void HandleMatrixCenterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -1072,7 +1079,7 @@ void HandleMatrixCenterMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd,
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1112,7 +1119,7 @@ void HandleMasterAuxMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -1128,7 +1135,7 @@ void HandleMasterAuxMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
     
@@ -1142,7 +1149,7 @@ void HandleMasterAuxMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1158,7 +1165,7 @@ void HandleMasterAuxMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEM
     //------------------
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1205,9 +1212,10 @@ void    HandleSubAuxMasterMatrixFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPC
   //-----------------------------
   ctrlData.wMixer   = 0;
   ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-  ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+  ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
   ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
-  SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
+//ORIGINAL  SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
+  SendDataToDevice(&ctrlData, TRUE, lpctrl, 0, lpmwd, TRUE);
 
 
   if(lpctrl)
@@ -1240,10 +1248,11 @@ void    HandleSubAuxMasterMatrixFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPC
   {
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl2->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl2->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl2->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl2, lpctrl2->iCtrlChanPos);
 
-    SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
+// ORIGINAL    SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
+    SendDataToDevice(&ctrlData, TRUE, lpctrl, 0, lpmwd, TRUE);
   }
 }
 
@@ -1283,7 +1292,7 @@ void    HandleMasterHeadphonesPostFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, L
   //-----------------------------
   ctrlData.wMixer   = 0;
   ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-  ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+  ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
   ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
   SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1317,7 +1326,7 @@ void    HandleMasterHeadphonesPostFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, L
   {
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrl2->iModuleNumber;//iChannel;
-    ctrlData.wCtrl    = lpctrl2->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrl2->iCtrlNumAbs;		// Index into lookup table, currently 0-470
     ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl2, lpctrl2->iCtrlChanPos);
 
     SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
@@ -1376,7 +1385,7 @@ void    HandleResetEQFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP 
 
 		ctrlData.wMixer   = 0;
 		ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-		ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+		ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 		ctrlData.wVal     = CDef_GetCtrlDefaultVal(lpctrl->iCtrlNumAbs);
     SETPHISDATAVALUE(ctrlData.wMixer, lpctrlZM, i_ctrl_pos, ctrlData.wVal);
 
@@ -1405,6 +1414,229 @@ void    HandleResetEQFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP 
 
 }
 
+/////////////////////////////////////////////////////////////////////
+// FUNCTION: HandleMatrixMuteFilter
+//
+// purpose: Handle the STEREO LINKING of the MATRIX MUTE buttons
+//
+//
+//
+//    
+void    HandleMatrixMuteFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP lpctrlZM, BOOL bIsOn)
+{
+  CONTROLDATA         ctrlData;
+  LPCTRLZONEMAP       lpctrl;
+  int                 i_ctrl_pos;
+  BOOL                bUpdateCtrl = TRUE;
+
+	// stereo linking
+
+  static CTRLZONEMAP         *pctrl;
+  int                 iV;
+  int                 iModule;
+
+	//////////////////////////////////////////////////
+	// Safety check
+	if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
+		return;
+
+	///////////////////////////////////////////////////
+	// Need to determine if its the LEFT or RIGHT
+	// mute button that was pressed and set what
+	// fader needs to be pulled down
+
+  if(lpctrlZM->iCtrlType == CTRL_MARIXLT_MUTE_FILTER)
+    i_ctrl_pos = CTRL_NUM_MATRIX_LT_FADER;
+  else
+    i_ctrl_pos = CTRL_NUM_MATRIX_RT_FADER;		// MUST be CTRL_MARIXRT_MUTE_FILTER
+
+			//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+			// We are muting the Matrix, need to pull down the Matrix Fader
+			// to simulate the mutes
+
+  
+				// Mute Button has been pressed down, move the fader down
+
+				if(bIsOn == TRUE)
+				{ // Get the pointer to the Matrix LT/RT Fader for the channel clicked on        
+					lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap,i_ctrl_pos);
+
+					// Send the Data out
+					//------------------
+					ctrlData.wMixer   = 0;
+					ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
+					ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
+
+					// Get the index into the table for the value to send, 112-111 for MATRIX_LT_FADER
+					// In this case we are sending the index to set the fader to off
+
+					ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;	
+
+					SendDataToDevice(&ctrlData, FALSE, lpctrl, 0, lpmwd, TRUE);	// Handle STEREO linking ourselves by passing FALSE
+
+///////////////////////////////////////////
+// stereo linking	if SHIFT key NOT down
+//
+// This code logic taken from UpdateStereoControls()
+// so that we could adapt it for this control
+
+	if((lpmwd->wKeyFlags & MK_SHIFT) == FALSE)
+	{
+
+		// Send the data value to the Device
+		// and then update the controls 
+		//  
+		// First get the zone map for the conterpart CONTROL using FindStereoPair()
+
+		iModule = lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan];
+		pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iModule].lpZoneMap, 
+														FindStereoPair(lpctrl));
+
+		ctrlData.wCtrl = pctrl->iCtrlNumAbs;	// SET CONTROL NUMBER TO STEREO PAIR
+
+		// Get the index into the lookup table for the current setting of the mixer
+		//
+		// THIS MIGHT BE WRONG FOR TRICKING STEREO LINKING
+		// I THINK WE ARE GETTING THE PHYSICAL VALUE OF THE OTHER
+		// CONTROL AND USING IT. WE PROBABLY SHOULD USE THE VALUE
+		// THAT IS PASSED IN pCtrlData->wVal SINCE THAT IS WHAT THE
+		// OTHER CONTROL IS USING (ADJUST FOR g_bReversDirection)
+		// .... ONLY WORKS IF THEY ARE AT THE SAME LOCATION!!!
+		//
+		// FOR UNMUTING WE WANT THE ORIGINAL LINE BELOW, BUT FOR
+		// MUTING WE WANT THE VALUE THAT IS PASSED
+
+			iV = ctrlData.wVal;// + iDelta;		// MUTING
+
+			// Validate the index so that it is not less that zero and not greater than
+			// the number of value entries
+
+			if(iV < 0)
+				iV = 0;
+			if(iV >= pctrl->iNumValues)
+				iV = pctrl->iNumValues - 1;
+
+			ctrlData.wVal = (WORD)iV;	// Ok, use it now.
+
+			if(CheckFilter(pctrl) == NO_FILTER)
+			{
+				// Check if it is a software control and 
+				// deal with it in a special way ... 
+				CDef_SendData(&ctrlData); // Send the data only if not filtered
+				UpdateExternalInterface(&ctrlData);
+			}
+			else
+			{
+				SETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos, (WORD)iV);
+			}
+
+			///////////////////////////////////////////////////
+			// SEND THE DATA THAT WE WERE GOING TO SEND ABOVE
+			// BEFORE THE CHANGES
+			//////////////////// TEST TEST TEST 
+
+      iV = GETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos); // + iDelta;
+			ctrlData.wVal = iV;
+
+			UpdateControlFromNetwork(ctrlData.wChannel, (WORD)pctrl->iCtrlChanPos, (int)ctrlData.wVal, FALSE);
+
+		}
+/////////////////////////////////////////// end stereo linking
+
+					// Tell everyone this control is filtered, do not let the fader commands
+					// go out if filtered. This is only one FADER, need to filter the stereo
+					// counter part FADER also
+
+					SetFilteredControlsByNumber(lpctrl,		YES_FILTER);
+					SetFilteredControlsByNumber(pctrl,		YES_FILTER);	// the OTHER fader too!!
+					SetAlternativeZMFilter(lpctrl, YES_FILTER, lpmwd, iPhisChann);
+
+				}
+				else	// Mute Button unpressed, restore Matrix LT/RT Fader to original position
+				{
+					lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, i_ctrl_pos);
+
+		// First get the zone map for the conterpart CONTROL using FindStereoPair()
+
+					if((lpmwd->wKeyFlags & MK_SHIFT) == FALSE)
+					{
+									iModule = lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan];
+									pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iModule].lpZoneMap, 
+																		FindStereoPair(lpctrl));
+					}
+					// OK, now allow the commands for the fader to go out, no longer muted
+					// We will restore the faders to what ever someone moved them to while
+					// the mutes were active
+
+					SetFilteredControlsByNumber(lpctrl,		NO_FILTER);
+					SetFilteredControlsByNumber(pctrl,		NO_FILTER);	// the other fader
+					SetAlternativeZMFilter(lpctrl, NO_FILTER, lpmwd, iPhisChann);
+
+					// Send the Data out
+					//------------------
+					ctrlData.wMixer   = 0;
+					ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
+					ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
+					ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos); // Restore Physical value of fader
+
+					SendDataToDevice(&ctrlData, FALSE, lpctrl, 0, lpmwd, TRUE);	// Handle STEREO linking ourselves by passing FALSE
+
+	///////////////////////////////////////////
+	// stereo linking	if SHIFT key NOT down
+		if((lpmwd->wKeyFlags & MK_SHIFT) == FALSE)
+		{
+
+			// Send the data value to the Device
+			// and then update the controls 
+			//  
+			ctrlData.wCtrl = pctrl->iCtrlNumAbs;	// SET CONTROL NUMBER TO STEREO PAIR
+
+		// Get the index into the lookup table for the current setting of the mixer
+		//
+		// FOR UNMUTING WE WANT THE ORIGINAL LINE BELOW, BUT FOR
+			iV = GETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos);// + iDelta;	// UNMUTING
+
+			// Validate the index so that it is not less that zero and not greater than
+			// the number of value entries
+
+			if(iV < 0)
+				iV = 0;
+			if(iV >= pctrl->iNumValues)
+				iV = pctrl->iNumValues - 1;
+
+			ctrlData.wVal = (WORD)iV;	// Ok, use it now.
+
+			if(CheckFilter(pctrl) == NO_FILTER)
+			{
+				// Check if it is a software control and 
+				// deal with it in a special way ... 
+				CDef_SendData(&ctrlData); // Send the data only if not filtered
+				UpdateExternalInterface(&ctrlData);
+			}
+			else
+			{
+				SETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos, (WORD)iV);
+			}
+
+			///////////////////////////////////////////////////
+			// SEND THE DATA THAT WE WERE GOING TO SEND ABOVE
+			// BEFORE THE CHANGES
+			//////////////////// TEST TEST TEST 
+
+      iV = GETPHISDATAVALUE(0, pctrl, pctrl->iCtrlChanPos); // + iDelta;
+			ctrlData.wVal = iV;
+
+			UpdateControlFromNetwork(ctrlData.wChannel, (WORD)pctrl->iCtrlChanPos, (int)ctrlData.wVal, FALSE);
+
+		}
+/////////////////////////////////////////// end stereo linking
+
+					SetFilteredControlsByNumber(lpctrl, NO_FILTER);
+					SetAlternativeZMFilter(lpctrl, NO_FILTER, lpmwd, iPhisChann);
+
+				}
+}
+
 
 /////////////////////////////////////////////////////////////////////
 // FUNCTION: CheckFilter
@@ -1424,6 +1656,12 @@ int   CheckFilter(LPCTRLZONEMAP pctrlzm)
 //
 //
 //
+// Handles all the special logic for a control that doesn't
+// have a one to one correspondence on the physical hardware
+// such as the mutes that need the fader pulled down.
+//
+//
+
 void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP lpctrlZM, BOOL bIsOn, BOOL bCheckGroups)
 {
   CONTROLDATA         ctrlData;
@@ -1440,28 +1678,30 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
   switch(lpctrlZM->iCtrlType)
   {
 
-		/////////////////////////
-		// INPUT MUTE !!!!!!!!!!
+		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+		// We are muting the INPUT, need to pull down the Input Fader
+		// to simulate the mutes
 
 	  case CTRL_TYPE_BTN_INPUTMUTE_FILTER:
 
 			if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
 				break;
+
+			// Mute Button has been pressed down, move the fader down
+
 			if(bIsOn == TRUE)
-			{
-				// Turn it ON
-
-				/////////////////////////////////////////////////////////
-				// Find the Volume control and pull it all the way down..
-				//
-
+			{ // Get the pointer to the INPUT Volume Fader for the channel clicked on        
 				lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_INPUT_VOL_FADER);
 
 				// Send the Data out
 				//------------------
 				ctrlData.wMixer   = 0;
-				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
+
+				// Get the index into the table for the value to send, 275 for CTRL_TYPE_BTN_INPUTMUTE_FILTER
+				// In this case we are sending the index to set the fader to off
+
 				ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
       
@@ -1469,7 +1709,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				SetAlternativeZMFilter(lpctrl, YES_FILTER, lpmwd, iPhisChann);
       
 				/////////////////////////////////////////////////////////
-				// Find the Volume control and pull it all the way down..
+				// Find the CTRL_NUM_INPUT_GATE_FEED_THRU control and pull it all the way down..
 				//
 
 				lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_INPUT_GATE_FEED_THRU);
@@ -1477,8 +1717,8 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				// Send the Data out
 				//------------------
 				ctrlData.wMixer   = 0;
-				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1500,8 +1740,8 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 					// Send the Data out
 					//------------------
 					ctrlData.wMixer   = 0;
-					ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-					ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+					ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
+					ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 					ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 					SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1514,8 +1754,8 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 					// Send the Data out
 					//------------------
 					ctrlData.wMixer   = 0;
-					ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-					ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+					ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
+					ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 					ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 					SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
       
@@ -1531,8 +1771,8 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 					SetAlternativeZMFilter(lpctrl, NO_FILTER, lpmwd, iPhisChann);
 
 					ctrlData.wMixer   = 0;
-					ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-					ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+					ctrlData.wChannel = lpctrl->iModuleNumber;	// Set the Module number
+					ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 					ctrlData.wVal     = 1;
 					SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 				}
@@ -1566,7 +1806,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1588,7 +1828,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 				SetFilteredControlsByNumber(lpctrl, NO_FILTER);
@@ -1629,7 +1869,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
       
@@ -1649,7 +1889,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1674,7 +1914,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
       
@@ -1691,7 +1931,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1750,7 +1990,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 			{
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl2->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl2->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl2->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl2, lpctrl2->iCtrlChanPos);
 
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
@@ -1770,7 +2010,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
       
@@ -1782,7 +2022,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
       
@@ -1797,7 +2037,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1809,7 +2049,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 				//------------------
 				ctrlData.wMixer   = 0;
 				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 				ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
 				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
 
@@ -1867,77 +2107,13 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 			break;
 
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
+		// We are muting the Matrix, need to pull down the Matrix Fader
+		// to simulate the mutes
+		// HandleMatrixMuteFilter()
+
 		case CTRL_MARIXLT_MUTE_FILTER:
-  
-			if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
-				break;
-
-			if(bIsOn == TRUE)
-			{         
-				lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap,CTRL_NUM_MATRIX_LT_FADER);
-				// Send the Data out
-				//------------------
-				ctrlData.wMixer   = 0;
-				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
-				ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
-				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-      
-				SetFilteredControlsByNumber(lpctrl, YES_FILTER);
-				SetAlternativeZMFilter(lpctrl, YES_FILTER, lpmwd, iPhisChann);
-
-			}
-			else
-			{
-				lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MATRIX_LT_FADER);
-				// Send the Data out
-				//------------------
-				ctrlData.wMixer   = 0;
-				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
-				ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
-				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-
-				SetFilteredControlsByNumber(lpctrl, NO_FILTER);
-				SetAlternativeZMFilter(lpctrl, NO_FILTER, lpmwd, iPhisChann);
-
-			}
-			break;
-
 		case CTRL_MARIXRT_MUTE_FILTER:
-
-			if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
-				break;
-			if(bIsOn == TRUE)
-			{         
-				lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, CTRL_NUM_MATRIX_RT_FADER);
-				// Send the Data out
-				//------------------
-				ctrlData.wMixer   = 0;
-				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
-				ctrlData.wVal     = CDef_GetCtrlMaxVal(lpctrl->iCtrlNumAbs) - 1;
-				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-      
-				SetFilteredControlsByNumber(lpctrl, YES_FILTER);
-				SetAlternativeZMFilter(lpctrl, YES_FILTER, lpmwd, iPhisChann);
-
-			}
-			else
-			{
-				lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap,CTRL_NUM_MATRIX_RT_FADER);
-				// Send the Data out
-				//------------------
-				ctrlData.wMixer   = 0;
-				ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
-				ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
-				ctrlData.wVal     = GETPHISDATAVALUE(lpmwd->iMixer, lpctrl, lpctrl->iCtrlChanPos);
-				SendDataToDevice(&ctrlData, FALSE, NULL, 0, lpmwd, TRUE);
-
-				SetFilteredControlsByNumber(lpctrl, NO_FILTER);
-				SetAlternativeZMFilter(lpctrl, NO_FILTER, lpmwd, iPhisChann);
-
-			}
+			HandleMatrixMuteFilter(iPhisChann, lpmwd, lpctrlZM, bIsOn);
 			break;
 
 		case CTRL_TYPE_BTN_MASTER_AUX_PREPOST_FILTER:
@@ -2211,10 +2387,14 @@ void SendDataToDevice(CONTROLDATA *pCtrlData, BOOL bUseGroups,
 	int					 cueMasterSystem = g_CueMasterSystem;
 	int					 inputCueActiveCounter = g_inputCueActiveCounter;
 
+	int tempjunk=0;
 
   if(pctrlzm != NULL)
     if(CheckFilter(pctrlzm) == YES_FILTER)
+		{
+			tempjunk=1;		
       goto CHECK_FOR_GROUPS;
+		}
 
 	////////////////////////////////////////////////////
   // Now send the data before dealing with the Groups
@@ -2269,7 +2449,7 @@ void FlipTheControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd_work)
 
 	if (lpmwd->lpZoneMap->iZonesCount < 100)
 		lpmwd = GetValidMixerWindowData ();
-  ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+  ivalue = 0;
   iVal = GETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos);
   if(iVal != ivalue)
   {
@@ -2298,13 +2478,13 @@ void FlipTheControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd_work)
   {
     ctrlData.wMixer   = 0;
     ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-    ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
+    ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 
 		/////////////////////////////////////
     // ok we need to go up to max value
 
     ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
-    iVal   = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+    iVal   = 0;
     for(iVal; iVal < ivalue; iVal++)
     {
       // Send the Data out
@@ -2346,8 +2526,7 @@ void FlipHardwareControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd_work)
 	if (lpmwd->lpZoneMap->iZonesCount < 100)
 		lpmwd = GetValidMixerWindowData ();
 
-
-  ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+  ivalue = 0;
   iVal = GETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos);
   if(iVal != ivalue)
   {
@@ -2365,7 +2544,7 @@ void FlipHardwareControl(LPCTRLZONEMAP  lpctrlZM, LPMIXERWNDDATA lpmwd_work)
 
   ctrlData.wMixer   = 0;
   ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-  ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
+  ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs;		// Index into lookup table, currently 0-470
 	ctrlData.wVal     = iVal;
 
   SendDataToDevice(&ctrlData, TRUE, lpctrlZM, 1, lpmwd, TRUE);	// TURN OFF the other one
@@ -2456,7 +2635,7 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 			}
     }
 
-//		HandleMasterCueSwitch(lpmwd, wVal);		// Now called directly from HandleCtrlBtnClick()
+//FDS		HandleMasterCueSwitch(lpmwd, wVal);		// Now called directly from HandleCtrlBtnClick()
 
 		break;
 
@@ -2530,9 +2709,6 @@ void HandleInputToggleSwtches(LPMIXERWNDDATA lpmwd_work, LPCTRLZONEMAP pctrlzm)
 				}
 			}
     }
-
-//    wVal = GETPHISDATAVALUE(0, pctrlzm, pctrlzm->iCtrlChanPos);
-//		HandleMasterCueSwitch(lpmwd, wVal);		// Now called directly from HandleCtrlBtnClick()
 
 		break;
 
