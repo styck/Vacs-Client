@@ -30,6 +30,7 @@ int   InitializeProc(void)
   char    szString[256];
   LPSTR   lpstrFName = NULL;
   HWND    hwndTest = NULL;
+	int					CTRL_key;	 
 
   // ShowSplashScreen(TRUE);
 
@@ -106,9 +107,6 @@ int   InitializeProc(void)
   //------------------------
   ZeroMemory(&gfsMix, sizeof(FILESTRUCT));
 
-
-
-
   gDeviceSetup.hwndMain = ghwndMain;             // Main application Window
   gDeviceSetup.hinst    = ghInstMain;            // Application Instance
   gDeviceSetup.pfTXComm = DefinitionCallback;    // Callback function for the DLL to call directly into
@@ -137,7 +135,12 @@ int   InitializeProc(void)
 
   // start the client and get all the data from there
   //
-  if( ! CDEF_GetCSData(ghwndMain))
+	// If Control key is held down then we ask user for
+	// the IP address, etc. Bring up the preference dialog
+
+	CTRL_key = GetKeyState (VK_CONTROL);
+
+  if( (CTRL_key < 0) || !CDEF_GetCSData(ghwndMain))
   {
 		CDef_Preferences (ghwndMain);
 		if( CDEF_GetCSData(ghwndMain))
