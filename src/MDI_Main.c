@@ -1,10 +1,17 @@
 //=================================================
-// Copyright 2001, CorTek Software, Inc.
+// Copyright 1998 - 2001, CorTek Softawre, Inc.
 //=================================================
+//
+//
+// $Author: $
+// $Archive:$
+// $Revision:$
+//
 
 //=================================================
 // The MDI Client
-//
+// Create and handle the main area of VACS
+// 
 //=================================================
 
 #include "SAMM.h"
@@ -14,42 +21,60 @@
 extern int g_iMasterModuleIdx;
 void	HandleRemoteSequenceControl(WORD wControl);
 
-//=================================
+//=============================================================
 // FUNCTION: CreateMainWindow
 // creates the main window
-//=================================
+//
+// This is the window that everything else is in
+// Its size is restrained by the width of the MASTER MODULE
+// and the Vertical scroll bars if applicable
+//
+//=============================================================
 int       CreateMDIClient(HWND hwnd)
 {
 CLIENTCREATESTRUCT  ccs = {0};
 RECT                rcClient;
+DWORD								style;
 
-GetClientRect(hwnd, &rcClient);
+	GetClientRect(hwnd, &rcClient);
 
-// Find window menu where children will be listed
-ccs.hWindowMenu  = GetSubMenu(ghMainMenu, WINDOWMENU);
-ccs.idFirstChild = IDM_WINDOWCHILD;
+	// Find window menu where children will be listed
+	ccs.hWindowMenu  = GetSubMenu(ghMainMenu, WINDOWMENU);
+	ccs.idFirstChild = IDM_WINDOWCHILD;
 
 
-// Create the MDI client filling the client area
-ghwndMDIClient = CreateWindow("MDICLIENT",
-                             NULL,
-                             MDIS_ALLCHILDSTYLES |WS_CHILD | WS_CLIPCHILDREN,
-                             0, 0, 0, 0,
-                             hwnd,
-                             NULL,
-                             ghInstMain,
-                             (LPVOID)&ccs);
+	// Create the MDI client filling the client area
+	// This is the window where the ZOOM windows open up into
+	//
+	// The WS_VSCROLL allows a scroll bar to pop up next to the Master window
+	// if needed
 
-if(ghwndMDIClient == NULL)
-    return IDS_ERR_CREATE_WINDOW;
+	style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_CLIPCHILDREN;
 
-// Sub class the default windows procedure
-// so we can hadle the WM_PAINT and WM_ERASEBKGND
-// messasges.
-//-----------------------------------------------
-gorigMDIProc = (WNDPROC)SetWindowLong(ghwndMDIClient, GWL_WNDPROC, (LONG)MDIClientProc);
-ShowWindow(ghwndMDIClient, SW_SHOW);
-return 0;
+	#ifdef SCROLLBARS
+// FDS		style = style | WS_VSCROLL;	// GAMBLE DOESN'T WANT SCROLL BARS ON MAIN MDI CLIENT AREA
+	#endif
+
+	ghwndMDIClient = CreateWindow("MDICLIENT",
+															 NULL,
+															 style,
+															 0, 0, 0, 0,
+															 hwnd,
+															 NULL,
+															 ghInstMain,
+															 (LPVOID)&ccs);
+
+	if(ghwndMDIClient == NULL)
+			return IDS_ERR_CREATE_WINDOW;
+
+	// Sub class the default windows procedure
+	// so we can hadle the WM_PAINT and WM_ERASEBKGND
+	// messasges.
+	//-----------------------------------------------
+	gorigMDIProc = (WNDPROC)SetWindowLong(ghwndMDIClient, GWL_WNDPROC, (LONG)MDIClientProc);
+	ShowWindow(ghwndMDIClient, SW_SHOW);
+	return 0;
+
 };
 
 //===================================================
@@ -59,11 +84,11 @@ return 0;
 void      ShutDownMDIClient(void)
 {
 
-//Delete the bitmap
-//-----------------
-if(ghbmpClientBk)
-    DeleteObject(ghbmpClientBk);
-return;
+	//Delete the bitmap
+	//-----------------
+	if(ghbmpClientBk)
+			DeleteObject(ghbmpClientBk);
+	return;
 }
 
 //====================================================
@@ -82,53 +107,60 @@ void          SizeClientWindow(HWND hwnd, UINT uMessage,
 RECT    rcClient;
 RECT    rcAdj = {0};
 
-if (wparam != SIZE_MINIMIZED)
+	if (wparam != SIZE_MINIMIZED)
   {
   GetClientRect(hwnd, &rcClient);
   
   // Calculate all the adjustments
   //------------------------------
-  if(ghwndStatus)
+		if(ghwndStatus)
     {
-    GetWindowRect(ghwndStatus, &rcAdj);
-    CONVERT_RECT_TO_WH(rcAdj);
-    // Adjust the Status Window Position and size
-    //-------------------------------------------
-    SendMessage(ghwndStatus, WM_SIZE, SIZE_RESTORED, 0);
+			GetWindowRect(ghwndStatus, &rcAdj);
+			CONVERT_RECT_TO_WH(rcAdj);
+			// Adjust the Status Window Position and size
+			//-------------------------------------------
+			SendMessage(ghwndStatus, WM_SIZE, SIZE_RESTORED, 0);
 
-		// Apply the changes to the rcClient
-		//----------------------------------
-		rcClient.bottom -= rcAdj.bottom - 1;        
+			// Apply the changes to the rcClient
+			//----------------------------------
+			rcClient.bottom -= rcAdj.bottom - 1;        
     }
 
-	if(ghwndTBPlay)
+		if(ghwndTBPlay)
 		{
 //		SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
-		SendMessage(ghwndTBPlay, WM_SIZE, SIZE_RESTORED, MAKELPARAM(100,26));
-    GetWindowRect(ghwndTBPlay, &rcAdj);
-    CONVERT_RECT_TO_WH(rcAdj);
-		// Apply the changes to the rcClient
-		//----------------------------------
-		rcClient.top += rcAdj.bottom;
-		rcClient.bottom -= rcAdj.bottom - 1;        
+			SendMessage(ghwndTBPlay, WM_SIZE, SIZE_RESTORED, MAKELPARAM(100,26));
+			GetWindowRect(ghwndTBPlay, &rcAdj);
+			CONVERT_RECT_TO_WH(rcAdj);
+			// Apply the changes to the rcClient
+			//----------------------------------
+			rcClient.top += rcAdj.bottom;
+			rcClient.bottom -= rcAdj.bottom - 1;        
 		}
 
-  // Compensate for the Master View
-  //
-  if(ghwndMaster)
-  {
-    //rcClient.left += (MASTER_MODULE_WIDTH + MAX_BORDER_WIDTH);
-    rcClient.right -= (MASTER_MODULE_WIDTH + MAX_BORDER_WIDTH);
-  }
+		/////////////////////////////////////
+		// Compensate for the Master Window
+		//
+		if(ghwndMaster)
+		{
+			//rcClient.left += (MASTER_MODULE_WIDTH + MAX_BORDER_WIDTH);
+			rcClient.right -= (MASTER_MODULE_WIDTH + MAX_BORDER_WIDTH);
 
-  // Move and Size the MDI Client Window
-  //------------------------------------
-  MoveWindow(ghwndMDIClient,
-             rcClient.left,
-             rcClient.top,
-             rcClient.right,
-             rcClient.bottom,
-             TRUE);
+	#ifdef SCROLLBARS
+			// Leave room for Scroll bars
+			rcClient.right -= GetSystemMetrics(SM_CYVTHUMB);
+	#endif
+
+		}
+
+		// Move and Size the MDI Client Window
+		//------------------------------------
+		MoveWindow(ghwndMDIClient,
+							 rcClient.left,
+							 rcClient.top,
+							 rcClient.right,
+							 rcClient.bottom,
+							 TRUE);
 
   }
 
@@ -148,49 +180,52 @@ HBITMAP             hBitOld, hBitScreen;
 int                 iHoriz, iVert, iWidth, iHeight;
 WINDOWPLACEMENT     wpl;
 
-if(ghwndMDIClient == NULL)
-    return;
+	if(ghwndMDIClient == NULL)
+			return;
 
-GetWindowPlacement(ghwndMain, &wpl);
-if(wpl.showCmd == SW_SHOWMINIMIZED)
-    return;
+	GetWindowPlacement(ghwndMain, &wpl);
+	if(wpl.showCmd == SW_SHOWMINIMIZED)
+			return;
 
-if(GetUpdateRect(ghwndMDIClient, &rectUpdate, FALSE) == FALSE)
-    return;
+	if(GetUpdateRect(ghwndMDIClient, &rectUpdate, FALSE) == FALSE)
+			return;
 
-ValidateRect(ghwndMDIClient, NULL);
-ValidateRect(ghwndMain, NULL);
+	ValidateRect(ghwndMDIClient, NULL);
+	ValidateRect(ghwndMain, NULL);
 
-hdc = GetDC(ghwndMDIClient); // get the main DC
-hBitScreen = CreateCompatibleBitmap(hdc, rectUpdate.right, rectUpdate.bottom);
-hdcMem = CreateCompatibleDC(hdc);// Create a memory DC from where we can pull the original Bitmap
-hBitOld = SelectObject(hdcMem, ghbmpClientBk);
+	hdc = GetDC(ghwndMDIClient); // get the main DC
+	hBitScreen = CreateCompatibleBitmap(hdc, rectUpdate.right, rectUpdate.bottom);
+	hdcMem = CreateCompatibleDC(hdc);// Create a memory DC from where we can pull the original Bitmap
+	hBitOld = SelectObject(hdcMem, ghbmpClientBk);
 
-// Select the Bitmap for the Screen display
-SelectObject(hdc, hBitScreen);
+	// Select the Bitmap for the Screen display
+	SelectObject(hdc, hBitScreen);
 
-iWidth  = gbmpClientInfoBk.bmWidth;
-iHeight = gbmpClientInfoBk.bmHeight;
-if((iWidth == 0) || (iHeight == 0))
-    goto CLEANUP_TIME;
+	iWidth  = gbmpClientInfoBk.bmWidth;
+	iHeight = gbmpClientInfoBk.bmHeight;
 
-// Start BitBlT the hbmpClientBk to the Screen
-//--------------------------------------------
-for(iVert = 0; iVert < rectUpdate.bottom; iVert += iHeight)
-    for(iHoriz = 0; iHoriz < rectUpdate.right; iHoriz += iWidth)
-        {
-        BitBlt(hdc, iHoriz, iVert, iWidth, iHeight,
-               hdcMem, 0, 0,
-               SRCCOPY);
-        }
+	if((iWidth == 0) || (iHeight == 0))
+			goto CLEANUP_TIME;
 
-CLEANUP_TIME:
-// Clean up time
-SelectObject(hdcMem, hBitOld);
-DeleteDC(hdcMem);
-ReleaseDC(ghwndMDIClient, hdc);
-DeleteObject(hBitScreen);
-return;
+	// Start BitBlT the hbmpClientBk to the Screen
+	//--------------------------------------------
+	for(iVert = 0; iVert < rectUpdate.bottom; iVert += iHeight)
+	{
+		for(iHoriz = 0; iHoriz < rectUpdate.right; iHoriz += iWidth)
+		{
+			BitBlt(hdc, iHoriz, iVert, iWidth, iHeight,
+						 hdcMem, 0, 0,
+						 SRCCOPY);
+		}
+	}
+
+	CLEANUP_TIME:
+	// Clean up time
+	SelectObject(hdcMem, hBitOld);
+	DeleteDC(hdcMem);
+	ReleaseDC(ghwndMDIClient, hdc);
+	DeleteObject(hBitScreen);
+	return;
 }
 
 //====================================================
@@ -208,6 +243,7 @@ switch (wMessage)
 ///  case WM_MOUSEMOVE:
 //    UpdateTrackingWindow(NULL);
 //    break;
+
   case WM_PAINT:
     ClientWindowPaint();
     return 0;
@@ -226,7 +262,8 @@ switch (wMessage)
 		
 	case WM_KILLFOCUS:
 		focus_wnd = (HWND)wParam;
-		if (focus_wnd){
+		if (focus_wnd)
+		{
 			while (focus_wnd = GetParent(focus_wnd)){
 				if (focus_wnd != ghwndMDIClient)
 					last_wnd = focus_wnd;
@@ -250,7 +287,12 @@ return gorigMDIProc(hWnd, wMessage, wParam, lParam);
 ////////////////////////////////////////////////////
 //
 //
+//
+//
+//
+
 LPMIXERWNDDATA		g_validMixerWindowData = NULL;
+
 LPMIXERWNDDATA GetValidMixerWindowData(void)
 {
 //  LPMIXERWNDDATA      lpmwd = NULL;
@@ -260,8 +302,7 @@ LPMIXERWNDDATA GetValidMixerWindowData(void)
 	if (g_validMixerWindowData == NULL)
 		g_validMixerWindowData = MixerWindowDataAlloc(gwActiveMixer,
 																 gpZoneMaps_Zoom,
-																 MAX_CHANNELS, 1);
-
+																 MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
 
 	return g_validMixerWindowData;
 /*
@@ -303,10 +344,10 @@ void      CloseAllMDI(void)
 
 HWND hwndT;
 
-// As long as the MDI client has a child, destroy it
-//--------------------------------------------------
-while ((hwndT = GetWindow(ghwndMDIClient, GW_CHILD))!=NULL)
-    {
+	// As long as the MDI client has a child, destroy it
+	//--------------------------------------------------
+	while ((hwndT = GetWindow(ghwndMDIClient, GW_CHILD))!=NULL)
+  {
     // Skip the icon and title windows
     //--------------------------------
     while (hwndT && GetWindow(hwndT, GW_OWNER))
@@ -316,14 +357,15 @@ while ((hwndT = GetWindow(ghwndMDIClient, GW_CHILD))!=NULL)
         SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hwndT, 0L);
     else
         break;
-    }
-return;
+  }
+	return;
 }
 
+
 /////////////////////////////////////////////////////////////////////
-//  MEMBER FUNCTION: RefreshAllMDIWindows
+//  MEMBER FUNCTION: RefreshAllLblWindows
 //
-//
+// Invalidates all the lablel window in all the mdi windows
 //
 void      RefreshAllLblWindows(void)
 {
@@ -345,9 +387,9 @@ void      RefreshAllLblWindows(void)
       {
         InvalidateRect(lpmwd->hwndLblGroup, NULL, FALSE);
         UpdateWindow(lpmwd->hwndLblGroup);
-
-        InvalidateRect(lpmwd->hwndImg, NULL, FALSE);
-        UpdateWindow(lpmwd->hwndImg);
+//fds  DON'T NEED TO UPDATE THE IMAGE WINDOW FOR THE GROUPS DO WE????
+//fds        InvalidateRect(lpmwd->hwndImg, NULL, FALSE);
+//fds        UpdateWindow(lpmwd->hwndImg);
       }
     }
 
