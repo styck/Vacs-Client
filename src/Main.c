@@ -352,8 +352,10 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
         // Reset all mixer Cotrol Values .. to Reg0 value
 		if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_RECALL_ALL_CONTROLS) == IDYES)
 		{
+			CDef_StopVuData();
 			SetMemoryMapDefaults();
 			RecallMemoryMapBuffer(TRUE);// Force the Control data to the Mixer
+			CDef_StartVuData ();
 		}
         break;
     //````````````````````````````
@@ -367,8 +369,10 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 				// 
 			if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_RECALL_ALL_CONTROLS) == IDYES)
 			{
+				CDef_StopVuData();
 				MoveMemory(gpwMemMapBuffer, gpwMemMapMixer, giMemMapSize);
 				RecallMemoryMapBuffer(TRUE);// Force the Control data to the Mixer
+				CDef_StartVuData ();
 			}
 			break;
     case IDM_REQUEST_SETUPDATA:
@@ -423,6 +427,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
     //``````````````
     case IDM_F_EXIT:
 				// Save the current state
+				if (g_mixer_state_changed)
+				{	
+					if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
+						SaveMixFile ();
+				}								  
 				wsprintf(fsTemp.szFileDir, "%s\\mix\\", gszProgDir);
 				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
 				WriteMixFile(&fsTemp, FALSE);
@@ -636,6 +645,12 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
       if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_QUIT_MESSAGE) == IDNO)
           break;
+
+			if (g_mixer_state_changed)
+			{	
+				if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
+					SaveMixFile ();
+			}								  
 			
 			wsprintf(fsTemp.szFileDir, "%s\\mix\\", gszProgDir);
 			wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
