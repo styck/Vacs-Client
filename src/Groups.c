@@ -359,13 +359,12 @@ void    GroupRenameItem(void)
 {
 int iListItem;
 HWND      hwnd;
-int iRet;
 
   hwnd = GetDlgItem(ghwndGroupsDlg, IDC_GROUP_LIST);
 	iListItem =  GetLisControlSelection();
 
 	SetFocus(hwnd);	// Make sure it has the focus
-	iRet = ListView_EditLabel(hwnd, iListItem);
+	ListView_EditLabel(hwnd, iListItem);
 
 return;
 }
