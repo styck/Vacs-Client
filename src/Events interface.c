@@ -633,7 +633,7 @@ SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iVal);
 //--------------------------
 DrawVertFader(g_hdcMemory, lpctrlZM, iVal, lpmwd, iPhisChannel);
 
-// BitBlot it to the screen
+// BitBlit it to the screen
 //-------------------------
 
 BitBlt(hdc, r.left + lpmwd->iXadj,
@@ -1106,6 +1106,8 @@ SPECIAL_CONTROL:
 
           }
           lpctrlZM_Special = NULL;
+//			    lpctrlZM_Cur = NULL; // <== this line in fixes EQ bug but doesn't draw until moved
+
         }
       }
     }
@@ -1303,8 +1305,7 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD iCtrlAbs, int iVal, BOOL 
     else
       lpctrlZM = ScanCtrlZonesNum(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, iCtrlAbs);
   }
-
-  if(lpctrlZM != NULL)
+	else	/// if(lpctrlZM != NULL)
   {
     // Set the Phisical Data Value
     //----------------------------
@@ -1327,6 +1328,19 @@ void  UpdateControlFromNetwork(WORD iPhisChannel, WORD iCtrlAbs, int iVal, BOOL 
     SelectObject(hdcBuffer, hbmp);
     DeleteDC(hdcBuffer);
 
+
+		// This actually displays the entire movement of the faders
+		// Without this line the faders will 'jump' into their final position
+
+		// now update all of the other mixers
+		// windows that represent this mixer
+		// using the iMixer, iPhisChannel
+		// and iVal
+
+		// THIS really slows things down
+		// Doesn't seem to be needed????
+
     UpdateSameMixWndByCtrlNum(NULL, 0, iPhisChannel, lpctrlZM, iVal, NULL);
+
   }
 }
