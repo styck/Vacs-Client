@@ -3,9 +3,9 @@
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author:: Styck                                $
+// $Archive:: /Vacs Client/src/MemoryMap.c        $
+// $Revision:: 36                                 $
 //
 //
 
@@ -1197,6 +1197,10 @@ WORD  GETPHISDATAVALUE(int mixer, LPCTRLZONEMAP       pctrlzm, int control)
     return *mem_pointer;
 	}
 };
+
+    // Set the Phisical Data Value
+		// This causes the control to be drawn in the new position
+    //-----------------------------------------------------------
 
 void  SETPHISDATAVALUE(int mixer, LPCTRLZONEMAP       pctrlzm, int control,int value)
 {
