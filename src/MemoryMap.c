@@ -1,6 +1,13 @@
 //=================================================
 // Copyright 2001, CorTek Software, Inc.
 //=================================================
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
+//
 
 #include <math.h>
 #include "SAMM.h"
@@ -457,6 +464,8 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 	int iValueCurrent, iValueSet, iDirection;
 	char		szBuff[80];
 
+  int                 iModuleType;	// INPUT, MATRIX, etc
+
 	iMaxFaderMovement = -1;		// Not Valid
 
 	lpmwd = GetValidMixerWindowData();
@@ -471,6 +480,9 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
     lpctrlZM = gpZoneMaps_Zoom[iChannel].lpZoneMap;
     if(lpctrlZM == NULL)
       continue;
+
+		// Get the module type (INPUT, MATRIX, etc)
+		iModuleType  = gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber];
 
 		setBufferChannelSafeActive (lpctrlZM, FALSE);
 
@@ -521,16 +533,22 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 
 						if( lpctrlZM->iCtrlType != CTRL_TYPE_FADER_VERT)
 						{
+
 							/////////////////////////////////////////////
 							// DO NOT RESTORE THESE VALUES
-							// These are the 3 VU buttons on the input
+							// These are the 3 VU buttons on the INPUT module
 							// and these two will be default OFF so 
-							// no need to retore. They are saved and
+							// no need to restore. They are saved and
 							// should be removed when time permits.
 							/////////////////////////////////////////////
 
-							if(lpctrlZM->iCtrlChanPos != CTRL_NUM_INPUT_GATE_KEY_VU &&
-								(lpctrlZM->iCtrlChanPos != CTRL_NUM_INPUT_LINE_B_VU))
+							if( (iModuleType == DCX_DEVMAP_MODULE_INPUT) && 
+								  ((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_GATE_KEY_VU) || (lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_LINE_B_VU)))
+
+							{
+									iModuleType = 0;	// Stupid logic but it works, do not want to restore if the above is true	
+							}
+							else
 							{
 								SETPHISDATAVALUE(0, lpctrlZM, iCtrlNum, iValue);
         
@@ -545,6 +563,10 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 									SendDataToDevice(&ctrlData, FALSE, NULL, 0, NULL, FALSE); // was TRUE
 								}
 							}
+
+
+
+
 						}
 						else if(lpctrlZM->iCtrlType == CTRL_TYPE_FADER_VERT)	// It IS a main fader, so save info so that we can crossfade later
 						{
