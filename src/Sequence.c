@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Sequence.c         $
-// $Revision:: 23                                 $
+// $Revision:: 24                                 $
 //
 
 //////////////////////////////////////////////
@@ -41,7 +41,7 @@ MMRESULT    g_TimeEvent = 0;
 int         g_iStopTimeEvent = 0;
 LPDLROOTPTR g_pdlrSequence = NULL;
 SEQ_PROPAGATE g_SeqPropagate = {0};
-char				g_sequence_file_name[MAX_PATH];
+// fds not used any more char				g_sequence_file_name[MAX_PATH];
 DWORD				g_dwCurrentSeqSelection;		// Index into selected sequence entry
 
 HTREEITEM		hDrag;
@@ -73,6 +73,7 @@ DWORD SeqSelectionIndex(void);
 BOOL SeqGoToIndex(DWORD index);
 
 extern void		UpdateSeqSceneNumber(void);
+extern LPSTR	GetSequenceFileName(void);	// see mix files.c
 
 struct tag_Param {
 	char Num[10];
@@ -121,6 +122,7 @@ return 0;
 //
 //=================================================
 static BOOL	bSeqWindowOutofScreen = TRUE;
+
 int     ShowSeqWindow(BOOL bShow)
 {
 char                    szTitle[128];
@@ -141,7 +143,7 @@ DWORD										style;
     lpSeqWF->iWndID = SEQUENCE_WINDOW_FILE_ID;        
 
 		style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE 
-																| WS_THICKFRAME | WS_MINIMIZEBOX// | WS_MAXIMIZEBOX
+																| WS_MINIMIZEBOX  | WS_THICKFRAME // | WS_MAXIMIZEBOX
 																| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 		style &= ~WS_MAXIMIZEBOX;
 
@@ -150,7 +152,7 @@ DWORD										style;
                             gszSeqClass,
                             szTitle,
 														style,
-                            10000,//CW_USEDEFAULT,
+                            10000,//CW_USEDEFAULT,	// Shove it off the side ofthe screen
                             10000,//CW_USEDEFAULT,
                             CW_USEDEFAULT,
                             CW_USEDEFAULT,
@@ -167,6 +169,7 @@ DWORD										style;
 		}
 
 		SetWindowLong(ghwndSeq, 0, (LONG)lpSeqWF);
+
 		// Show something in the MTC/SMPTE readout
 		//----------------------------------------
 		DisplayMTCReadout();
@@ -177,6 +180,7 @@ DWORD										style;
     if(ghwndSeq)
 		{
 			GetWindowRect(ghwndSeq, &r);
+
 			if(r.left > 5000)
 				SetWindowPos(ghwndSeq, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW);
 			else
@@ -287,8 +291,8 @@ TV_HITTESTINFO  tvht;  // hit test information
     /////////////////////////////////////////////////////////////
     case WM_TIMER:
         HandleDragTimer();
-
         break;
+
     /////////////////////////////////////////////////////
     case WM_COMMAND:
         //  activate the Parent MDI Child Window
@@ -318,14 +322,12 @@ TV_HITTESTINFO  tvht;  // hit test information
 						case IDBTN_SEQ_EXPAND:
 			// User selected EXPAND" button, show entire dialog box
 			
-						ShowArea(TRUE, hwnd, GetDlgItem(hwnd, ID_DEFAULTBOX));
 							;
 						break;
 
 						case IDBTN_SEQ_EXPAND2:
 			// User selected "EXPAND" button, hide MTC/SMPTE portion
 			
-						ShowArea(FALSE, hwnd, GetDlgItem(hwnd, ID_DEFAULTBOX));
 							;
 						break;
 
@@ -342,7 +344,9 @@ TV_HITTESTINFO  tvht;  // hit test information
             case MENU_TVN_DELELTE:
             case IDBTN_SEQ_DELETE:
 //FDS Removed for autosave mix so it doesnt crash
-//FDS							if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_DELETE_SEQUENCE_ENTRY) == IDYES)
+#ifndef AUTOSAVE
+							if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_DELETE_SEQUENCE_ENTRY) == IDYES)
+#endif
                 SeqDeleteItem();
                 break;
 
@@ -417,8 +421,10 @@ TV_HITTESTINFO  tvht;  // hit test information
         if((wParam != SIZE_MINIMIZED) && ghwndSeqDlg)
         {
             GetClientRect(hwnd, &rect);
+	
             // adjust the size of the 
             // tree and the list view
+						// for the sequence entries
             //-----------------------
             hwndCtrl = GetDlgItem(hwnd, IDTREE_SEQUENCE);
             if(hwndCtrl)
@@ -430,6 +436,8 @@ TV_HITTESTINFO  tvht;  // hit test information
                                                    rect.bottom - rectCtrl.top,
                              SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
             }
+
+						// This sizes the SMPTE box
 
             hwndCtrl = GetDlgItem(hwnd, IDLIST_SEQ_EVENTS);
             if(hwndCtrl)
@@ -451,7 +459,7 @@ TV_HITTESTINFO  tvht;  // hit test information
       // Prepare the Critical Section
       // for the MTC Emulate
       //-----------------------------
-      wsprintf(szBuff, "%s.ctek", g_sequence_file_name);
+      wsprintf(szBuff, "%s.ctek", GetSequenceFileName());
       //wsprintf(szBuff, "%s\\data\\sequence.ctek",gszProgDir);      
       g_pdlrSequence = InitDoubleLinkedList(sizeof(SEQENTRY), 32, TRUE, TRUE, NULL, szBuff);
       
@@ -461,7 +469,7 @@ TV_HITTESTINFO  tvht;  // hit test information
         return FALSE;
       }
 
-      wsprintf(szBuff, "%s.data",g_sequence_file_name);
+      wsprintf(szBuff, "%s.data",GetSequenceFileName());
       if(OpenDataFile(szBuff))
       {
 
@@ -477,7 +485,7 @@ TV_HITTESTINFO  tvht;  // hit test information
       if(hwndCtrl)
           InitSeqList(hwndCtrl);
 
-			wsprintf(szBuff, "%s", g_sequence_file_name);
+			wsprintf(szBuff, "%s", GetSequenceFileName());
       if(OpenSequenceFiles (szBuff) == FALSE)
 			{
 				CloseSequenceFiles ();
@@ -486,7 +494,10 @@ TV_HITTESTINFO  tvht;  // hit test information
       }
 #endif
 
-			wsprintf(szBuff, "%s", g_sequence_file_name);
+			//////////////////////////////////////////////
+			// Get the sequence file name and load it
+
+			wsprintf(szBuff, "%s", GetSequenceFileName());
       if(OpenSequenceFiles (szBuff) == FALSE)
 			{
 				CloseSequenceFiles ();
@@ -497,9 +508,6 @@ TV_HITTESTINFO  tvht;  // hit test information
       // init the Tree and the List View
       //--------------------------------
       hwndCtrl = GetDlgItem(hwnd, IDTREE_SEQUENCE);
-//fds      if(hwndCtrl)
-//fds          FillSeqTree(hwndCtrl);
-
 
       hwndCtrl = GetDlgItem(hwnd, IDLIST_SEQ_EVENTS);
       if(hwndCtrl)
@@ -511,12 +519,6 @@ TV_HITTESTINFO  tvht;  // hit test information
           GetClientRect(g_hwndMTCReadout, &g_rMTCReadout);
           PrepareMTCReadout();
       }
-
-// Only show the default dialog box (ie the small size).  The size shown
-// depends on the size of the ID_DEFAULTBOX. In our case this is just a
-// black rectanlge. EXPAND
-
-			ShowArea(FALSE, ghwndSeqDlg, GetDlgItem(ghwndSeqDlg, ID_DEFAULTBOX));
 
       return TRUE;
 
@@ -554,12 +556,6 @@ int i;
 	switch(uiMsg)
   {
     ////////////////////////////////////////////
-//    case WM_MDIACTIVATE:
-//        if((HWND)lParam == hwnd)
-//            SetActiveWindow(ghwndSeqDlg);
-            //SetFocus(ghwndSeqDlg);
-//        break;
-    ////////////////////////////////////////////
 
 		case	WM_VSCROLL:
 			i=5;
@@ -576,11 +572,13 @@ int i;
         }
         
 				GetClientRect(ghwndSeqDlg, &rect);        
+
+				// Make sure there is a border around the list box inside our seq. window
+
         SetWindowPos(hwnd, NULL, 0, 0, 
                         rect.right + GetSystemMetrics(SM_CYDLGFRAME)*4, 
                         rect.bottom + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYDLGFRAME)*4, 
                         SWP_NOMOVE | SWP_NOZORDER | SWP_HIDEWINDOW | SWP_NOACTIVATE);
-				
 			
         //ShowWindow(ghwndSeqDlg, SW_SHOW);
 
@@ -794,7 +792,6 @@ HTREEITEM       htreItem = NULL;
 							break;
 
 					htreItem = SeqAddItem(lItemPos, lLinkState, htreItem);
-	//        AddItemToTree(hwnd, p_seqentry->szName, lLinkState);
 					lItemPos = GetNextEntry(pdlrootPtr, lItemPos);
 			}
 
@@ -804,8 +801,9 @@ HTREEITEM       htreItem = NULL;
 			UnlockDLListRoot(g_pdlrSequence, pdlrootPtr);
 	}
 
-		// Set the current seq selection
-		// based on our global variable
+			// Set the current seq selection
+			// based on our global variable
+			//--------------------------------------------
 			SeqGoToIndex(g_dwCurrentSeqSelection);
 			UpdateSeqSceneNumber();			
 
@@ -2485,95 +2483,3 @@ BOOL	OpenSequenceFiles (LPSTR  lpstrFName){
 }
 
 
-//////////////////////////////////////////////////////////////////
-// These used to be in windowssx.h
-//
-//////////////////////////////////////////////////////////////////
-
-#define SetStyleOn(hWnd, Style)		SetWindowLong(hWnd, GWL_STYLE, \
-									Style | GetWindowLong(hWnd, GWL_STYLE));
-									
-#define SetStyleOff(hWnd, Style)	SetWindowLong(hWnd, GWL_STYLE, \
-									~Style & GetWindowLong(hWnd, GWL_STYLE));
-
-#define     GetFirstChild(hwnd)     GetTopWindow(hwnd)
-#define     GetFirstSibling(hwnd)   GetWindow(hwnd, GW_HWNDFIRST)
-#define     GetLastSibling(hwnd)    GetWindow(hwnd, GW_HWNDLAST)
-#define     GetNextSibling(hwnd)    GetWindow(hwnd, GW_HWNDNEXT)
-#define     GetPrevSibling(hwnd)    GetWindow(hwnd, GW_HWNDPREV)
-
-////////////////////////////////////////////////////////////////////
-/*
-*	When bShowDefAreaOnly is TRUE, shrink dialog box so that its lower
-*	right corner is the same as the lower right corner of the default
-*	area control ( in our case the ID_DEFAULTBOX black rectangle).
-*	Disable all controls that appear to the right of or below the default
-*	area control. We also hide the default area control so the black
-*	rectangle is not visible.
-*
-*	When bShowDefAreaOnly is FALSE then restore the dialog box to its
-*	original size and enable the controls outside the default area and
-*	allow the user to access them.
-*
-*/
-////////////////////////////////////////////////////////////////////
-
-void ShowArea(BOOL bShowDefAreaOnly, HWND hDlg, HWND hWndDefArea)
-{
-RECT rcDlg, rcDefArea;
-
-// Save original width and height of dialog box
-
-	GetWindowRect(hDlg, &rcDlg);
-	
-// Retrieve coordinates for default area window
-                                     
-	GetWindowRect(hWndDefArea, &rcDefArea);
-
-	
-	if(bShowDefAreaOnly)
-	{
-					
-		SetStyleOff(hWndDefArea, SS_BLACKRECT);
-		SetStyleOn(hWndDefArea, SS_LEFT);
-		
-#ifdef NOTUSED
-		// Resize dialog box to fit only default area.
-		
-
-		SetWindowPos(hDlg, NULL, 0, 0,
-						(rcDefArea.right - rcDefArea.left)*2,	// WIDTH
-						rcDefArea.bottom - rcDefArea.top,	// HEIGHT
-						SWP_NOZORDER | SWP_NOMOVE);
-		
-#endif
-		// Make sure that the Default area box is hidden
-		
-		ShowWindow(hWndDefArea, SW_HIDE);
-		
-	// Switch option pointers
-	
-    	ShowWindow(GetDlgItem (hDlg, IDBTN_SEQ_EXPAND), FALSE);
-    	ShowWindow(GetDlgItem (hDlg, IDBTN_SEQ_EXPAND2), TRUE);
-
-	}
-	else
-	{
-		
-		// Restore dialog box to its original size.
-
-#ifdef NOTUSED
-		SetWindowPos(hDlg, NULL, 0, 0,
-						rcDefArea.right - rcDefArea.left,
-						rcDefArea.bottom - rcDefArea.top,
-						SWP_NOZORDER | SWP_NOMOVE);
-
-			SendMessage(ghwndSeqDlg, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rcDefArea.right, rcDefArea.bottom));
-#endif
-	// Switch option pointers
-	
-    	ShowWindow(GetDlgItem (hDlg, IDBTN_SEQ_EXPAND), TRUE);	// EXPAND
-    	ShowWindow(GetDlgItem (hDlg, IDBTN_SEQ_EXPAND2), FALSE);	// NORMAL
-
-	}
-}
