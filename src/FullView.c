@@ -1480,7 +1480,7 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
   {
     QueryPerformanceFrequency(&liQueryPerformance);
     QueryPerformanceCounter(&liPerformanceCounterStart);
-		VU_delaystep = (DWORD)((float)(liQueryPerformance.QuadPart / 1000.)*1.0f);//mseconds
+		VU_delaystep = (DWORD)((float)(liQueryPerformance.QuadPart / 1000.)*2.0f);//mseconds
   }
 
   if(iVU_Count > 0)
@@ -1508,7 +1508,7 @@ void  DisplayVU_Data(VU_READ *pVuData, int iSize)
     dVUResolution = 1000 / dVUResolution;
 
 
-    sprintf(szBuff, "VRes=%05.02f %04d", (float)dVUResolution, VU_delaystep);//dwMoreThanOne);
+    sprintf(szBuff, "VRes=%05.02f ", (float)dVUResolution);//dwMoreThanOne);
     SendMessage(ghwndStatus, SB_SETTEXT, MAKEWPARAM(0,SBT_POPOUT), (LPARAM)szBuff);
 
 
