@@ -368,7 +368,8 @@ int							CreateMainStatusWindow(HWND);
 // Toolbar window
 //---------------
 int							CreateToolBars(HWND);
-void						ShowTBSeqName(LPSTR pName);
+void						ShowTBSeqName(LPSTR pName);			// Show Active Sequence Name
+void						ShowTBNextSeqName(LPSTR pName);	// Show Next Sequence Name
 
 
 
