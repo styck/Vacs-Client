@@ -1,13 +1,23 @@
 //=================================================
-// Copyright 2001, CorTek Software, Inc.
+// Copyright 1997-2002, CorTek Software, Inc.
 //=================================================
 //
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/MemoryMap.c        $
-// $Revision:: 37                                 $
+// $Revision:: 38                                 $
 //
 //
+/////////////////////////////////////////////
+//
+// All the routines to initialiaze and manipulate
+// the GLOBAL memory map buffer that keeps the status
+// of all the controls
+//
+// Remaps controls that are on the MASTER to their
+// corresponding SUB-AUX Physical modules
+//
+/////////////////////////////////////////////
 
 #include <math.h>
 #include "SAMM.h"
@@ -16,6 +26,9 @@
 #include <stdio.h>	// for sprintf
 
 #include "consoledefinition.h"
+
+/////////////////////////////////////////////
+// GLOBALS
 
 int                 g_aiAux[MAX_MATRIX_COUNT];
 int                 g_aiMatrix[MAX_MATRIX_COUNT];
@@ -26,6 +39,9 @@ int									giMemControlCount = 0;
 WORD								*gpwMemMapUpdateBufferMask = NULL;
 WORD								*gpwMemMapUpdateBuffer = NULL;
 
+
+/////////////////////////////////////////////
+// PROTOTYPES
 
 void                HandleCtrlBtnClickInGroup(HWND hwnd, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm, int phis_channel);
 BOOL                IsCtrlPrePostFilter(int iType);
@@ -103,7 +119,8 @@ return;
 //////////////////////////////////////////////////////////////////////////
 // FUNCTION: SetControlsModuleNumber
 //
-//
+// purpose: Sets the iModuleNumber to the iChannel that is passed for all controls
+//					between the iStartRange and iEndRange of controls
 //
 //
 //////////////////////////////////////////////////////////////////////////
@@ -137,12 +154,16 @@ void  SetControlsModuleNumber(LPCTRLZONEMAP lpctrlZM, int iStartRange, int iEndR
 /////////////////////////////////////////////////////////////////////
 // FUNCTION: InitPhysicalModuleMap
 //
-// purpose: Adjust the iModuleNumber member of the CTRLZONEMAP
-//  for every control individually. By doing this we can mix 
-//  on the screen controls that reside in different physical modules.
-//  After this function is done we can use iModuleNumbner to send the
+// PURPOSE: Adjust the iModuleNumber member of the CTRLZONEMAP
+//  for every control individually. 
+//
+//  By doing this we can mix  on the screen controls that reside in 
+//  different physical modules.
+//
+//  After this function is done we can use iModuleNumber to send the
 //  data to the mixer.
-// actions: Pair the Consecutive Sub-Aux with Matrix modules. Also 
+//
+//  actions: Pair the Consecutive Sub-Aux with Matrix modules. Also 
 //  put together the Master and Cue modules.
 //  
 //
@@ -152,16 +173,17 @@ int InitPhysicalModuleMap(void)
   int                 iRet = 0;
   int                 iCount;
   int                 iChannel;
-  //int                 iLastAux, iLastMatrix, iMaster, iCue;
+
   LPCTRLZONEMAP       lpctrlZM_zoom;
   LPCTRLZONEMAP       lpctrlZM_full;
   int                 iMatrixIdx = 0;
 
-  g_iMasterModuleIdx = -1;
+  g_iMasterModuleIdx = -1;	// Invalidate the master 
+  g_iCueModuleIdx = -1;			// and cue modules index
   g_iAuxIdx = 0;
+
   ZeroMemory(g_aiMatrix, MAX_MATRIX_COUNT * sizeof(int));
   ZeroMemory(g_aiAux, MAX_MATRIX_COUNT * sizeof(int));
-  g_iCueModuleIdx = -1;
 
   for(iChannel = 0; iChannel < giMax_CHANNELS; iChannel++)
   {
@@ -170,68 +192,83 @@ int InitPhysicalModuleMap(void)
 
     switch(gDeviceSetup.iaChannelTypes[iChannel])
     {
-      // Handle the Input Modules ...
-    case DCX_DEVMAP_MODULE_INPUT:
-      SetControlsModuleNumber(lpctrlZM_zoom, -1, -1, iChannel);
-      SetControlsModuleNumber(lpctrlZM_full, -1, -1, iChannel);
-      break;
-    case DCX_DEVMAP_MODULE_AUX:
-      SetControlsModuleNumber(lpctrlZM_zoom, -1, -1, iChannel);
-      SetControlsModuleNumber(lpctrlZM_full, -1, -1, iChannel);
-      if(g_iAuxIdx >= MAX_MATRIX_COUNT)
-        return IDS_INVALID_DEVICE_MAP_AUX_MANY; // ?? error code should be defined
-      g_aiAux[g_iAuxIdx] = iChannel;
-      g_iAuxIdx ++;  
-      break;
-    case DCX_DEVMAP_MODULE_MATRIX:
-      if(iMatrixIdx >= MAX_MATRIX_COUNT)
-        return IDS_INVALID_DEVICE_MAP_MATRIX_MANY; // ?? error code should be defined
-      g_aiMatrix[iMatrixIdx] = iChannel;
-      iMatrixIdx ++;  
-      break;
-    case DCX_DEVMAP_MODULE_MASTER:
-      if(g_iMasterModuleIdx == -1)
-      {
-        SetControlsModuleNumber(lpctrlZM_zoom, -1, -1, iChannel);
-        SetControlsModuleNumber(lpctrlZM_full, -1, -1, iChannel);
-        g_iMasterModuleIdx = iChannel;
-      }
-      else
-        // ERROR .. more then one Master module ..
-        return IDS_INVALID_DEVICE_MASTER_MANY;
-      break;
-    case DCX_DEVMAP_MODULE_CUE:
-      // Store the channel number for the 
-      // Cue module ...
-      //
-      if(g_iCueModuleIdx == -1)
-        g_iCueModuleIdx = iChannel;    
-      else
-        // ERROR two Cue modules ..
-        return IDS_INVALID_DEVICE_CUE_MANY;
-      break;
-    default:
-      // do nothing .. the module might be empty
-      break;
+			// Handle the Input INPUT ...
+			case DCX_DEVMAP_MODULE_INPUT:
+				SetControlsModuleNumber(lpctrlZM_zoom, -1, -1, iChannel);
+				SetControlsModuleNumber(lpctrlZM_full, -1, -1, iChannel);
+				break;
+
+			// Handle the AUX Modules ...
+			case DCX_DEVMAP_MODULE_AUX:
+				SetControlsModuleNumber(lpctrlZM_zoom, -1, -1, iChannel);
+				SetControlsModuleNumber(lpctrlZM_full, -1, -1, iChannel);
+				if(g_iAuxIdx >= MAX_MATRIX_COUNT)
+					return IDS_INVALID_DEVICE_MAP_AUX_MANY; // ?? error code should be defined
+				g_aiAux[g_iAuxIdx] = iChannel;
+				g_iAuxIdx ++;  
+				break;
+
+			// Handle the MATRIX Modules ...
+			case DCX_DEVMAP_MODULE_MATRIX:
+				if(iMatrixIdx >= MAX_MATRIX_COUNT)
+					return IDS_INVALID_DEVICE_MAP_MATRIX_MANY; // ?? error code should be defined
+				g_aiMatrix[iMatrixIdx] = iChannel;
+				iMatrixIdx ++;  
+				break;
+
+			// Handle the MASTER Modules ...
+			case DCX_DEVMAP_MODULE_MASTER:
+				if(g_iMasterModuleIdx == -1)
+				{
+					SetControlsModuleNumber(lpctrlZM_zoom, -1, -1, iChannel);
+					SetControlsModuleNumber(lpctrlZM_full, -1, -1, iChannel);
+					g_iMasterModuleIdx = iChannel;
+				}
+				else
+					// ERROR .. more then one Master module ..
+					return IDS_INVALID_DEVICE_MASTER_MANY;
+				break;
+
+			// Handle the CUE Modules ...
+			case DCX_DEVMAP_MODULE_CUE:
+				// Store the channel number for the 
+				// Cue module ...
+				//
+				if(g_iCueModuleIdx == -1)
+					g_iCueModuleIdx = iChannel;    
+				else
+					// ERROR two Cue modules ..
+					return IDS_INVALID_DEVICE_CUE_MANY;
+				break;
+			default:
+				// do nothing .. the module might be empty
+				break;
     }
   }
 
   if(g_iMasterModuleIdx == -1)
-    return IDS_INVALID_DEVICE_NO_MASTER;
+    return IDS_INVALID_DEVICE_NO_MASTER;	// ERROR .... MUST HAVE A MASTER MODULE
 
   // now loop through all 
   if(g_iAuxIdx != iMatrixIdx)
     return IDS_INVLAID_DEVICE_AUX_COMBO; // ERROR ... the Aux and the Matrix channels must be the same count.
 
+	////////////////////////////////////////////////////////
+	// 
+
   for(iCount = 0; iCount < g_iAuxIdx; iCount ++)
   {
     // use the Aux channel number since the Aux is mapped to the screen
     iChannel = g_aiAux[iCount];
+
+		////////////////////////////////////////////////////////
     // now loop through the section for each one of these types and 
     // convert the controls to the corect Matrix physical module number
     //
+
     lpctrlZM_zoom = gpZoneMaps_Zoom[iChannel].lpZoneMap;
     lpctrlZM_full = gpZoneMaps_Full[iChannel].lpZoneMap;
+
     // Set Matrix group ONE
     SetControlsModuleNumber(lpctrlZM_zoom, __SUB_MATRIX_GROUP_01_START, 
                                            __SUB_MATRIX_GROUP_01_END, g_aiMatrix[iCount]);
@@ -239,28 +276,38 @@ int InitPhysicalModuleMap(void)
                                            __SUB_MATRIX_GROUP_01_END, g_aiMatrix[iCount]);
   }
 
+	////////////////////////////////////////////////////////
   // Set the master controls to only to the Master module
+	// Scan the Master Module for controls that are in between
+	// the Master START and END groups and set the iModuleNumber to
+	// the master module index g_iMasterModuleIdx
+
   SetControlsModuleNumber(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, 
                           __MASTER_GROUP_01_START, __MASTER_GROUP_01_END, g_iMasterModuleIdx);
+
+	////////////////////////////////////////////////////////
   // Set all cue controls on the master module to map to the Cue physical module
+
   SetControlsModuleNumber(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, 
                           __MASTER_GROUP_02_START, __MASTER_GROUP_02_END, g_iCueModuleIdx);
 
-  // Long way home ...
-  //------------------
-  // handle the controls for the differnet Matrix
+	////////////////////////////////////////////////////////
+  // Handle the controls for the differnet Matrix
   // controls attached to the Master Module
+	//
+	// We are moving the VIRTUAL controls on the Master to their respective
+	// SUB-AUX PHYSICAL modules
+
   for(iCount=0; iCount < MAX_MATRIX_COUNT; iCount ++)
   {
 
-    if(g_aiMatrix[iCount] != 0)
+    if(g_aiMatrix[iCount] != 0)		// Make sure there is a MATRIX module at this position
     {
-      iChannel = g_aiAux[iCount];
+      iChannel = g_aiAux[iCount];	// Get the corresponding AUX PHYSICAL module channel number
     
-    //else
-    //  iChannel = 0xFFFFFFFF;
 
-    // Left-right faders ...
+    // AUX MASTER 1-16 LEVEL CONTROLS -  Left-right faders ...
+
     SetControlsModuleNumber(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, 
                             CTRL_NUM_MASTER_AUX1LT_FADER - iCount*4, 
                             CTRL_NUM_MASTER_AUX1LT_FADER - iCount*4, 
@@ -269,7 +316,10 @@ int InitPhysicalModuleMap(void)
                             CTRL_NUM_MASTER_AUX1RT_FADER - iCount*4, 
                             CTRL_NUM_MASTER_AUX1RT_FADER - iCount*4, 
                             iChannel);
-    // subaux 2
+
+
+    // AUX MASTER 1-16 LEVEL CONTROLS - subaux 2
+
     SetControlsModuleNumber(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, 
                             CTRL_NUM_MASTER_AUX2LT_FADER - iCount*4, 
                             CTRL_NUM_MASTER_AUX2LT_FADER - iCount*4, 
@@ -279,7 +329,8 @@ int InitPhysicalModuleMap(void)
                             CTRL_NUM_MASTER_AUX2RT_FADER - iCount*4, 
                             iChannel);
 
-    // Master Sum-in
+    // Master SUM-IN
+
     SetControlsModuleNumber(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, 
                             CTRL_NUM_MASTER_SUMIN1 - iCount*2, 
                             CTRL_NUM_MASTER_SUMIN1 - iCount*2, 
@@ -289,6 +340,7 @@ int InitPhysicalModuleMap(void)
                             CTRL_NUM_MASTER_SUMIN2 - iCount*2, 
                             iChannel);
     // Master Pre-post
+
     SetControlsModuleNumber(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, 
                             CTRL_NUM_MASTER_AUX01PRE - iCount*4, 
                             CTRL_NUM_MASTER_AUX01PRE - iCount*4, 
@@ -307,6 +359,7 @@ int InitPhysicalModuleMap(void)
                             iChannel);
     
     // Master Aux mutes
+
     SetControlsModuleNumber(gpZoneMaps_Zoom[g_iMasterModuleIdx].lpZoneMap, 
                             CTRL_NUM_MASTER_CUE_AUX01_MUTE - iCount*2, 
                             CTRL_NUM_MASTER_CUE_AUX01_MUTE - iCount*2, 
@@ -345,12 +398,15 @@ int     SetMemoryMapDefaults(void)
   for(iChannel = 0; iChannel < giMax_CHANNELS; iChannel++)
   {
     lpctrlZM = gpZoneMaps_Zoom[iChannel].lpZoneMap;
+
     if(lpctrlZM == NULL)
       continue;
+
     while(lpctrlZM->rZone.right)
     {
       iCtrlNum = lpctrlZM->iCtrlChanPos;
       iCtrlAbs = lpctrlZM->iCtrlNumAbs;
+
       if((iCtrlNum != CTRL_NUM_NULL) && (iCtrlAbs > -1) && (lpctrlZM->iModuleNumber > -1) )
       {
         iValue = CDef_GetCtrlDefaultVal(iCtrlAbs);
@@ -364,7 +420,8 @@ int     SetMemoryMapDefaults(void)
             SETPHISDATAVALUE(iMixerCount, lpctrlZM, iCtrlNum, iValue);
 
 				// Handle the default settings for the Gate_feed_through duda ...
-				if(gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 1){ // make sure it is an Input channel
+				if(gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT)
+				{ // make sure it is an Input channel
 					lpctrl = ScanCtrlZonesNum(lpctrlZM,	CTRL_NUM_INPUT_GATE_FEED_THRU);
 					if(lpctrl)
 			      SetFilteredControlsByNumber(lpctrl, YES_FILTER);
@@ -412,6 +469,7 @@ int     SetMemoryMapDefaults(void)
             iValue = 0;
           else
             iValue = 2;
+
           // Set this ControlNum for all of the Allocated Mixers
           //----------------------------------------------------
           for(iMixerCount = 0; iMixerCount < giMax_MIXERS; iMixerCount++)
@@ -798,10 +856,12 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 
 		lpctrlZM = gpZoneMaps_Zoom[iChannel].lpZoneMap;
 		lpctrlZM = ScanCtrlZonesNum (lpctrlZM, CTRL_NUM_INPUT_GATE_FEEDTHRUINOUT);
+
 		if (lpctrlZM != NULL && 
-				gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 1)
+				gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT)
 		{
 			filtered = lpctrlZM->iFiltered;
+
 			if  (GETPHISDATAVALUE(0, lpctrlZM, lpctrlZM->iCtrlChanPos) == CDef_GetCtrlDefaultVal(lpctrlZM->iCtrlNumAbs) )
 			{
 				////////////////////////////////////////////////////////////
@@ -813,6 +873,7 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 				ctrlData.wChannel = lpctrlZM->iModuleNumber;//iChannel;
 				ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
 				ctrlData.wVal     = CDef_GetCtrlDefaultVal(lpctrlZM->iCtrlNumAbs);
+
 				if(lpctrlZM->iFiltered == NO_FILTER)
 				{
 					//SendDataToDevice(&ctrlData, FALSE, NULL, 0, NULL, TRUE);
