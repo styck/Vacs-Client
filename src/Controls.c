@@ -182,13 +182,13 @@ void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWND
   
   //???? Handle Master VU data also ..... ????
   if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_VU_METER) && 
-     ( iModuleType == 1) )
+     ( iModuleType == DCX_DEVMAP_MODULE_INPUT) )
   {
     wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_INPUT_PREPOST_FADER_VU)>0)?0:2;
   }
   else
   {
-    if(iModuleType == 5)
+    if(iModuleType == DCX_DEVMAP_MODULE_MASTER)
     {
       if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY2)
         wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_MASTER_POST_RT_VU)>0)?2:6;
@@ -199,7 +199,7 @@ void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWND
           wVUType = lpctrlZM->iCtrlType - CTRL_TYPE_VU_DISPLAY;
     }
     else
-      if(iModuleType == 3)
+      if(iModuleType == DCX_DEVMAP_MODULE_MATRIX)
       {
         if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY2)
           wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_SUB_POST_RT_VU)>0)?2:6;
@@ -236,7 +236,8 @@ void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWND
   hdcLocal = CreateCompatibleDC(hdc);
   hbmpOld = SelectObject(g_hdcBuffer, hbmp);
   
-
+	// Get the VU data value
+	//
   iVal = pVuData->wVUValue[wVUType];
 
   // Validate index
