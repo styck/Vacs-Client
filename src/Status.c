@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Status.c           $
-// $Revision:: 3                                  $
+// $Revision:: 4                                  $
 //
 
 //========================================================
@@ -307,19 +307,28 @@ LRESULT CALLBACK   StatusBarProc(HWND hWnd, UINT wMessage,
 
 				/////////////////////////////////////
 				// Must find the topmost ZOOM window
+				// and restore the FOCUS back onto 
+				// that ZOOM window else the arrow
+				// Keys will not work
 				//
 				// DOESN'T WORK FOR FULL WINDOW, IS THAT A PROBLEM?
 
 				case VK_LEFT:
 					hWndZoom=FindWindowEx(ghwndMDIClient,NULL,gszZoomViewClass,"Zoom View");
 					if(hWndZoom)
+					{
 						SendMessage(hWndZoom,WM_KEYUP,(WPARAM)VK_LEFT, (LPARAM)NULL);
+						SetFocus(hWndZoom);
+					}
 					break;
 
 				case VK_RIGHT:
 					hWndZoom=FindWindowEx(ghwndMDIClient,NULL,gszZoomViewClass,"Zoom View");
 					if(hWndZoom)
+					{
 						SendMessage(hWndZoom,WM_KEYUP,(WPARAM)VK_RIGHT, (LPARAM)NULL);
+						SetFocus(hWndZoom);
+					}
 					break;
 
 				case BN_CLICKED:
