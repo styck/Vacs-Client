@@ -1,8 +1,13 @@
-////////////////////////////////////////////////////////////////////////////////
-// ConsoleDefinition implementation file  implement.c
+
+//===========================================================
+// file implement.c
 //
+// Routines that the main code can call to set the 
+// preferences property page and to get access
+// to global varialbes used in the preferences.
 //
-//
+// Copyright 1998-2001 CorTek Software, Inc.
+//===========================================================
 
 #include <windows.h>
 
@@ -92,6 +97,12 @@ void FormatSockError(char *szBuffer, int iError)
 };
 HANDLE	g_running_mutex = NULL;
 #define	VACS_IDENTIFIER_MUTEX "VACS_RUNNING_MUTEX"
+
+
+//////////////////////////////////////////////////////////////////////
+// FUNCTION: CDef_isRunning
+//
+// 
 //
 int	CDef_isRunning (void)
 {
@@ -111,12 +122,33 @@ int	CDef_isRunning (void)
 
 	return running;
 }
+
+
+
+//////////////////////////////////////////////////////////////////////
+// FUNCTION: CDef_MixerTypePreference
+//
+// Returns the mixer type that was saved in the preference
+// This is mainly used for OFFLINE mode where the user
+// chooses the mixer type to work on. 
+//
+int	CDef_MixerTypePreference (void)
+{
+	return g_pref.iMixerType;
+}
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////
 // FUNCTION: CDef_Init
 //
 // Initialize internal stuff
 int     CDef_Init(void)
 {
+
+	g_pref.iMixerType = 0;		// Init MIXER type to NONE
 
 	g_running_mutex = CreateMutex (NULL, TRUE, VACS_IDENTIFIER_MUTEX);
 	if (g_running_mutex == NULL)
@@ -127,19 +159,19 @@ int     CDef_Init(void)
 		g_running_mutex = NULL;
 	}
 
-// Initialize the trhead that is going to handle the TCP protocol
-g_threadIO = CreateThread(NULL, 0, ioThreadProc, NULL, THREAD_PRIORITY_NORMAL, &g_threadID);
-if(g_threadIO == NULL)
-  return 1; // Error
+	// Initialize the trhead that is going to handle the TCP protocol
+	g_threadIO = CreateThread(NULL, 0, ioThreadProc, NULL, THREAD_PRIORITY_NORMAL, &g_threadID);
+	if(g_threadIO == NULL)
+		return 1; // Error
 
-ResumeThread(g_threadIO);
+	ResumeThread(g_threadIO);
 
-// LoadPrefernces
-if(LoadPreferences())
+	// LoadPrefernces
+	if(LoadPreferences())
   {
-  return 1;
+	  return 1;
   }
-else
+	else
   {
 /*
   // First off start the client and try to establish connection with the server ....
@@ -160,28 +192,30 @@ return 0; // OK
 // FUNCTION: CDef_ShutDown
 //
 // Cleanup the mess
+
 int     CDef_ShutDown(void)
 {
-if (g_running_mutex != NULL)
-	CloseHandle (g_running_mutex);
 
-if(g_hwndIO) 
+	if (g_running_mutex != NULL)
+		CloseHandle (g_running_mutex);
+
+	if(g_hwndIO) 
   {
-  SendMessage(g_hwndIO, WM_CLOSE, (WPARAM)0, (LPARAM)0);
+	  SendMessage(g_hwndIO, WM_CLOSE, (WPARAM)0, (LPARAM)0);
 
-  // there must a better way to determine when the thread has Exited
-  // but for now this shoud do.....
-  //----------------------------------------------------------------
-  while(g_threadIO)
-    Sleep(10);
+		// there must a better way to determine when the thread has Exited
+		// but for now this shoud do.....
+		//----------------------------------------------------------------
+		while(g_threadIO)
+			Sleep(10);
   }
 
-// free the other stuff
-FreeDCXMapBuffers(&g_dcxMemMap);
+	// free the other stuff
+	FreeDCXMapBuffers(&g_dcxMemMap);
 
-// Save preferences ...
-//---------------------
-SavePreferences();
+	// Save preferences ...
+	//---------------------
+	SavePreferences();
 
 
 return  0; // OK
@@ -221,8 +255,10 @@ return CONSOLE_DEFINITION_VERSION;
 /////////////////////////////////////////////////////////////////////
 // FUNCTION: CDef_Preferences
 //
+//  PropertySheet setup for preferences dialog
 //
-//
+/////////////////////////////////////////////////////////////////////
+
 int   CDef_Preferences(HWND hwnd)
 {
 int           iResult;
@@ -230,57 +266,66 @@ PROPSHEETPAGE psp[3];
 PROPSHEETHEADER psh;
 
 
-//if((g_hwndApp == NULL) || (g_hinstApp == NULL))
-if((hwnd == NULL) || (g_hinstApp == NULL))
-  return 1; // Error
+	//if((g_hwndApp == NULL) || (g_hinstApp == NULL))
+	if((hwnd == NULL) || (g_hinstApp == NULL))
+		return 1; // Error
 
-ZeroMemory (&psh, sizeof (psh));
-ZeroMemory (psp, sizeof (psp));
-gPropertyDone = FALSE;
 
-psp[0].dwSize = sizeof(PROPSHEETPAGE);
-psp[0].dwFlags = 0;
-psp[0].hInstance = g_hinstCDef;    
-psp[0].pszTemplate = MAKEINTRESOURCE(IDD_CONFIGURATION);
-psp[0].pszIcon = NULL;
-psp[0].pfnDlgProc = dlgConfig;
-psp[0].pszTitle = NULL;
-psp[0].lParam = 0;
+	ZeroMemory (&psh, sizeof (psh));
+	ZeroMemory (psp, sizeof (psp));
+	gPropertyDone = NOT_SET;
 
-psp[1].dwSize = sizeof(PROPSHEETPAGE);
-psp[1].dwFlags = 0;
-psp[1].hInstance = g_hinstCDef;      
-psp[1].pszTemplate = MAKEINTRESOURCE(IDD_TABLE);
-psp[1].pszIcon = NULL;
-psp[1].pfnDlgProc = dlgTable;
-psp[1].pszTitle = NULL;
-psp[1].lParam = 0;
+	psp[0].dwSize = sizeof(PROPSHEETPAGE);
+	psp[0].dwFlags = 0;
+	psp[0].hInstance = g_hinstCDef;    
+	psp[0].pszTemplate = MAKEINTRESOURCE(IDD_CONFIGURATION);
+	psp[0].pszIcon = NULL;
+	psp[0].pfnDlgProc = dlgConfig;
+	psp[0].pszTitle = NULL;
+	psp[0].lParam = 0;
 
-psp[2].dwSize = sizeof(PROPSHEETPAGE);
-psp[2].dwFlags = 0;
-psp[2].hInstance = g_hinstCDef;      
-psp[2].pszTemplate = MAKEINTRESOURCE(IDD_ABOUT_CONSOLEDEFINITION);
-psp[2].pszIcon = NULL;
-psp[2].pfnDlgProc = dlgAbout;
-psp[2].pszTitle = NULL;
-psp[2].lParam = 0;
+	psp[1].dwSize = sizeof(PROPSHEETPAGE);
+	psp[1].dwFlags = 0;
+	psp[1].hInstance = g_hinstCDef;      
+	psp[1].pszTemplate = MAKEINTRESOURCE(IDD_TABLE);
+	psp[1].pszIcon = NULL;
+	psp[1].pfnDlgProc = dlgTable;
+	psp[1].pszTitle = NULL;
+	psp[1].lParam = 0;
 
-psh.dwSize = sizeof(PROPSHEETHEADER);
-psh.dwFlags = PSH_PROPSHEETPAGE;// |PSH_DEFAULT;
-psh.hwndParent = hwnd;//g_hwndApp;
-psh.hInstance = g_hinstApp;
-psh.pszIcon = NULL;
-psh.pszCaption = (LPSTR) "DCX Console Definition Setup";
-psh.nPages = sizeof(psp) / sizeof(PROPSHEETPAGE);
-psh.ppsp = (LPCPROPSHEETPAGE) &psp;
+	psp[2].dwSize = sizeof(PROPSHEETPAGE);
+	psp[2].dwFlags = 0;
+	psp[2].hInstance = g_hinstCDef;      
+	psp[2].pszTemplate = MAKEINTRESOURCE(IDD_ABOUT_CONSOLEDEFINITION);
+	psp[2].pszIcon = NULL;
+	psp[2].pfnDlgProc = dlgAbout;
+	psp[2].pszTitle = NULL;
+	psp[2].lParam = 0;
 
-iResult = PropertySheet(&psh);
+	psh.dwSize = sizeof(PROPSHEETHEADER);
+	psh.dwFlags = PSH_PROPSHEETPAGE;// |PSH_DEFAULT;
+	psh.hwndParent = hwnd;//g_hwndApp;
+	psh.hInstance = g_hinstApp;
+	psh.pszIcon = NULL;
+	psh.pszCaption = (LPSTR) "DCX Console Definition Setup";
+	psh.nPages = sizeof(psp) / sizeof(PROPSHEETPAGE);
+	psh.ppsp = (LPCPROPSHEETPAGE) &psp;
 
-while (gPropertyDone == FALSE){
-	Sleep (10);
-}
 
-return 0; // OK
+	////////////////////////////////////////
+	// Show the property sheet we just setup
+
+	iResult = PropertySheet(&psh);
+
+	// What a stupid wait loop!!!!
+	// We are waiting for gPropertyDone to be set in CDEF_Preferences
+
+	while (gPropertyDone == NOT_SET){
+		Sleep (10);
+	}
+
+	return gPropertyDone;
+
 }
 
 /////////////////////////////////////////////////////////////////
@@ -290,21 +335,21 @@ return 0; // OK
 // SAC to send the data out ...
 int   CDef_SendData(LPCONTROLDATA lpCD)
 {
-LP_HDR_DCXTCP    phdrTCP;
-char             chBuff[255];
+	LP_HDR_DCXTCP    phdrTCP;
+	char             chBuff[255];
 
-phdrTCP = (LP_HDR_DCXTCP)chBuff;
-phdrTCP->iID      = DCX_TCP_ID;
-phdrTCP->wMessage = DCX_SET_CONTROL_VALUE;
-phdrTCP->wSize    = sizeof(CONTROLDATA);
-phdrTCP->mmt.u.ms = 0;
+	phdrTCP = (LP_HDR_DCXTCP)chBuff;
+	phdrTCP->iID      = DCX_TCP_ID;
+	phdrTCP->wMessage = DCX_SET_CONTROL_VALUE;
+	phdrTCP->wSize    = sizeof(CONTROLDATA);
+	phdrTCP->mmt.u.ms = 0;
 
-CopyMemory(chBuff + sizeof(HDR_DCXTCP), lpCD, sizeof(CONTROLDATA));
+	CopyMemory(chBuff + sizeof(HDR_DCXTCP), lpCD, sizeof(CONTROLDATA));
 
-//SendData((LPSTR)lpCD, sizeof(CONTROLDATA));
-SendData(chBuff, sizeof(HDR_DCXTCP)+sizeof(CONTROLDATA));
+	//SendData((LPSTR)lpCD, sizeof(CONTROLDATA));
+	SendData(chBuff, sizeof(HDR_DCXTCP)+sizeof(CONTROLDATA));
 
-return 0; // OK
+	return 0; // OK
 };
 
 void	CDef_ResetBus(void)
@@ -463,11 +508,11 @@ LPDCX_CTRL_DESC     pdcxctrl; // the lookup table for the controls position in m
 
 iRet = 0;
 
-if( (iCtrlIdx >= 0) && (iCtrlIdx < g_dcxMemMap.dcxHdr.iCtrlCount))
-  {
-  pdcxctrl = g_dcxMemMap.pDcxMap[iCtrlIdx].pCtrlDesc;
-  iRet = pdcxctrl->iREG0;
-  }
+	if( (iCtrlIdx >= 0) && (iCtrlIdx < g_dcxMemMap.dcxHdr.iCtrlCount))
+	{
+		pdcxctrl = g_dcxMemMap.pDcxMap[iCtrlIdx].pCtrlDesc;
+		iRet = pdcxctrl->iREG0;
+	}
 
 return iRet;
 }
@@ -482,13 +527,13 @@ int   CDef_GetCtrlMaxVal(int iCtrlIdx)
 int                 iRet;
 LPDCX_CTRL_DESC     pdcxctrl; // the lookup table for the controls position in memory
 
-iRet = 2;
+	iRet = 2;
 
-if( (iCtrlIdx >= 0) && (iCtrlIdx < g_dcxMemMap.dcxHdr.iCtrlCount))
-  {
-  pdcxctrl = g_dcxMemMap.pDcxMap[iCtrlIdx].pCtrlDesc;
-  iRet = pdcxctrl->iNumEntr;
-  }
+	if( (iCtrlIdx >= 0) && (iCtrlIdx < g_dcxMemMap.dcxHdr.iCtrlCount))
+	{
+		pdcxctrl = g_dcxMemMap.pDcxMap[iCtrlIdx].pCtrlDesc;
+		iRet = pdcxctrl->iNumEntr;
+	}
 
 return iRet;
 }
@@ -515,16 +560,15 @@ LPDCX_CTRL_DESC     pdcxctrl; // the lookup table for the controls position in m
 LPDCXCTRLENTRY      pdcxentr;
 int                 iRet = 0;
 
-if( (iCtrlIdx >= 0) && (iCtrlIdx < g_dcxMemMap.dcxHdr.iCtrlCount))
+	if( (iCtrlIdx >= 0) && (iCtrlIdx < g_dcxMemMap.dcxHdr.iCtrlCount))
   {
-  pdcxctrl = g_dcxMemMap.pDcxMap[iCtrlIdx].pCtrlDesc;
-  (LPSTR)pdcxentr = (LPSTR)pdcxctrl + sizeof(DCX_CTRL_DESC);
+		pdcxctrl = g_dcxMemMap.pDcxMap[iCtrlIdx].pCtrlDesc;
+		(LPSTR)pdcxentr = (LPSTR)pdcxctrl + sizeof(DCX_CTRL_DESC);
 
-  if( ( iVal >= 0 ) && ( iVal < pdcxctrl->iNumEntr) )
-    {
-    lstrcpy(szRdOut, pdcxentr[iVal].szRdOut);
-    }
-    
+		if( ( iVal >= 0 ) && ( iVal < pdcxctrl->iNumEntr) )
+		{
+			lstrcpy(szRdOut, pdcxentr[iVal].szRdOut);
+		} 
   }
 
 return 0;
@@ -551,19 +595,19 @@ int                 iRet;
 int                 i;
 LPDCX_MAP_ENTRY     pdcxmap; // the lookup table for the controls position in memory
 
-iRet = -1; // error
+	iRet = -1; // error
 
-pdcxmap = g_dcxMemMap.pDcxMap ;
-if(pdcxmap != NULL)
+	pdcxmap = g_dcxMemMap.pDcxMap ;
+	if(pdcxmap != NULL)
   {
-  for(i = 0; i < g_dcxMemMap.dcxHdr.iCtrlCount; i++)
-    {
-    if( stricmp(chCtrlName, pdcxmap->pCtrlDesc->szName) == 0)    
-      {
-      iRet = i;
-      break;
-      }
-    pdcxmap ++;
+		for(i = 0; i < g_dcxMemMap.dcxHdr.iCtrlCount; i++)
+		{
+			if( stricmp(chCtrlName, pdcxmap->pCtrlDesc->szName) == 0)    
+			{
+				iRet = i;
+				break;
+			}
+			pdcxmap ++;
     }    
   }
 
@@ -595,3 +639,4 @@ int   CDef_GetLastError(LPSTR lpBuff, int iBuffSize)
 
 return g_iLastError;
 }
+
