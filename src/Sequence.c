@@ -849,9 +849,7 @@ BOOL  SeqGoToLast(void)
 //
 BOOL CALLBACK   SeqUpdatePropProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
-  //HWND            hwndCtrl;
-  //RECT            rect, rectCtrl;
-  //char            szBuff[MAX_PATH];
+static BOOL bPropogate;
 
   switch(uiMsg)
   {
@@ -859,17 +857,30 @@ BOOL CALLBACK   SeqUpdatePropProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM l
     switch(LOWORD(wParam))
     {
     case IDC_PROP_ALL:
-      DisableSeqUpdateAllProps(hwnd, TRUE);
-      SetSeqUpdateAllProps(hwnd, TRUE);
+		bPropogate=TRUE;
+//      DisableSeqUpdateAllProps(hwnd, TRUE);
+//      SetSeqUpdateAllProps(hwnd, TRUE);
       break;
     case IDC_PROP_CUSTOM:
-      DisableSeqUpdateAllProps(hwnd, FALSE);
+//      DisableSeqUpdateAllProps(hwnd, FALSE);
       break;
     case IDC_DONOT_PROP:
-      DisableSeqUpdateAllProps(hwnd, TRUE);
-      SetSeqUpdateAllProps(hwnd, FALSE);
+		bPropogate=FALSE;
+//      DisableSeqUpdateAllProps(hwnd, TRUE);
+//      SetSeqUpdateAllProps(hwnd, FALSE);
       break;
     case IDOK:
+		if(bPropogate)
+		{
+		  DisableSeqUpdateAllProps(hwnd, TRUE);
+		  SetSeqUpdateAllProps(hwnd, TRUE);
+		}
+		else
+		{
+		  DisableSeqUpdateAllProps(hwnd, TRUE);
+		  SetSeqUpdateAllProps(hwnd, FALSE);
+		}
+
       g_SeqPropagate.bUseCurrent = IsDlgButtonChecked(hwnd, IDC_USE_AUTO);
 			if(IsDlgButtonChecked(hwnd, IDC_PROP_ALL))
 				g_SeqPropagate.iPropWhat = PROP_ALL;
@@ -1619,7 +1630,6 @@ void    SeqRenameItem(void)
 {
 HTREEITEM       htreeitem;
 TV_ITEM         tvi;
-long            lItemDel;
 
 	htreeitem = TreeView_GetSelection(g_hwndTV);
 	if(htreeitem == NULL)
