@@ -407,7 +407,21 @@ void      RefreshAllMDIWindows(void)
 /////////////////////////////////////////////////////////////////////
 //  MEMBER FUNCTION: UpdateSameMixWndByCtrlNum
 //
+//params:
+//      HWND						hwnd; -> the Window that starts the
+//															update
+//      int							iMixer; ->  the mixer we want to
+//																	check for
+//      int							iPhisChan;->the Channel to be updated
+//			LPCTRLZONEMAPD	lpctrlZM:-> pointer to the zone map
+//      int							iVal; -> the phisical value
+//			HDC							hdcBuffer:-> hdc to draw in
 //
+//purpose:
+//      Scan all the windows and update the ones
+//      that represent the same Phisical Mixer
+//      Here we use oiur own list of the opened
+//      windows
 //
 void      UpdateSameMixWndByCtrlNum(HWND  hwnd,
                                     int   iMixer,
