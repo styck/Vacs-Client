@@ -1026,16 +1026,6 @@ BEGIN
     RDOUT_STRING_TABLE,
     0x0000, IDB_LO_FREQ_SHELF, 0x0000,
 
-    // The EQ RESET
-    //----------------------------
-    83, 1829,  99, 1837,
-    CTRL_NUM_RESET_EQ, CTRL_TYPE_BTN_EQ_RESET_FILTER, DISP_TYPE_NULL,
-	"\0                         ",  // the control name ....
-	"\0                         ",  // the control name .... Alternative
-    RDOUT_STRING_TABLE,
-    0x0000, IDB_SMALL_REDBTN, 0x0000,
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
