@@ -893,7 +893,7 @@ iV = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
 // Activate the Cue system when it is not OFF and activate the SCILENT 
 // Cue system when it is OFF.
 // Begin setting
-if (gDeviceSetup.iaChannelTypes[iPhisChannel] == 5 && 
+if (gDeviceSetup.iaChannelTypes[iPhisChannel] == DCX_DEVMAP_MODULE_MASTER && 
 		lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_CUE_A_SUM_IN)
 {
 	sum_in_flag = isCtrlValueNotEqualToDefault (lpctrlZM, CTRL_NUM_MASTER_CUE_A_SUM_IN);
