@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Labels and Groups. $
-// $Revision:: 23                                 $
+// $Revision:: 24                                 $
 //
 
 //=================================================
@@ -137,6 +137,15 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 				{
 					if(GroupChannel(iXVal, 1))
 					{
+						///////////////////////////////////////////
+						// If there are ANY channels grouped
+						// then update our toolbar to indicate
+
+						if(IsAnyGrouped())
+							GroupedStatus(TRUE);
+						else
+							GroupedStatus(FALSE);
+
 						RefreshAllLblWindows();
 					}
 				}
@@ -144,15 +153,24 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 			else if(wParam & MK_RBUTTON)
 			{
 				iXVal = LOWORD(lParam);
-			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
-			{
-				if(UnGroupChannel(iXVal))
+				if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
 				{
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-					RefreshAllLblWindows();
+					if(UnGroupChannel(iXVal))
+					{
+						///////////////////////////////////////////
+						// If there are ANY channels grouped
+						// then update our toolbar to indicate
+
+						if(IsAnyGrouped())
+							GroupedStatus(TRUE);
+						else
+							GroupedStatus(FALSE);
+
+						InvalidateRect(hWnd, NULL, FALSE);
+						UpdateWindow(hWnd);
+						RefreshAllLblWindows();
+					}
 				}
-			}
 			}
 
 		break;
