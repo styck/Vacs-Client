@@ -444,25 +444,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
         break;
     //``````````````
     case IDM_F_EXIT:
-				// Save the current state
-				if (g_mixer_state_changed)
-				{	
-					if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
-						SaveMixFile ();
-				}
-
-			///////////////////////////////////////////
-			// We are exiting, write the LA$T.mis file
-			///////////////////////////////////////////
-
-				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
-				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
-				WriteMixFile(&fsTemp, FALSE);
-
-        CloseAllMDI();
-        DestroyWindow(hWnd);
-        PostQuitMessage(0);
-				ghwndMain = NULL;
+				PostMessage(hWnd,WM_CLOSE,wParam,lParam);	// Handle it like the WM_CLOSE - save mix file in registry
         break; 
     //``````````````
     case IDM_V_FULLCONSOLE:
@@ -702,10 +684,6 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 			/////////////////////////////////////////////////////////////
 			// Store the last loaded mix file into the registry so that
 			// we can load the associated sequence file for that mix file
-
-
-//			wsprintf(szBuff, "%smix\\", gszProgDir);
-//			wsprintf(szBuff, "%s", "LA$T.mix");
 
 			wsprintf(szBuff, "%smix\\%s", gszProgDir, "LA$T.mix");
 
