@@ -12,9 +12,14 @@
 
 
 HWND		ghwndTBSeqReadout = NULL;
-HWND		ghwndTBZoomWinCntReadout = NULL;
+HWND		ghwndTBSeqReadout2 = NULL;
 int			giTBSeqReadout = 9512;
-int			giTBZoomWinCntReadout = 9513;		
+int			giTBSeqReadout2 = 9513;
+
+HWND		ghwndTBZoomWinCntReadout = NULL;
+
+
+int			giTBZoomWinCntReadout = 9514;		
 
 //=================================
 // FUNCTION: CreateMainWindow
@@ -77,7 +82,7 @@ return 0;
 };
 
 ////////////////////////////////// 
-#define TB_BUTTONS_COUNT	25	// was 28 with all the buttons
+#define TB_BUTTONS_COUNT	26	// was 28 with all the buttons
 
 /////////////////////////////////////////////////////////////////////
 //	MEMBER FUNCTION: CreateToolbars
@@ -87,15 +92,13 @@ return 0;
 int		CreateToolBars(HWND		hwndParent)
 {
   int					iRet = 0;
-  //TBADDBITMAP tbab;
   TBBUTTON		tbb[TB_BUTTONS_COUNT];
 	TBBUTTONINFO tbinfo = {0};
-  int					iCount = 0, iButtonCount = 0, iSeqButton, iNumZoomWindowsButton, i;
+  int					iCount = 0, iButtonCount = 0, iSeqButton,iSeqButton2, iNumZoomWindowsButton, i;
   RECT				r;                      
-  //char        szBuff[MAX_STRING_SIZE];
   HWND        hToolTips;
-	char				szStrings[64] = " 1\0 2\0 3\0 4\0 5\0 6\0 7\0 8\0\0";
 
+	TOOLINFO	lpToolInfo;
 
 
 	// Setup the following Tool Bar buttons
@@ -149,13 +152,13 @@ int		CreateToolBars(HWND		hwndParent)
   tbb[iCount].iBitmap = -1;
   tbb[iCount].idCommand = 0;
   tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_SEP | TBSTYLE_AUTOSIZE;
+  tbb[iCount].fsStyle = TBSTYLE_SEP; // | TBSTYLE_AUTOSIZE;
   tbb[iCount].dwData = 0;
   tbb[iCount].iString = -1; 
 	iCount++;
 
 	//////////////////
-	// Sequence name
+	// Active Sequence name
 	iSeqButton = iCount;			// save for later
   tbb[iCount].iBitmap = -1; // account for the separator
   tbb[iCount].idCommand = giTBSeqReadout;
@@ -164,6 +167,18 @@ int		CreateToolBars(HWND		hwndParent)
   tbb[iCount].dwData = 0;
   tbb[iCount].iString = -1;
   iCount++;
+
+	//////////////////
+	// Next Sequence name
+	iSeqButton2 = iCount;			// save for later
+  tbb[iCount].iBitmap = -1; // account for the separator
+  tbb[iCount].idCommand = giTBSeqReadout2;
+  tbb[iCount].fsState = TBSTATE_ENABLED;
+  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+  tbb[iCount].dwData = 0;
+  tbb[iCount].iString = -1;
+  iCount++;
+  
   
 	//////////////////
   // add a separator
@@ -232,7 +247,7 @@ int		CreateToolBars(HWND		hwndParent)
   tbb[iCount].iBitmap = 9; // account for the separator
   tbb[iCount].idCommand = IDM_V_FULLCONSOLE;
   tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
+  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE ;
   tbb[iCount].dwData = 0;
   tbb[iCount].iString = -1; 
   iCount++;
@@ -316,30 +331,26 @@ int		CreateToolBars(HWND		hwndParent)
   tbb[iCount].iString = -1;
   iCount++;
 
-
 	// Set the number of buttons
 
 	iButtonCount = iCount;
 
-  ghwndTBPlay = CreateToolbarEx(hwndParent, WS_CHILD | TBSTYLE_TOOLTIPS | TBSTYLE_ALTDRAG | TBSTYLE_LIST ,// | CCS_ADJUSTABLE, 
-															  1100, 19, ghInstMain, IDB_PLAYTOOL,(LPCTBBUTTON) &tbb, iButtonCount,
+  ghwndTBPlay = CreateToolbarEx(hwndParent, WS_CHILD | WS_VISIBLE | WS_BORDER | TBSTYLE_TOOLTIPS, // | TBSTYLE_LIST | CCS_ADJUSTABLE, 
+															  IDB_PLAYTOOL, 19, ghInstMain, IDB_PLAYTOOL,(LPCTBBUTTON) &tbb, iButtonCount,
 															  16, 14, 16, 14, sizeof(TBBUTTON));
 
-	// SendMessage(ghwndTBPlay, TB_ADDSTRING, (WPARAM)0, (LPARAM)szStrings);
-
-	///////////////////////////////////////////
-	// now Create the SEQUENCE readout window ....
+	/////////////////////////////////////////////////////////
+	// now Create the CURRENT SEQUENCE readout window ....
+	/////////////////////////////////////////////////////////
 
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
-	tbinfo.cx = 175;	// 175	SIZE OF THE SEQUENCE WINDOW
+	tbinfo.cx = 185;	// 175	SIZE OF THE SEQUENCE WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBSeqReadout, (LPARAM)&tbinfo);
 
   SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-  SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
-
 	
 	// Get the size of the sequence button passed in WPARAM
 
@@ -357,20 +368,43 @@ int		CreateToolBars(HWND		hwndParent)
 	SetWindowText(ghwndTBSeqReadout, "Sequence ..........");
 
 
+	/////////////////////////////////////////////////////////
+	// now Create the NEXT SEQUENCE readout window ....
+	/////////////////////////////////////////////////////////
+
+	tbinfo.cbSize = sizeof(TBBUTTONINFO);
+	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
+	tbinfo.fsStyle = TBSTYLE_SEP;
+	tbinfo.cx = 185;	// 175	SIZE OF THE SEQUENCE WINDOW
+
+	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBSeqReadout2, (LPARAM)&tbinfo);
+	
+	// Get the size of the sequence button passed in WPARAM
+
+	SendMessage(ghwndTBPlay, TB_GETITEMRECT, (WPARAM)iSeqButton2, (LPARAM)&r);
+	r.top = 2;
+
+	//////////////////////////////////////////////////
+	// Create Sequence window on toolbar
+	//////////////////////////////////////////////////
+
+	ghwndTBSeqReadout2 = CreateWindow("STATIC", "", WS_VISIBLE | WS_CHILD | WS_BORDER,//CBS_DROPDOWNLIST | CBS_HASSTRINGS,
+																	r.left, r.top, r.right - r.left, r.bottom - r.top,
+																	ghwndTBPlay, NULL, ghInstMain, NULL);
+	
+	SetWindowText(ghwndTBSeqReadout2, "Next Sequence ......");
+
+
 ///////////////////////////////////////////
 // Num Zoom Windows display
 	
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
-	tbinfo.cx = 175;	// 175	SIZE OF THE SEQUENCE WINDOW
+	tbinfo.cx = 135;	// 175	SIZE OF THE SEQUENCE WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBZoomWinCntReadout, (LPARAM)&tbinfo);
 
-  SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-  SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
-
-	
 	// Get the size of the number of zoom windows open button passed in WPARAM
 
 	SendMessage(ghwndTBPlay, TB_GETITEMRECT, (WPARAM)iNumZoomWindowsButton, (LPARAM)&r);
@@ -388,35 +422,31 @@ int		CreateToolBars(HWND		hwndParent)
 
 //////////////////////////////////////////
 
-	//SendMessage(ghwndTBSeqReadout, CB_RESETCONTENT, 0, (LPARAM)0);
-	//SendMessage(ghwndTBSeqReadout, CB_ADDSTRING, 0, (LPARAM)"Sequence ...");
-	
-	//SendMessage(ghwndTBPlay, TB_SETEXTENDEDSTYLE, 0, (LPARAM)TBSTYLE_EX_DRAWDDARROWS);
-/*
-  // Add some strings to the Toolbar control so the Tool tip control will work
-  //
-  LoadString(ghInstStrRes, IDM_V_FULLCONSOLE, (LPSTR) &szBuff, MAX_STRING_SIZE);
-  SendMessage(ghwndTBPlay, TB_ADDSTRING, 0, (LPARAM) (LPSTR) szBuff);
-
-  LoadString(ghInstStrRes, IDM_V_FULLZOOM, (LPSTR) &szBuff, MAX_STRING_SIZE);
-  SendMessage(ghwndTBPlay, TB_ADDSTRING, 0, (LPARAM) (LPSTR) szBuff);
-*/                             
-
-
-
-	//SendMessage(ghwndTBPlay, TB_SETEXTENDEDSTYLE, 0, (LPARAM)(DWORD)TBSTYLE_EX_DRAWDDARROWS);
-
   ShowWindow(ghwndTBPlay, SW_SHOW);
 
-  GetWindowRect(ghwndTBPlay, &r);
+	/////////////////////////////////////////////////////////////////
+	// Set up the Tool Tips for our Tool Bar
+	/////////////////////////////////////////////////////////////////
 
   hToolTips = (HWND)SendMessage(ghwndTBPlay, TB_GETTOOLTIPS, 0, 0);
+	if(hToolTips)
+	{
+		lpToolInfo.cbSize = sizeof(lpToolInfo);
+		lpToolInfo.uFlags = TTF_IDISHWND | TTF_CENTERTIP;
+		lpToolInfo.lpszText = (LPSTR) LPSTR_TEXTCALLBACK;
+		lpToolInfo.hwnd = hwndParent;
+		lpToolInfo.uId = (UINT) ghwndTBPlay;
+		lpToolInfo.hinst = ghInstMain;
+	}
+	SendMessage(hToolTips,TTM_ADDTOOL,0,(LPARAM)(LPTOOLINFO)&lpToolInfo);
+
   SendMessage(hToolTips, TTM_ACTIVATE, (WPARAM)TRUE,0);
 
+	// Set times for the tool tip to pop-up
 
-	i = SendMessage(hToolTips, TTM_GETDELAYTIME, (WPARAM)TTDT_AUTOPOP, (LPARAM)MAKELONG(0, 0));
-	i = SendMessage(hToolTips, TTM_GETDELAYTIME, (WPARAM)TTDT_INITIAL, (LPARAM)MAKELONG(0, 0));
-	i = SendMessage(hToolTips, TTM_GETDELAYTIME, (WPARAM)TTDT_RESHOW, (LPARAM)MAKELONG(0, 0));
+	SendMessage(hToolTips, TTM_SETDELAYTIME, (WPARAM)TTDT_AUTOPOP, (LPARAM)MAKELONG(40000,0));
+	SendMessage(hToolTips, TTM_SETDELAYTIME, (WPARAM)TTDT_INITIAL, (LPARAM)MAKELONG(200,0));
+	SendMessage(hToolTips, TTM_SETDELAYTIME, (WPARAM)TTDT_RESHOW, (LPARAM)MAKELONG(200,0));
 
 return iRet;
 }
@@ -429,6 +459,15 @@ void ShowTBSeqName(LPSTR pName)
 {
 	if(ghwndTBSeqReadout)
 		SetWindowText(ghwndTBSeqReadout, pName);
+}
+
+//
+// Show the NEXT  active sequence
+//
+void ShowTBNextSeqName(LPSTR pName)
+{
+	if(ghwndTBSeqReadout2)
+		SetWindowText(ghwndTBSeqReadout2, pName);
 }
 
 // Show the number of zoom windows open
