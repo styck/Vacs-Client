@@ -81,7 +81,7 @@ return 0;
 //
 int		CreateToolBars(HWND		hwndParent)
 {
-#define TB_BUTTONS_COUNT	27
+#define TB_BUTTONS_COUNT	28
   int					iRet = 0;
   //TBADDBITMAP tbab;
   TBBUTTON		tbb[TB_BUTTONS_COUNT];
@@ -191,6 +191,16 @@ int		CreateToolBars(HWND		hwndParent)
   tbb[iCount].idCommand = 0;
   tbb[iCount].fsState = TBSTATE_ENABLED;
   tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;
+  tbb[iCount].dwData = 0;
+  tbb[iCount].iString = -1; 
+
+  // Cancel the Cues
+  //
+  iCount++;
+  tbb[iCount].iBitmap = 21; 
+  tbb[iCount].idCommand = IDM_V_CANCELCUES;
+  tbb[iCount].fsState = TBSTATE_ENABLED;
+  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
   tbb[iCount].dwData = 0;
   tbb[iCount].iString = -1; 
 
