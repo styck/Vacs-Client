@@ -219,6 +219,7 @@ HDC                 ghdc256 = NULL;
 HDC                 ghdcMemory = NULL;
 HDC                 g_hdcMemory = NULL;
 HDC                 g_hdcBuffer = NULL;
+HDC                 g_hdcTempBuffer = NULL;
 
 HBITMAP             g_hbmpBuffer = NULL;
 
