@@ -129,6 +129,15 @@ BEGIN
     MENUITEM "Properties",                  MENU_TVN_PROPERTIES
 END
 
+MENU_LVN_POPUP MENU DISCARDABLE 
+BEGIN
+    MENUITEM "Add",                         MENU_LVN_ADD
+    MENUITEM "Delete",                      MENU_LVN_DELETE
+    MENUITEM "Rename",                      MENU_LVN_RENAME
+    MENUITEM "Update",                      MENU_LVN_UPDATE
+    MENUITEM "Cancel",                      MENU_LVN_CANCEL
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -12,6 +12,7 @@
 #define IDD_PRF_ACTIONS                 106
 #define IDD_GROUPS                      107
 #define IDD_SEQ_UPDATE_PROP             108
+#define MENU_LVN_POPUP                  110
 #define IDD_SMPTE_DISPLAY               141
 #define IDD_PRF_MTC                     142
 #define IDC_PRF_MTC_IN                  1000
@@ -181,6 +182,11 @@
 #define IDM_RESETBUS                    40040
 #define IDM_H_INFO                      40041
 #define MENU_TVN_RENAME                 40042
+#define MENU_LVN_ADD                    40046
+#define MENU_LVN_DELETE                 40047
+#define MENU_LVN_RENAME                 40048
+#define MENU_LVN_UPDATE                 40049
+#define MENU_LVN_CANCEL                 40050
 #define IDM_GENERATE_DLLIST             40100
 
 // Next default values for new objects
@@ -188,8 +194,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        109
-#define _APS_NEXT_COMMAND_VALUE         40043
+#define _APS_NEXT_RESOURCE_VALUE        111
+#define _APS_NEXT_COMMAND_VALUE         40051
 #define _APS_NEXT_CONTROL_VALUE         1037
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
