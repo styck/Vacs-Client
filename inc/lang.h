@@ -191,6 +191,7 @@
 #define MENU_LVN_UPDATE                 40049
 #define MENU_LVN_CANCEL                 40050
 #define IDM_SOLO_CUE_MODE               40051
+#define IDM_UPDOWNSCROLL_SPEED          40052
 #define IDM_GENERATE_DLLIST             40100
 
 // Next default values for new objects
@@ -199,7 +200,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        111
-#define _APS_NEXT_COMMAND_VALUE         40052
+#define _APS_NEXT_COMMAND_VALUE         40053
 #define _APS_NEXT_CONTROL_VALUE         1038
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
