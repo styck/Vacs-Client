@@ -1,16 +1,17 @@
 //=================================================
-// Copyright 1998-2001 CorTek Software, Inc.
+// Copyright 1998-2002 CorTek Software, Inc.
 //=================================================
 //
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Status.c           $
-// $Revision:: 4                                  $
+// $Revision:: 5                                  $
 //
 
 //========================================================
-//Status bar Functions
+// Status bar Functions
 //
+// Creates the Status bar and handles the messages
 //
 //========================================================            
 
@@ -18,7 +19,11 @@
 #include "SAMMEXT.h"
 #include "MACRO.h"
 
+#include <stdio.h> // JUST FOR SPRINTF() BELOW IN DEBUGGING
+
+
 LRESULT CALLBACK  StatusBarProc(HWND , UINT , WPARAM , LPARAM);
+void DrawFrame(HDC *, RECT , int );
 
 // Variables
 //----------
@@ -65,8 +70,6 @@ int    CreateMainStatusWindow(HWND hwndParent)
 
   if(ghwndStatus == NULL)
       return IDS_ERR_CREATE_WINDOW;
-
-
 
 #define BORDER_SIZE			2
 
@@ -136,15 +139,16 @@ int    CreateMainStatusWindow(HWND hwndParent)
 
 	//////////////////////////////////////////////////
 	// Create the SHIFT button
+	// as a Check box with Pushlike style
 
-	ghwndStatShiftButton = CreateWindowEx(0, "BUTTON", "SHIFT", 
-                                WS_CHILD | BS_CENTER | BS_VCENTER | BS_PUSHBUTTON | BS_PUSHLIKE, 
+	ghwndStatShiftButton = CreateWindowEx(0L,"BUTTON", "SHIFT", 
+                                WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | BS_PUSHLIKE , 
                                 SHIFT_START+BORDER_SIZE,						// x 
-                                2,													// y
+                                4,													// y
                                 SHIFT_END-SHIFT_START - BORDER_SIZE,		// width 98
-                                rCl.bottom-BORDER_SIZE,		// height
+                                rCl.bottom-BORDER_SIZE - 2,		// height
                                 ghwndStatus, 
-                                (HMENU) 0, 
+                                (HMENU) VK_SHIFT,		// Post this message to the process
                                 ghInstMain, 
                                 NULL); 
 
@@ -257,12 +261,13 @@ int    CreateMainStatusWindow(HWND hwndParent)
 
 
 	//////////////////////////////////////////////////////////
-	// Try to subclass the status bar so we can get messages
+	// Subclass the status bar so we can get messages
 
 	WndProc = (WNDPROC)SetWindowLong(ghwndStatus, GWL_WNDPROC, (LONG)StatusBarProc);
 
   return 0;
 };
+
 
 
 
@@ -272,10 +277,8 @@ int    CreateMainStatusWindow(HWND hwndParent)
 LRESULT CALLBACK   StatusBarProc(HWND hWnd, UINT wMessage,
                                WPARAM wParam, LPARAM  lParam)
 {
-	LPMIXERWNDDATA      lpmwd;
 	HWND hWndZoom;
-
-	lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndZoom,0);	// used ONLY for the SHIFT screen button
+	int nCheck;
 
 	switch (wMessage)
 	{
@@ -318,7 +321,6 @@ LRESULT CALLBACK   StatusBarProc(HWND hWnd, UINT wMessage,
 					if(hWndZoom)
 					{
 						SendMessage(hWndZoom,WM_KEYUP,(WPARAM)VK_LEFT, (LPARAM)NULL);
-						SetFocus(hWndZoom);
 					}
 					break;
 
@@ -327,55 +329,44 @@ LRESULT CALLBACK   StatusBarProc(HWND hWnd, UINT wMessage,
 					if(hWndZoom)
 					{
 						SendMessage(hWndZoom,WM_KEYUP,(WPARAM)VK_RIGHT, (LPARAM)NULL);
-						SetFocus(hWndZoom);
 					}
 					break;
 
-				case BN_CLICKED:
-					if(lpmwd)
-						lpmwd->wKeyFlags |= VK_SHIFT;
-//					SendMessage(hWnd, BM_SETSTATE,1,0L);
-				break;
+				////////////////////////////////////////////////////////
+				// Handle the on screen SHIFT key
+				// Need to send messages to main and zoom windows since
+				// one handles the arrow keys and the other handles the
+				// Function keys (FIX LATER)
 
-				case BN_HILITE:
-					if(lpmwd)
-						lpmwd->wKeyFlags |= VK_SHIFT;
-				break;
+				case VK_SHIFT:
 
-				case BN_UNHILITE:
-					if(lpmwd)
-						lpmwd->wKeyFlags &= ~VK_SHIFT;
+					hWndZoom=FindWindowEx(ghwndMDIClient,NULL,gszZoomViewClass,"Zoom View");
+
+							nCheck = SendMessage(ghwndStatShiftButton, BM_GETCHECK,1,0L);
+							if(nCheck)
+							{
+								SendMessage(ghwndMain,WM_KEYDOWN,(WPARAM)VK_SHIFT, (LPARAM)NULL);
+								SendMessage(hWndZoom,WM_KEYDOWN,(WPARAM)VK_SHIFT, (LPARAM)NULL);
+							}
+							else
+							{
+								SendMessage(ghwndMain,WM_KEYUP,(WPARAM)VK_SHIFT, (LPARAM)NULL);
+								SendMessage(hWndZoom,WM_KEYUP,(WPARAM)VK_SHIFT, (LPARAM)NULL);
+							}
 				break;
 
 			}
 
+			if(hWndZoom)
+				SetFocus(hWndZoom);	// Need to return focus to the main window or keys won't work
 
+			return 0;
 
 			default:
 					 return CallWindowProc(WndProc, hWnd, wMessage, wParam, lParam);
 	}
 
-//	return WndProc(hWnd, wMessage, wParam, lParam);
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
