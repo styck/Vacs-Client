@@ -1,5 +1,5 @@
 //=================================================
-// Copyright 1998, CorTek Software, Inc.
+// Copyright 2001, CorTek Software, Inc.
 //=================================================
 
 // Purpose handle all General Group assignments
@@ -768,6 +768,9 @@ int   GetLisControlSelection(void)
   return -1;
 }
 
+/////////////////////////////////////////////
+//
+//
 int	GetListItemGroupNumber(int iItem)
 {
   HWND      hwnd;
@@ -1425,6 +1428,13 @@ int AddGroup(LPGROUPSTORE pGrp, int iType)
   return iRet;
 }
 
+
+
+///////////////////////////////////////////////////////////////
+// FindConsecutiveGroupIndex
+//
+//
+//
 int	FindConsecutiveGroupIndex(int iNum, int iType)
 {
   int           iRet = 0;
@@ -1576,7 +1586,7 @@ BOOL    UnGroupChannel(int iChannel)
 }
 
 ///////////////////////////////////////////////////////
-// Upadte Grouped Controls 
+// Update Grouped Controls 
 //
 //
 //
@@ -1699,7 +1709,7 @@ void   UpdateGroupedMutes(LPCTRLZONEMAP pctrlzm, LPMIXERWNDDATA lpmwd)
 
 
 ///////////////////////////////////////////////////////
-// Upadte Stereo Controls 
+// Update Stereo Controls 
 //
 //
 //
@@ -1741,6 +1751,11 @@ void   UpdateStereoControls(CONTROLDATA *pCtrlData, LPCTRLZONEMAP pctrlzm,
 
 
         pCtrlData->wCtrl = pctrl->iCtrlNumAbs;
+
+				// g_bReversDirection is set when the ALT key 
+				// is held down while moving a stereo linked fader.
+				// The linked fader will move in the opposite direction
+				// of the fader being moved. Set in main.c - WinMain()
 
         if(g_bReversDirection)
           iDelta = -iDelta;
