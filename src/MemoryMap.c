@@ -331,6 +331,7 @@ int     SetMemoryMapDefaults(void)
   int                 iCtrlNum;
   int                 iCtrlAbs;
 
+
   for(iChannel = 0; iChannel < giMax_CHANNELS; iChannel++)
   {
     lpctrlZM = gpZoneMaps_Zoom[iChannel].lpZoneMap;
@@ -364,16 +365,22 @@ int     SetMemoryMapDefaults(void)
       {
         if((iCtrlNum != CTRL_NUM_NULL) && (lpctrlZM->iModuleNumber > -1))
         {
+
           // This is very UGLY !!! Please fix it !!!!!!!!!!!! ??????
           // These are all SOFTWARE CONTROLS
 					// We are setting their default values here, ie on/off
 					//
           if(
 
-//	DO NOT DEFAULT					(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_PREPOST_FADER_VU
-//  THE PREPOST           && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT)
-//  FADER BUTTON TO ON          ||
-
+//	DO NOT DEFAULT
+//  THE PREPOST
+//  FADER BUTTON TO ON IF THE LINE B OR THE KEY BUTTON IS PRESSED IN
+//#ifdef REMOVED
+					( (lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_PREPOST_FADER_VU) && 
+					  (gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT) 
+				  )
+					  ||
+//#endif
             ( (lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_POST_LT_VU 
                || lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_POST_RT_VU )
              && gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_MASTER) 
@@ -703,16 +710,20 @@ void    InitVULookupTables(BOOL bLinear)
   {
     fDacRead = (float)iCount;
     fDacRead = ((float)log10(fDacRead/VU_DIVIDER_001)) * 20;
+
+		/////////////////////////////////////////////////////////
+		//
+		// 40.0 changed to 38.0  - 12/28/2000
     if(bLinear)
       // Tom's formula #1..................
-      fDacRead = (float)(((fDacRead + 40.0) / 55.0) * (float)gbmpVUONVert.bmHeight);
+      fDacRead = (float)(((fDacRead + 38.0) / 55.0) * (float)gbmpVUONVert.bmHeight);
     else
     {
 
       // Tom's formula #2...................
       if(iCount < 116)
       {
-        fDBLow = -40.0;
+        fDBLow = -38.0;
         fDBPixPerSeg = 1.0;
         fPixelShift = 2.0;
       }
@@ -795,14 +806,14 @@ void    InitVULookupTables(BOOL bLinear)
 				  +    ( 20.0*log10(fDacGate) )
 				  - pow( 20.0*log10(fDacGate) ,2.0) / 521.229
 				  + pow( 20.0*log10(fDacGate) ,3.0) / 48000.0 );
-	  if(fDacGate < -38.0)
+	  if(fDacGate < -34.0)	// <=== changed from 38 to 34 12/28/2000
 		   fDacGate = -60.0;
 	  if(fDacGate > 20.0)
 		   fDacGate = 20.0;
   
 	  if(fDacGate < 5.0)
       {
-        fDBLow = -38.0;
+        fDBLow = -34.0;	// <=== changed from 38 to 34 12/28/2000
         fDBPerSeg = 5.0;
         fPixelShift = 2.0;
       }
