@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Main.c             $
-// $Revision:: 49                                 $
+// $Revision:: 50                                 $
 //
 
 
@@ -930,7 +930,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 			// Our timer to update the LA$T.mix file
 			// and the currently loaded MIX file.
 
-			if(giMixerTypeOffline != NULL)	// Don't try to save unless mixer type has been set
+			if(giMixerTypeOffline == -1)	// Only save if NOT online
 			{	// Save into LA$T.mix
 				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 				wsprintf(fsTemp.szFileName, "%s", "LA$T.mix");
