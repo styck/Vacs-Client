@@ -433,7 +433,7 @@ void ShowTBSeqName(LPSTR pName)
 
 // Show the number of zoom windows open
 
-void ShowTBZoonWinCnt(LPSTR pName)
+void ShowTBZoomWinCnt(LPSTR pName)
 {
 	if(ghwndTBZoomWinCntReadout)
 		SetWindowText(ghwndTBZoomWinCntReadout, pName);
