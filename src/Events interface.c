@@ -5,7 +5,7 @@
 //
 // $Author: Styck $
 // $Archive: /Vacs Client/src/Events interface.c $
-// $Revision: 35 $
+// $Revision: 36 $
 //
 
 //=================================================
@@ -1101,6 +1101,7 @@ WORD								wVal;
 
 	////////////////////////////////////////////////////////////////////
 	// If they are not equal then we are turning the button ON
+	// We are making sure it isn't the MIN value
 
 	if(iVal != 0)
   {
@@ -1123,7 +1124,7 @@ WORD								wVal;
 		if((IsCtrlPrePostFilter(lpctrlZM->iCtrlType) == FALSE) && (ctrlData.wCtrl < 0x8000))
 		{
 			// Loop thru the table 
-			for(iVal; iVal >= ivalue; iVal --)
+			for(iVal; iVal >= 0; iVal --)
 			{
 				// Send the Data out
 				//------------------
@@ -1133,7 +1134,7 @@ WORD								wVal;
 												 lpctrlZM, -1, lpmwd, TRUE);
 			}
 		}
-		iVal = ivalue;
+		iVal = 0;	// Set to MIN value
 
 
 	// Moved this logic from HandleInputToggleSwtches() so that the order of commands
