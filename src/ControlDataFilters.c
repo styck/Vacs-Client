@@ -792,7 +792,7 @@ void	PrepareCueMasterSystem (void)
 			gCueActiveCount += isCtrlValueNotEqualToDefault(lpctrlZM, CTRL_NUM_MASTER_CUE_LEVEL_MONO);
 			gCueActiveCount += isCtrlValueNotEqualToDefault(lpctrlZM, CTRL_NUM_MASTER_CUE_LEVEL_CENTER);
 
-			gCueActiveCount += isCtrlValueNotEqualToDefault(lpctrlZM, CTRL_NUM_MASTER_CUE_A_SUM_IN);
+// fds	removed 3/18/2001 as per gamble		gCueActiveCount += isCtrlValueNotEqualToDefault(lpctrlZM, CTRL_NUM_MASTER_CUE_A_SUM_IN);
 
 			gCueActiveCount += isCtrlValueNotEqualToDefault(lpctrlZM, CTRL_NUM_MASTER_STEREO_CUE_PRE);
 			gCueActiveCount += isCtrlValueNotEqualToDefault(lpctrlZM, CTRL_NUM_MASTER_STEREO_CUE_POST);
@@ -3383,7 +3383,6 @@ void	CancelAllCues (HWND hWnd)
   LPCTRLZONEMAP   lpctrlZM;
   LPCTRLZONEMAP   pctrlzm;
 	int i;
-	HWND hwndT;
 
 	/////////////////////////////////////////////
 	// Table of CUE's that we handle
@@ -3447,7 +3446,7 @@ void	CancelAllCues (HWND hWnd)
 	CTRL_NUM_MASTER_AUX01POST,
 	CTRL_NUM_MASTER_CUE_LEVEL_MONO,
 	CTRL_NUM_MASTER_CUE_LEVEL_CENTER,
-	CTRL_NUM_MASTER_CUE_A_SUM_IN,
+// fds revmoved 3/18/2001 as per gamble	CTRL_NUM_MASTER_CUE_A_SUM_IN,
 	CTRL_NUM_MASTER_STEREO_CUE_PRE,
 	CTRL_NUM_MASTER_STEREO_CUE_POST};
 
@@ -3463,9 +3462,6 @@ void	CancelAllCues (HWND hWnd)
 
 	if(gCueActiveCount)
 	{
-
-//    hwndT = GetTopWindow(ghwndMDIClient);
-//      lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwndT, 0);
 
 		lpmwd = GetValidMixerWindowData ();
 
