@@ -2,9 +2,9 @@
 // Copyright 1998-2001, CorTek Software, Inc.
 //=================================================
 //
-// $Author: $
-// $Archive: $
-// $Revision: $
+// $Author: Styck $
+// $Archive: /Vacs Client/src/Remap and Mode.c $
+// $Revision: 20 $
 //
 //=================================================
 //
@@ -20,6 +20,7 @@
 #include "consoledefinition.h"
 
 UINT      g_CtrlTimer;
+extern	  BOOL	g_bUpDownScollSpeedFAST;	// SEE MAIN.C
 
 //=================================================
 //FUNCTION: InitRemapTable
@@ -34,7 +35,8 @@ int     InitRemapTable(LPMIXERWNDDATA lpmwd)
     lpmwd->lpwRemapToScr[iCount] = iCount;
     lpmwd->lpwRemapToPhis[iCount] = iCount;
   }
-return 0;
+
+	return 0;
 }
 
 //=========================================================================
@@ -45,7 +47,7 @@ return 0;
 //      int     iScrFrom; the Screen from channel
 //      int     iScrTo; the Screen to channel
 //
-//purpouse:
+//purpose:
 //      Remaps a given Screen Channel
 //  into the RemapTable .
 //
@@ -61,33 +63,32 @@ int       RemapScrChannel(LPMIXERWNDDATA lpmwd, int iScrFrom, int iScrTo)
 int     iCount;
 int     iPhis;
 
-// Check for incorrect values
-//-----------------------------
-if((iScrFrom > giMax_CHANNELS)||(iScrTo > giMax_CHANNELS)||
-    (iScrFrom < 0) || (iScrTo < 0))
+	// Check for incorrect values
+	//-----------------------------
+	if((iScrFrom > giMax_CHANNELS)||(iScrTo > giMax_CHANNELS)||
+			(iScrFrom < 0) || (iScrTo < 0))
     return 1;
 
-if(iScrFrom > iScrTo)
-    {
+	if(iScrFrom > iScrTo)
+  {
     iPhis = lpmwd->lpwRemapToScr[iScrFrom];
     for(iCount = iScrFrom; iCount > iScrTo; iCount--)
-        {
-        lpmwd->lpwRemapToScr[iCount] = lpmwd->lpwRemapToScr[iCount-1];
-        }
-    lpmwd->lpwRemapToScr[iScrTo] = iPhis;
+    {
+      lpmwd->lpwRemapToScr[iCount] = lpmwd->lpwRemapToScr[iCount-1];
     }
-else
-    if(iScrFrom < iScrTo)
-        {
-        iPhis = lpmwd->lpwRemapToScr[iScrFrom];
-        for(iCount = iScrFrom; iCount < iScrTo; iCount++)
-            {
-            lpmwd->lpwRemapToScr[iCount] = lpmwd->lpwRemapToScr[iCount+1];
-            }
-        lpmwd->lpwRemapToScr[iScrTo] = iPhis;
-        }
+    lpmwd->lpwRemapToScr[iScrTo] = iPhis;
+  }
+	else if(iScrFrom < iScrTo)
+  {
+    iPhis = lpmwd->lpwRemapToScr[iScrFrom];
+    for(iCount = iScrFrom; iCount < iScrTo; iCount++)
+    {
+      lpmwd->lpwRemapToScr[iCount] = lpmwd->lpwRemapToScr[iCount+1];
+    }
+    lpmwd->lpwRemapToScr[iScrTo] = iPhis;
+  }
 
-RemapPhisFromScr(lpmwd);
+	RemapPhisFromScr(lpmwd);
 
 return 0;
 }
@@ -115,8 +116,8 @@ int       RemapPhisFromScr(LPMIXERWNDDATA lpmwd)
 int     iCount;
 int     iPhis;
 
-for(iCount = 0; iCount < giMax_CHANNELS; iCount ++)
-    {
+	for(iCount = 0; iCount < giMax_CHANNELS; iCount ++)
+  {
     // Get the physical channel that is shown on the screen
     // at position iCount
     //-----------------------------------------------------
@@ -125,7 +126,7 @@ for(iCount = 0; iCount < giMax_CHANNELS; iCount ++)
     // screen channel at position iCount
     //----------------------------------
     lpmwd->lpwRemapToPhis[iPhis] = iCount;
-    }
+  }
 
 return 0;
 }
@@ -148,51 +149,53 @@ LONG    lZMCount;
 int     iCurX, iX, iWidth;
 int     iStartScrChan, iEndScrChan;
 
-if(lpmwd == NULL)
-    return 0;
+	if(lpmwd == NULL)
+			return 0;
 
-iStartScrChan = lpmwd->iStartScrChan;
-iEndScrChan = lpmwd->iEndScrChan;
+	iStartScrChan = lpmwd->iStartScrChan;
+	iEndScrChan = lpmwd->iEndScrChan;
 
-// Highlite only the first visible channel
-//----------------------------------------
-if(lpmwd->pntMouseCur.x < 0)
-    {
+	// Highlite only the first visible channel
+	//----------------------------------------
+	if(lpmwd->pntMouseCur.x < 0)
+  {
     lpmwd->iXadj = 0;
     return lpmwd->iStartScrChan;
-    }
+  }
 
-// Highlite only the last visible channel
-//---------------------------------------
-if(lpmwd->pntMouseCur.x >= lpmwd->rVisible.right)
-    {
+	// Highlite only the last visible channel
+	//---------------------------------------
+	if(lpmwd->pntMouseCur.x >= lpmwd->rVisible.right)
+  {
     iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iEndScrChan]);
     iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
     lpmwd->iXadj = lpmwd->rVisible.right - gpBMPTable[iBMPIndex].iWidth;
     return lpmwd->iEndScrChan;
-    }
+  }
 
-iCurX = lpmwd->pntMouseCur.x + lpmwd->iXOffset;
-lZMCount = lpmwd->lZMCount;
-iX = 0;
-for(iCount=0; iCount < lZMCount; iCount++)
-    {
+	iCurX = lpmwd->pntMouseCur.x + lpmwd->iXOffset;
+	lZMCount = lpmwd->lZMCount;
+	iX = 0;
+
+	for(iCount=0; iCount < lZMCount; iCount++)
+  {
     // Get the actual phis channel
     // because they might be remaped
     //------------------------------
     iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[iCount]);
     iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
     iWidth = gpBMPTable[iBMPIndex].iWidth-1;
-    if((iCurX >= iX) && (iCurX <= (iX+iWidth)))
-        {
-        lpmwd->iXadj = iX;
-        return iCount;
-        }
 
-    iX += iWidth+1;                        
+    if((iCurX >= iX) && (iCurX <= (iX+iWidth)))
+    {
+      lpmwd->iXadj = iX;
+      return iCount;
     }
 
-return (int)lZMCount; //iCount-1;
+    iX += iWidth+1;                        
+  }
+
+	return (int)lZMCount; //iCount-1;
 }
 
 //=================================================
@@ -212,15 +215,16 @@ int     iPhisChannel;
 int     iX, iWidth;
 int     iBMPIndex;
 
-if(iChan > lpmwd->lZMCount)
-    {
+	if(iChan > lpmwd->lZMCount)
+  {
     rect->left = rect->top = rect->right = rect->bottom = 0;
     return 1;
-    }
+  }
 
-iX = 0;
-for(iCount=0; iCount < iChan ; iCount++)
-    {
+	iX = 0;
+
+	for(iCount=0; iCount < iChan ; iCount++)
+  {
     // Get the actual phis channel
     // because they might be remaped
     //------------------------------
@@ -229,20 +233,20 @@ for(iCount=0; iCount < iChan ; iCount++)
     iWidth = gpBMPTable[iBMPIndex].iWidth;
 
     iX += iWidth;
-    }
+  }
 
-// Get the Height of the bitmap
-//------------------------------
-iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[iChan]);
-iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
-iWidth = gpBMPTable[iBMPIndex].iWidth;
-rect->bottom = gpBMPTable[iBMPIndex].iHeight;
+	// Get the Height of the bitmap
+	//------------------------------
+	iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[iChan]);
+	iBMPIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
+	iWidth = gpBMPTable[iBMPIndex].iWidth;
+	rect->bottom = gpBMPTable[iBMPIndex].iHeight;
 
-rect->top = 0;
-rect->left = iX - lpmwd->iXOffset;
-rect->right = iX - lpmwd->iXOffset + iWidth;
+	rect->top = 0;
+	rect->left = iX - lpmwd->iXOffset;
+	rect->right = iX - lpmwd->iXOffset + iWidth;
 
-return 0;
+	return 0;
 }
 
 
@@ -310,10 +314,10 @@ int                 iMode;
 int                 iCtrlType;
 LPCTRLZONEMAP       lpctrlZM;
 
-iMode = lpmwd->iCurMode;
+	iMode = lpmwd->iCurMode;
 
-switch(iMode)
-    {
+	switch(iMode)
+  {
     case MW_CONTROL_ACTIVE:
         iCtrlType = lpmwd->lpCtrlZM->iCtrlType;
         switch(iCtrlType)
@@ -393,7 +397,15 @@ switch(iMode)
               lpmwd->iCurMode = CTRL_TYPE_UPDOWNSCROLL;
 							// Create time for the up/down scrolling of values
 							// Changed to 500ms for the touchscreen
-              g_CtrlTimer = SetTimer(hwnd, 77, 500, NULL);		//50
+
+#define UPDOWNSCROLL_FAST	25	// 25ms per increment
+#define UPDOWNSCROLL_SLOW	300	// 300ms per increment
+
+							if(g_bUpDownScollSpeedFAST == TRUE)
+								g_CtrlTimer = SetTimer(hwnd, 77, UPDOWNSCROLL_FAST, NULL);
+							else
+								g_CtrlTimer = SetTimer(hwnd, 77, UPDOWNSCROLL_SLOW, NULL);
+
               break;
 
             //----------------------------------------
@@ -438,7 +450,7 @@ switch(iMode)
         gddcChanInfo.bInUse= TRUE;
         ShowMousePos(hwnd, lpmwd);
         break;  
-		}
+	}
 
 
 return 0;
@@ -456,74 +468,77 @@ int       StopMWMode(HWND hwnd, LPMIXERWNDDATA lpmwd, WPARAM wKeyFlags)
 int     iOldMode;
 int     iOldCtrlMode;
 
-iOldMode = lpmwd->iCurMode;
-iOldCtrlMode = lpmwd->iCtrlMode;
+	iOldMode = lpmwd->iCurMode;
+	iOldCtrlMode = lpmwd->iCtrlMode;
 
-// do stuff after the mode has been reset
-//---------------------------------------
-switch(iOldMode)
+	// do stuff after the mode has been reset
+	//---------------------------------------
+	switch(iOldMode)
   {
-  //----------------------------------------
-  case MW_DRAGDROP_MODE:
-    RemapScrChannel(lpmwd,  gddcChanInfo.iChan  +   lpmwd->iStartScrChan, 
-                            lpmwd->iCurChan     +   lpmwd->iStartScrChan);
-    gddcChanInfo.bInUse= FALSE;
-    // Update the Labels
-    //------------------
-    InvalidateRect(lpmwd->hwndLblGroup, NULL, FALSE);
-    UpdateWindow(lpmwd->hwndLblGroup);
-    // Update the Channel Display
-    //---------------------------
-    InvalidateRect(hwnd, NULL, FALSE);
-    UpdateWindow(hwnd);
-    lpmwd->iCurMode = MW_NOTHING_MODE;
-    lpmwd->iCtrlMode = MW_NOTHING_MODE;
-    ShowMousePos(hwnd, lpmwd);
-    break;
-  //----------------------------------------
-  case MW_SCROLL:
-  case CTRL_TYPE_FADER_VERT:
-    DeleteObject(SetCursor(LoadCursor(NULL, IDC_ARROW)));
-    break;
-  //----------------------------------------
-  case MW_SCROLL_RELATIVE:
-    DeleteObject(SetCursor(LoadCursor(NULL, IDC_ARROW)));
-    KillTimer(hwnd, g_CtrlTimer);
-    ShowScrollWindow(NULL, lpmwd);
-    g_iYSpeed = 0;
-    break;
+		//----------------------------------------
+		case MW_DRAGDROP_MODE:
+			RemapScrChannel(lpmwd,  gddcChanInfo.iChan  +   lpmwd->iStartScrChan, 
+															lpmwd->iCurChan     +   lpmwd->iStartScrChan);
+			gddcChanInfo.bInUse= FALSE;
+			// Update the Labels
+			//------------------
+			InvalidateRect(lpmwd->hwndLblGroup, NULL, FALSE);
+			UpdateWindow(lpmwd->hwndLblGroup);
+			// Update the Channel Display
+			//---------------------------
+			InvalidateRect(hwnd, NULL, FALSE);
+			UpdateWindow(hwnd);
+			lpmwd->iCurMode = MW_NOTHING_MODE;
+			lpmwd->iCtrlMode = MW_NOTHING_MODE;
+			ShowMousePos(hwnd, lpmwd);
+			break;
+		//----------------------------------------
+		case MW_SCROLL:
+		case CTRL_TYPE_FADER_VERT:
+			DeleteObject(SetCursor(LoadCursor(NULL, IDC_ARROW)));
+			break;
+		//----------------------------------------
+		case MW_SCROLL_RELATIVE:
+			DeleteObject(SetCursor(LoadCursor(NULL, IDC_ARROW)));
+			KillTimer(hwnd, g_CtrlTimer);
+			g_CtrlTimer = 0;
+			ShowScrollWindow(NULL, lpmwd);
+			g_iYSpeed = 0;
+			break;
   }
 
-switch(iOldCtrlMode)
+	switch(iOldCtrlMode)
   {
-  //----------------------------------------
-  case    CTRL_TYPE_OPEN_ZOOM_IAUX:
-	case		CTRL_TYPE_OPEN_ZOOM_CCOMP:
-	case		CTRL_TYPE_OPEN_ZOOM_EQ:
-	case		CTRL_TYPE_OPEN_ZOOM_SUB:
-	case		CTRL_TYPE_OPEN_FADER:
-	case		CTRL_TYPE_OPEN_MATRIX_EQ:
-	case		CTRL_TYPE_OPEN_MATRIX_AUX:
-	case		CTRL_TYPE_OPEN_MATRIX_SUB:
-    ReleaseCapture(); // Release the mouse capture in any case
-    break;
-  case    CTRL_TYPE_UPDOWN:
-  case    CTRL_TYPE_LEFTRIGHT:
-    KillTimer(hwnd, g_CtrlTimer);
-    break;
-  case    CTRL_TYPE_UPDOWNSCROLL:
-    DeleteObject(SetCursor(LoadCursor(NULL, IDC_ARROW)));
-    KillTimer(hwnd, g_CtrlTimer);
-    break;
-  //----------------------------------------
-  case CTRL_TYPE_LABEL:
-    EditModuleLabel(hwnd, lpmwd, FALSE);
-    break;
+		//----------------------------------------
+		case    CTRL_TYPE_OPEN_ZOOM_IAUX:
+		case		CTRL_TYPE_OPEN_ZOOM_CCOMP:
+		case		CTRL_TYPE_OPEN_ZOOM_EQ:
+		case		CTRL_TYPE_OPEN_ZOOM_SUB:
+		case		CTRL_TYPE_OPEN_FADER:
+		case		CTRL_TYPE_OPEN_MATRIX_EQ:
+		case		CTRL_TYPE_OPEN_MATRIX_AUX:
+		case		CTRL_TYPE_OPEN_MATRIX_SUB:
+			ReleaseCapture(); // Release the mouse capture in any case
+			break;
+		case    CTRL_TYPE_UPDOWN:
+		case    CTRL_TYPE_LEFTRIGHT:
+			KillTimer(hwnd, g_CtrlTimer);
+			g_CtrlTimer = 0;
+			break;
+		case    CTRL_TYPE_UPDOWNSCROLL:
+			DeleteObject(SetCursor(LoadCursor(NULL, IDC_ARROW)));
+			KillTimer(hwnd, g_CtrlTimer);
+			g_CtrlTimer = 0;
+			break;
+		//----------------------------------------
+		case CTRL_TYPE_LABEL:
+			EditModuleLabel(hwnd, lpmwd, FALSE);
+			break;
   }
 
-lpmwd->iCurMode = MW_NOTHING_MODE;
-lpmwd->iCtrlMode = MW_NOTHING_MODE;
+	lpmwd->iCurMode = MW_NOTHING_MODE;
+	lpmwd->iCtrlMode = MW_NOTHING_MODE;
 
-ClipCursor(NULL);
-return 0;
+	ClipCursor(NULL);
+	return 0;
 }
