@@ -1,11 +1,11 @@
 //=================================================
-// Copyright 1998-2001 CorTek Software, Inc.
+// Copyright 1998-2002 CorTek Software, Inc.
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author:: Styck                                $
+// $Archive:: /Vacs Client/src/SAMM_Globals.c     $
+// $Revision:: 17                                 $
 //
 //=================================================
 // Global Definitions
@@ -228,7 +228,7 @@ LPGROUPSTORE        gpGroupStoreGeneral = NULL;
 // we should have separate buffers for the input, sub and master modules
 // to gain speed and robustness.
 ///////////////////////////////////////////////////////////////////////////
-STEREOGROUP         g_StereoGroups[120];
+STEREOGROUP         g_StereoGroups[MAX_GROUPS_COUNT];
 
 HANDLE									gDisplayEvent = NULL;
 
