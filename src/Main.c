@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Main.c             $
-// $Revision:: 47                                 $
+// $Revision:: 48                                 $
 //
 
 
@@ -23,13 +23,15 @@ LPSTR		GetListItemGroupName(int iItem);	// SEE GROUPS.C
 
 BOOL		OpenSequenceFiles (LPSTR  lpstrFName);
 
-BOOL    g_bReversDirection = FALSE;
+BOOL    g_bReversDirection = FALSE;		//  Controls Stereo-linked control panning
 int			FindConsecutiveGroupIndex(int iNum, int iType);
 
 void		CancelAllCues (HWND);
 
 
 BOOL		g_bIsSoloCueMode;	// Default as true
+
+BOOL		g_bUpDownScollSpeedFAST = TRUE;	// Flag for fast/slow updown scroll speed for touchscreen
 
 WORD	wKeyFlags=0;				// Shift Key Flag
 
@@ -297,13 +299,17 @@ HANDLE	hAccel;
 			}
 
 
+			/////////////////////////////////////////////
+			// Sets flag for the stereo-linked panning
+			// when ALT key is held down
+			
 			if(msg.message == WM_SYSKEYDOWN)
 			{
-				g_bReversDirection = TRUE; 
+				g_bReversDirection = TRUE; 	//  Turn ON Stereo-linked control panning
 			}
 			if(msg.message == WM_SYSKEYUP)
 			{
-				g_bReversDirection = FALSE; 
+				g_bReversDirection = FALSE; //  Turn OFF Stereo-linked control panning
 			}
 
 #endif		// MOVEDTOWNDPROC
@@ -386,7 +392,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 	case WM_KEYUP:
 
 
-		g_bReversDirection = FALSE; 
+		g_bReversDirection = FALSE;	//  Controls Stereo-linked control panning 
 
     switch(LOWORD(wParam))
 		{
@@ -399,7 +405,6 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
 	case WM_KEYDOWN:
 
-		g_bReversDirection = TRUE; 
 		wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
 		iRet=0;	// Just in case it was not initialized
 
@@ -552,6 +557,27 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 			}
       break;
 
+		///////////////////////////////////
+		// Let user select the scroll speed
+		// for the updown scroll control
+		// (the value box one)
+		// Used for touchscreen, default
+		// is fast speed
+
+		case IDM_UPDOWNSCROLL_SPEED:
+      if(g_bUpDownScollSpeedFAST == TRUE)
+			{
+				CheckMenuItem(ghMainMenu, IDM_UPDOWNSCROLL_SPEED, MF_CHECKED);	//MAKE IT SLOW
+				g_bUpDownScollSpeedFAST = FALSE;
+			}	
+			else
+			{
+				CheckMenuItem(ghMainMenu, IDM_UPDOWNSCROLL_SPEED, MF_UNCHECKED);
+				g_bUpDownScollSpeedFAST = TRUE;
+			}
+      break;
+
+
 
     case IDM_V_PROP_FILTER:
       GetSeqUpdateProps(NULL);
@@ -631,8 +657,8 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
     //``````````````
     case IDM_F_OPEN_FILE:
-        if(OpenMixFile()==FALSE)	// MOST LIKELY INCOMPATIBLE MIXFILE AND RACK
-			        PostQuitMessage(0);
+						if(OpenMixFile()==FALSE)	// MOST LIKELY INCOMPATIBLE MIXFILE AND RACK
+									PostQuitMessage(0);
         break;
     //``````````````
     case IDM_F_SAVE_FILE:
@@ -907,6 +933,11 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 			
 			// Our timer to update the LA$T.mix file
 
+			///////////////////////////////////////////////////////////
+			// Need to check if we do not have any open dialog boxes
+			// so that we don't lock up
+			// Maybe the SaveMix file dialog should be a different type?
+
 			if(giMixerTypeOffline != NULL)	// Don't try to save unless mixer type has been set
 			{
 				wsprintf(fsTemp.szFileDir, "%smix\\", gszProgDir);
@@ -971,8 +1002,12 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
     //////////////////////////////////////////////////////////////
     case WM_CLOSE:
 
-      if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_QUIT_MESSAGE) == IDNO)
-          break;
+		 ///////////////////////////////////////
+		 // Removed confirmation on exist as
+		 // per Gamble 12/12/2001 email
+		 //
+     // fds if(ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_QUIT_MESSAGE) == IDNO)
+     // fds    break;
 
 				// Kill the 3 minute timer to save mix file
 				
@@ -981,7 +1016,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 
 			if (g_mixer_state_changed)
 			{	
-				if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
+			// fds	if (ConfirmationBox(ghwndMDIClient, ghInstStrRes, IDS_CHANGES_MESSAGE) == IDYES)
 					SaveMixFile ();
 			}								  
 			
