@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by D:\Work\styck\Vacs Client\src\RC\SAMM.rc
+// Used by C:\bu\gamble\vacs client\src\RC\SAMM.rc
 //
 #define SAMMMainIcon                    100
 #define IDD_DEBUG                       100
