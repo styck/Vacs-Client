@@ -3,9 +3,9 @@
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author:: Styck                                $
+// $Archive:: /Vacs Client/src/Mix Files.c        $
+// $Revision:: 23                                 $
 //
 
 #include "SAMM.H"
@@ -57,6 +57,22 @@ int     OpenMixFile(void)
 OPENFILENAME    ofn;
 int	iRet;
 
+	// Registry variables 
+
+	LONG lnResult;
+	HKEY hKey = NULL;
+	DWORD dwDisposition;
+	DWORD   	  dwError;
+	static LPCTSTR szRegKey = "Software\\CorTek\\VACS";
+	static LPCTSTR szRegValue; 
+	DWORD dwType;
+	DWORD rc;
+	DWORD dwBufferSize = sizeof( g_sequence_file_name );  
+	char								szTempSeq[MAX_PATH];
+
+	char                szProgDir[MAX_PATH];
+  LPSTR   lpstrFName = NULL;
+
 	if (gfsMix.szFileDir[0] == 0)
 		sprintf (gfsMix.szFileDir, "%smix\\", gszProgDir);
 
@@ -64,12 +80,52 @@ int	iRet;
 
 	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 
+/////////////////////////////////////////////
+// If we loaded a file before then default
+// to that one
+
+	if(!strlen(gfsTemp.szFileName))
+	{
+
+		lnResult = RegCreateKeyEx(
+								HKEY_CURRENT_USER,
+								szRegKey,
+								0, 
+								REG_NONE, 
+								0, 
+								KEY_ALL_ACCESS, 
+								NULL, 
+								&hKey,
+								&dwDisposition );
+
+		szRegValue = "MRUmix";
+		rc = RegQueryValueEx( 
+					hKey, 
+					szRegValue, 
+					NULL, 
+					&dwType, 
+					&szTempSeq, 
+					&dwBufferSize ); 
+
+		  // Set our file name to the last loaded mix file
+
+		if(rc == ERROR_SUCCESS)
+			wsprintf(gfsTemp.szFileName, "%s", szTempSeq);
+
+		// We have the whole path now just get the filename
+
+		GetFullPathName(szTempSeq, 256, szProgDir, &lpstrFName);
+
+	}
+
+/////////////////////////////////////////////////////
+
 	ofn.lStructSize = sizeof( OPENFILENAME );
 	ofn.hwndOwner = ghwndMain; // An invalid hWnd causes non-modality
 	ofn.lpstrFilter = "VACS Mix Files\0*.mix\0All Files\0*.*\0\0";//(LPSTR)szFilter;  // See previous note concerning string
 	ofn.lpstrCustomFilter = NULL;
 	ofn.nFilterIndex = 1; // Always pick the first one
-	ofn.lpstrFile = (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
+	ofn.lpstrFile = lpstrFName;		// This is filename with path => (LPSTR)gfsTemp.szFileName;  // Stores the result in this variable
 	ofn.nMaxFile = 512;
 	ofn.lpstrFileTitle = NULL;//(LPSTR)fsTemp.szFileName;
 	ofn.nMaxFileTitle = 0;//512;
