@@ -291,9 +291,12 @@ switch(uiMsg)
           //HandleGroupLVBeginDrag((NM_LISTVIEW *)lParam);
           break;
       //--------------
-      //case LVN_KEYDOWN:
-      //  HandleGroupLVKeyDown((LV_KEYDOWN*)lParam);
-      //  break;
+      case LVN_KEYDOWN:
+       if(((LPNMHDR) lParam)->idFrom == IDC_GROUP_LIST)
+			 {
+	        HandleGroupLVKeyDown((LV_KEYDOWN*)lParam);
+			 }
+        break;
 
       // Handle some General Notification messages
       //------------------------------------------
@@ -499,10 +502,38 @@ void HandleGroupLVGetDispInfo(LV_DISPINFO *pDispInfo)
 
 ////////////////////////////////
 //
-//
+// Handle keyboard input for the
+// Group list box
+
 void HandleGroupLVKeyDown(LV_KEYDOWN *pKeyDown)
 {
-  
+int iListItem, iCount;
+
+  // If user pressed the Up or Down key then activate that group
+
+	switch(pKeyDown->wVKey)
+	{
+		case VK_UP:
+			iListItem =  GetLisControlSelection();
+            if(iListItem > -1)
+              ActivateGroup(iListItem, FADERS_GROUPS, -1);
+		break;
+
+		case VK_DOWN:
+			iListItem =  GetLisControlSelection();
+            if(iListItem > -1)
+              ActivateGroup(iListItem, FADERS_GROUPS, -1);
+		break;
+
+		// Pressing the Delete key has same affect as pressing delete button
+
+		case VK_DELETE:
+			iListItem =  GetLisControlSelection();
+			iCount = GetListItemGroupNumber(iListItem);
+      DeleteGroup( iListItem, FADERS_GROUPS, iCount);
+
+		break;
+	}
   
 };
 
