@@ -1,7 +1,7 @@
 //=================================================
 // file trackingwindow.c
 //
-// Copyright 2001, CorTek Software, Inc.
+// Copyright 1997-2002, CorTek Software, Inc.
 //=================================================
 
 
@@ -198,6 +198,7 @@ void  UpdateTrackingWindow(LPMIXERWNDDATA      lpmwd)
   POINT   pnt;
   HWND    hwnd;
   int     x, y;
+	int							iRackMaxChannel[]={18,32,58,78};							// cabaret, showtime, event 40, event 60
 
 	LPCTRLZONEMAP    lpczm;
 	int			iSub, iAux;
@@ -213,7 +214,15 @@ void  UpdateTrackingWindow(LPMIXERWNDDATA      lpmwd)
 		// Now get the channel pointer
 
 		iChan = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + lpmwd->iStartScrChan]);
-  
+
+		// Validate channel number, crashed for ->lpZoneMap[iChan].lpZoneMap because 
+		// of iChan being out of range
+
+		if((giMixerType) && (iChan > iRackMaxChannel[giMixerType-1]))	// giMixerType is base 1
+		{
+			iChan = iRackMaxChannel[giMixerType-1];
+		}
+
 		// Get our mouse coordinates
 
 		pnt = lpmwd->pntMouseCur;
