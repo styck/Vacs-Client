@@ -450,8 +450,8 @@ void      UpdateSameMixWndByCtrlNum(HWND  hwnd,
   if(iPhisChannel == g_iMasterModuleIdx)
     bForceToMaster = TRUE;
 
-  if((gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 5) ||
-     (gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 4) ||
+  if((gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_MASTER) ||
+     (gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_CUE) ||
       bForceToMaster )
   {
     //
