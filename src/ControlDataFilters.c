@@ -1242,14 +1242,47 @@ void  HandleMasterAuxPrePostSwtch(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZO
 //
 // Reset the EQ to flat
 //
-void HandleResetEQFilter(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
+void    HandleResetEQFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP lpctrlZM, BOOL bIsOn)
 {
+  CONTROLDATA         ctrlData;
   LPCTRLZONEMAP       lpctrl;
-  WORD                wVal;
-  int                 iIdx;
-  int                 iCount;
+  int                 i_ctrl_pos;
+//  HDC                 hdcScr;
+  
+  if(lpmwd->lpZoneMap[iPhisChann].lpZoneMap == NULL)
+    return;
 
+//	hdcScr = GetDC(lpmwd->hwndImg);
 
+	for(i_ctrl_pos = CTRL_NUM_INPUT_HIGHFREQ; i_ctrl_pos <=CTRL_NUM_INPUT_LF_PEAKSHELF ;i_ctrl_pos++)
+	{
+		lpctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iPhisChann].lpZoneMap, i_ctrl_pos);
+
+		// Send the Data out
+		// turn off the Current control
+		//-----------------------------
+		ctrlData.wMixer   = 0;
+		ctrlData.wChannel = lpctrl->iModuleNumber;//iChannel;
+		ctrlData.wCtrl    = lpctrl->iCtrlNumAbs; // we use this one since for the definition dll
+		ctrlData.wVal     = CDef_GetCtrlDefaultVal(lpctrl->iCtrlNumAbs);
+    SETPHISDATAVALUE(ctrlData.wMixer, lpctrlZM, i_ctrl_pos, ctrlData.wVal);
+
+		SendDataToDevice(&ctrlData, TRUE, NULL, 0, lpmwd, TRUE);
+
+//		UpdateControlsByCtrlNum(hdcScr, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChann, lpctrlZM, ctrlData.wVal, DIRECTIONS_ALL, TRUE);
+//		UpdateSameMixWndByCtrlNum(lpmwd->hwndImg, lpmwd->iMixer, iPhisChann, lpctrlZM, ctrlData.wVal, NULL);
+
+	}
+
+	// Clean up the mess
+	//------------------
+//	ReleaseDC(lpmwd->hwndImg, hdcScr);
+
+		// force a redraw of the updated EQ settings
+      if(ghwndMain) 
+			{
+        InvalidateRect(lpmwd->hwndImg, &lpmwd->rVisible, TRUE);
+      }
 
 }
 
@@ -1706,7 +1739,7 @@ void    StartControlDataFilter(int iPhisChann, LPMIXERWNDDATA lpmwd_work, LPCTRL
 	// EQ RESET FILTER
   case CTRL_TYPE_BTN_EQ_RESET_FILTER:
 		// NOT THE REAL ROUTINE FDS TESTING FDS TESTING
-    // HandleResetEQFilter(iPhisChann, lpmwd, lpctrlZM, bIsOn);
+    HandleResetEQFilter(iPhisChann, lpmwd, lpctrlZM, bIsOn);
     break;
 
   default:
