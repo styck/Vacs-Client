@@ -153,14 +153,14 @@ BEGIN
             VALUE "Comments", "by CorTek Software, Inc.\0"
             VALUE "CompanyName", "CorTek Software Inc.  www.corteksoft.com\0"
             VALUE "FileDescription", "VACS® Client Workstation\0"
-            VALUE "FileVersion", "2.46\0"
+            VALUE "FileVersion", "2.46b\0"
             VALUE "InternalName", "VACS® Client Workstation\0"
             VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2000\0"
             VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc.\0"
             VALUE "OriginalFilename", "VACS.EXE\0"
-            VALUE "PrivateBuild", "Build 10/07/2000\0"
+            VALUE "PrivateBuild", "Build 10/15/2000\0"
             VALUE "ProductName", "CorTek Software VACS\0"
-            VALUE "ProductVersion", "2.46\0"
+            VALUE "ProductVersion", "2.46b\0"
             VALUE "SpecialBuild", "\0"
         END
     END
