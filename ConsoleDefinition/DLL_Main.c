@@ -18,6 +18,7 @@
 HWND      ghwndCS_Data = NULL;
 UINT      g_uiTimerId = 0;
 LPDEVICE_SETUP_DATA g_pDeviceSetupData = NULL;
+static BOOL			g_running = FALSE;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -43,7 +44,10 @@ BOOL WINAPI DllMain (HANDLE hDLL, DWORD dwReason, LPVOID lpReserved)
 switch (dwReason)
   {
   case DLL_PROCESS_ATTACH:
+		if (g_hinstCDef  == NULL)
     g_hinstCDef = hDLL;
+		else 
+			g_running = TRUE;
     break;
   case DLL_THREAD_ATTACH:
     break;
@@ -55,8 +59,6 @@ switch (dwReason)
 
 return TRUE;
 }
-
-
 
 ///////////////////////////////////////////////////////////////////
 //  CreateDisplayWindow

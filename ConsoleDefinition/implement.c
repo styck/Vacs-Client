@@ -90,13 +90,42 @@ void FormatSockError(char *szBuffer, int iError)
   }
   
 };
+HANDLE	g_running_mutex = NULL;
+#define	VACS_IDENTIFIER_MUTEX "VACS_RUNNING_MUTEX"
+//
+int	CDef_isRunning (void)
+{
+	HANDLE	check_mutex;
+	int			running = 0;
 
+	check_mutex = CreateMutex (NULL, TRUE, VACS_IDENTIFIER_MUTEX);
+	if (check_mutex == NULL)
+		return 1;
+	//
+	if (GetLastError () == ERROR_ALREADY_EXISTS)
+	{
+		running = 1;
+	}
+
+	CloseHandle (check_mutex);
+
+	return running;
+}
 //////////////////////////////////////////////////////////////////////
 // FUNCTION: CDef_Init
 //
 // Initialize internal stuff
 int     CDef_Init(void)
 {
+
+	g_running_mutex = CreateMutex (NULL, TRUE, VACS_IDENTIFIER_MUTEX);
+	if (g_running_mutex == NULL)
+		return 1;
+	if (GetLastError () == ERROR_ALREADY_EXISTS)
+	{
+		CloseHandle (g_running_mutex);
+		g_running_mutex = NULL;
+	}
 
 // Initialize the trhead that is going to handle the TCP protocol
 g_threadIO = CreateThread(NULL, 0, ioThreadProc, NULL, THREAD_PRIORITY_NORMAL, &g_threadID);
@@ -133,6 +162,8 @@ return 0; // OK
 // Cleanup the mess
 int     CDef_ShutDown(void)
 {
+if (g_running_mutex != NULL)
+	CloseHandle (g_running_mutex);
 
 if(g_hwndIO) 
   {
