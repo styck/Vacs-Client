@@ -1,6 +1,12 @@
 //=================================================
-// Copyright 2001, CorTek Software, Inc.
+// Copyright 1998-2001 CorTek Software, Inc.
 //=================================================
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
 
 //=================================================
 // The window that displays the labels and the
@@ -8,14 +14,10 @@
 //
 //=================================================
 
-//#include <windows.h>
 
 #include "SAMM.h"
 #include "SAMMEXT.h"
 #include "MACRO.h"
-
-
-
 
 extern int                 g_aiAux[MAX_MATRIX_COUNT];
 extern int                 g_aiMatrix[MAX_MATRIX_COUNT];
@@ -33,25 +35,25 @@ int         iReturn;
 WNDCLASS    wc;
 
 
-// Register Full View Class
-//--------------------------
-memset(&wc, 0x00, sizeof(WNDCLASS));      // Clear wndclass structure
+	// Register Full View Class
+	//--------------------------
+	memset(&wc, 0x00, sizeof(WNDCLASS));      // Clear wndclass structure
 
-wc.style = CS_HREDRAW | CS_VREDRAW;
-wc.lpfnWndProc = (WNDPROC)LblGroupProc;
-wc.cbClsExtra = 0;
-wc.cbWndExtra = sizeof(LPSTR);// it will contain the type of the window
-wc.hInstance = ghInstMain;
-wc.hIcon = NULL;
-wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-wc.hbrBackground = GetStockObject(WHITE_BRUSH);
-wc.lpszMenuName = NULL;
-wc.lpszClassName = gszLblGroupClass;
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = (WNDPROC)LblGroupProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = sizeof(LPSTR);// it will contain the type of the window
+	wc.hInstance = ghInstMain;
+	wc.hIcon = NULL;
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = GetStockObject(WHITE_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = gszLblGroupClass;
 
-iReturn = RegisterClass(&wc);
+	iReturn = RegisterClass(&wc);
 
-if(iReturn == 0)
-	 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+	if(iReturn == 0)
+		 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
 return 0;
 }
@@ -64,38 +66,42 @@ HWND     CreateLblGroupWnd(LPRECT prect, HWND hwndParent,LPMIXERWNDDATA lpmwd)
 {
 HWND        hwnd = NULL;
 
-hwnd = CreateWindow(
-					 gszLblGroupClass,   // Window class name
-					 NULL,              // Window's title
-					 WS_CHILD  |
-           WS_CLIPSIBLINGS |
-           WS_VISIBLE,
-					 prect->left,
-					 prect->top,
-					 prect->right,       // Set it to the max Width
-					 prect->bottom,      // Set it to the max Height
-					 hwndParent,        // Parent window's handle
-					 NULL,              // Default to Class Menu
-					 ghInstMain,         // Instance of window
-					 NULL               // Ptr To Data Structure For WM_CREATE
-                   );
+	hwnd = CreateWindow(
+						 gszLblGroupClass,   // Window class name
+						 NULL,              // Window's title
+						 WS_CHILD  |
+						 WS_CLIPSIBLINGS |
+						 WS_VISIBLE,
+						 prect->left,
+						 prect->top,
+						 prect->right,       // Set it to the max Width
+						 prect->bottom,      // Set it to the max Height
+						 hwndParent,        // Parent window's handle
+						 NULL,              // Default to Class Menu
+						 ghInstMain,         // Instance of window
+						 NULL               // Ptr To Data Structure For WM_CREATE
+										 );
 
-if(hwnd == NULL)
-    {
-    return NULL;
-    }
+	if(hwnd == NULL)
+	{
+			return NULL;
+	}
 
-lpmwd->hwndLblGroup = hwnd;
-SetWindowLong(hwnd, 0, (LPARAM)lpmwd);
-UpdateWindow(hwnd);
+	lpmwd->hwndLblGroup = hwnd;
+	SetWindowLong(hwnd, 0, (LPARAM)lpmwd);
+	UpdateWindow(hwnd);
 
 return hwnd;
 }
 
-//===========================
+//===============================
 //FUNCTION: LblGroupProc
 //
-//===========================
+// This handles the label/group 
+// windows at the top of the 
+// zoom/full view modules
+//===============================
+
 LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 {
   LPMIXERWNDDATA      lpmwd;
@@ -103,47 +109,85 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
   HDC                 hdc;
   int                 iXVal;
 
-lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
+	static BOOL		bLBDown=FALSE;
 
-switch (wMessage)
+	lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
+
+	switch (wMessage)
   {
-  //////////////////////////////////////////////////////////////
-  case WM_LBUTTONDOWN:
-    iXVal = LOWORD(lParam);
-    if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
-      if(GroupChannel(iXVal, 1))
-      {
-        InvalidateRect(hWnd, NULL, FALSE);
-        UpdateWindow(hWnd);
-				RefreshAllLblWindows();
-      }
 
-    break;
-  //////////////////////////////////////////////////////////////
-  case WM_RBUTTONDOWN:
-    iXVal = LOWORD(lParam);
-    if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
-      if(UnGroupChannel(iXVal))
-      {
-        InvalidateRect(hWnd, NULL, FALSE);
-        UpdateWindow(hWnd);
-				RefreshAllLblWindows();
-      }
+		///////////////////////////////////////////////////////////////////
+		// If mouse button is held down and moved across the labels then
+		// they will be added to the grouping
+		// This works for both the zoom and full view windows
+		///////////////////////////////////////////////////////////////////
+
+		case WM_MOUSEMOVE:
+			if(bLBDown)
+			{
+				iXVal = LOWORD(lParam);
+				if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
+				{
+					if(GroupChannel(iXVal, 1))
+					{
+//fds						InvalidateRect(hWnd, NULL, FALSE);
+//fds						UpdateWindow(hWnd);
+						RefreshAllLblWindows();
+					}
+				}
+			}
+		break;
+
+
+		case WM_LBUTTONUP:
+				bLBDown = FALSE;
+		break;
+
+		//////////////////////////////////////////////////////////////
+		case WM_LBUTTONDOWN:
+			iXVal = LOWORD(lParam);
+			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
+				if(GroupChannel(iXVal, 1))
+				{
+//fds					InvalidateRect(hWnd, NULL, FALSE);
+//fds					UpdateWindow(hWnd);
+					RefreshAllLblWindows();
+				}
+				bLBDown = TRUE;
+
+			break;
+
+		//////////////////////////////////////////////////////////////
+		case WM_RBUTTONDOWN:
+			iXVal = LOWORD(lParam);
+			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
+				if(UnGroupChannel(iXVal))
+				{
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+					RefreshAllLblWindows();
+				}
     
-    break;
+			break;
 
-  //////////////////////////////////////////////////////////////
-  case WM_ERASEBKGND:
-      break;
-  //////////////////////////////////////////////////////////////
-  case WM_PAINT:
-      hdc = BeginPaint(hWnd, &ps);
-      DrawLbl(hdc, lpmwd);
-      EndPaint(hWnd, &ps);
-      break;
-  //////////////////////////////////////////////////////////////
-  default:
-      return DefWindowProc(hWnd, wMessage, wParam, lParam);
+		//////////////////////////////////////////////////////////////
+		case WM_ERASEBKGND:
+				break;
+
+		//////////////////////////////////////////////////////////////
+		case WM_PAINT:
+				hdc = BeginPaint(hWnd, &ps);
+				DrawLbl(hdc, lpmwd);
+				EndPaint(hWnd, &ps);
+				break;
+
+		case WM_KILLFOCUS:
+				bLBDown = FALSE;
+			// fall thru
+
+		//////////////////////////////////////////////////////////////
+		default:
+				return DefWindowProc(hWnd, wMessage, wParam, lParam);
 
   }
 
@@ -207,7 +251,7 @@ void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
   rect.right = 0; // Set it to this on purpose
   //for(iCount=0; iCount < lpmwd->lZMCount; iCount++)
   for(iCount = lpmwd->iStartScrChan; iCount < lpmwd->iEndScrChan + 1; iCount++)
-      {
+  {
       iPhisChannel = lpmwd->lpwRemapToScr[iCount]; // Get the actual phis channel
       iBmpIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
 
@@ -254,7 +298,7 @@ void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
       }
 
       rect.left = rect.right;
-      }
+  }
 
   // Free the Bitmaps
   //-----------------
