@@ -1,11 +1,12 @@
 //=================================================
 // Copyright 1998-2001 CorTek Software, Inc.
 //=================================================
-
-//#include <windows.h>
-//#include <mmsystem.h>
-//#include <direct.h>
-//#include <string.h>
+//
+//
+// $Author::                                      $
+// $Archive::                                     $
+// $Revision::                                    $
+//
 
 #include "SAMM.h"
 #include "ConsoleDefinition.h"
@@ -243,7 +244,7 @@ be:
 
 	// We know what type of mixer it is, now set the window title.
 
-	wsprintf(gszMainWndTitle, "%s %s", gszMainWndTitle, GetMixerTypeName(giMixerType));
+	wsprintf(gszMainWndTitle, "CorTek -VACS-  %s", GetMixerTypeName(giMixerType));
 	SetWindowText(ghwndMain, gszMainWndTitle);
 
   // Load Some default Strings
