@@ -760,6 +760,7 @@ while(lpczmrLoad->rZone.Right)
         case CTRL_TYPE_VU_DISPLAY14:
         case CTRL_TYPE_VU_DISPLAY15:
 */
+				case CTRL_TYPE_CLIP_LIGHT:
           lpctrlzm[iZonesCount].CtrlFunc = ZoneMapNullFunction;//DrawVUData;
           break;
         case CTRL_TYPE_DISP_INPUT_EQ_FILTER:
