@@ -184,8 +184,8 @@ BEGIN
 	// Matrix Mute Button  -MATRIX LT ########################		
     //------------------
 	2, 101,   12, 111,
-    CTRL_NUM_MATRIXLT_MUTE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
-	  "\0                         ",  // the control name ....
+    CTRL_NUM_MATRIXLT_MUTE, CTRL_MARIXLT_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "MATRIX LT MUTE\0           ",  // the control name ....
 	  "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     0x0000, IDB_FULL_I_MUTE_DOWN, 0x0000,
@@ -193,8 +193,8 @@ BEGIN
 	// Matrix Mute Button  -MATRIX RT ########################		
     //------------------
 	2, 101,   12, 111,
-    CTRL_NUM_MATRIXRT_MUTE, CTRL_TYPE_BUTTON_REG, DISP_TYPE_NORMAL,
-	  "\0                         ",  // the control name ....
+    CTRL_NUM_MATRIXRT_MUTE, CTRL_MARIXRT_MUTE_FILTER, DISP_TYPE_NORMAL,
+	  "MATRIX RT MUTE\0           ",  // the control name ....
 	  "\0                         ",  // the control name .... Alternative
     RDOUT_STRING_TABLE,
     0x0000, IDB_FULL_I_MUTE_DOWN, 0x0000,
