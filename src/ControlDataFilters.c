@@ -2699,6 +2699,17 @@ void HandleMasterToggleSwtches(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
   LPCTRLZONEMAP       lpctrl;
   WORD                wVal;
 
+	/////////////////////////////////////////////////////
+	// Added in 2.47o so that the full view toggeling
+	// of cues work correctly.  The lpmd was being
+	// passed for the ZOOM view rather than FULL view
+	// which cause ScanCtrlZonesNum() to return NULL
+	// and crash the FlipTheControl() routine
+	/////////////////////////////////////////////////////
+
+	if (lpmwd->lpZoneMap->iZonesCount < 100)
+		lpmwd = GetValidMixerWindowData ();
+
   switch(pctrlzm->iCtrlChanPos)
   {
 		case CTRL_NUM_MASTER_CUE_LEVEL_MONO:
@@ -3089,6 +3100,16 @@ void HandleMatrixToggleSwtches(LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm)
   int                 iIdx;
   int                 iCount;
 
+	/////////////////////////////////////////////////////
+	// Added in 2.47o so that the full view toggeling
+	// of cues work correctly.  The lpmd was being
+	// passed for the ZOOM view rather than FULL view
+	// which cause ScanCtrlZonesNum() to return NULL
+	// and crash the FlipTheControl() routine
+	/////////////////////////////////////////////////////
+
+	if (lpmwd->lpZoneMap->iZonesCount < 100)
+		lpmwd = GetValidMixerWindowData ();
 
   for(iCount =0; iCount < MAX_MATRIX_COUNT; iCount++)
   {
