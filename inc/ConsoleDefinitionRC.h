@@ -95,6 +95,9 @@
 #define IDB_FDR_WHITE_TINY              219
 #define IDB_STEREO_CUE_METERS           220
 #define IDB_VU_DISPLAY2                 221
+#define IDB_CLIP_LIGHT_MEDIUM           224
+#define IDB_CLIP_LIGHT_BIG              225
+#define IDB_CLIP_LIGHT_SMALL            226
 #define IDC_IP_ADDR                     1000
 #define IDC_PORT                        1001
 #define IDC_BTN_TEST_CONNECTION         1002
@@ -111,7 +114,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        222
+#define _APS_NEXT_RESOURCE_VALUE        227
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1009
 #define _APS_NEXT_SYMED_VALUE           101
