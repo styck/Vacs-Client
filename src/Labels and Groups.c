@@ -5,7 +5,7 @@
 //
 // $Author:: Styck                                $
 // $Archive:: /Vacs Client/src/Labels and Groups. $
-// $Revision:: 21                                 $
+// $Revision:: 22                                 $
 //
 
 //=================================================
@@ -211,7 +211,9 @@ return 0;
 //                             for the mixer window
 //purpose:
 //      Draw the labels of the mixer
-//      in the label window
+//      in the label window. Handle the Sub/Matrix
+//			differently since the Matrix cannot be 
+//			grouped.
 //
 //=================================================
 void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
@@ -255,8 +257,9 @@ void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
   // Go to a loop to draw all the visible labels
   // labels to the Memory bitmap
   //--------------------------------------------
+
   rect.right = 0; // Set it to this on purpose
-  //for(iCount=0; iCount < lpmwd->lZMCount; iCount++)
+
   for(iCount = lpmwd->iStartScrChan; iCount < lpmwd->iEndScrChan + 1; iCount++)
   {
       iPhisChannel = lpmwd->lpwRemapToScr[iCount]; // Get the actual phis channel
@@ -265,9 +268,18 @@ void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
       rect.right += gpBMPTable[iBmpIndex].iWidth;
       CopyMemory(szBuff, lpmwd->lpZoneMap[iPhisChannel].chDefLabel, 4);
       
+
+			/////////////////////////////////////////////////////////
+			// Handle displaying labels, must handle the Sub/Matrix
+			// differently, switching the label text depending on 
+			// where we are on the scrolling image
+
       if(gDeviceSetup.iaChannelTypes[iPhisChannel] == 2 && 
         lpmwd->iYOffset < 2853)
       {
+
+				// Calculate which Matrix Label to use
+
         iTarget = 0;
         for(iic = 0; iic < MAX_AUX_CHANNELS; iic++)
         {
@@ -278,31 +290,50 @@ void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
           }
         }
 				
-				if(gpBMPTable[iBmpIndex].iWidth < 20)
-					wsprintf(szText, "%s", szBuff);
-				else
+				if(gpBMPTable[iBmpIndex].iWidth < 20)		// See if this is a FULL VIEW label
+					wsprintf(szText, "%s", szBuff);				// Yep
+				else																		// No, display Matrix label
 					wsprintf(szText, "%s\n%s", szBuff, &g_pMatrixLabels[iTarget * MAX_LABEL_SIZE]);
+
+				////////////////////////////////////////////////////////////////////////////////////
+				// Now display the label, either hilighted if grouped (FULL VIEW ONLY for Matrix)
+				// or unhilighted if NOT grouped.
+
+				if(IsGrouped(iPhisChannel) && (gpBMPTable[iBmpIndex].iWidth < 20))
+				{
+					FillRect(hdc, &rect, hbrBlack);
+					WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(255, 0, 0), (LPSTR)szText);
+				}
+				else
+				{
+					FillRect(hdc, &rect, hbrGray);
+					WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szText);
+				}
+
       }
       else
 			{
-				if(gpBMPTable[iBmpIndex].iWidth < 20)
-					wsprintf(szText, "%s", szBuff);
-				else
+				if(gpBMPTable[iBmpIndex].iWidth < 20)		// See if this is a FULL VIEW label
+					wsprintf(szText, "%s", szBuff);				// Yep
+				else																		// No, display Channel label
 					wsprintf(szText, "%s\n%s", szBuff, &gpLabels[iPhisChannel * MAX_LABEL_SIZE]);
-			}
 
-      if(IsGrouped(iPhisChannel))
-      {
-        FillRect(hdc, &rect, hbrBlack);
-        WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(255, 0, 0), (LPSTR)szText);
-        //WriteTextToDC(hdc  , &rect , 0, 0, RGB(255, 0, 0), (LPSTR)szBuff);
-      }
-      else
-      {
-        FillRect(hdc, &rect, hbrGray);
-        WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szText);
-        //WriteTextToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szBuff);
-      }
+				///////////////////////////////////////////////////////////////
+				// Now display the label, either hilighted if grouped
+				// or unhilighted if NOT grouped.
+
+				if(IsGrouped(iPhisChannel))
+				{
+					FillRect(hdc, &rect, hbrBlack);
+					WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(255, 0, 0), (LPSTR)szText);
+				}
+				else
+				{
+					FillRect(hdc, &rect, hbrGray);
+					WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szText);
+				}
+
+			}
 
       rect.left = rect.right;
   }
