@@ -568,22 +568,26 @@ int         iPhisChannel;
 int         iMixer;
   
 
-hbmpOld = NULL;
-hbmpBuff = NULL;
+	hbmpOld = NULL;
+	hbmpBuff = NULL;
 
-if(lpMWD == NULL)
-    return;
-hdc = lpPS->hdc; // assign to local ... for speed only
-hdcMem = CreateCompatibleDC(hdc);
-//hdcMemBuff = CreateCompatibleDC(hdc);
-// apply the vertical offset
-//--------------------------
+	if(lpMWD == NULL)
+			return;
+	hdc = lpPS->hdc; // assign to local ... for speed only
+	hdcMem = CreateCompatibleDC(hdc);
+	//hdcMemBuff = CreateCompatibleDC(hdc);
 
-iX = iY = iCX = iCY = 0;
+	////////////////////////////
+	// apply the vertical offset
+	//--------------------------
+
+	iX = iY = iCX = iCY = 0;
+
 //lZMCount = lpMWD->lZMCount;
 //for(lCount = 0; lCount < lZMCount; lCount++)
-for(lCount = lpMWD->iStartScrChan; lCount < lpMWD->iEndScrChan + 1; lCount++)
-    {
+
+	for(lCount = lpMWD->iStartScrChan; lCount < lpMWD->iEndScrChan + 1; lCount++)
+  {
     iMixer = HIBYTE(lpMWD->lpwRemapToScr[lCount]);
     iPhisChannel = LOBYTE(lpMWD->lpwRemapToScr[lCount]); // Get the actual phis channel
 
@@ -591,25 +595,26 @@ for(lCount = lpMWD->iStartScrChan; lCount < lpMWD->iEndScrChan + 1; lCount++)
     iCX = gpBMPTable[iBMPIndex].iWidth;
     iCY = gpBMPTable[iBMPIndex].iHeight;
 
-		
+		////////////////////////////////////////////////////////
     // if it is the same index we don't need to reselect it
     // in the HDC
     //-----------------------------------------------------
     if(iBMPIndex != iBMPIndexLast)
-        {
+    {
         if(hbmpBuff == NULL)
-            {
+        {
             hbmpBuff = CreateCompatibleBitmap(hdc, iCX, iCY);
             hbmpMemOld = SelectObject(hdcMem, hbmpBuff);
-            }
+        }
   
         hbmpOld = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
         BitBlt(hdcMem, 0, 0, iCX, iCY,
                g_hdcBuffer, 0, 0, SRCCOPY );
         SelectObject(g_hdcBuffer, hbmpOld)  ;
         iBMPIndexLast = iBMPIndex;
-        }
+    }
 
+		//////////////////////////
     // Draw all the Controls
     // into the Memory Bitmap
     //-----------------------
@@ -617,10 +622,12 @@ for(lCount = lpMWD->iStartScrChan; lCount < lpMWD->iEndScrChan + 1; lCount++)
     BitBlt(hdc, iX, iY, iCX, iCY,
            hdcMem, 0, lpMWD->iYOffset, SRCCOPY);
 
+		//////////////////////////////////////////////////
     // advance x with the width of the current bitmap
     //-----------------------------------------------
     iX += iCX;
-    }
+  }
+
 // restore the old bitmap for this DC
 //-----------------------------------
 SelectObject(hdcMem, hbmpMemOld);
@@ -676,11 +683,11 @@ iZonesCount = lpZoneMap->iZonesCount;
 // Go into a loop and draw each individual control
 // that has a valid Control Number not CTRL_NUM_NULL
 //--------------------------------------------------
-for(iCount = 0; iCount < iZonesCount; iCount++)
-    {
+	for(iCount = 0; iCount < iZonesCount; iCount++)
+  {
     iCtrlNum = lpctrlZM->iCtrlChanPos;
     if((iCtrlNum != CTRL_NUM_NULL) && (lpctrlZM->iDispType != DISP_TYPE_NULL))
-        {
+    {
         rZone.right = lpctrlZM->rZone.right - lpctrlZM->rZone.left;
         rZone.bottom = lpctrlZM->rZone.bottom - lpctrlZM->rZone.top;
 
@@ -690,7 +697,7 @@ for(iCount = 0; iCount < iZonesCount; iCount++)
         // Update - Draw the Control only if it is visible
         //------------------------------------------------
         if((iScrBottom > rZone.top) && ((lpctrlZM->rZone.bottom - lpmwd->iYOffset) > 0))
-            {
+        {
             iPhisDataValue = GETPHISDATAVALUE(iMixer, lpctrlZM, iCtrlNum);
 
             rAct = lpctrlZM->rZone;
@@ -709,17 +716,21 @@ for(iCount = 0; iCount < iZonesCount; iCount++)
 
             BitBlt(hdc, rAct.left, rAct.top, rZone.right, rZone.bottom,
                    g_hdcMemory, rAct.left, rAct.top, SRCCOPY );
-            }
         }
-    lpctrlZM ++;
     }
+
+    lpctrlZM ++;
+  }
 
 return;
 }
 
 /////////////////////////////////////////////////////////////////////
+//  FUNCTION: TurnOffAllVUforMixerWindow
 //
-//
+//  Purpose:  Clear our flags that keep track of what VU data to send
+//            and then send to GServer to stop VU data
+//           
 void TurnOffAllVUforMixerWindow(LPMIXERWNDDATA lpmwd)
 {
   int   iCount;
@@ -759,10 +770,14 @@ void TurnOffAllVUforMixerWindow(LPMIXERWNDDATA lpmwd)
   CDef_ShowVuData(acVU);
 }
 
+
+
 /////////////////////////////////////////////////////////////////////
-//  RequestVisibleVU
+//  FUNCTION: RequestVisibleVU
 //
-//
+//  Purpose:  This routine sends the GServer the list of channels to
+//            send VU data for. 
+//           
 //
 void    RequestVisibleVU(LPMIXERWNDDATA lpmwd, int iPrevStart, int iPrevEnd)
 {
@@ -778,31 +793,19 @@ void    RequestVisibleVU(LPMIXERWNDDATA lpmwd, int iPrevStart, int iPrevEnd)
 	if(lpmwd->wWndType == WND_GROUPLBL_FULL)
 		return;
 
-  ZeroMemory(acVU, 80);
-
-  //ZeroMemory(lpmwd->acVisibleVU, 80);
-	/*
-  for(iCount = 0; iCount <  MAX_CHANNELS; iCount++)
-  {
-    if(lpmwd->acVisibleVU[iCount] < 0)
-      lpmwd->acVisibleVU[iCount] = 0;
-    if(lpmwd->acVisibleVU[iCount] > 0)
-      lpmwd->acVisibleVU[iCount] = -lpmwd->acVisibleVU[iCount];
-  }
-	*/
+  ZeroMemory(acVU, 80);	// CLEAR VISIBLE VU ARRAY
 
   // Make sure all visible channels are set to something ...
-  //
-  // Added 1 so that the Master module will be updated.
-  // If we don't do this then the loop below will not execute
-  // and module offset 14 will not be incremented
-  // (NOT TESTED)
+	// Loop through all visible channels
 
   for(iCount = lpmwd->iStartScrChan; iCount <= lpmwd->iEndScrChan; iCount++)
   {
-    lpmwd->acVisibleVU[LOBYTE(lpmwd->lpwRemapToScr[iCount])] ++;
-    if(lpmwd->lpwRemapToScr[iCount] == g_iMasterModuleIdx)
-      lpmwd->acVisibleVU[g_iCueModuleIdx] ++;
+    lpmwd->acVisibleVU[LOBYTE(lpmwd->lpwRemapToScr[iCount])] ++;	// increment its visible count
+
+//////////////////////////////////////////////////////////////  NOW ALWAYS SEND CUE DATA
+//    if(lpmwd->lpwRemapToScr[iCount] == g_iMasterModuleIdx)
+//      lpmwd->acVisibleVU[g_iCueModuleIdx] ++;
+//////////////////////////////////////////////////////////////
 
     for(iSubCount = 0; iSubCount < MAX_MATRIX_COUNT; iSubCount++)
     {
@@ -811,6 +814,17 @@ void    RequestVisibleVU(LPMIXERWNDDATA lpmwd, int iPrevStart, int iPrevEnd)
           lpmwd->acVisibleVU[g_aiMatrix[iSubCount]] ++;
     }
   }
+
+	//////////////////////////////////////////////
+	// Force Cue data for L CUE R floating window
+
+  lpmwd->acVisibleVU[g_iCueModuleIdx] = 1;	// ALWAYS SEND CUE MODULE DATA
+
+
+	////////////////////////////////////////////////////
+	// Now loop through all the channels and if the
+	// visible count = 1 then flag the GServer to 
+	// send data for this VU
 
   for(iCount = 0; iCount <  MAX_CHANNELS; iCount++)
   {
@@ -838,7 +852,10 @@ void    RequestVisibleVU(LPMIXERWNDDATA lpmwd, int iPrevStart, int iPrevEnd)
 	MessageBox(ghwndMain, chBuffer, "VUs", MB_OK);  
 */
 
-  //CDef_ShowVuData(lpmwd->acVisibleVU);
+	//////////////////////////////////////
+	// Send data to GServer to indicate
+	// what VU data to send
+
   CDef_ShowVuData(acVU);
 
 
