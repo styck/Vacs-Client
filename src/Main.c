@@ -346,9 +346,15 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
     {
     case IDM_START_TRACKING_WINDOW:
       if(IsTrackingActive() == TRUE)
+			{
+				CheckMenuItem(ghMainMenu, IDM_START_TRACKING_WINDOW, MF_UNCHECKED);
         StopTrackingWindow();
-      else
+			}	
+			else
+			{
+				CheckMenuItem(ghMainMenu, IDM_START_TRACKING_WINDOW, MF_CHECKED);
         ActivateTrackingWindow();
+			}
       break;
     case IDM_V_PROP_FILTER:
       GetSeqUpdateProps(NULL);
