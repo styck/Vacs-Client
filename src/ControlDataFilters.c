@@ -1816,9 +1816,6 @@ void	syncInputPriority (LPCTRLZONEMAP pctrlzm, int	icount, LPMIXERWNDDATA lpmwd)
 	if (cueActive > 0)
 	{
 		if (cue_count < 1)
-//		if (g_cue_priority.aux < 1 && g_cue_priority.input < 1 && 
-//				g_cue_priority.master < 1 && g_cue_priority.matrix < 1 &&
-//				g_cue_priority.sub < 1)
 		{
 			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, FALSE);
 			g_CueMasterSystem  = 1;
@@ -1835,9 +1832,6 @@ void	syncInputPriority (LPCTRLZONEMAP pctrlzm, int	icount, LPMIXERWNDDATA lpmwd)
 	} else
 	{
 		if (cue_count > 0)
-//		if (g_cue_priority.aux > 0  || g_cue_priority.input > 0 ||
-//				g_cue_priority.master > 0 || g_cue_priority.matrix > 0 ||
-//				g_cue_priority.sub > 0)
 		{
 			HandleCueMasterMuteFilterEx(g_iMasterModuleIdx, lpmwd, NULL, TRUE);
 			g_CueMasterSystem  = 0;
@@ -2837,7 +2831,6 @@ GetSpecialFilter(LPMIXERWNDDATA lpmwd, int iPhisChan, LPCTRLZONEMAP lpctrlZM_Spe
   
 };
 */
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //
