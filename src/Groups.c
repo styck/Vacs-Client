@@ -38,6 +38,7 @@ BOOL              InitGroupsImageList(HWND hwndLV );
 void              FillGroupListControl(int   iType);
 void              HandleCtrlBtnClickInGroup(HWND hwnd, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP pctrlzm, int phis_channel);
 int								GetListItemGroupNumber(int iItem);
+LPSTR							GetListItemGroupName(int iItem);
 
 BOOL              IsCtrlPrePostFilter(int iType);
 BOOL							isChanelSafeActive (LPCTRLZONEMAP pctrlzm);
@@ -786,6 +787,25 @@ int	GetListItemGroupNumber(int iItem)
 		return -1;
 	return lvi.lParam;
 }
+
+
+/////////////////////////////////////////////
+//
+// Used in MAIN.C to get the group name
+// to display on the tooltips
+
+LPSTR	GetListItemGroupName(int iItem)
+{
+	char			szText[80];
+
+    ListView_GetItemText(GetDlgItem(ghwndGroupsDlg, IDC_GROUP_LIST), 
+                                 iItem, 
+                                 0, 
+                                 szText,
+																 80);
+		return &szText[0];
+}
+
 
 /////////////////////////////////////////////
 //
