@@ -3,9 +3,9 @@
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author:: Styck                                $
+// $Archive:: /Vacs Client/inc/CTRL.H             $
+// $Revision:: 32                                 $
 //
 //
 //=================================================
@@ -845,6 +845,9 @@
 #define CTRL_TYPE_BTN_AUX_MMATRIX_RT_POST_FILTER 0x0043
 #define CTRL_TYPE_BTN_AUX_MMATRIX_RT_POST_FILTER 0x0043
 #define CTRL_TYPE_BTN_MASTER_AUX_PREPOST_FILTER  0x0044
+
+#define CTRL_TYPE_BTN_MASTERLT_POSTSW_MATRIX		0x0045	// fds Master Post Matrix SUPPORT
+#define CTRL_TYPE_BTN_MASTERRT_POSTSW_MATRIX		0x0046
 
 #define CTRL_TYPE_DISP_INPUT_EQ_FILTER            0x0050
 #define CTRL_TYPE_DISP_SUB_EQ_FILTER              0x0051
