@@ -112,6 +112,19 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 	if (gInitialized == FALSE)
 		return NULL;
 
+	///////////////////////////////////
+	// Limit us to only ONE FULL VIEW
+	// If window already exists then 
+	// bring it to the front
+
+	hWnd=FindWindowEx(ghwndMDIClient,NULL,gszFullViewClass,szTitle);
+	if(hWnd)
+	{
+		BringWindowToTop(hWnd);
+		return NULL;
+	}
+
+
 	if(pMWD == NULL)
 		{
 		// ???????????????????????
@@ -130,6 +143,7 @@ HWND       CreateFullViewWindow(LPSTR szTitle, LPMIXERWNDDATA  pMWD)
 		// store the Window title
 		//-----------------------
 		lstrcpy(lpmwd->szTitle, szTitle);
+
 		// make some room for the label Window
 		// after all we want this window to appear
 		// in it's full size
