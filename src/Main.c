@@ -32,7 +32,7 @@ int         iMessage;
 FILESTRUCT	fsTemp;
 UINT				timerID;
 int					shift_key;	 
-
+WORD	wKeyFlags=0;
 
 ghInstMain = hInstance;
 
@@ -113,6 +113,116 @@ while((ghwndMain != NULL) && GetMessage(&msg, NULL/*ghwndMain*/, 0, 0) == TRUE)
 			//	goto ON_WM_QUIT;
 
 			//////////////
+			if(msg.message == WM_KEYUP)
+			{
+				switch(msg.wParam)
+				{
+					case VK_SHIFT:
+					wKeyFlags &= ~VK_SHIFT;
+					break;
+				}
+			}
+
+			// If keydown then lets check for F-keys
+			// If shift is down also then save the window positions to 
+			// a file fkeyX.dat where X is the function key number
+
+			if(msg.message == WM_KEYDOWN)
+			{
+				wsprintf(fsTemp.szFileDir, "%sfkey\\", gszProgDir);
+
+				switch(msg.wParam)
+				{
+							
+					case VK_SHIFT:
+					wKeyFlags |= VK_SHIFT;
+					break;
+
+					case VK_F1:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",1 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F1);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F1);
+					break;
+
+					case VK_F2:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",2 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F2);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F2);
+					break;
+
+					case VK_F3:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",3 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F3);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F3);
+					break;
+
+					case VK_F4:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",4 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F4);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F4);
+					break;
+
+					case VK_F5:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",5 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F5);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F5);
+
+					break;
+
+					case VK_F6:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",6 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F6);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F6);
+					break;
+
+					case VK_F7:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",7 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F7);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F4);
+					break;
+
+					case VK_F8:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",8 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F8);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F8);
+					break;
+
+					case VK_F9:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",9 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F9);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F9);
+					break;
+#ifdef NOT_USEDSYSTEMKEY
+					case VK_F10:
+						wsprintf(fsTemp.szFileName, "fkey%d.dat",10 );
+						if(wKeyFlags & VK_SHIFT)	// Save window if SHIFT
+							WriteFkeyFile(&fsTemp, (int) VK_F10);
+						else	// Restore window
+							LoadFkeyFile(&fsTemp, (int) VK_F10);
+					break;
+#endif
+
+				}
+			}
+
 			if(msg.message == WM_SYSKEYDOWN)
 			{
 				g_bReversDirection = TRUE; 
