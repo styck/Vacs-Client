@@ -1267,7 +1267,6 @@ void    HandleResetEQFilter(int iPhisChann, LPMIXERWNDDATA lpmwd, LPCTRLZONEMAP 
     SETPHISDATAVALUE(ctrlData.wMixer, lpctrlZM, i_ctrl_pos, ctrlData.wVal);
 
 		SendDataToDevice(&ctrlData, TRUE, NULL, 0, lpmwd, TRUE);
-		//SendDataToDevice(&ctrlData, TRUE, lpctrl, 0, lpmwd, TRUE);
 
 		// now update all of the other mixers
 		// windows that represent this mixer
@@ -1976,7 +1975,7 @@ CHECK_FOR_GROUPS:
 
   // Update grouped controls
   //
-  if((bUseGroups == TRUE) && pCtrlData->wChannel < 80 && pctrlzm != 0)
+  if((bUseGroups == TRUE) && pCtrlData->wChannel < 80)
     UpdateGroupedControls(pCtrlData, pctrlzm, iDelta, lpmwd, FALSE);
 
 	if (g_monitor_mix_file_changes == TRUE)
