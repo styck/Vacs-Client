@@ -1,6 +1,12 @@
 //=================================================
-// Copyright 1998 CorTek Software, Inc.
+// Copyright 1998 - 2001, CorTek Softawre, Inc.
 //=================================================
+//
+//
+// $Author: Styck $
+// $Archive: /Vacs Client/inc/SAMMext.h $
+// $Revision: 15 $
+//
 
 #include "consoledefinition.h"
 
@@ -127,9 +133,9 @@ extern BOOL                gbFullImageWndClassReg;
 
 // Zoom View Child Window
 //-----------------------
-extern char                gszZoomViewClass[];
+extern char               gszZoomViewClass[];
 extern char								giMixerType;				// Mixer type, cabaret, event, showtime, etc.
-int												giMixerTypeOffline;	// Same as above but only if OFFLINE, else will be -1
+extern int								giMixerTypeOffline;	// Same as above but only if OFFLINE, else will be -1
 
 extern char								 gszStereoCueMetersClass[];
 
