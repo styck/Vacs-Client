@@ -59,7 +59,7 @@ void HandleGroupLVKeyDown(LV_KEYDOWN*);
 void EnableTBGroupButtons(int iLast);
 
 //=================================================
-//function: RegisterSeqWindowClass
+//function: RegisterGroupWindowClass
 //
 //
 //=================================================
@@ -100,7 +100,7 @@ return 0;
 
 
 //=================================================
-//function: ShowSeqWindow
+//function: ShowGroupWindow
 //
 //
 //=================================================
@@ -189,11 +189,14 @@ switch(uiMsg)
             {
             return -1;
             }
-        GetClientRect(ghwndGroupsDlg, &rect);        
-        SetWindowPos(hwnd, NULL, 0, 0, 
+        GetClientRect(ghwndGroupsDlg, &rect);   
+				
+				// Set the initial position of the Group dialog box
+
+        SetWindowPos(hwnd, NULL, 0, 300, 
                         rect.right + GetSystemMetrics(SM_CYDLGFRAME)*4, 
                         rect.bottom + GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYDLGFRAME)*4, 
-                        SWP_NOMOVE | SWP_NOZORDER);
+                        SWP_NOZORDER);
 
 
         ShowWindow(ghwndGroupsDlg, SW_SHOW);
@@ -245,11 +248,111 @@ return 0;
 }
 
 
+//=============================================
+//FUNCTION: DisplayLVNPopupMenu
+//
+//
+//Display the POPUP menu for the GROUPS box
+//=============================================
+void DisplayLVNPopupMenu(HWND hwnd)
+{
+HMENU   hLVNMenu = NULL;
+HMENU   hLVNPopupMenu = NULL;
+HMENU   hSubMenu = NULL;
+int     iMenu, iID;
+UINT    uMenuState;
+char    szBuf[128];
+POINT   pt;
+
+hLVNMenu = LoadMenu(ghInstStrRes, MAKEINTRESOURCE(MENU_LVN_POPUP));
+if(hLVNMenu == NULL)
+    goto ON_EXIT;
+
+hLVNPopupMenu = CreatePopupMenu();
+
+iMenu = 0;
+ 
+/////////////////////////////////////////////////////
+// Get menu state will return the style of the menu
+// in the lobyte of the unsigned int. Return value
+// of -1 indicates the menu does not exist, and we
+// have finished creating our pop up.
+/////////////////////////////////////////////////////
+
+while ((uMenuState = GetMenuState(hLVNMenu, iMenu, MF_BYPOSITION)) != -1)
+    {
+    if (uMenuState != -1)
+        {
+        // Get the menu string.
+        GetMenuString(hLVNMenu, iMenu, szBuf, 128, MF_BYPOSITION);
+        if (LOBYTE(uMenuState) & MF_POPUP) // It's a pop-up menu.
+            {
+            hSubMenu = GetSubMenu(hLVNMenu, iMenu);
+            AppendMenu(hLVNPopupMenu, LOBYTE(uMenuState), (UINT)hSubMenu, szBuf);
+            }
+        else  // Is a menu item, get the ID.
+            {
+            iID = GetMenuItemID(hLVNMenu, iMenu);
+            AppendMenu(hLVNPopupMenu, uMenuState, iID, szBuf);
+            }
+        }
+    iMenu++;  // Get the next item.
+    }
+
+
+// TrackPopupMenu expects screen coordinates.
+if(GetCursorPos(&pt) == FALSE)
+    {
+    pt.x = 100;
+    pt.y = 100;
+    }
+TrackPopupMenu(hLVNPopupMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x,pt.y, 0, hwnd, NULL);
+
+// Because we are using parts of the main menu in our
+// pop-up menu, we can't just delete the pop-up menu, because
+// that would also delete the main menu. So we must
+// go through the pop-up menu and remove all the items.
+while (RemoveMenu(hLVNPopupMenu, 0, MF_BYPOSITION))
+    ;
+
+
+ON_EXIT:
+if(hLVNMenu)
+    DestroyMenu(hLVNMenu);
+
+if(hLVNPopupMenu)
+    DestroyMenu(hLVNPopupMenu);
+
+return;
+};
+
+
+//==================================================
+//FUNCTION: GroupRenameItem
+//
+//PURPOSE: Rename a group name, called from
+//         right click pop-up from group window
+//
+//==================================================
+void    GroupRenameItem(void)
+{
+int iListItem;
+HWND      hwnd;
+
+  hwnd = GetDlgItem(ghwndGroupsDlg, IDC_GROUP_LIST);
+	iListItem =  GetLisControlSelection();
+	ListView_EditLabel(hwnd, iListItem);
+
+return;
+}
+
+
+
 //================================================
-//function: SeqProc
+//function: GroupsProc
 //
 //main window procedure 
-// for the Sequence View
+// for the Group View
 //================================================
 BOOL CALLBACK   GroupsProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -257,22 +360,21 @@ BOOL CALLBACK   GroupsProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
   RECT        rClient;
   RECT        rScreen;
   LV_COLUMN   lvclmn;
-  //LV_ITEM     lvitem;
   int         iCount;
 	int					iListItem;
-
 
 switch(uiMsg)
   {
 
   /////////////////////////////////////////////////////////////
   case WM_NOTIFY:
-    switch (((LPNM_LISTVIEW) lParam)->hdr.code)
+			switch (((LPNM_LISTVIEW) lParam)->hdr.code)
       {
       //----------------
       case NM_SETFOCUS:
           SendMessage(ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)GetParent(hwnd), 0);
           break;
+
       //----------------
       case LVN_SETDISPINFO:
           HandleGroupLVSetItemIfno((LV_DISPINFO *)lParam);
@@ -301,18 +403,11 @@ switch(uiMsg)
       // Handle some General Notification messages
       //------------------------------------------
       case NM_RCLICK:
-          //if(((LPNMHDR) lParam)->idFrom == IDTREE_SEQUENCE)
-          //    DisplayTVNPopupMenu(hwnd);
           break;
 
       case NM_DBLCLK:
           if(((LPNMHDR) lParam)->idFrom == IDC_GROUP_LIST)
           {
-            //ZeroMemory(&lvitem, sizeof(LV_ITEM));
-            //lvitem.mask = LVIF_PARAM | LVIS_SELECTED;
-            //lvitem.iItem = ListView_();
-            //ListView_GetItem(GetDlgItem(hwnd, IDC_GROUP_LIST), 
-            //                  );
             if(((NM_LISTVIEW*)lParam)->iItem > -1)
               ActivateGroup(((NM_LISTVIEW*)lParam)->iItem, FADERS_GROUPS, -1);
           }
@@ -321,62 +416,96 @@ switch(uiMsg)
     }
     return 0;
     break; //case WM_NOTIFY:
+
+
+	// Handle the right-click and POPUP menu HERE
+	// This will set the selection to the item that
+	// the user right clicked on.
+
+  case WM_CONTEXTMENU:
+          DisplayLVNPopupMenu(hwnd);
+      break;
+
   //------------------------
   case WM_COMMAND:
     switch(LOWORD(wParam))
     {
-    case IDC_CANCEL_GROUP:
-      DeactivateGroup();
-      break;
-    //
-    case IDC_GROUP_ADD:
-      // Adds the current group 
-      // to the list of Groups
-      //
-      iCount = AddGroup(&g_CurrentGroup, FADERS_GROUPS);
-      if(iCount > -1)
-        AddToListControl(iCount);
-      else
-        MessageBox(ghwndMain, "Maximum number of groups reached!", "Information", MB_OK | MB_ICONEXCLAMATION);
-      break;
-    case IDC_GROUP_UPADTE:
-			iListItem =  GetLisControlSelection();
-			iCount = GetListItemGroupNumber(iListItem);
-      UpdateGroup( iListItem, FADERS_GROUPS, iCount);
-      break;
-    case IDC_GROUP_DELETE:
-			iListItem =  GetLisControlSelection();
-			iCount = GetListItemGroupNumber(iListItem);
-      DeleteGroup( iListItem, FADERS_GROUPS, iCount);
-      break;
-    case IDC_GROUP_HIDECONTROLS:
+			case MENU_LVN_CANCEL:
+			case IDC_CANCEL_GROUP:
+				DeactivateGroup();
+				break;
+			//
+						//--------------------------------------------
+			// Handle RENAME pop-up menu item
+			case MENU_LVN_RENAME:
+				GroupRenameItem();
+				break;
 
-      if(IsDlgButtonChecked(hwnd, IDC_GROUP_HIDECONTROLS) == BST_CHECKED)
-      {
-        hwndItem = GetDlgItem(hwnd, IDC_GROUP_HIDECONTROLS);
-        GetWindowRect(hwndItem, &rClient);
-        ScreenToClient(hwnd, (LPPOINT)&rClient);
-        g_iGroupsDlgOffset = -(rClient.top);
+			// Adds the current group 
+			// to the list of Groups
+			//
+			case MENU_LVN_ADD:
+			case IDC_GROUP_ADD:
+				iCount = AddGroup(&g_CurrentGroup, FADERS_GROUPS);
+				if(iCount > -1)
+					AddToListControl(iCount);
+				else
+					MessageBox(ghwndMain, "Maximum number of groups reached!", "Information", MB_OK | MB_ICONEXCLAMATION);
+				break;
+
+			//////////////////////
+			// Update a group
+			//
+			case MENU_LVN_UPDATE:
+			case IDC_GROUP_UPADTE:
+				iListItem =  GetLisControlSelection();
+				iCount = GetListItemGroupNumber(iListItem);
+				UpdateGroup( iListItem, FADERS_GROUPS, iCount);
+				break;
+
+			/////////////////////
+			// Delete a group
+			//
+			case MENU_LVN_DELETE:
+			case IDC_GROUP_DELETE:
+				iListItem =  GetLisControlSelection();
+				iCount = GetListItemGroupNumber(iListItem);
+				DeleteGroup( iListItem, FADERS_GROUPS, iCount);
+				break;
+
+			/////////////////////
+			// Hide the button
+			// controls for the 
+			// group selection
+			//
+			case IDC_GROUP_HIDECONTROLS:
+
+				if(IsDlgButtonChecked(hwnd, IDC_GROUP_HIDECONTROLS) == BST_CHECKED)
+				{
+					hwndItem = GetDlgItem(hwnd, IDC_GROUP_HIDECONTROLS);
+					GetWindowRect(hwndItem, &rClient);
+					ScreenToClient(hwnd, (LPPOINT)&rClient);
+					g_iGroupsDlgOffset = -(rClient.top);
         
-        hwndItem = GetParent(hwnd);
-        GetWindowRect(hwndItem, &rClient);
-        rClient.right -= rClient.left;
-        rClient.bottom -= rClient.top;
-        SendMessage(hwndItem, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rClient.right, rClient.bottom));
-      }
-      else
-      {
-        g_iGroupsDlgOffset = 0;
-        hwndItem = GetParent(hwnd);
-        GetWindowRect(hwndItem, &rClient);
-        rClient.right -= rClient.left;
-        rClient.bottom -= rClient.top;
-        SendMessage(hwndItem, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rClient.right, rClient.bottom));
-      };
-      break;
+					hwndItem = GetParent(hwnd);
+					GetWindowRect(hwndItem, &rClient);
+					rClient.right -= rClient.left;
+					rClient.bottom -= rClient.top;
+					SendMessage(hwndItem, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rClient.right, rClient.bottom));
+				}
+				else
+				{
+					g_iGroupsDlgOffset = 0;
+					hwndItem = GetParent(hwnd);
+					GetWindowRect(hwndItem, &rClient);
+					rClient.right -= rClient.left;
+					rClient.bottom -= rClient.top;
+					SendMessage(hwndItem, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rClient.right, rClient.bottom));
+				};
+				break;
 
-    default:
-      break;
+			default:
+				break;
     }
     break; //  case WM_COMMAND:
 
