@@ -10,7 +10,6 @@
 #include "SAMMEXT.H"
 #include "MACRO.h"
 
-
 #define SEQ_COLUMNS     4
 #define SEQ_NUMBITMAPS  3
 #define DRAG_TIMER_ID   10
@@ -57,6 +56,7 @@ void  SetSeqUpdateAllProps(HWND hwnd, BOOL bSet);
 void  DisableSeqUpdateAllProps(HWND hwnd, BOOL bDisable);
 void	CloseSequenceFiles (void);
 BOOL	OpenSequenceFiles (LPSTR  lpstrFName);
+void ShowArea(BOOL bShowDefAreaOnly, HWND hDlg, HWND hWndDefArea);
 
 //=================================================
 //function: RegisterSeqWindowClass
@@ -181,7 +181,6 @@ char            szBuff[MAX_PATH];
 HTREEITEM       htItem;  // handle of target item 
 TV_HITTESTINFO  tvht;  // hit test information 
 
-
 switch(uiMsg)
     {
     /////////////////////////////////////////////////////////////
@@ -286,6 +285,23 @@ switch(uiMsg)
              */
 
             //--------------------------------------------
+						// Handle Expanding the SEQ box
+            //----------------
+						case IDBTN_SEQ_EXPAND:
+			// User selected EXPAND" button, show entire dialog box
+			
+						ShowArea(TRUE, hwnd, GetDlgItem(hwnd, ID_DEFAULTBOX));
+							;
+						break;
+
+						case IDBTN_SEQ_EXPAND2:
+			// User selected "EXPAND" button, hide MTC/SMPTE portion
+			
+						ShowArea(FALSE, hwnd, GetDlgItem(hwnd, ID_DEFAULTBOX));
+							;
+						break;
+
+            //--------------------------------------------
 						// Handle ADD pop-up menu item and BUTTON item
             //----------------
             case MENU_TVN_ADD:
@@ -318,15 +334,24 @@ switch(uiMsg)
 						// Handle PLAY BUTTON item
             case IDBTN_SEQ_PLAY:
               if(HIWORD(wParam) == BN_CLICKED)
-                  {
+              {
                   if(g_TimeEvent == 0)
-                      {
+                  {
+//	Do NOT toggle button text										SetWindowText(GetDlgItem(hwnd, IDBTN_SEQ_PLAY),"Stop");
                       g_iStopTimeEvent = 0;
+
+											// Set the MTC readout time event
+											//  30ms delay
+											//  30ms resolution
+
                       g_TimeEvent = timeSetEvent(30, 30, MTC_EmulateProc, (DWORD)g_hwndMTCReadout, TIME_PERIODIC);
-                      }
-                  else
-                      g_iStopTimeEvent = 1;
                   }
+                  else
+									{
+//											SetWindowText(GetDlgItem(hwnd,IDBTN_SEQ_PLAY),"Play");
+                      g_iStopTimeEvent = 1;
+									}
+              }
             //-----------------------------
 						// Handle RECALL BUTTON item
             case ID_RECALL:
@@ -359,6 +384,7 @@ switch(uiMsg)
         break;
     //////////////////////////////////////////////////////////////
     case WM_SIZE:
+
         if((wParam != SIZE_MINIMIZED) && ghwndSeqDlg)
             {
             GetClientRect(hwnd, &rect);
@@ -388,7 +414,6 @@ switch(uiMsg)
             }
 
         break;
-    
     /////////////////////////////////////////////////////
     case WM_INITDIALOG:
 			ghwndSeqDlg = hwnd;
@@ -455,7 +480,14 @@ switch(uiMsg)
           PrepareMTCReadout();
           }
 
-      return FALSE;        
+// Only show the default dialog box (ie the small size).  The size shown
+// depends on the size of the ID_DEFAULTBOX. In our case this is just a
+// black rectanlge. EXPAND
+
+			ShowArea(FALSE, ghwndSeqDlg, GetDlgItem(ghwndSeqDlg, ID_DEFAULTBOX));
+
+      return TRUE;
+
       break;
     ////////////////////////////////////////////////////
     case WM_DESTROY:
@@ -477,7 +509,7 @@ switch(uiMsg)
         return FALSE;
     }
 
-return TRUE;
+return FALSE;
 }
 
 //=======================================================
@@ -985,7 +1017,9 @@ int retval;
 /////////////////////////////////////////////////////////////////////
 //  MEMBER FUNCTION: RecallEntry
 //
-//
+// Recalls a Single Sequence Scene (Entry)
+// If sequence name has /xxxx in it then it will pass that number to the
+// RecallMemoryMapBuffer() so that it can be used for crossfading.
 //
 
 BOOL    RecallEntry(void)
@@ -995,12 +1029,15 @@ BOOL    RecallEntry(void)
   TV_ITEM             tvi;
   long                lItemCurActive, lItemCurNext;
   SEQENTRY            *pSeqentry = NULL;
-
+	DWORD								dwSeqDelay;	// The time it takes to move from one sequence to another
+	char								cSeqDelay[10];	// Character version of above
+	int									ioffset;		// Offset into sequence name where Seq Delay is
+	int									i,j;
 
 	////////////////////////////////////////////
 	// Show ACTIVE SEQUENCE 
 	////////////////////////////////////////////
-
+	j=0;
   htreeitem = TreeView_GetSelection(g_hwndTV);
   if(htreeitem != NULL)
   {
@@ -1015,11 +1052,31 @@ BOOL    RecallEntry(void)
       if(ReadDataFile(pSeqentry->dwOffset))
       {
 				ShowTBSeqName(pSeqentry->szName);
-        RecallMemoryMapBuffer(FALSE);
+
+				// Find the / in the name
+				// and move digit character to cSeqDelay[]
+
+				ioffset = strcspn(pSeqentry->szName,"/");
+				for(i=ioffset+1;isdigit(pSeqentry->szName[i]);i++)
+					cSeqDelay[j++] = pSeqentry->szName[i];
+
+				cSeqDelay[4]=0;	// Only 4 digits 0,1,2,3
+				dwSeqDelay = atoi(cSeqDelay);
+
+				// Safety check
+
+				if(dwSeqDelay > 10000) dwSeqDelay = 0;
+
+				// Stop the VU's and load the sequence
+				// Crossfade if iSeqDelay is set
+				CDef_StopVuData();
+        RecallMemoryMapBuffer(FALSE,dwSeqDelay);
+				CDef_StartVuData ();
+
       }
     }
   }
-//#ifdef NOTUSED
+
 	////////////////////////////////////////////
 	// Show NEXT SEQUENCE if there is one
 	////////////////////////////////////////////
@@ -1053,7 +1110,7 @@ BOOL    RecallEntry(void)
 	{
 		ShowTBNextSeqName("END of Sequence");
 	}
-//#endif
+
 
   return bRet;
 }
@@ -1546,7 +1603,7 @@ htreeitem = TreeView_GetSelection(g_hwndTV);
 // and other attributes
 ////////////////////////////////
 	
-wsprintf(seqentry.szName, "Sequence Entry (%d / 0000)", TreeView_GetCount (g_hwndTV) + 1);
+wsprintf(seqentry.szName, "Sequence Scene %d /0000", TreeView_GetCount (g_hwndTV) + 1);
 seqentry.dwSize = sizeof(SEQENTRY);
 
 	////////////////////////////////////////////////////////
@@ -2215,4 +2272,95 @@ BOOL	OpenSequenceFiles (LPSTR  lpstrFName){
       InitSeqList(hwndCtrl);
   
 	return TRUE;
+}
+
+
+//////////////////////////////////////////////////////////////////
+// These used to be in windowssx.h
+//
+#define SetStyleOn(hWnd, Style)		SetWindowLong(hWnd, GWL_STYLE, \
+									Style | GetWindowLong(hWnd, GWL_STYLE));
+									
+#define SetStyleOff(hWnd, Style)	SetWindowLong(hWnd, GWL_STYLE, \
+									~Style & GetWindowLong(hWnd, GWL_STYLE));
+
+#define     GetFirstChild(hwnd)     GetTopWindow(hwnd)
+#define     GetFirstSibling(hwnd)   GetWindow(hwnd, GW_HWNDFIRST)
+#define     GetLastSibling(hwnd)    GetWindow(hwnd, GW_HWNDLAST)
+#define     GetNextSibling(hwnd)    GetWindow(hwnd, GW_HWNDNEXT)
+#define     GetPrevSibling(hwnd)    GetWindow(hwnd, GW_HWNDPREV)
+
+////////////////////////////////////////////////////////////////////
+/*
+*	When bShowDefAreaOnly is TRUE, shrink dialog box so that its lower
+*	right corner is the same as the lower right corner of the default
+*	area control ( in our case the ID_DEFAULTBOX black rectangle).
+*	Disable all controls that appear to the right of or below the default
+*	area control. We also hide the default area control so the black
+*	rectangle is not visible.
+*
+*	When bShowDefAreaOnly is FALSE then restore the dialog box to its
+*	original size and enable the controls outside the default area and
+*	allow the user to access them.
+*
+*/
+
+void ShowArea(BOOL bShowDefAreaOnly, HWND hDlg, HWND hWndDefArea)
+{
+RECT rcDlg, rcDefArea;
+
+// Save original width and height of dialog box
+
+	GetWindowRect(hDlg, &rcDlg);
+	
+// Retrieve coordinates for default area window
+                                     
+	GetWindowRect(hWndDefArea, &rcDefArea);
+
+	
+	if(bShowDefAreaOnly)
+	{
+					
+		SetStyleOff(hWndDefArea, SS_BLACKRECT);
+		SetStyleOn(hWndDefArea, SS_LEFT);
+		
+#ifdef NOTUSED
+		// Resize dialog box to fit only default area.
+		
+
+		SetWindowPos(hDlg, NULL, 0, 0,
+						(rcDefArea.right - rcDefArea.left)*2,	// WIDTH
+						rcDefArea.bottom - rcDefArea.top,	// HEIGHT
+						SWP_NOZORDER | SWP_NOMOVE);
+		
+#endif
+		// Make sure that the Default area box is hidden
+		
+		ShowWindow(hWndDefArea, SW_HIDE);
+		
+	// Switch option pointers
+	
+    	ShowWindow(GetDlgItem (hDlg, IDBTN_SEQ_EXPAND), FALSE);
+    	ShowWindow(GetDlgItem (hDlg, IDBTN_SEQ_EXPAND2), TRUE);
+
+	}
+	else
+	{
+		
+		// Restore dialog box to its original size.
+
+#ifdef NOTUSED
+		SetWindowPos(hDlg, NULL, 0, 0,
+						rcDefArea.right - rcDefArea.left,
+						rcDefArea.bottom - rcDefArea.top,
+						SWP_NOZORDER | SWP_NOMOVE);
+
+			SendMessage(ghwndSeqDlg, WM_SIZE, (WPARAM)SIZE_RESTORED, MAKELPARAM(rcDefArea.right, rcDefArea.bottom));
+#endif
+	// Switch option pointers
+	
+    	ShowWindow(GetDlgItem (hDlg, IDBTN_SEQ_EXPAND), TRUE);	// EXPAND
+    	ShowWindow(GetDlgItem (hDlg, IDBTN_SEQ_EXPAND2), FALSE);	// NORMAL
+
+	}
 }
