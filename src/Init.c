@@ -1,11 +1,11 @@
 //=================================================
-// Copyright 1998-2001 CorTek Software, Inc.
+// Copyright 1998-2004 CorTek Software, Inc.
 //=================================================
 //
 //
-// $Author::                                      $
-// $Archive::                                     $
-// $Revision::                                    $
+// $Author:: Styck                                $
+// $Archive:: /Vacs Client/src/Init.c             $
+// $Revision:: 28                                 $
 //
 
 #include "SAMM.h"
@@ -14,46 +14,41 @@
 #include "MACRO.h"
 #include "..\\commport\\commport.h"
 
-HWND          g_hwndSplashScreen = NULL;
-
-void          ShowSplashScreen(BOOL );
-BOOL APIENTRY dlgProcSplash(HWND ,UINT , UINT , LONG );
-
+HWND			g_hwndSplashScreen = NULL;
+void			ShowSplashScreen(BOOL );
+BOOL APIENTRY	dlgProcSplash(HWND ,UINT , UINT , LONG );
 extern LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType ); // see mix_files.c
 
-
 //////////////////////////////////////////////////////////
-// the initialize procedure
+// The initialize procedure
 // sets all the variables
 // windows, buffers, ....
 //////////////////////////////////////////////////////////
 
 int   InitializeProc(void)
 {
-  int     iReturn;
-  char    szString[256];
-  LPSTR   lpstrFName = NULL;
-  HWND    hwndTest = NULL;
+	int     iReturn;
+	char    szString[MAX_PATH];
+	LPSTR   lpstrFName = NULL;
+	HWND    hwndTest = NULL;
 	int			CTRL_key;	 
 
 	int	i;
 	char iChannelCount = 0;
 
-	
   // ShowSplashScreen(TRUE);
 
 	gDisplayEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	if(gDisplayEvent == NULL)
 		return IDS_ERR_EVENT_HANDLE; 
 
-
   // Get the Directory where the proogram is ..
   //-------------------------------------------
-  if(GetModuleFileName(ghInstMain, szString, 256)==0)
+  if(GetModuleFileName(ghInstMain, szString, MAX_PATH)==0)
       return IDS_ERR_PROG_DIR;
 
-  ZeroMemory(gszProgDir, 256);
-  GetFullPathName(szString, 256, gszProgDir, &lpstrFName);
+  ZeroMemory(gszProgDir, MAX_PATH);
+  GetFullPathName(szString, MAX_PATH, gszProgDir, &lpstrFName);
   if(lpstrFName)
   {
     // now we have only the path
@@ -61,7 +56,6 @@ int   InitializeProc(void)
     //---------------------------------------------------
     *lpstrFName = 0;
   }
-
 
   // Load the Bitmap Resource DLL
   //-----------------------------
@@ -93,7 +87,6 @@ int   InitializeProc(void)
     return IDS_ERR_NO_SUPPORT_DIRECTORIES;    
   };
 
-
   g_hConsoleFont = CreateFont(15, 6, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET,
                               OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
                               DEFAULT_PITCH | FF_MODERN, "Arial");
@@ -110,9 +103,8 @@ int   InitializeProc(void)
   if(iReturn)
       return  iReturn;
 
-
-  // Zero out the damn thing
-  //------------------------
+  // Zero out the file structure
+  //-----------------------------
   ZeroMemory(&gfsMix, sizeof(FILESTRUCT));
 
   gDeviceSetup.hwndMain = ghwndMain;             // Main application Window
@@ -126,7 +118,6 @@ int   InitializeProc(void)
     // transfer these variables to the ConsoleDefinition DLL
     if(CDef_SetGlobalData(&gDeviceSetup))
       return IDS_DEFINITION_FAILED;
-
   }
   else
   {
@@ -138,12 +129,11 @@ int   InitializeProc(void)
     // Show the Preferences for the Console definition
     // 
     CDef_Preferences(ghwndMain); 
-
   }
 
 	//////////////////////////////////////////////////////////
-  // start the client and get all the data from the GServer
-  //
+	// start the client and get all the data from the GServer
+	//
 	// If Control key is held down then we ask user for
 	// the IP address, etc. Bring up the preference dialog
 	//
@@ -179,7 +169,6 @@ int   InitializeProc(void)
 			return IDS_DCXBIN_FILE_FAILED;
 		gInitialized = TRUE;
 	}
-
 
 /*****************************************************************
 DCX System Types:
@@ -233,7 +222,6 @@ be:
 			break;
 
 			break;
-
 	}
 
 	////////////////////////////////////////////////////////////
@@ -262,8 +250,6 @@ be:
   //if(gpMixerWindows_DL_List == NULL)
   //    return IDS_ERR_ALLOCATE_MEMORY;
 
-
-
   //-----------------
   // Load the Pallete
   // and realize it
@@ -280,10 +266,9 @@ be:
   //--------------------------------
   iReturn = Init256Colors();
   if(iReturn)
-      return iReturn;
+      return iReturn;	// Must have been an error, return the error code
 
   UpdatePalette(TRUE, ghdc256);
-
 
   //----------------------------------
   // Load Bitmap for the Client Window
@@ -321,7 +306,6 @@ be:
   // Load the Bitmap for the Number Display
   //---------------------------------------
   g_hbmpNumbers = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_NUMBERS_200_40));
-  //g_hbmpNumbers = Load256Bitmap(ghInstConsoleDef, ghdc256, MAKEINTRESOURCE(IDB_NUMBERS_200_40));
   if(g_hbmpNumbers == NULL)
       return IDS_ERR_IN_RES4_FILE;
 
@@ -329,8 +313,6 @@ be:
   // and now get the size of the bitmap
   //-----------------------------------
   GetObject(g_hbmpNumbers, sizeof(BITMAP), &g_bmpNumbersInfo);
-
-
 
   //------------------------------------
   // Register Some Of the Window Classes
@@ -372,19 +354,16 @@ be:
   if(iReturn)
       return iReturn;
 
-
   //------------------------
   // Display the Main Window
   //------------------------
   ShowWindow(ghwndMain, SW_SHOWMAXIMIZED);
   UpdateWindow(ghwndMain);
 
-
 	showStereoCueMetersView ();
   
-	// Shouldn't we read in the dcx bin table here??????????
-	// since we just got it from the client
-
+// Shouldn't we read in the dcx bin table here??????????
+// since we just got it from the client
 
   iReturn = Init_MixerData();
   if(iReturn)
@@ -408,10 +387,8 @@ be:
 //		WriteCommBlock (spec_mode_1, sizeof (spec_mode_1));
 //		WriteCommBlock (enable_time, sizeof (enable_time));
 	}
-
   return 0;
 };
-
 
 //----------------------------------------
 // Init_MixerData
@@ -424,11 +401,9 @@ int     Init_MixerData(void)
 {
   int     iReturn;
 
-
   // Start the Vu data ... Flow
   //
-  CDef_StopVuData();
-  
+  CDef_StopVuData(); 
   
   // Load and Create the ZoneMaps
   // and all of the other good stuff
@@ -443,12 +418,10 @@ int     Init_MixerData(void)
   if(iReturn)
       return iReturn;
 
-
   //------------------------------------------------------
   // Use the data from the Server ... before InitMemoryMap
   // so we will allocate enough memory
   //------------------------------------------------------
-
 
   //----------------------------------------
   // Initialize the Memory map
@@ -474,11 +447,10 @@ int     Init_MixerData(void)
       return iReturn;
 
   //-------------------------------
-  // Time to apply the Prefferences
+  // Time to apply the Preferences
   //-------------------------------
   if(ApplyPreferences(TRUE) == FALSE)
       return IDS_ERR_APPLY_PREF;
-
 
   //--------------------------
   // Load the Zonemaps and the
@@ -498,7 +470,6 @@ int     Init_MixerData(void)
   if(iReturn)
       return iReturn;
 
-
   //----------------------------------------------------------------------------
   // Prepare the map for the physical modules
   // Sub-Aux has the Matrix module mapped to it ....
@@ -516,15 +487,11 @@ int     Init_MixerData(void)
   // initialize the Memory Map
   //--------------------------
   SetMemoryMapDefaults();
-
-// FDS NOT NEEDED HERE  ShowSeqWindow(FALSE);  // Make sure we have all index tables initialized ...
-  
+ 
   //--------------------------
   // Show the Master Window
   //--------------------------
   CreateMasterViewWindow("Zoom Master View", NULL); 
-
-
 
   //--------------------------
   // ZoneMaps and other stuff
@@ -538,7 +505,6 @@ int     Init_MixerData(void)
   EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM_AUX, MF_ENABLED);
   EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM_MASTER, MF_ENABLED);
   EnableMenuItem(ghMainMenu, IDM_V_FULLCONSOLE, MF_ENABLED);
-
 
   return iReturn;
 }
@@ -578,11 +544,9 @@ int     iCount = 0;
 	//UnPrepareMidiDataTransferBuffers(&gMidiDev);
 	//UnPrepareMidiDataTransferBuffers(&gMTCDev);
 
-
 	// Free the memory for the MemoryMap
 	//----------------------------------
 	FreeMemoryMap();
-
 
 	// DeInitialize the Groups
 	//
@@ -596,7 +560,6 @@ int     iCount = 0;
 	//-----------------------
 	FreeZoneMapIDs();
 
-
 	// Free the Global Resource Storage
 	// for different types
 	//---------------------------------
@@ -604,12 +567,10 @@ int     iCount = 0;
 	FreeRdOutResGlobal();
 	FreeBMPResGlobal();
 
-
 	// Free the Double Linked List
 	// for the Mixer_Windows
 	//----------------------------
 	//FreeDLListRootAll(gpMixerWindows_DL_List);
-
 
 	// Free the Palette
 	//-----------------
@@ -661,9 +622,7 @@ int     iCount = 0;
 	FreeLibrary(ghInstStrRes);
 
 return;
-
 }
-
 
 //==================================================
 //FUNCTION: GetGlobalMixerPhisDesc
@@ -706,7 +665,6 @@ int       GetGlobalMixerPhisDesc(HINSTANCE hinst)
 }
 
 
-
 //===============================================================
 // FUNCTION: AdjustGlobalDeviceDescription
 //
@@ -732,7 +690,7 @@ int  GetDeviceChannelCount(void)
   }
   //return iRet;  
 */
-  return 80;
+  return MAX_CHANNELS;
 };
 
 
@@ -743,7 +701,6 @@ int  GetDeviceChannelCount(void)
 //
 void    ShowSplashScreen(BOOL bShow)
 {
-
 	if(bShow)
 	{
 		if(g_hwndSplashScreen == NULL)
@@ -751,7 +708,6 @@ void    ShowSplashScreen(BOOL bShow)
 			g_hwndSplashScreen = CreateDialog(ghInstMain, MAKEINTRESOURCE(IDD_SPLASH), NULL, dlgProcSplash);
 			ShowWindow(g_hwndSplashScreen, SW_SHOW);
 		}
-
 	}
 	else
 	{
