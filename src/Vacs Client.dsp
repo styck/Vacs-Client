@@ -23,8 +23,9 @@ CFG=Vacs Client - Win32 Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_ProjName ""$/Vacs Client/src", KPAAAAAA"
+# PROP Scc_LocalPath "."
+# PROP WCE_FormatVersion ""
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
