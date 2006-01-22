@@ -1,4 +1,4 @@
-//Microsoft Developer Studio generated resource script.
+// Microsoft Visual C++ generated resource script.
 //
 #include "..\..\inc\samm_rc.h"
 
@@ -7,7 +7,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-// #include "ver.h"
+// fds #include "ver.h"
 #include <windows.h>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -29,16 +29,17 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-SAMMMainIcon            ICON    DISCARDABLE     "SAMMMAIN.ICO"
-IDI_GROUP_LIST          ICON    DISCARDABLE     "icon1.ico"
+SAMMMainIcon            ICON                    "SAMMMAIN.ICO"
+IDI_GROUP_LIST          ICON                    "icon1.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
 //
 
-IDD_DEBUG DIALOG DISCARDABLE  10, 10, 186, 125
-STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+IDD_DEBUG DIALOG  10, 10, 186, 125
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
 CAPTION "Debug"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -47,7 +48,8 @@ BEGIN
 END
 
 IDD_ABOUT DIALOGEX 0, 0, 283, 274
-STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
 CAPTION "About Virtual Audio Console System"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
@@ -60,17 +62,17 @@ BEGIN
     LTEXT           "LegalCopyright",IDT_COPYRIGHT,19,40,249,15
     LTEXT           "ProductVersion",IDT_PROD_VER,181,25,87,15
     LTEXT           "LegalTrademarks",IDT_TRADEMARKS,19,133,245,24
-    LTEXT           "www.corteksoft.com      sales@corteksoft.com",
+    LTEXT           "http://www.corteksoft.com      sales@corteksoft.com",
                     IDC_STATIC,22,55,169,14
     LTEXT           "Warning: this computer program is protected by copyright law and international treaties. Unauthorized reproduction or distribution of this program or any portion of it.",
                     IDC_STATIC,19,210,250,34
-    LTEXT           "This product is Licensed to:\n\nJim Gamble Associates\nP.O. Box 7047\nTahoe City, California 96145\n",
-                    IDC_STATIC,19,155,245,50,SS_SUNKEN
+    LTEXT           "This product is Licensed to:\n\nSHOW DEMO",IDC_STATIC,
+                    19,155,245,50,SS_SUNKEN
     LTEXT           "",IDC_STATIC,17,211,251,37,NOT WS_GROUP
 END
 
-IDD_SPLASH DIALOG DISCARDABLE  0, 0, 246, 122
-STYLE WS_POPUP
+IDD_SPLASH DIALOG  0, 0, 246, 122
+STYLE DS_SETFONT | WS_POPUP
 FONT 8, "MS Sans Serif"
 BEGIN
     CONTROL         "",IDC_SPLASH_BMP,"Static",SS_BITMAP,0,0,15,13
@@ -83,19 +85,19 @@ END
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE 
 BEGIN
     "..\\..\\inc\\samm_rc.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE 
 BEGIN
     "#include ""ver.h""\r\n"
     "#include <windows.h>\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE 
 BEGIN
     "\r\n"
     "\0"
@@ -110,7 +112,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO DISCARDABLE 
+GUIDELINES DESIGNINFO 
 BEGIN
     IDD_ABOUT, DIALOG
     BEGIN
@@ -131,7 +133,6 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -154,18 +155,17 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "by CorTek Software, Inc.\0"
-            VALUE "CompanyName", "CorTek Software Inc.\0"
-            VALUE "FileDescription", "VACS® Client Workstation\0"
-            VALUE "FileVersion", "2.51\0"
-            VALUE "InternalName", "VACS® Client Workstation\0"
-            VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2004\0"
-            VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc. all rights reserved.\0"
-            VALUE "OriginalFilename", "VACS.EXE\0"
-            VALUE "PrivateBuild", "Build 6/14/2004\0"
-            VALUE "ProductName", "CorTek Software VACS\0"
-            VALUE "ProductVersion", "2.51\0"
-            VALUE "SpecialBuild", "\0"
+            VALUE "Comments", "by CorTek Software, Inc."
+            VALUE "CompanyName", "CorTek Software Inc."
+            VALUE "FileDescription", "VACS® Client Workstation"
+            VALUE "FileVersion", "2.51"
+            VALUE "InternalName", "VACS® Client Workstation"
+            VALUE "LegalCopyright", "Copyright © CorTek Software, Inc. 1997 - 2005"
+            VALUE "LegalTrademarks", "VACS® is a registered trademark of CorTek Software, Inc. all rights reserved."
+            VALUE "OriginalFilename", "VACS.EXE"
+            VALUE "PrivateBuild", "Build 4/7/2004"
+            VALUE "ProductName", "CorTek Software VACS"
+            VALUE "ProductVersion", "3.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -174,38 +174,36 @@ BEGIN
     END
 END
 
-#endif    // !_MAC
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Bitmap
 //
 
-IDB_UPDOWN_SCROLLER     BITMAP  DISCARDABLE     "bitmap1.bmp"
-IDB_PLAYTOOL            BITMAP  DISCARDABLE     "playbar_bw2.bmp"
-IDB_GENERALTOOL         BITMAP  DISCARDABLE     "bmp00001.bmp"
-IDB_CORTEK_LOGO         BITMAP  DISCARDABLE     "CorTek260x89@72ppi-rgb-indexedcolor.BMP"
+IDB_UPDOWN_SCROLLER     BITMAP                  "bitmap1.bmp"
+IDB_PLAYTOOL            BITMAP                  "playbar_bw2.bmp"
+IDB_GENERALTOOL         BITMAP                  "bmp00001.bmp"
+IDB_CORTEK_LOGO         BITMAP                  "CorTek260x89@72ppi-rgb-indexedcolor.BMP"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Cursor
 //
 
-IDCUR_UPDOWN_SCROLLER   CURSOR  DISCARDABLE     "cursor1.cur"
-IDCUR_UPDOWN_CTRL       CURSOR  DISCARDABLE     "idcur.cur"
-IDCUR_UPDOWN_UP         CURSOR  DISCARDABLE     "cur00001.cur"
-IDCUR_UPDOWN_DOWN       CURSOR  DISCARDABLE     "idcur_up.cur"
-IDCUR_BLUE_HAND         CURSOR  DISCARDABLE     "cur00003.cur"
-IDCUR_RED_HAND          CURSOR  DISCARDABLE     "cur00002.cur"
-IDCUR_BLUE_HAND_2       CURSOR  DISCARDABLE     "cur00004.cur"
+IDCUR_UPDOWN_SCROLLER   CURSOR                  "cursor1.cur"
+IDCUR_UPDOWN_CTRL       CURSOR                  "idcur.cur"
+IDCUR_UPDOWN_UP         CURSOR                  "cur00001.cur"
+IDCUR_UPDOWN_DOWN       CURSOR                  "idcur_up.cur"
+IDCUR_BLUE_HAND         CURSOR                  "cur00003.cur"
+IDCUR_RED_HAND          CURSOR                  "cur00002.cur"
+IDCUR_BLUE_HAND_2       CURSOR                  "cur00004.cur"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_ONLY_ONE_INSTANCE   "VACS Is Already Active!"
     IDS_INIT_ERR            "Initialization Error... Application Can Not Run!"
@@ -220,7 +218,7 @@ BEGIN
     IDS_ERR_IN_RES3_FILE    "Error loading VU bitmap : IDB_VU_ON_VERTICAL"
 END
 
-STRINGTABLE DISCARDABLE 
+STRINGTABLE 
 BEGIN
     IDS_ERR_IN_RES4_FILE    "Error load bitmap for numbers : IDB_NUMBERS_200_40"
 END
