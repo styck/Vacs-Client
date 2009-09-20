@@ -235,7 +235,7 @@ LRESULT CALLBACK   MDIClientProc(HWND hWnd, UINT wMessage,
                                WPARAM wParam, LPARAM  lParam)
 {
 	HWND				focus_wnd;
-	HWND				last_wnd;
+	HWND				last_wnd=-1;
 	BOOL				is_mdi_child = FALSE;
 
 switch (wMessage)
