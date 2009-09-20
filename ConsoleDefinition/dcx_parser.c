@@ -15,7 +15,7 @@
 #define _CONSOLE_DEFINITION_FILE_
 
 #include  "dcxtcp_protocol.h"
-#include  "..\..\GServer\DCXParser.h"
+#include  "DCXParser.h"
 
 
 
