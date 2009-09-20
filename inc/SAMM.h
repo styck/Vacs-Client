@@ -511,25 +511,26 @@ BOOL            ApplyPreferences(BOOL);
 
 // MIDI
 //-----
-//void            CheckMidiStatus(void);
-//int             PrepareMidiDataTransferBuffers(LPMIDIDEV);
-//void            UnPrepareMidiDataTransferBuffers(LPMIDIDEV);
-//void            CheckMidiInData(void);
-//int             FlushMIDIBuff(LPMIDIDEV);
-//void            TranslateSendOutMIDI(LPMIDIDEV, LPMIDITOSCRTABLE, int,
-//                                     int, int, int, BOOL);
-//int             printMIDI(LPSTR ,int ,LPWORD ,LPWORD, int);
+#ifdef MIDI_SUPPORT
+void            CheckMidiStatus(void);
+int             PrepareMidiDataTransferBuffers(LPMIDIDEV);
+void            UnPrepareMidiDataTransferBuffers(LPMIDIDEV);
+void            CheckMidiInData(void);
+int             FlushMIDIBuff(LPMIDIDEV);
+void            TranslateSendOutMIDI(LPMIDIDEV, LPMIDITOSCRTABLE, int,
+                                     int, int, int, BOOL);
+int             printMIDI(LPSTR ,int ,LPWORD ,LPWORD, int);
 
+BOOL            OpenMIDIInDev(int, LPMIDIDEV);
+BOOL            CloseMIDIInDev(LPMIDIDEV);
+BOOL            CloseAllMIDIInDev(void);
+BOOL            OpenMIDIOutDev(int, LPMIDIDEV);
+BOOL            CloseMIDIOutDev(LPMIDIDEV);
+BOOL            CloseAllMIDIOutDev(void);
 
-//BOOL            OpenMIDIInDev(int, LPMIDIDEV);
-//BOOL            CloseMIDIInDev(LPMIDIDEV);
-//BOOL            CloseAllMIDIInDev(void);
-//BOOL            OpenMIDIOutDev(int, LPMIDIDEV);
-//BOOL            CloseMIDIOutDev(LPMIDIDEV);
-//BOOL            CloseAllMIDIOutDev(void);
-
-//int             ListMidiInDev(HWND);
-//int             ListMidiOutDev(HWND);
+int             ListMidiInDev(HWND);
+int             ListMidiOutDev(HWND);
+#endif
 
 // MISC General
 //-------------

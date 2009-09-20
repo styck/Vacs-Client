@@ -164,7 +164,7 @@ typedef struct CTRLZONEMAPtag
     int             iCtrlType;
     int             iDispType;
     int             iCtrlBmp[3]; // three bitmaps max per control
-    int             iFiltered;
+    int             iFiltered;		// This means we will handle it differently
     CTRLFUNCPROTO   *CtrlFunc;
     }CTRLZONEMAP;
 typedef CTRLZONEMAP  *LPCTRLZONEMAP;
