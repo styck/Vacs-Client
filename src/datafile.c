@@ -129,7 +129,6 @@ BOOL    CreateDataFile(LPSTR  lpstrFName)
 {
   BOOL                  bRet = FALSE;
   VACS_DATA_FILE_HEADER dfHeader = {0};
-  DWORD                 dwRead;
   DWORD                 dwWrite;
   DWORD                 dwHiSize;
 	USHORT								compression;

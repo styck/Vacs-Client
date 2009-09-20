@@ -44,25 +44,27 @@ psp[iIndex].lParam = 0;
 iIndex++;
 #endif
 
-/*
-psp[1].dwSize = sizeof(PROPSHEETPAGE);
-psp[1].dwFlags = 0;
-psp[1].hInstance = ghInstStrRes;
-psp[1].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MIDI);
-psp[1].pszIcon = NULL;
-psp[1].pfnDlgProc = dlgPRFMidi;
-psp[1].pszTitle = NULL;
-psp[1].lParam = 0;
+#ifdef MIDI_SUPPORT
+psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+psp[iIndex].dwFlags = 0;
+psp[iIndex].hInstance = ghInstStrRes;
+psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MIDI);
+psp[iIndex].pszIcon = NULL;
+psp[iIndex].pfnDlgProc = dlgPRFMidi;
+psp[iIndex].pszTitle = NULL;
+psp[iIndex].lParam = 0;
+iIndex++;
 
-psp[1].dwSize = sizeof(PROPSHEETPAGE);
-psp[1].dwFlags = 0;
-psp[1].hInstance = ghInstStrRes;
-psp[1].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MTC);
-psp[1].pszIcon = NULL;
-psp[1].pfnDlgProc = dlgPRFMTC;
-psp[1].pszTitle = NULL;
-psp[1].lParam = 0;
-*/
+psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+psp[iIndex].dwFlags = 0;
+psp[iIndex].hInstance = ghInstStrRes;
+psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MTC);
+psp[iIndex].pszIcon = NULL;
+psp[iIndex].pfnDlgProc = dlgPRFMTC;
+psp[iIndex].pszTitle = NULL;
+psp[iIndex].lParam = 0;
+iIndex++;
+#endif
 
 psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
 psp[iIndex].dwFlags = 0;
@@ -183,7 +185,8 @@ switch (message)
     }
 return (FALSE);   
 }
-/*
+
+#ifdef MIDI_SUPPORT
 //==================================================
 BOOL APIENTRY dlgPRFMidi(HWND hDlg,UINT message,
 	                     UINT wParam, LONG lParam)
@@ -312,7 +315,7 @@ switch (message)
     }
 return (FALSE);   
 }
-*/
+#endif // #ifdef MIDI_SUPPORT
 
 //==================================================
 BOOL APIENTRY dlgPRFActions(HWND hDlg,UINT message,
@@ -538,10 +541,12 @@ return;
 BOOL        ApplyPreferences(BOOL   bForce)
 {
 
+
+#ifdef MIDI_SUPPORT
 //-----------------
 // START MIDI STUFF
 //
-/*
+//
 //      the MIDI IN device 
 //------------------------
 if(bForce || gprfEdit.iMidiIn_DevId != gprfPref.iMidiIn_DevId ||
@@ -615,7 +620,7 @@ if(bForce || gprfEdit.iMTCOut_DevId != gprfPref.iMTCOut_DevId ||
                 //-----------------------------------------
                 OpenMIDIOutDev(gprfPref.iMTCOut_DevId, &gMTCDev);
     }
-*/
+#endif // #ifdef MIDI_SUPPORT
 // DONE WITH MIDI STUFF
 //---------------------
 

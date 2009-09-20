@@ -1039,8 +1039,8 @@ void    RecallMemoryMapBuffer(BOOL bForce,DWORD dwfadeDelay)
 //=========================================
 int     PhisDataToScrPos(LPCTRLZONEMAP lpctrlZM, int iIndx, int iVal)
 {
-/*
-//LPMIDITOSCRTABLE    lpMIDITOSCR;
+#ifdef MIDI_SUPPORT
+LPMIDITOSCRTABLE    lpMIDITOSCR;
 LPWORD              lpData;
 int                 iReturn;
 
@@ -1060,7 +1060,7 @@ if(lpMIDITOSCR->iTotVals <= iVal)
 lpData = lpData + iVal;
 iReturn = (int)*lpData;
 
-*/
+#endif
 return iVal;
 }
 

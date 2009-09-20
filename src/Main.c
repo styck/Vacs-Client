@@ -1402,8 +1402,9 @@ int         iChanPhis;
 	rZone.top   -= lpmwd->iYOffset;
 	rZone.bottom-= lpmwd->iYOffset;
 
-
-	//iYadj = PhisDataToScrPos(lpmwd->lpCtrlZM, lpmwd->lpCtrlZM->iMIDIToScr_Indx, iYadj);
+#ifdef MIDI_SUPPORT
+// Check this if needed	iYadj = PhisDataToScrPos(lpmwd->lpCtrlZM, (int)lpmwd->lpCtrlZM->iMIDIToScr_Indx, iYadj);
+#endif
 
 	pnt.x = rZone.left + iXadj;
 	pnt.y = rZone.top + iYadj;
