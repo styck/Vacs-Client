@@ -366,7 +366,7 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 	LPNMHDR			pnotify;
 	FILESTRUCT	fsTemp;
 	HWND				focus_wnd;
-	HWND				last_wnd;
+	HWND				last_wnd=-1;
 	static UINT				timerID;
 
   int     iRet;

@@ -430,6 +430,21 @@ int     Init_MixerData(void)
   if(iReturn)
       return iReturn;
 
+
+#ifdef MIDI_SUPPORT
+	// Prepare the Buffers for sending and receiving
+	// MIDI messages
+	// ------------------------------------------------
+	iReturn = PrepareMidiDataTransferBuffers(&gMidiDev);
+	if (iReturn)
+		return iReturn;
+
+	iReturn = PrepareMidiDataTransferBuffers(&gMTCDev);
+	if (iReturn)
+		return iReturn;
+
+#endif
+
   //---------------------------------
   // Init the Global Resource Storage
   // for different types
@@ -533,16 +548,19 @@ int     iCount = 0;
 	DestroyMenu(ghMainMenu);
 
 	CloseComm();
+
+#ifdef MIDI_SUPPORT
 	// Close the Midi Drivers
 	//-----------------------
-	//CloseAllMIDIInDev();
-	//CloseAllMIDIOutDev();
+	CloseAllMIDIInDev();
+	CloseAllMIDIOutDev();
 
 	// Close all of the buffers
 	// after the drivers have been closed
 	//===================================
-	//UnPrepareMidiDataTransferBuffers(&gMidiDev);
-	//UnPrepareMidiDataTransferBuffers(&gMTCDev);
+	UnPrepareMidiDataTransferBuffers(&gMidiDev);
+	UnPrepareMidiDataTransferBuffers(&gMTCDev);
+#endif
 
 	// Free the memory for the MemoryMap
 	//----------------------------------

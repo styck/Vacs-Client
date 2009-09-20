@@ -27,7 +27,7 @@
 //======================================
 long CreatePropertySheet_PRF(HWND hwndOwner)
 {
-PROPSHEETPAGE psp[1];	// <==== MUST CHANGE THIS TO MATCH THE NUMBER OF PAGES BELOW
+PROPSHEETPAGE psp[3];	// <==== MUST CHANGE THIS TO MATCH THE NUMBER OF PAGES BELOW
 PROPSHEETHEADER psh;
 
 int iIndex=0;
