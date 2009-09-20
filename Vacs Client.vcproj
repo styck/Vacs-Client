@@ -4,8 +4,6 @@
 	Version="9.00"
 	Name="Vacs Client"
 	ProjectGUID="{7ECDC4ED-866C-45AC-A3A8-31E50A4900DB}"
-	SccProjectName="&quot;$/Vacs Client/src&quot;, KPAAAAAA"
-	SccLocalPath="."
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
