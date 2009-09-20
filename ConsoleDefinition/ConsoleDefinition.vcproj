@@ -4,8 +4,6 @@
 	Version="9.00"
 	Name="ConsoleDefinition"
 	ProjectGUID="{740464D5-D72A-482F-B461-E64963928877}"
-	SccProjectName="&quot;$/SAMMPlus/ConsoleDefinition&quot;, VFAAAAAA"
-	SccLocalPath="."
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -217,11 +215,11 @@
 			Filter="bmp,ico,cur"
 			>
 			<File
-				RelativePath="Resource\dcp8\bitmap1.bmp"
+				RelativePath="Resource\dcx\bitmap1.bmp"
 				>
 			</File>
 			<File
-				RelativePath="Resource\dcx\bitmap1.bmp"
+				RelativePath="Resource\dcp8\bitmap1.bmp"
 				>
 			</File>
 			<File
