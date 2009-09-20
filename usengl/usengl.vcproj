@@ -4,8 +4,6 @@
 	Version="9.00"
 	Name="usengl"
 	ProjectGUID="{4720132D-E3CD-497A-8172-09C9593D6B47}"
-	SccProjectName="&quot;$/SAMMPlus/usengl&quot;, QPAAAAAA"
-	SccLocalPath="."
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
