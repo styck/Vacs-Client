@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DLList32", "DLList32\DLList
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usengl", "usengl\usengl.vcproj", "{4720132D-E3CD-497A-8172-09C9593D6B47}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "midi", "midi\midi.vcproj", "{0CEADA34-DC13-4081-8539-89295D016889}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -37,6 +39,10 @@ Global
 		{4720132D-E3CD-497A-8172-09C9593D6B47}.Debug|Win32.Build.0 = Debug|Win32
 		{4720132D-E3CD-497A-8172-09C9593D6B47}.Release|Win32.ActiveCfg = Release|Win32
 		{4720132D-E3CD-497A-8172-09C9593D6B47}.Release|Win32.Build.0 = Release|Win32
+		{0CEADA34-DC13-4081-8539-89295D016889}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0CEADA34-DC13-4081-8539-89295D016889}.Debug|Win32.Build.0 = Debug|Win32
+		{0CEADA34-DC13-4081-8539-89295D016889}.Release|Win32.ActiveCfg = Release|Win32
+		{0CEADA34-DC13-4081-8539-89295D016889}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
