@@ -36,30 +36,30 @@ int			CheckForAux(LPCTRLZONEMAP );
 //
 int       RegisterTrackingWindowClass(void)
 {
-int         iReturn;
-WNDCLASS    wc;
+	int         iReturn;
+	WNDCLASS    wc;
 
 
-// Register Full View Class
-//--------------------------
-ZeroMemory(&wc, sizeof(WNDCLASS));      // Clear wndclass structure
+	// Register Full View Class
+	//--------------------------
+	ZeroMemory(&wc, sizeof(WNDCLASS));      // Clear wndclass structure
 
-wc.style = CS_BYTEALIGNWINDOW ;//| CS_SAVEBITS;//CS_HREDRAW | CS_VREDRAW;
-wc.lpfnWndProc = (WNDPROC)TrackingWndProc;
-wc.cbClsExtra = 0;
-wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
-wc.hInstance = ghInstMain;
-wc.hIcon = NULL;
-wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-wc.hbrBackground = GetStockObject(BLACK_BRUSH);
-wc.lpszMenuName = NULL;
-wc.lpszClassName = gszTrackWindowClass_Name;
+	wc.style = CS_BYTEALIGNWINDOW ;//| CS_SAVEBITS;//CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = (WNDPROC)TrackingWndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = sizeof(LPSTR);// all of the data for this window will be stored here
+	wc.hInstance = ghInstMain;
+	wc.hIcon = NULL;
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = GetStockObject(BLACK_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = gszTrackWindowClass_Name;
 
-iReturn = RegisterClass(&wc);
+	iReturn = RegisterClass(&wc);
 
-if(iReturn == 0)
-	 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
-return 0;
+	if(iReturn == 0)
+		return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+	return 0;
 }
 
 
@@ -72,37 +72,37 @@ return 0;
 int       CreateTrackingWindow(HWND hwndParent,LPARAM lParam)
 {
 
-  // Make sure things are clean .. 
-  if(g_hwndTrack)
-  {
-    DestroyWindow(g_hwndTrack);
-    //g_hwndTrack = NULL;
-  }
+	// Make sure things are clean .. 
+	if(g_hwndTrack)
+	{
+		DestroyWindow(g_hwndTrack);
+		//g_hwndTrack = NULL;
+	}
 
-  g_hwndTrack = CreateWindow(
-					   gszTrackWindowClass_Name,   // Window class name
-					   NULL,                   // Window's title
-					   WS_CHILD | WS_OVERLAPPED | WS_CLIPSIBLINGS , // WS_CLIPCHILDREN,
-					   100,
-					   100,
-					   150,         // Set it to the max Width
-					   45,         // Set it to the max Height
-					   hwndParent,             // Parent window's handle
-					   NULL,                   // Default to Class Menu
-					   ghInstMain,              // Instance of window
-					   NULL                    // Ptr To Data Structure For WM_CREATE
-                     );
+	g_hwndTrack = CreateWindow(
+		gszTrackWindowClass_Name,   // Window class name
+		NULL,                   // Window's title
+		WS_CHILD | WS_OVERLAPPED | WS_CLIPSIBLINGS , // WS_CLIPCHILDREN,
+		100,
+		100,
+		150,         // Set it to the max Width
+		45,         // Set it to the max Height
+		hwndParent,             // Parent window's handle
+		NULL,                   // Default to Class Menu
+		ghInstMain,              // Instance of window
+		NULL                    // Ptr To Data Structure For WM_CREATE
+		);
 
-  if(g_hwndTrack == NULL)
-      {
-      ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_MAX_WINDOW);
-      return IDS_ERR_CREATE_WINDOW;
-      }
+	if(g_hwndTrack == NULL)
+	{
+		ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_MAX_WINDOW);
+		return IDS_ERR_CREATE_WINDOW;
+	}
 
-  g_bTrackingActive = TRUE;
-  //ShowWindow(g_hwndTrack, SW_SHOW);
-  //UpdateWindow(g_hwndTrack);
-  return 0;
+	g_bTrackingActive = TRUE;
+	//ShowWindow(g_hwndTrack, SW_SHOW);
+	//UpdateWindow(g_hwndTrack);
+	return 0;
 };
 
 
@@ -111,7 +111,7 @@ int       CreateTrackingWindow(HWND hwndParent,LPARAM lParam)
 //
 BOOL  IsTrackingActive(void)
 {
-  return g_bTrackingActive;
+	return g_bTrackingActive;
 }
 
 ////////////////////////////////////////////////
@@ -119,9 +119,9 @@ BOOL  IsTrackingActive(void)
 //
 void StopTrackingWindow(void)
 {
-  g_bTrackingActive = FALSE;
-  DestroyWindow(g_hwndTrack);
-  //g_hwndTrack = NULL;
+	g_bTrackingActive = FALSE;
+	DestroyWindow(g_hwndTrack);
+	//g_hwndTrack = NULL;
 
 }
 
@@ -131,7 +131,7 @@ void StopTrackingWindow(void)
 //
 void  ActivateTrackingWindow(void)
 {
-  g_bTrackingActive = TRUE;
+	g_bTrackingActive = TRUE;
 }
 
 
@@ -140,49 +140,49 @@ void  ActivateTrackingWindow(void)
 //
 //===============================
 LRESULT CALLBACK  TrackingWndProc(HWND hWnd, UINT wMessage, 
-                                  WPARAM wParam, LPARAM lParam)
+								  WPARAM wParam, LPARAM lParam)
 {
-  POINT   pnt;
+	POINT   pnt;
 
-  switch (wMessage)
-  {
-  //////////////////////////////////////////////////////////////
-  case WM_ERASEBKGND: // to reduce flashing on the screen
-    //TW_DrawTrackingWindow();
-    return DefWindowProc(hWnd, wMessage, wParam, lParam);
-    break;
-  case WM_PAINT:
-// fds    TW_Paint();
-    break;
-  //////////////////////////////////////////////////////////////
-  case WM_MOUSEMOVE:
-      pnt.x = LOWORD(lParam);
-      pnt.y = HIWORD(lParam);
-      ClientToScreen(hWnd, &pnt);
-      ScreenToClient(g_hwndInitImg, &pnt);
-      SetWindowPos(g_hwndTrack, HWND_TOP, pnt.x + 20, pnt.y + 50, 0, 0,
-                  SWP_SHOWWINDOW /*| SWP_NOZORDER */| SWP_NOSIZE);
-    break;
-  //////////////////////////////////////////////////////////////
-  case WM_COMMAND:
-    break;
-  //////////////////////////////////////////////////////////////
-  case WM_MOVE:
-    break;
-  //////////////////////////////////////////////////////////////
-  case WM_GETMINMAXINFO:
-    break;
+	switch (wMessage)
+	{
+		//////////////////////////////////////////////////////////////
+	case WM_ERASEBKGND: // to reduce flashing on the screen
+		//TW_DrawTrackingWindow();
+		return DefWindowProc(hWnd, wMessage, wParam, lParam);
+		break;
+	case WM_PAINT:
+		// fds    TW_Paint();
+		break;
+		//////////////////////////////////////////////////////////////
+	case WM_MOUSEMOVE:
+		pnt.x = LOWORD(lParam);
+		pnt.y = HIWORD(lParam);
+		ClientToScreen(hWnd, &pnt);
+		ScreenToClient(g_hwndInitImg, &pnt);
+		SetWindowPos(g_hwndTrack, HWND_TOP, pnt.x + 20, pnt.y + 50, 0, 0,
+			SWP_SHOWWINDOW /*| SWP_NOZORDER */| SWP_NOSIZE);
+		break;
+		//////////////////////////////////////////////////////////////
+	case WM_COMMAND:
+		break;
+		//////////////////////////////////////////////////////////////
+	case WM_MOVE:
+		break;
+		//////////////////////////////////////////////////////////////
+	case WM_GETMINMAXINFO:
+		break;
 
-  //////////////////////////////////////////////////////////////
-  case WM_DESTROY:
-    g_hwndInitImg = NULL;
-    g_hwndTrack = NULL;
-  default:
-    return DefWindowProc(hWnd, wMessage, wParam, lParam);
+		//////////////////////////////////////////////////////////////
+	case WM_DESTROY:
+		g_hwndInitImg = NULL;
+		g_hwndTrack = NULL;
+	default:
+		return DefWindowProc(hWnd, wMessage, wParam, lParam);
 
-  }
+	}
 
-  return DefWindowProc(hWnd, wMessage, wParam, lParam);
+	return DefWindowProc(hWnd, wMessage, wParam, lParam);
 }
 
 
@@ -192,22 +192,22 @@ LRESULT CALLBACK  TrackingWndProc(HWND hWnd, UINT wMessage,
 //
 void  UpdateTrackingWindow(LPMIXERWNDDATA      lpmwd)
 {
-  RECT    rect;
-  RECT    rClient;
-  RECT    rTrack;
-  POINT   pnt;
-  HWND    hwnd;
-  int     x, y;
+	RECT    rect;
+	RECT    rClient;
+	RECT    rTrack;
+	POINT   pnt;
+	HWND    hwnd;
+	int     x, y;
 	int							iRackMaxChannel[]={18,32,58,78};							// cabaret, showtime, event 40, event 60
 
 	LPCTRLZONEMAP    lpczm;
 	int			iSub, iAux;
-	int			iChan;
+	int			iChan=0;
 
 	// Check if user turned it off
 
 	if(g_bTrackingActive && (lpmwd != NULL))
-  {
+	{
 
 		iSub = iAux = -1;
 
@@ -218,15 +218,15 @@ void  UpdateTrackingWindow(LPMIXERWNDDATA      lpmwd)
 		// Validate channel number, crashed for ->lpZoneMap[iChan].lpZoneMap because 
 		// of iChan being out of range
 
-		if((giMixerType) && (iChan > iRackMaxChannel[giMixerType-1]))	// giMixerType is base 1
-		{
-			iChan = iRackMaxChannel[giMixerType-1];
-		}
+		//		if((giMixerType) && (iChan > iRackMaxChannel[giMixerType-1]))	// giMixerType is base 1
+		//		{
+		//			iChan = iRackMaxChannel[giMixerType-1];
+		//		}
 
 		// Get our mouse coordinates
 
 		pnt = lpmwd->pntMouseCur;
-  
+
 		pnt.x -= lpmwd->iXadj;
 		pnt.y += lpmwd->iYOffset;
 
@@ -244,8 +244,8 @@ void  UpdateTrackingWindow(LPMIXERWNDDATA      lpmwd)
 
 		}
 #ifdef _DEBUG	// Set this if you want tool tips for every control
-//iSub = 1;
-//iAux = 1;
+		//iSub = 1;
+		//iAux = 1;
 #endif
 
 		// We are only interested in SUBS and AUXS
@@ -294,7 +294,7 @@ void  UpdateTrackingWindow(LPMIXERWNDDATA      lpmwd)
 
 			// Get the outline of the Current module into rect .... Recomended by Tom
 			GetMWScrChanRect(lpmwd, lpmwd->iCurChan, &rect);
-     
+
 			if( (rect.right + rTrack.right) < rClient.right)
 				x = rect.right;     
 			else
@@ -317,7 +317,7 @@ void  UpdateTrackingWindow(LPMIXERWNDDATA      lpmwd)
 				ShowWindow(g_hwndTrack, SW_HIDE);
 		}
 
-  }	// End if tracking window active
+	}	// End if tracking window active
 
 }
 
@@ -327,42 +327,42 @@ void  UpdateTrackingWindow(LPMIXERWNDDATA      lpmwd)
 //
 void    TW_Paint(void)
 {
-  HDC     hdc;
-  RECT    r, rDraw;
-  HBRUSH  hbr, hbrBack;
+	HDC     hdc;
+	RECT    r, rDraw;
+	HBRUSH  hbr, hbrBack;
 
 
-  GetClientRect(g_hwndTrack, &r);
-  hdc = GetDC(g_hwndTrack);
+	GetClientRect(g_hwndTrack, &r);
+	hdc = GetDC(g_hwndTrack);
 
-//  hbr = CreateSolidBrush(RGB(64, 48, 48));
-//  hbrBack = CreateSolidBrush(RGB(232, 232, 232));
-  hbr = CreateSolidBrush(GetSysColor(COLOR_INFOTEXT));
-  hbrBack = CreateSolidBrush(GetSysColor(COLOR_INFOBK));
+	//  hbr = CreateSolidBrush(RGB(64, 48, 48));
+	//  hbrBack = CreateSolidBrush(RGB(232, 232, 232));
+	hbr = CreateSolidBrush(GetSysColor(COLOR_INFOTEXT));
+	hbrBack = CreateSolidBrush(GetSysColor(COLOR_INFOBK));
 
-  rDraw = r; 
-  rDraw.top += 2;
-  rDraw.left += 2;
-  rDraw.bottom -= 3;
-  rDraw.right -= 3;
+	rDraw = r; 
+	rDraw.top += 2;
+	rDraw.left += 2;
+	rDraw.bottom -= 3;
+	rDraw.right -= 3;
 
-  FillRect(hdc, &rDraw, hbrBack);
+	FillRect(hdc, &rDraw, hbrBack);
 
-  rDraw = r;  rDraw.bottom = 2;
-  FillRect(hdc, &rDraw, hbr);
+	rDraw = r;  rDraw.bottom = 2;
+	FillRect(hdc, &rDraw, hbr);
 
-  rDraw = r;  rDraw.right = 2;
-  FillRect(hdc, &rDraw, hbr);
+	rDraw = r;  rDraw.right = 2;
+	FillRect(hdc, &rDraw, hbr);
 
-  rDraw = r;  rDraw.top = rDraw.bottom - 3;
-  FillRect(hdc, &rDraw, hbr);
+	rDraw = r;  rDraw.top = rDraw.bottom - 3;
+	FillRect(hdc, &rDraw, hbr);
 
-  rDraw = r;  rDraw.left = rDraw.right - 3;
-  FillRect(hdc, &rDraw, hbr);
+	rDraw = r;  rDraw.left = rDraw.right - 3;
+	FillRect(hdc, &rDraw, hbr);
 
-  DeleteObject(hbr);
-  DeleteObject(hbrBack);
-  ReleaseDC(g_hwndTrack, hdc);
+	DeleteObject(hbr);
+	DeleteObject(hbrBack);
+	ReleaseDC(g_hwndTrack, hdc);
 }
 
 
@@ -375,30 +375,30 @@ int CheckForSub(LPCTRLZONEMAP lpczm)
 {
 	int iSub = -1;
 
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 1",5) == 0)
-					iSub=0;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 2",5) == 0)
-					iSub=1;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 3",5) == 0)
-					iSub=2;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 4",5) == 0)
-					iSub=3;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 5",5) == 0)
-					iSub=4;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 6",5) == 0)
-					iSub=5;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 7",5) == 0)
-					iSub=6;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 8",5) == 0)
-					iSub=7;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 1",5) == 0)
+		iSub=0;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 2",5) == 0)
+		iSub=1;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 3",5) == 0)
+		iSub=2;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 4",5) == 0)
+		iSub=3;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 5",5) == 0)
+		iSub=4;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 6",5) == 0)
+		iSub=5;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 7",5) == 0)
+		iSub=6;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"SUB 8",5) == 0)
+		iSub=7;
 
-			// Do not show tool tip for Subs that doen't exist in
-			// the current hardware configuration, ie ShowTime
+	// Do not show tool tip for Subs that doen't exist in
+	// the current hardware configuration, ie ShowTime
 
-			if(iSub >= g_iAuxIdx)
-				iSub = -1;
+	if(iSub >= g_iAuxIdx)
+		iSub = -1;
 
-			return(iSub);
+	return(iSub);
 }
 
 
@@ -412,81 +412,81 @@ int CheckForAux(LPCTRLZONEMAP lpczm)
 {
 	int iAux = -1;
 
-				// These are for the AUX's on the INPUT module
+	// These are for the AUX's on the INPUT module
 
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX1 ",5) == 0)
-					iAux=0;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX2 ",5) == 0)
-					iAux=1;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX3 ",5) == 0)
-					iAux=2;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX4 ",5) == 0)
-					iAux=3;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX5 ",5) == 0)
-					iAux=4;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX6 ",5) == 0)
-					iAux=5;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX7 ",5) == 0)
-					iAux=6;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX8 ",5) == 0)
-					iAux=7;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX1 ",5) == 0)
+		iAux=0;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX2 ",5) == 0)
+		iAux=1;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX3 ",5) == 0)
+		iAux=2;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX4 ",5) == 0)
+		iAux=3;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX5 ",5) == 0)
+		iAux=4;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX6 ",5) == 0)
+		iAux=5;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX7 ",5) == 0)
+		iAux=6;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX8 ",5) == 0)
+		iAux=7;
 
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX9 ",5) == 0)
-					iAux=8;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX10 ",6) == 0)
-					iAux=9;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX11 ",6) == 0)
-					iAux=10;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX12 ",6) == 0)
-					iAux=11;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX13 ",6) == 0)
-					iAux=12;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX14 ",6) == 0)
-					iAux=13;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX15 ",6) == 0)
-					iAux=14;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX16 ",6) == 0)
-					iAux=15;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX9 ",5) == 0)
+		iAux=8;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX10 ",6) == 0)
+		iAux=9;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX11 ",6) == 0)
+		iAux=10;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX12 ",6) == 0)
+		iAux=11;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX13 ",6) == 0)
+		iAux=12;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX14 ",6) == 0)
+		iAux=13;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX15 ",6) == 0)
+		iAux=14;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX16 ",6) == 0)
+		iAux=15;
 
-			//////////////////////////////////////////////////////////////////////
-			// These are for the AUX's on the MATRIX module
+	//////////////////////////////////////////////////////////////////////
+	// These are for the AUX's on the MATRIX module
 
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 1 ",6) == 0)
-					iAux=0;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 2 ",6) == 0)
-					iAux=1;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 3 ",6) == 0)
-					iAux=2;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 4 ",6) == 0)
-					iAux=3;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 5 ",6) == 0)
-					iAux=4;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 6 ",6) == 0)
-					iAux=5;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 7 ",6) == 0)
-					iAux=6;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 8 ",6) == 0)
-					iAux=7;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 1 ",6) == 0)
+		iAux=0;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 2 ",6) == 0)
+		iAux=1;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 3 ",6) == 0)
+		iAux=2;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 4 ",6) == 0)
+		iAux=3;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 5 ",6) == 0)
+		iAux=4;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 6 ",6) == 0)
+		iAux=5;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 7 ",6) == 0)
+		iAux=6;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 8 ",6) == 0)
+		iAux=7;
 
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 9 ",6) == 0)
-					iAux=8;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 10 ",7) == 0)
-					iAux=9;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 11 ",7) == 0)
-					iAux=10;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 12 ",7) == 0)
-					iAux=11;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 13 ",7) == 0)
-					iAux=12;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 14 ",7) == 0)
-					iAux=13;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 15 ",7) == 0)
-					iAux=14;
-			if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 16 ",7 ) == 0)
-					iAux=15;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 9 ",6) == 0)
+		iAux=8;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 10 ",7) == 0)
+		iAux=9;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 11 ",7) == 0)
+		iAux=10;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 12 ",7) == 0)
+		iAux=11;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 13 ",7) == 0)
+		iAux=12;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 14 ",7) == 0)
+		iAux=13;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 15 ",7) == 0)
+		iAux=14;
+	if(_strnicmp(CDef_GetControlName(lpczm->iCtrlNumAbs),"AUX 16 ",7 ) == 0)
+		iAux=15;
 
-			return iAux;
-	}
+	return iAux;
+}
 
 
 ////////////////////////////////////////////////////////////////
@@ -494,63 +494,63 @@ int CheckForAux(LPCTRLZONEMAP lpczm)
 //
 // Draws the SUBS and AUXS text in our tracking window
 //
- 
+
 
 void    TW_DrawInformation(LPCTRLZONEMAP    lpczm, int x, int y)
 {
-  HDC       hdc;
-  RECT      r;
-  char      szBuff[256];
+	HDC       hdc;
+	RECT      r;
+	char      szBuff[256];
 	int				iSub=-1, iAux=-1;
-  LPSTR     pLabel;
+	LPSTR     pLabel;
 	int				iChanSub;
 	int				iNumLines = 1;
 	SIZE			size;
 
-  if(g_hwndTrack == NULL)
-    return;
-  
-  // Firat repaint the window
-  // and clear previous text
+	if(g_hwndTrack == NULL)
+		return;
 
-  TW_Paint();
+	// Firat repaint the window
+	// and clear previous text
+
+	TW_Paint();
 
 	// We are over a control/zonemap, if its a SUB or AUX handle differently
 
-  if(lpczm)
-  {
+	if(lpczm)
+	{
 
 		iSub = CheckForSub(lpczm);	// Get Sub channel if over sub
 		iAux = CheckForAux(lpczm);	// Get Aux channel if over aux
 
-	    if(iSub != -1)	// handle subs
-			{
-				// Get this subs channel
-				iChanSub = g_aiAux[iSub];	
-				// Get this subs label
-				pLabel = &gpLabels[iChanSub * MAX_LABEL_SIZE];    
+		if(iSub != -1)	// handle subs
+		{
+			// Get this subs channel
+			iChanSub = g_aiAux[iSub];	
+			// Get this subs label
+			pLabel = &gpLabels[iChanSub * MAX_LABEL_SIZE];    
 
-				// If we get the label then display it, else do the default
-				if(pLabel)
-					wsprintf(szBuff, "%s ", pLabel);
-			}
-			else if(iAux != -1)	// handle auxes
-			{
+			// If we get the label then display it, else do the default
+			if(pLabel)
+				wsprintf(szBuff, "%s ", pLabel);
+		}
+		else if(iAux != -1)	// handle auxes
+		{
 
-				pLabel = &g_pAuxLabels[iAux * MAX_LABEL_SIZE];    
+			pLabel = &g_pAuxLabels[iAux * MAX_LABEL_SIZE];    
 
-				// If we get the label then display it, else do the default
-				if(pLabel)
-					wsprintf(szBuff, "%s ", pLabel);
-			}
-			else
-			{
-				  // **************************               DEBUG ONLY 
-					// Use this to determine the control name
-//				wsprintf(szBuff, "CH: %d\n%s", lpczm->iCtrlChanPos,  CDef_GetControlName(lpczm->iCtrlNumAbs));
-					//		wsprintf(szBuff, "CH: %d\n%s", iChan+1, &gpLabels[iChan * MAX_LABEL_SIZE]);
-					//		iNumLines = 2;
-			}
+			// If we get the label then display it, else do the default
+			if(pLabel)
+				wsprintf(szBuff, "%s ", pLabel);
+		}
+		else
+		{
+			// **************************               DEBUG ONLY 
+			// Use this to determine the control name
+			//				wsprintf(szBuff, "CH: %d\n%s", lpczm->iCtrlChanPos,  CDef_GetControlName(lpczm->iCtrlNumAbs));
+			//		wsprintf(szBuff, "CH: %d\n%s", iChan+1, &gpLabels[iChan * MAX_LABEL_SIZE]);
+			//		iNumLines = 2;
+		}
 
 	} // end if lpzm
 

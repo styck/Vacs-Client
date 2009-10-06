@@ -38,17 +38,17 @@ void    DefinitionCallback(UINT uiMessage, UINT ui2, VOID * vp1, VOID *vp2)
 			//
 			if(ui2 == sizeof(CONTROLDATA))
 				UpdateControlFromNetwork(((LPCONTROLDATA)vp1)->wChannel, ((LPCONTROLDATA)vp1)->wCtrl,
-																 ((LPCONTROLDATA)vp1)->wVal, TRUE);
+				((LPCONTROLDATA)vp1)->wVal, TRUE);
 			break;
 
 		case CDEF_SHOW_TIME:
 			if( ghwndStatus )
-				{
+			{
 				pmm = (MMTIME *)vp1;
 				wsprintf(szStr, "%02d:%02d:%02d:%02d", (int)pmm->u.smpte.hour, (int)pmm->u.smpte.min, 
-																							 (int)pmm->u.smpte.sec, (int)pmm->u.smpte.frame);
+					(int)pmm->u.smpte.sec, (int)pmm->u.smpte.frame);
 				SendMessage(ghwndStatus, SB_SETTEXT, MAKEWPARAM(1,SBT_POPOUT), (LPARAM)szStr);
-				}
+			}
 			break;
 
 		}

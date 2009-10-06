@@ -36,100 +36,100 @@ int   InitializeProc(void)
 	int	i;
 	char iChannelCount = 0;
 
-  // ShowSplashScreen(TRUE);
+	// ShowSplashScreen(TRUE);
 
 	gDisplayEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	if(gDisplayEvent == NULL)
 		return IDS_ERR_EVENT_HANDLE; 
 
-  // Get the Directory where the proogram is ..
-  //-------------------------------------------
-  if(GetModuleFileName(ghInstMain, szString, MAX_PATH)==0)
-      return IDS_ERR_PROG_DIR;
+	// Get the Directory where the proogram is ..
+	//-------------------------------------------
+	if(GetModuleFileName(ghInstMain, szString, MAX_PATH)==0)
+		return IDS_ERR_PROG_DIR;
 
-  ZeroMemory(gszProgDir, MAX_PATH);
-  GetFullPathName(szString, MAX_PATH, gszProgDir, &lpstrFName);
-  if(lpstrFName)
-  {
-    // now we have only the path
-    // because we put 0 where the actual file name begins
-    //---------------------------------------------------
-    *lpstrFName = 0;
-  }
+	ZeroMemory(gszProgDir, MAX_PATH);
+	GetFullPathName(szString, MAX_PATH, gszProgDir, &lpstrFName);
+	if(lpstrFName)
+	{
+		// now we have only the path
+		// because we put 0 where the actual file name begins
+		//---------------------------------------------------
+		*lpstrFName = 0;
+	}
 
-  // Load the Bitmap Resource DLL
-  //-----------------------------
-  wsprintf(szString,"%s%s",gszProgDir,"usengl.dll");
-  ghInstStrRes = LoadLibrary(szString);
-  if(ghInstStrRes == NULL )
-  {
-    return IDS_NO_RES_FILE;
-  }
+	// Load the Bitmap Resource DLL
+	//-----------------------------
+	wsprintf(szString,"%s%s",gszProgDir,"usengl.dll");
+	ghInstStrRes = LoadLibrary(szString);
+	if(ghInstStrRes == NULL )
+	{
+		return IDS_NO_RES_FILE;
+	}
 
-  // Load the Bitmap Resource DLL
-  //-----------------------------
-  wsprintf(szString,"%s%s",gszProgDir,"ConsoleDefinition.dll");
-  ghInstConsoleDef = LoadLibrary(szString);
-  if(ghInstConsoleDef == NULL )
-  {
-      return IDS_NO_RES2_FILE;
-  }
+	// Load the Bitmap Resource DLL
+	//-----------------------------
+	wsprintf(szString,"%s%s",gszProgDir,"ConsoleDefinition.dll");
+	ghInstConsoleDef = LoadLibrary(szString);
+	if(ghInstConsoleDef == NULL )
+	{
+		return IDS_NO_RES2_FILE;
+	}
 	// Is Vacs already running
 	if (CDef_isRunning ())
 		return IDS_MULTIPLE_APPLICATIONS_RUNNING;
 
-  // Read the Preferences
-  //---------------------
-  LoadPreferences();
+	// Read the Preferences
+	//---------------------
+	LoadPreferences();
 
-  if(CreateApplicationDirectories() == FALSE)
-  {
-    return IDS_ERR_NO_SUPPORT_DIRECTORIES;    
-  };
+	if(CreateApplicationDirectories() == FALSE)
+	{
+		return IDS_ERR_NO_SUPPORT_DIRECTORIES;    
+	};
 
-  g_hConsoleFont = CreateFont(15, 6, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET,
-                              OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-                              DEFAULT_PITCH | FF_MODERN, "Arial");
+	g_hConsoleFont = CreateFont(15, 6, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET,
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+		DEFAULT_PITCH | FF_MODERN, "Arial");
 
-  // Load the main menu
-  //-------------------
-  ghMainMenu = LoadMenu(ghInstStrRes, MAKEINTRESOURCE(SAC_MAIN_MENU));
-  if(ghMainMenu == NULL)
-      return IDS_ERR_IN_RES_FILE;
+	// Load the main menu
+	//-------------------
+	ghMainMenu = LoadMenu(ghInstStrRes, MAKEINTRESOURCE(SAC_MAIN_MENU));
+	if(ghMainMenu == NULL)
+		return IDS_ERR_IN_RES_FILE;
 
-  // Create the Main Window
-  //-----------------------
-  iReturn = CreateMainWindow();
-  if(iReturn)
-      return  iReturn;
+	// Create the Main Window
+	//-----------------------
+	iReturn = CreateMainWindow();
+	if(iReturn)
+		return  iReturn;
 
-  // Zero out the file structure
-  //-----------------------------
-  ZeroMemory(&gfsMix, sizeof(FILESTRUCT));
+	// Zero out the file structure
+	//-----------------------------
+	ZeroMemory(&gfsMix, sizeof(FILESTRUCT));
 
-  gDeviceSetup.hwndMain = ghwndMain;             // Main application Window
-  gDeviceSetup.hinst    = ghInstMain;            // Application Instance
-  gDeviceSetup.pfTXComm = DefinitionCallback;    // Callback function for the DLL to call directly into
+	gDeviceSetup.hwndMain = ghwndMain;             // Main application Window
+	gDeviceSetup.hinst    = ghInstMain;            // Application Instance
+	gDeviceSetup.pfTXComm = DefinitionCallback;    // Callback function for the DLL to call directly into
 
-  // Initialize the Definitiom DLL .... internal stuff
+	// Initialize the Definitiom DLL .... internal stuff
 
-  if(CDef_Init()  == 0)   // This loads the DCX.BIN file if its exists
-  {
-    // transfer these variables to the ConsoleDefinition DLL
-    if(CDef_SetGlobalData(&gDeviceSetup))
-      return IDS_DEFINITION_FAILED;
-  }
-  else
-  {
-    // transfer these variables to the ConsoleDefinition DLL
- 
-    if(CDef_SetGlobalData(&gDeviceSetup))
-      return IDS_DEFINITION_FAILED;
+	if(CDef_Init()  == 0)   // This loads the DCX.BIN file if its exists
+	{
+		// transfer these variables to the ConsoleDefinition DLL
+		if(CDef_SetGlobalData(&gDeviceSetup))
+			return IDS_DEFINITION_FAILED;
+	}
+	else
+	{
+		// transfer these variables to the ConsoleDefinition DLL
 
-    // Show the Preferences for the Console definition
-    // 
-    CDef_Preferences(ghwndMain); 
-  }
+		if(CDef_SetGlobalData(&gDeviceSetup))
+			return IDS_DEFINITION_FAILED;
+
+		// Show the Preferences for the Console definition
+		// 
+		CDef_Preferences(ghwndMain); 
+	}
 
 	//////////////////////////////////////////////////////////
 	// start the client and get all the data from the GServer
@@ -144,8 +144,8 @@ int   InitializeProc(void)
 
 	CTRL_key = GetKeyState (VK_CONTROL);
 
-  if( (CTRL_key < 0) || !CDEF_GetCSData(ghwndMain))
-  {
+	if( (CTRL_key < 0) || !CDEF_GetCSData(ghwndMain))
+	{
 		if(CDef_Preferences (ghwndMain) == APPLY)
 		{
 			if( CDEF_GetCSData(ghwndMain))
@@ -159,9 +159,9 @@ int   InitializeProc(void)
 		}
 		else
 		{
-				return IDS_DEFINITION_FAILED3;		// User CANCEL - Exiting
+			return IDS_DEFINITION_FAILED3;		// User CANCEL - Exiting
 		}
-  }
+	}
 	else
 	{
 		// Load the DCX bin file
@@ -170,23 +170,23 @@ int   InitializeProc(void)
 		gInitialized = TRUE;
 	}
 
-/*****************************************************************
-DCX System Types:
+	/*****************************************************************
+	DCX System Types:
 
-DCX Cabaret       12 Inputs and 2 Sub/Martix (Total 14 module strips)
-DCX Showtime    24 Inputs and 6 Sub/Matrix (Total 30 module strips)
-DCX Event 40     40 Inputs and 8 Sub/Matrix (Total 48 module strips)
-DCX Event 60     60 Inputs and 8 Sub/Matrix (Total 68 module strips)
+	DCX Cabaret       12 Inputs and 2 Sub/Martix (Total 14 module strips)
+	DCX Showtime    24 Inputs and 6 Sub/Matrix (Total 30 module strips)
+	DCX Event 40     40 Inputs and 8 Sub/Matrix (Total 48 module strips)
+	DCX Event 60     60 Inputs and 8 Sub/Matrix (Total 68 module strips)
 
-So the formula to determine what DCX System Type Vacs has running would
-be:
+	So the formula to determine what DCX System Type Vacs has running would
+	be:
 
-<15 strips = DCX Cabaret
->14 strips but <31 strips = DCX Showtime
->29 strips but <49 strips = DCX Event 40
->48 strips = DCX Event 60
+	<15 strips = DCX Cabaret
+	>14 strips but <31 strips = DCX Showtime
+	>29 strips but <49 strips = DCX Event 40
+	>48 strips = DCX Event 60
 
-******************************************************************/
+	******************************************************************/
 
 	// Count the number of input channels so we can determine
 	// what type of console it is.
@@ -202,26 +202,26 @@ be:
 
 	switch(iChannelCount)
 	{
-		case 12:
-			giMixerType = DCX_CABARET;
-			break;
-		case 24:
-			giMixerType = DCX_SHOWTIME;
-			break;
+	case 12:
+		giMixerType = DCX_CABARET;
+		break;
+	case 24:
+		giMixerType = DCX_SHOWTIME;
+		break;
 
-		case 40:
-			giMixerType = DCX_EVENT_40;
-			break;
+	case 40:
+		giMixerType = DCX_EVENT_40;
+		break;
 
-		case 60:
-			giMixerType = DCX_EVENT_60;
-			break;
+	case 60:
+		giMixerType = DCX_EVENT_60;
+		break;
 
-		default:
-			giMixerType = DCX_CUSTOM;
-			break;
+	default:
+		giMixerType = DCX_CUSTOM;
+		break;
 
-			break;
+		break;
 	}
 
 	////////////////////////////////////////////////////////////
@@ -235,159 +235,159 @@ be:
 	wsprintf(gszMainWndTitle, "CorTek -VACS-  %s", GetMixerTypeName(giMixerType));
 	SetWindowText(ghwndMain, gszMainWndTitle);
 
-  // Load Some default Strings
-  //--------------------------
-  //if(LoadString(ghInstStrRes, IDS_FILE_DEFEXT, gstrDefExt, sizeof(gstrDefExt)) == 0)
-  //    wsprintf(gstrDefExt, "mix"); // needs to be done better
+	// Load Some default Strings
+	//--------------------------
+	//if(LoadString(ghInstStrRes, IDS_FILE_DEFEXT, gstrDefExt, sizeof(gstrDefExt)) == 0)
+	//    wsprintf(gstrDefExt, "mix"); // needs to be done better
 
-  // Initialize the Double Linked list
-  // for the Mixer Windows
-  // We can use this to browse all
-  // of the opened Mixer_Windows
-  //-----------------------------------
-  //gpMixerWindows_DL_List =  InitDoubleLinkedList( sizeof(MW_DL_LIST), MAX_MIXER_WINDOW_OPENED,
-  //                                                FALSE, NULL, NULL);
-  //if(gpMixerWindows_DL_List == NULL)
-  //    return IDS_ERR_ALLOCATE_MEMORY;
+	// Initialize the Double Linked list
+	// for the Mixer Windows
+	// We can use this to browse all
+	// of the opened Mixer_Windows
+	//-----------------------------------
+	//gpMixerWindows_DL_List =  InitDoubleLinkedList( sizeof(MW_DL_LIST), MAX_MIXER_WINDOW_OPENED,
+	//                                                FALSE, NULL, NULL);
+	//if(gpMixerWindows_DL_List == NULL)
+	//    return IDS_ERR_ALLOCATE_MEMORY;
 
-  //-----------------
-  // Load the Pallete
-  // and realize it
-  //-----------------
-  CreateResPalette((LPSTR)MAKEINTRESOURCE(IDB_IQS_PALETTE));
-  if(ghPalette == NULL)
-      return IDS_ERR_CREATING_PALETTE;
+	//-----------------
+	// Load the Pallete
+	// and realize it
+	//-----------------
+	CreateResPalette((LPSTR)MAKEINTRESOURCE(IDB_IQS_PALETTE));
+	if(ghPalette == NULL)
+		return IDS_ERR_CREATING_PALETTE;
 
-  //--------------------------------
-  // Create the window which we are
-  // going to use for the 256 colors
-  // .. it will free its resources
-  // when it is closing
-  //--------------------------------
-  iReturn = Init256Colors();
-  if(iReturn)
-      return iReturn;	// Must have been an error, return the error code
+	//--------------------------------
+	// Create the window which we are
+	// going to use for the 256 colors
+	// .. it will free its resources
+	// when it is closing
+	//--------------------------------
+	iReturn = Init256Colors();
+	if(iReturn)
+		return iReturn;	// Must have been an error, return the error code
 
-  UpdatePalette(TRUE, ghdc256);
+	UpdatePalette(TRUE, ghdc256);
 
-  //----------------------------------
-  // Load Bitmap for the Client Window
-  //
-  // The Bitmap is deleted in the
-  // ShutDownMDIClient function
-  //----------------------------------
-  ghbmpClientBk = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_CLIENT_BACKGROUND));
-  if(ghbmpClientBk == NULL)
-      return IDS_ERR_IN_RES2_FILE;
+	//----------------------------------
+	// Load Bitmap for the Client Window
+	//
+	// The Bitmap is deleted in the
+	// ShutDownMDIClient function
+	//----------------------------------
+	ghbmpClientBk = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_CLIENT_BACKGROUND));
+	if(ghbmpClientBk == NULL)
+		return IDS_ERR_IN_RES2_FILE;
 
-  //-----------------------------------
-  // and now get the size of the bitmap
-  //-----------------------------------
-  GetObject(ghbmpClientBk, sizeof(BITMAP), &gbmpClientInfoBk);
+	//-----------------------------------
+	// and now get the size of the bitmap
+	//-----------------------------------
+	GetObject(ghbmpClientBk, sizeof(BITMAP), &gbmpClientInfoBk);
 
-  //-----------------------------------
-  // Load the VU bitmap
-  //-----------------------------------
-  ghbmpVUONVert = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_VU_ON_VERTICAL));
-  if(ghbmpVUONVert == NULL)
-      return IDS_ERR_IN_RES3_FILE;
-  ghbmpVUONHoriz = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_VU_ON_HORIZONTAL));
-  if(ghbmpVUONHoriz == NULL)
-      return IDS_ERR_IN_RES3_FILE;
+	//-----------------------------------
+	// Load the VU bitmap
+	//-----------------------------------
+	ghbmpVUONVert = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_VU_ON_VERTICAL));
+	if(ghbmpVUONVert == NULL)
+		return IDS_ERR_IN_RES3_FILE;
+	ghbmpVUONHoriz = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_VU_ON_HORIZONTAL));
+	if(ghbmpVUONHoriz == NULL)
+		return IDS_ERR_IN_RES3_FILE;
 
-  //-----------------------------------
-  // and now get the size of the bitmap
-  //-----------------------------------
-  GetObject(ghbmpVUONVert, sizeof(BITMAP), &gbmpVUONVert);
-  GetObject(ghbmpVUONHoriz, sizeof(BITMAP), &gbmpVUONHoriz);
-  InitVULookupTables(FALSE);  // Log VU data - NOT linear
+	//-----------------------------------
+	// and now get the size of the bitmap
+	//-----------------------------------
+	GetObject(ghbmpVUONVert, sizeof(BITMAP), &gbmpVUONVert);
+	GetObject(ghbmpVUONHoriz, sizeof(BITMAP), &gbmpVUONHoriz);
+	InitVULookupTables(FALSE);  // Log VU data - NOT linear
 
-  //---------------------------------------
-  // Load the Bitmap for the Number Display
-  //---------------------------------------
-  g_hbmpNumbers = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_NUMBERS_200_40));
-  if(g_hbmpNumbers == NULL)
-      return IDS_ERR_IN_RES4_FILE;
+	//---------------------------------------
+	// Load the Bitmap for the Number Display
+	//---------------------------------------
+	g_hbmpNumbers = LoadBitmap(ghInstConsoleDef, MAKEINTRESOURCE(IDB_NUMBERS_200_40));
+	if(g_hbmpNumbers == NULL)
+		return IDS_ERR_IN_RES4_FILE;
 
-  //-----------------------------------
-  // and now get the size of the bitmap
-  //-----------------------------------
-  GetObject(g_hbmpNumbers, sizeof(BITMAP), &g_bmpNumbersInfo);
+	//-----------------------------------
+	// and now get the size of the bitmap
+	//-----------------------------------
+	GetObject(g_hbmpNumbers, sizeof(BITMAP), &g_bmpNumbersInfo);
 
-  //------------------------------------
-  // Register Some Of the Window Classes
-  //------------------------------------
-  iReturn = RegisterFullViewClass();
-  if(iReturn)
-      return iReturn;
+	//------------------------------------
+	// Register Some Of the Window Classes
+	//------------------------------------
+	iReturn = RegisterFullViewClass();
+	if(iReturn)
+		return iReturn;
 
-  iReturn = RegisterZoomViewClass();
-  if(iReturn)
-      return iReturn;
+	iReturn = RegisterZoomViewClass();
+	if(iReturn)
+		return iReturn;
 
-  iReturn = RegisterMasterViewClass();
-  if(iReturn)
-      return iReturn;
+	iReturn = RegisterMasterViewClass();
+	if(iReturn)
+		return iReturn;
 
-  iReturn = RegLblGroupWnd();
-  if(iReturn)
-      return iReturn;
+	iReturn = RegLblGroupWnd();
+	if(iReturn)
+		return iReturn;
 
-  iReturn = RegisterSeqWindowClass();
-  if(iReturn)
-      return iReturn;
+	iReturn = RegisterSeqWindowClass();
+	if(iReturn)
+		return iReturn;
 
-  iReturn = RegisterGroupWindowClass();
-  if(iReturn)
-      return iReturn;
+	iReturn = RegisterGroupWindowClass();
+	if(iReturn)
+		return iReturn;
 
-  iReturn = RegisterScrollWindowClass();
-  if(iReturn)
-      return iReturn;
+	iReturn = RegisterScrollWindowClass();
+	if(iReturn)
+		return iReturn;
 
-  iReturn = RegisterTrackingWindowClass();
-  if(iReturn)
-      return iReturn;
+	iReturn = RegisterTrackingWindowClass();
+	if(iReturn)
+		return iReturn;
 
-  
+
 	iReturn = RegisterStereoCueMetersViewClass();
-  if(iReturn)
-      return iReturn;
+	if(iReturn)
+		return iReturn;
 
-  //------------------------
-  // Display the Main Window
-  //------------------------
-  ShowWindow(ghwndMain, SW_SHOWMAXIMIZED);
-  UpdateWindow(ghwndMain);
+	//------------------------
+	// Display the Main Window
+	//------------------------
+	ShowWindow(ghwndMain, SW_SHOWMAXIMIZED);
+	UpdateWindow(ghwndMain);
 
 	showStereoCueMetersView ();
-  
-// Shouldn't we read in the dcx bin table here??????????
-// since we just got it from the client
 
-  iReturn = Init_MixerData();
-  if(iReturn)
-    return iReturn;
+	// Shouldn't we read in the dcx bin table here??????????
+	// since we just got it from the client
+
+	iReturn = Init_MixerData();
+	if(iReturn)
+		return iReturn;
 
 
-  //----------------------------------------
+	//----------------------------------------
 	// prepare the External controls lookup
-  //----------------------------------------
+	//----------------------------------------
 	InitExternalIface();
 	SetDataInWindow(ghwndMain);
 
-  //----------------------------------------
+	//----------------------------------------
 	// now try to open the External interface
 	//
-  //----------------------------------------
+	//----------------------------------------
 	if (OpenCommPort("\\\\.\\COM1"))
 	{
-//		unsigned char enable_time[6] = { 0xF0,0x15,0x25,0x31,0x01,0xF7};
-//		unsigned char	spec_mode_1[9] = {0xF0,0x15,0x25,0x02,0x00,0x00,0x00,0x00,0xF7};
-//		WriteCommBlock (spec_mode_1, sizeof (spec_mode_1));
-//		WriteCommBlock (enable_time, sizeof (enable_time));
+		//		unsigned char enable_time[6] = { 0xF0,0x15,0x25,0x31,0x01,0xF7};
+		//		unsigned char	spec_mode_1[9] = {0xF0,0x15,0x25,0x02,0x00,0x00,0x00,0x00,0xF7};
+		//		WriteCommBlock (spec_mode_1, sizeof (spec_mode_1));
+		//		WriteCommBlock (enable_time, sizeof (enable_time));
 	}
-  return 0;
+	return 0;
 };
 
 //----------------------------------------
@@ -399,36 +399,36 @@ be:
 
 int     Init_MixerData(void)
 {
-  int     iReturn;
+	int     iReturn;
 
-  // Start the Vu data ... Flow
-  //
-  CDef_StopVuData(); 
-  
-  // Load and Create the ZoneMaps
-  // and all of the other good stuff
-  // that is needed to talk to the 
-  // mixer *** BEGIN ***
-  //--------------------------------
+	// Start the Vu data ... Flow
+	//
+	CDef_StopVuData(); 
 
-  //--------------------------------------
-  // Get Global Mixer Phisical Description
-  //--------------------------------------
-  iReturn = GetGlobalMixerPhisDesc(ghInstConsoleDef);
-  if(iReturn)
-      return iReturn;
+	// Load and Create the ZoneMaps
+	// and all of the other good stuff
+	// that is needed to talk to the 
+	// mixer *** BEGIN ***
+	//--------------------------------
 
-  //------------------------------------------------------
-  // Use the data from the Server ... before InitMemoryMap
-  // so we will allocate enough memory
-  //------------------------------------------------------
+	//--------------------------------------
+	// Get Global Mixer Phisical Description
+	//--------------------------------------
+	iReturn = GetGlobalMixerPhisDesc(ghInstConsoleDef);
+	if(iReturn)
+		return iReturn;
 
-  //----------------------------------------
-  // Initialize the Memory map
-  //----------------------------------------
-  iReturn = InitMemoryMap();
-  if(iReturn)
-      return iReturn;
+	//------------------------------------------------------
+	// Use the data from the Server ... before InitMemoryMap
+	// so we will allocate enough memory
+	//------------------------------------------------------
+
+	//----------------------------------------
+	// Initialize the Memory map
+	//----------------------------------------
+	iReturn = InitMemoryMap();
+	if(iReturn)
+		return iReturn;
 
 
 #ifdef MIDI_SUPPORT
@@ -445,83 +445,83 @@ int     Init_MixerData(void)
 
 #endif
 
-  //---------------------------------
-  // Init the Global Resource Storage
-  // for different types
-  //---------------------------------
-  iReturn = InitBinResGlobal();
-  if(iReturn)
-      return iReturn;
+	//---------------------------------
+	// Init the Global Resource Storage
+	// for different types
+	//---------------------------------
+	iReturn = InitBinResGlobal();
+	if(iReturn)
+		return iReturn;
 
-  iReturn = InitRdOutResGlobal();
-  if(iReturn)
-      return iReturn;
+	iReturn = InitRdOutResGlobal();
+	if(iReturn)
+		return iReturn;
 
-  iReturn = InitBMPResGlobal();
-  if(iReturn)
-      return iReturn;
+	iReturn = InitBMPResGlobal();
+	if(iReturn)
+		return iReturn;
 
-  //-------------------------------
-  // Time to apply the Preferences
-  //-------------------------------
-  if(ApplyPreferences(TRUE) == FALSE)
-      return IDS_ERR_APPLY_PREF;
+	//-------------------------------
+	// Time to apply the Preferences
+	//-------------------------------
+	if(ApplyPreferences(TRUE) == FALSE)
+		return IDS_ERR_APPLY_PREF;
 
-  //--------------------------
-  // Load the Zonemaps and the
-  // respective bitmaps
-  //--------------------------
-  iReturn = LoadZoneMapIDs();
-  if(iReturn)
-      return iReturn;
+	//--------------------------
+	// Load the Zonemaps and the
+	// respective bitmaps
+	//--------------------------
+	iReturn = LoadZoneMapIDs();
+	if(iReturn)
+		return iReturn;
 
-  //-------------------------------
-  // Now Load the actual Zone maps
-  // this will also load all of the
-  // bitmaps needed to assemble
-  // the controls, mixers
-  //-------------------------------
-  iReturn = LoadZoneMaps();
-  if(iReturn)
-      return iReturn;
+	//-------------------------------
+	// Now Load the actual Zone maps
+	// this will also load all of the
+	// bitmaps needed to assemble
+	// the controls, mixers
+	//-------------------------------
+	iReturn = LoadZoneMaps();
+	if(iReturn)
+		return iReturn;
 
-  //----------------------------------------------------------------------------
-  // Prepare the map for the physical modules
-  // Sub-Aux has the Matrix module mapped to it ....
-  // The Master has the Cue Module mapped to it on the screen .. 
-  // ... 
-  // We need to this after the Zonemaps have been loaded 
-  // since this function will affect a member variable of the Zonemap Structure
-  //----------------------------------------------------------------------------
+	//----------------------------------------------------------------------------
+	// Prepare the map for the physical modules
+	// Sub-Aux has the Matrix module mapped to it ....
+	// The Master has the Cue Module mapped to it on the screen .. 
+	// ... 
+	// We need to this after the Zonemaps have been loaded 
+	// since this function will affect a member variable of the Zonemap Structure
+	//----------------------------------------------------------------------------
 
-  iReturn = InitPhysicalModuleMap();
-  if(iReturn)
-    return iReturn;
+	iReturn = InitPhysicalModuleMap();
+	if(iReturn)
+		return iReturn;
 
-  //--------------------------
-  // initialize the Memory Map
-  //--------------------------
-  SetMemoryMapDefaults();
- 
-  //--------------------------
-  // Show the Master Window
-  //--------------------------
-  CreateMasterViewWindow("Zoom Master View", NULL); 
+	//--------------------------
+	// initialize the Memory Map
+	//--------------------------
+	SetMemoryMapDefaults();
 
-  //--------------------------
-  // ZoneMaps and other stuff
-  // *** END ***
-  //-------------------------
+	//--------------------------
+	// Show the Master Window
+	//--------------------------
+	CreateMasterViewWindow("Zoom Master View", NULL); 
 
-  //--------------------------
-  //Enable the menu Items 
-  //--------------------------
-  EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM, MF_ENABLED);
-  EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM_AUX, MF_ENABLED);
-  EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM_MASTER, MF_ENABLED);
-  EnableMenuItem(ghMainMenu, IDM_V_FULLCONSOLE, MF_ENABLED);
+	//--------------------------
+	// ZoneMaps and other stuff
+	// *** END ***
+	//-------------------------
 
-  return iReturn;
+	//--------------------------
+	//Enable the menu Items 
+	//--------------------------
+	EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM, MF_ENABLED);
+	EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM_AUX, MF_ENABLED);
+	EnableMenuItem(ghMainMenu, IDM_V_FULLZOOM_MASTER, MF_ENABLED);
+	EnableMenuItem(ghMainMenu, IDM_V_FULLCONSOLE, MF_ENABLED);
+
+	return iReturn;
 }
 
 
@@ -532,8 +532,8 @@ int     Init_MixerData(void)
 //========================
 void      ShutdownProc(void)
 {
-int     iCount = 0;
-//HMENU   hMenu;
+	int     iCount = 0;
+	//HMENU   hMenu;
 
 	WaitForSingleObject(gDisplayEvent, 1000);
 	SetEvent(gDisplayEvent);
@@ -593,43 +593,43 @@ int     iCount = 0;
 	// Free the Palette
 	//-----------------
 	if(ghPalette)
-			DeleteObject(ghPalette);
+		DeleteObject(ghPalette);
 
-//-------------------
-// delete few bitmaps
-//-------------------
+	//-------------------
+	// delete few bitmaps
+	//-------------------
 
-  if(gbmpVUVertBuffer)
-    DeleteObject(gbmpVUVertBuffer);
-  if(gbmpVUHorzBuffer)
-    DeleteObject(gbmpVUHorzBuffer);
+	if(gbmpVUVertBuffer)
+		DeleteObject(gbmpVUVertBuffer);
+	if(gbmpVUHorzBuffer)
+		DeleteObject(gbmpVUHorzBuffer);
 
-  if(ghbmpVUONVert)
-    DeleteObject(ghbmpVUONVert);
-  
-  if(ghbmpVUONHoriz)
-    DeleteObject(ghbmpVUONHoriz);
+	if(ghbmpVUONVert)
+		DeleteObject(ghbmpVUONVert);
 
-  if(ghbmpClientBk)
-      DeleteObject(ghbmpClientBk);
+	if(ghbmpVUONHoriz)
+		DeleteObject(ghbmpVUONHoriz);
 
-  if(g_hbmpNumbers)
-      DeleteObject(g_hbmpNumbers);
+	if(ghbmpClientBk)
+		DeleteObject(ghbmpClientBk);
 
-  if(g_hbmpBuffer)
-    DeleteObject(g_hbmpBuffer);
+	if(g_hbmpNumbers)
+		DeleteObject(g_hbmpNumbers);
 
-  if(g_hdcMemory)
-    DeleteDC(g_hdcMemory);
+	if(g_hbmpBuffer)
+		DeleteObject(g_hbmpBuffer);
 
-  if(g_hdcBuffer)
-    DeleteDC(g_hdcBuffer);
+	if(g_hdcMemory)
+		DeleteDC(g_hdcMemory);
 
-  if(g_hdcTempBuffer)
-    DeleteDC(g_hdcTempBuffer);
+	if(g_hdcBuffer)
+		DeleteDC(g_hdcBuffer);
 
-  if(g_hConsoleFont)
-    DeleteObject(g_hConsoleFont);
+	if(g_hdcTempBuffer)
+		DeleteDC(g_hdcTempBuffer);
+
+	if(g_hConsoleFont)
+		DeleteObject(g_hConsoleFont);
 
 	//-------------------
 	// Close the Dlls
@@ -639,7 +639,7 @@ int     iCount = 0;
 	FreeLibrary(ghInstConsoleDef);
 	FreeLibrary(ghInstStrRes);
 
-return;
+	return;
 }
 
 //==================================================
@@ -656,30 +656,30 @@ return;
 //==================================================
 int       GetGlobalMixerPhisDesc(HINSTANCE hinst)
 {
-  HRSRC           hres;
-  HGLOBAL         hglob;
-  LPMIXERDESC     lpMixerDesc;
+	HRSRC           hres;
+	HGLOBAL         hglob;
+	LPMIXERDESC     lpMixerDesc;
 
-  hres = FindResource(hinst, MAKEINTRESOURCE(MIXER_PHIS_DESC), MAKEINTRESOURCE(RT_MIXER_PHIS_DESC));
-  if(hres == NULL)
-      return IDS_ERR_LOCATING_RESOURCE;
+	hres = FindResource(hinst, MAKEINTRESOURCE(MIXER_PHIS_DESC), MAKEINTRESOURCE(RT_MIXER_PHIS_DESC));
+	if(hres == NULL)
+		return IDS_ERR_LOCATING_RESOURCE;
 
-  hglob = LoadResource(hinst, hres);
-  if(hglob==NULL)
-      return  IDS_ERR_LOADING_RESOURCE;
+	hglob = LoadResource(hinst, hres);
+	if(hglob==NULL)
+		return  IDS_ERR_LOADING_RESOURCE;
 
-  lpMixerDesc = (LPMIXERDESC)LockResource(hglob);
+	lpMixerDesc = (LPMIXERDESC)LockResource(hglob);
 
-  giMax_MIXERS   = lpMixerDesc->iMaxMixers;
-//  giMax_CHANNELS = lpMixerDesc->iMaxChannels;
-//  giMax_CHANNELS = GetDeviceChannelCount();
-  giMax_CHANNELS = MAX_CHANNELS;
-  giMax_CONTROLS = lpMixerDesc->iMaxControls;
-  lstrcpy(gsz_MIXERNAME, lpMixerDesc->szMixerName);
+	giMax_MIXERS   = lpMixerDesc->iMaxMixers;
+	//  giMax_CHANNELS = lpMixerDesc->iMaxChannels;
+	//  giMax_CHANNELS = GetDeviceChannelCount();
+	giMax_CHANNELS = MAX_CHANNELS;
+	giMax_CONTROLS = lpMixerDesc->iMaxControls;
+	lstrcpy(gsz_MIXERNAME, lpMixerDesc->szMixerName);
 
-  UnlockResource(hglob);
-  FreeResource(hglob);
-  return 0;
+	UnlockResource(hglob);
+	FreeResource(hglob);
+	return 0;
 }
 
 
@@ -690,25 +690,25 @@ int       GetGlobalMixerPhisDesc(HINSTANCE hinst)
 //
 int  GetDeviceChannelCount(void)
 {
-  // Actualy we might not need this at all
-/*
-  int       iRet = 0;
-  int       iCount, iMCount;
+	// Actualy we might not need this at all
+	/*
+	int       iRet = 0;
+	int       iCount, iMCount;
 
-  for(iMCount = 0; iMCount < 80; iMCount ++)
-  {
-    switch(gDeviceSetup.iaChannelTypes[iMCount])
-    {
-    case 1:
-    case 2:
-    case 5:
-      iRet ++;
-      break;
-    }
-  }
-  //return iRet;  
-*/
-  return MAX_CHANNELS;
+	for(iMCount = 0; iMCount < 80; iMCount ++)
+	{
+	switch(gDeviceSetup.iaChannelTypes[iMCount])
+	{
+	case 1:
+	case 2:
+	case 5:
+	iRet ++;
+	break;
+	}
+	}
+	//return iRet;  
+	*/
+	return MAX_CHANNELS;
 };
 
 
@@ -734,7 +734,7 @@ void    ShowSplashScreen(BOOL bShow)
 		g_hwndSplashScreen = NULL;
 	}
 
-return;
+	return;
 }
 
 //=======================================
@@ -748,10 +748,10 @@ BOOL APIENTRY dlgProcSplash(HWND hDlg,UINT message, UINT wParam, LONG lParam)
 
 	switch (message)
 	{
-		case WM_INITDIALOG:	
-	//		return (TRUE);
-			break;
+	case WM_INITDIALOG:	
+		//		return (TRUE);
+		break;
 	}
 
-return (FALSE);   
+	return (FALSE);   
 }

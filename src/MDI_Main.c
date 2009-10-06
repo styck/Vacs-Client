@@ -32,9 +32,9 @@ void	HandleRemoteSequenceControl(WORD wControl);
 //=============================================================
 int       CreateMDIClient(HWND hwnd)
 {
-CLIENTCREATESTRUCT  ccs = {0};
-RECT                rcClient;
-DWORD								style;
+	CLIENTCREATESTRUCT  ccs = {0};
+	RECT                rcClient;
+	DWORD								style;
 
 	GetClientRect(hwnd, &rcClient);
 
@@ -51,21 +51,21 @@ DWORD								style;
 
 	style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_CLIPCHILDREN;
 
-	#ifdef SCROLLBARS
-// FDS		style = style | WS_VSCROLL;	// GAMBLE DOESN'T WANT SCROLL BARS ON MAIN MDI CLIENT AREA
-	#endif
+#ifdef SCROLLBARS
+	// FDS		style = style | WS_VSCROLL;	// GAMBLE DOESN'T WANT SCROLL BARS ON MAIN MDI CLIENT AREA
+#endif
 
 	ghwndMDIClient = CreateWindow("MDICLIENT",
-															 NULL,
-															 style,
-															 0, 0, 0, 0,
-															 hwnd,
-															 NULL,
-															 ghInstMain,
-															 (LPVOID)&ccs);
+		NULL,
+		style,
+		0, 0, 0, 0,
+		hwnd,
+		NULL,
+		ghInstMain,
+		(LPVOID)&ccs);
 
 	if(ghwndMDIClient == NULL)
-			return IDS_ERR_CREATE_WINDOW;
+		return IDS_ERR_CREATE_WINDOW;
 
 	// Sub class the default windows procedure
 	// so we can hadle the WM_PAINT and WM_ERASEBKGND
@@ -87,7 +87,7 @@ void      ShutDownMDIClient(void)
 	//Delete the bitmap
 	//-----------------
 	if(ghbmpClientBk)
-			DeleteObject(ghbmpClientBk);
+		DeleteObject(ghbmpClientBk);
 	return;
 }
 
@@ -102,19 +102,19 @@ void      ShutDownMDIClient(void)
 // Positions the Client Window within the Main Window
 //====================================================
 void          SizeClientWindow(HWND hwnd, UINT uMessage,
-                                     WPARAM wparam, LPARAM lparam)
+							   WPARAM wparam, LPARAM lparam)
 {
-RECT    rcClient;
-RECT    rcAdj = {0};
+	RECT    rcClient;
+	RECT    rcAdj = {0};
 
 	if (wparam != SIZE_MINIMIZED)
-  {
-  GetClientRect(hwnd, &rcClient);
-  
-  // Calculate all the adjustments
-  //------------------------------
+	{
+		GetClientRect(hwnd, &rcClient);
+
+		// Calculate all the adjustments
+		//------------------------------
 		if(ghwndStatus)
-    {
+		{
 			GetWindowRect(ghwndStatus, &rcAdj);
 			CONVERT_RECT_TO_WH(rcAdj);
 			// Adjust the Status Window Position and size
@@ -124,11 +124,11 @@ RECT    rcAdj = {0};
 			// Apply the changes to the rcClient
 			//----------------------------------
 			rcClient.bottom -= rcAdj.bottom - 1;        
-    }
+		}
 
 		if(ghwndTBPlay)
 		{
-//		SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
+			//		SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
 			SendMessage(ghwndTBPlay, WM_SIZE, SIZE_RESTORED, MAKELPARAM(100,26));
 			GetWindowRect(ghwndTBPlay, &rcAdj);
 			CONVERT_RECT_TO_WH(rcAdj);
@@ -146,25 +146,25 @@ RECT    rcAdj = {0};
 			//rcClient.left += (MASTER_MODULE_WIDTH + MAX_BORDER_WIDTH);
 			rcClient.right -= (MASTER_MODULE_WIDTH + MAX_BORDER_WIDTH);
 
-	#ifdef SCROLLBARS
+#ifdef SCROLLBARS
 			// Leave room for Scroll bars
 			rcClient.right -= GetSystemMetrics(SM_CYVTHUMB);
-	#endif
+#endif
 
 		}
 
 		// Move and Size the MDI Client Window
 		//------------------------------------
 		MoveWindow(ghwndMDIClient,
-							 rcClient.left,
-							 rcClient.top,
-							 rcClient.right,
-							 rcClient.bottom,
-							 TRUE);
+			rcClient.left,
+			rcClient.top,
+			rcClient.right,
+			rcClient.bottom,
+			TRUE);
 
-  }
+	}
 
-return;
+	return;
 }
 
 //===========================================
@@ -174,21 +174,21 @@ return;
 //===========================================
 void      ClientWindowPaint(void)
 {
-HDC                 hdc, hdcMem;
-RECT                rectUpdate;
-HBITMAP             hBitOld, hBitScreen;
-int                 iHoriz, iVert, iWidth, iHeight;
-WINDOWPLACEMENT     wpl;
+	HDC                 hdc, hdcMem;
+	RECT                rectUpdate;
+	HBITMAP             hBitOld, hBitScreen;
+	int                 iHoriz, iVert, iWidth, iHeight;
+	WINDOWPLACEMENT     wpl;
 
 	if(ghwndMDIClient == NULL)
-			return;
+		return;
 
 	GetWindowPlacement(ghwndMain, &wpl);
 	if(wpl.showCmd == SW_SHOWMINIMIZED)
-			return;
+		return;
 
 	if(GetUpdateRect(ghwndMDIClient, &rectUpdate, FALSE) == FALSE)
-			return;
+		return;
 
 	ValidateRect(ghwndMDIClient, NULL);
 	ValidateRect(ghwndMain, NULL);
@@ -205,7 +205,7 @@ WINDOWPLACEMENT     wpl;
 	iHeight = gbmpClientInfoBk.bmHeight;
 
 	if((iWidth == 0) || (iHeight == 0))
-			goto CLEANUP_TIME;
+		goto CLEANUP_TIME;
 
 	// Start BitBlT the hbmpClientBk to the Screen
 	//--------------------------------------------
@@ -214,12 +214,12 @@ WINDOWPLACEMENT     wpl;
 		for(iHoriz = 0; iHoriz < rectUpdate.right; iHoriz += iWidth)
 		{
 			BitBlt(hdc, iHoriz, iVert, iWidth, iHeight,
-						 hdcMem, 0, 0,
-						 SRCCOPY);
+				hdcMem, 0, 0,
+				SRCCOPY);
 		}
 	}
 
-	CLEANUP_TIME:
+CLEANUP_TIME:
 	// Clean up time
 	SelectObject(hdcMem, hBitOld);
 	DeleteDC(hdcMem);
@@ -232,26 +232,26 @@ WINDOWPLACEMENT     wpl;
 // MDI Client Window Procedure For Processing Messages
 //====================================================
 LRESULT CALLBACK   MDIClientProc(HWND hWnd, UINT wMessage,
-                               WPARAM wParam, LPARAM  lParam)
+								 WPARAM wParam, LPARAM  lParam)
 {
 	HWND				focus_wnd;
 	HWND				last_wnd=-1;
 	BOOL				is_mdi_child = FALSE;
 
-switch (wMessage)
- {
-///  case WM_MOUSEMOVE:
-//    UpdateTrackingWindow(NULL);
-//    break;
+	switch (wMessage)
+	{
+		///  case WM_MOUSEMOVE:
+		//    UpdateTrackingWindow(NULL);
+		//    break;
 
-  case WM_PAINT:
-    ClientWindowPaint();
-    return 0;
-    break;
-  case WM_ERASEBKGND:
-    ClientWindowPaint();
-    return 0;
-    break;
+	case WM_PAINT:
+		ClientWindowPaint();
+		return 0;
+		break;
+	case WM_ERASEBKGND:
+		ClientWindowPaint();
+		return 0;
+		break;
 
 	case WM_KEYUP:
 		if (wParam == VK_SPACE)
@@ -259,7 +259,7 @@ switch (wMessage)
 			HandleRemoteSequenceControl(IDM_S_NEXT);
 		}
 		break;
-		
+
 	case WM_KILLFOCUS:
 		focus_wnd = (HWND)wParam;
 		if (focus_wnd)
@@ -278,10 +278,10 @@ switch (wMessage)
 		return 0;										
 		break;
 
-  default:
-       return gorigMDIProc(hWnd, wMessage, wParam, lParam);
- }
-return gorigMDIProc(hWnd, wMessage, wParam, lParam);
+	default:
+		return gorigMDIProc(hWnd, wMessage, wParam, lParam);
+	}
+	return gorigMDIProc(hWnd, wMessage, wParam, lParam);
 }
 
 ////////////////////////////////////////////////////
@@ -295,43 +295,43 @@ LPMIXERWNDDATA		g_validMixerWindowData = NULL;
 
 LPMIXERWNDDATA GetValidMixerWindowData(void)
 {
-//  LPMIXERWNDDATA      lpmwd = NULL;
-//  HWND hwndT, hwndTLast = NULL;
+	//  LPMIXERWNDDATA      lpmwd = NULL;
+	//  HWND hwndT, hwndTLast = NULL;
 
 
 	if (g_validMixerWindowData == NULL)
 		g_validMixerWindowData = MixerWindowDataAlloc(gwActiveMixer,
-																 gpZoneMaps_Zoom,
-																 MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
+		gpZoneMaps_Zoom,
+		MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
 
 	return g_validMixerWindowData;
-/*
-  // Update the Master Window if it is open
-  //
-  if(ghwndMaster)
-  {
-    lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndMaster, 0);
-    if(lpmwd != NULL && lpmwd->hwndImg != NULL)
-      return lpmwd;
-  }
+	/*
+	// Update the Master Window if it is open
+	//
+	if(ghwndMaster)
+	{
+	lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndMaster, 0);
+	if(lpmwd != NULL && lpmwd->hwndImg != NULL)
+	return lpmwd;
+	}
 
-  // now update all MDI windows
-  //
-  hwndT = GetTopWindow(ghwndMDIClient);
-  while(hwndT && hwndT != hwndTLast)
-  {
-    lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwndT, 0);
-    hwndTLast = hwndT;
-    
-    if(lpmwd != NULL && lpmwd->iWndID == MIXER_WINDOW_FILE_ID && lpmwd->hwndImg != NULL)
-    {
-      return lpmwd;
-    }
-    hwndTLast = hwndT;
-    hwndT = GetNextWindow(hwndT, GW_HWNDNEXT);
-  }
-  
-  return NULL;
+	// now update all MDI windows
+	//
+	hwndT = GetTopWindow(ghwndMDIClient);
+	while(hwndT && hwndT != hwndTLast)
+	{
+	lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwndT, 0);
+	hwndTLast = hwndT;
+
+	if(lpmwd != NULL && lpmwd->iWndID == MIXER_WINDOW_FILE_ID && lpmwd->hwndImg != NULL)
+	{
+	return lpmwd;
+	}
+	hwndTLast = hwndT;
+	hwndT = GetNextWindow(hwndT, GW_HWNDNEXT);
+	}
+
+	return NULL;
 	*/
 }
 
@@ -342,22 +342,22 @@ LPMIXERWNDDATA GetValidMixerWindowData(void)
 void      CloseAllMDI(void)
 {
 
-HWND hwndT;
+	HWND hwndT;
 
 	// As long as the MDI client has a child, destroy it
 	//--------------------------------------------------
 	while ((hwndT = GetWindow(ghwndMDIClient, GW_CHILD))!=NULL)
-  {
-    // Skip the icon and title windows
-    //--------------------------------
-    while (hwndT && GetWindow(hwndT, GW_OWNER))
-        hwndT = GetWindow(hwndT, GW_HWNDNEXT);
+	{
+		// Skip the icon and title windows
+		//--------------------------------
+		while (hwndT && GetWindow(hwndT, GW_OWNER))
+			hwndT = GetWindow(hwndT, GW_HWNDNEXT);
 
-    if (hwndT)
-        SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hwndT, 0L);
-    else
-        break;
-  }
+		if (hwndT)
+			SendMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hwndT, 0L);
+		else
+			break;
+	}
 	return;
 }
 
@@ -369,35 +369,35 @@ HWND hwndT;
 //
 void      RefreshAllLblWindows(void)
 {
-  HWND hwndT, hwndTLast = NULL;
-  LPMIXERWNDDATA      lpmwd;
+	HWND hwndT, hwndTLast = NULL;
+	LPMIXERWNDDATA      lpmwd;
 
 
-  // now update all MDI windows
-  //
-  hwndT = GetTopWindow(ghwndMDIClient);
-  while(hwndT && hwndT != hwndTLast)
-  {
-    lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwndT, 0);
-    hwndTLast = hwndT;
-    
-    if(lpmwd != NULL && lpmwd->iWndID == MIXER_WINDOW_FILE_ID)
-    {
-      if(lpmwd->hwndImg != NULL)
-      {
-        InvalidateRect(lpmwd->hwndLblGroup, NULL, FALSE);
-        UpdateWindow(lpmwd->hwndLblGroup);
-//fds  DON'T NEED TO UPDATE THE IMAGE WINDOW FOR THE GROUPS DO WE????
-//fds        InvalidateRect(lpmwd->hwndImg, NULL, FALSE);
-//fds        UpdateWindow(lpmwd->hwndImg);
-      }
-    }
+	// now update all MDI windows
+	//
+	hwndT = GetTopWindow(ghwndMDIClient);
+	while(hwndT && hwndT != hwndTLast)
+	{
+		lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwndT, 0);
+		hwndTLast = hwndT;
+
+		if(lpmwd != NULL && lpmwd->iWndID == MIXER_WINDOW_FILE_ID)
+		{
+			if(lpmwd->hwndImg != NULL)
+			{
+				InvalidateRect(lpmwd->hwndLblGroup, NULL, FALSE);
+				UpdateWindow(lpmwd->hwndLblGroup);
+				//fds  DON'T NEED TO UPDATE THE IMAGE WINDOW FOR THE GROUPS DO WE????
+				//fds        InvalidateRect(lpmwd->hwndImg, NULL, FALSE);
+				//fds        UpdateWindow(lpmwd->hwndImg);
+			}
+		}
 
 
-    hwndTLast = hwndT;
-    hwndT = GetNextWindow(hwndT, GW_HWNDNEXT);
-  }
-  return;
+		hwndTLast = hwndT;
+		hwndT = GetNextWindow(hwndT, GW_HWNDNEXT);
+	}
+	return;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -407,42 +407,42 @@ void      RefreshAllLblWindows(void)
 //
 void      RefreshAllMDIWindows(void)
 {
-  HWND hwndT, hwndTLast = NULL;
-  LPMIXERWNDDATA      lpmwd;
+	HWND hwndT, hwndTLast = NULL;
+	LPMIXERWNDDATA      lpmwd;
 
 
 
-  // Update the Master Window if it is open
-  //
-  if(ghwndMaster)
-  {
-    lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndMaster, 0);
-    if(lpmwd != NULL && lpmwd->hwndImg != NULL)
-    {
-      InvalidateRect(lpmwd->hwndImg , NULL, FALSE);
-      UpdateWindow(lpmwd->hwndImg );
-    }
-  }
+	// Update the Master Window if it is open
+	//
+	if(ghwndMaster)
+	{
+		lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndMaster, 0);
+		if(lpmwd != NULL && lpmwd->hwndImg != NULL)
+		{
+			InvalidateRect(lpmwd->hwndImg , NULL, FALSE);
+			UpdateWindow(lpmwd->hwndImg );
+		}
+	}
 
-  // now update all MDI windows
-  //
-  hwndT = GetTopWindow(ghwndMDIClient);
-  while(hwndT && hwndT != hwndTLast)
-  {
-    lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwndT, 0);
-    hwndTLast = hwndT;
-    
-    if(lpmwd != NULL && lpmwd->iWndID == MIXER_WINDOW_FILE_ID && lpmwd->hwndImg != NULL)
-    {
-      InvalidateRect(lpmwd->hwndImg , NULL, FALSE);
-      UpdateWindow(lpmwd->hwndImg );
-    }
+	// now update all MDI windows
+	//
+	hwndT = GetTopWindow(ghwndMDIClient);
+	while(hwndT && hwndT != hwndTLast)
+	{
+		lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwndT, 0);
+		hwndTLast = hwndT;
+
+		if(lpmwd != NULL && lpmwd->iWndID == MIXER_WINDOW_FILE_ID && lpmwd->hwndImg != NULL)
+		{
+			InvalidateRect(lpmwd->hwndImg , NULL, FALSE);
+			UpdateWindow(lpmwd->hwndImg );
+		}
 
 
-    hwndTLast = hwndT;
-    hwndT = GetNextWindow(hwndT, GW_HWNDNEXT);
-  }
-  return;
+		hwndTLast = hwndT;
+		hwndT = GetNextWindow(hwndT, GW_HWNDNEXT);
+	}
+	return;
 }
 
 
@@ -466,103 +466,103 @@ void      RefreshAllMDIWindows(void)
 //      windows
 //
 void      UpdateSameMixWndByCtrlNum(HWND  hwnd,
-                                    int   iMixer,
-                                    int   iPhisChannel,
-                                    LPCTRLZONEMAP   lpctrlZM,
-                                    int   iVal,
-                                    HDC   hdcBuffer)
+									int   iMixer,
+									int   iPhisChannel,
+									LPCTRLZONEMAP   lpctrlZM,
+									int   iVal,
+									HDC   hdcBuffer)
 {
-  HWND                hwndT, hwndTLast = NULL;
-  LPMIXERWNDDATA      lpmwd;
-  int                 iScrChannel;
-  LPCTRLZONEMAP       lpctrlZMSource;
-  HDC                 hdcScr;
-  RECT                rScrPos;
-  HDC                 hdcSrcBuffer;
-  BOOL                bForceToMaster = FALSE;
+	HWND                hwndT, hwndTLast = NULL;
+	LPMIXERWNDDATA      lpmwd;
+	int                 iScrChannel;
+	LPCTRLZONEMAP       lpctrlZMSource;
+	HDC                 hdcScr;
+	RECT                rScrPos;
+	HDC                 hdcSrcBuffer;
+	BOOL                bForceToMaster = FALSE;
 	int									iBMPIndexLast = -1;
 	HBITMAP							hbmp;
 	BOOL								reselect_old_buffer_bmp = FALSE;
 
-  if(hdcBuffer != NULL)
-    hdcSrcBuffer = hdcBuffer;
-  else
-    // use the Generic memory buffer
-    hdcSrcBuffer = g_hdcMemory;
+	if(hdcBuffer != NULL)
+		hdcSrcBuffer = hdcBuffer;
+	else
+		// use the Generic memory buffer
+		hdcSrcBuffer = g_hdcMemory;
 
-  /* // This thing is not correct at all
-  if((gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 2) && 
-     ghwndMaster )
-  {
-    lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndMaster, 0);
+	/* // This thing is not correct at all
+	if((gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == 2) && 
+	ghwndMaster )
+	{
+	lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndMaster, 0);
 
-    if(ScanCtrlZonesAbs(lpmwd->lpZoneMap[g_iMasterModuleIdx].lpZoneMap, 
-                        lpctrlZM->iCtrlNumAbs))
-      bForceToMaster = TRUE;
-    else
-      bForceToMaster = FALSE;
-  }
-  */
-  if(iPhisChannel == g_iMasterModuleIdx)
-    bForceToMaster = TRUE;
+	if(ScanCtrlZonesAbs(lpmwd->lpZoneMap[g_iMasterModuleIdx].lpZoneMap, 
+	lpctrlZM->iCtrlNumAbs))
+	bForceToMaster = TRUE;
+	else
+	bForceToMaster = FALSE;
+	}
+	*/
+	if(iPhisChannel == g_iMasterModuleIdx)
+		bForceToMaster = TRUE;
 
-  if((gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_MASTER) ||
-     (gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_CUE) ||
-      bForceToMaster )
-  {
-    //
-    //
-    if(ghwndMaster)
-    {
-      lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndMaster, 0);
-      //iScrChannel = lpmwd->lpwRemapToPhis[lpctrlZM->iModuleNumber] - 
-      //              lpmwd->iStartScrChan;
-      iScrChannel = lpmwd->lpwRemapToPhis[iPhisChannel];
+	if((gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_MASTER) ||
+		(gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_CUE) ||
+		bForceToMaster )
+	{
+		//
+		//
+		if(ghwndMaster)
+		{
+			lpmwd = (LPMIXERWNDDATA)GetWindowLong(ghwndMaster, 0);
+			//iScrChannel = lpmwd->lpwRemapToPhis[lpctrlZM->iModuleNumber] - 
+			//              lpmwd->iStartScrChan;
+			iScrChannel = lpmwd->lpwRemapToPhis[iPhisChannel];
 
-      lpctrlZMSource = lpmwd->lpZoneMap[iPhisChannel].lpZoneMap;
-      lpctrlZMSource = ScanCtrlZonesNum(lpctrlZMSource, lpctrlZM->iCtrlChanPos);
+			lpctrlZMSource = lpmwd->lpZoneMap[iPhisChannel].lpZoneMap;
+			lpctrlZMSource = ScanCtrlZonesNum(lpctrlZMSource, lpctrlZM->iCtrlChanPos);
 
-      if(GetMWScrChanRect(lpmwd, iScrChannel, &rScrPos) == 0)
-      {
-        hdcScr = GetDC(lpmwd->hwndImg);
-        UpdateControlsByCtrlNum(hdcScr, hdcSrcBuffer, lpmwd, rScrPos.left,
-                                g_iMasterModuleIdx/*lpctrlZM->iModuleNumber*/, lpctrlZMSource, 
-                                iVal, DIRECTIONS_ALL, FALSE);
-        ReleaseDC(lpmwd->hwndImg , hdcScr);
-      }
-    }
-  }
-  else
-  {
+			if(GetMWScrChanRect(lpmwd, iScrChannel, &rScrPos) == 0)
+			{
+				hdcScr = GetDC(lpmwd->hwndImg);
+				UpdateControlsByCtrlNum(hdcScr, hdcSrcBuffer, lpmwd, rScrPos.left,
+					g_iMasterModuleIdx/*lpctrlZM->iModuleNumber*/, lpctrlZMSource, 
+					iVal, DIRECTIONS_ALL, FALSE);
+				ReleaseDC(lpmwd->hwndImg , hdcScr);
+			}
+		}
+	}
+	else
+	{
 		//lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwnd, 0);
 		//iBMPIndexLast = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
 
-    // now update all MDI windows
-    //
-    hwndT = GetTopWindow(ghwndMDIClient);
-    while(hwndT && hwndT != hwndTLast)
-    {
-      lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwndT, 0);
-      hwndTLast = hwndT;
-    
-      if( (lpmwd != NULL) && (lpmwd->iWndID == MIXER_WINDOW_FILE_ID) &&
-				  (lpmwd->hwndImg != NULL) && 
-          (lpmwd->hwndImg != hwnd) && (lpmwd->hwndImg != ghwndMaster))
-      {
-        // make sure this Phisical channel is visible ...
-        // and try to update it
-        //
-        iScrChannel = lpmwd->lpwRemapToPhis[iPhisChannel] - lpmwd->iStartScrChan;
-        if(iScrChannel >= 0 && iScrChannel <= lpmwd->iEndScrChan)
-        {
-          // Scan for Controls
-          //------------------
-          lpctrlZMSource = lpmwd->lpZoneMap[iPhisChannel].lpZoneMap;
-          lpctrlZMSource = ScanCtrlZonesNum(lpctrlZMSource, lpctrlZM->iCtrlChanPos);
-          if(lpctrlZMSource)
-          {
-            if(GetMWScrChanRect(lpmwd, iScrChannel, &rScrPos) == 0)
-            {
+		// now update all MDI windows
+		//
+		hwndT = GetTopWindow(ghwndMDIClient);
+		while(hwndT && hwndT != hwndTLast)
+		{
+			lpmwd = (LPMIXERWNDDATA)GetWindowLong(hwndT, 0);
+			hwndTLast = hwndT;
+
+			if( (lpmwd != NULL) && (lpmwd->iWndID == MIXER_WINDOW_FILE_ID) &&
+				(lpmwd->hwndImg != NULL) && 
+				(lpmwd->hwndImg != hwnd) && (lpmwd->hwndImg != ghwndMaster))
+			{
+				// make sure this Phisical channel is visible ...
+				// and try to update it
+				//
+				iScrChannel = lpmwd->lpwRemapToPhis[iPhisChannel] - lpmwd->iStartScrChan;
+				if(iScrChannel >= 0 && iScrChannel <= lpmwd->iEndScrChan)
+				{
+					// Scan for Controls
+					//------------------
+					lpctrlZMSource = lpmwd->lpZoneMap[iPhisChannel].lpZoneMap;
+					lpctrlZMSource = ScanCtrlZonesNum(lpctrlZMSource, lpctrlZM->iCtrlChanPos);
+					if(lpctrlZMSource)
+					{
+						if(GetMWScrChanRect(lpmwd, iScrChannel, &rScrPos) == 0)
+						{
 							// well the window we are about to update might be different than the last window
 							// so make sure we select the correct bitmap for it .... ??
 							if(iBMPIndexLast != lpmwd->lpZoneMap[iPhisChannel].iBmpIndx)// && iBMPIndexLast >= 0)
@@ -570,31 +570,31 @@ void      UpdateSameMixWndByCtrlNum(HWND  hwnd,
 								iBMPIndexLast = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
 								hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndexLast].hbmp);
 								BitBlt(hdcSrcBuffer, 0, 0, gpBMPTable[iBMPIndexLast].iWidth, gpBMPTable[iBMPIndexLast].iHeight,
-											 g_hdcBuffer, 0, 0, SRCCOPY);
+									g_hdcBuffer, 0, 0, SRCCOPY);
 								reselect_old_buffer_bmp = TRUE;
 								//SelectObject(g_hdcBuffer, hbmp);
 							}
 							else
 								reselect_old_buffer_bmp = FALSE;
 
-              hdcScr = GetDC(lpmwd->hwndImg);
-              UpdateControlsByCtrlNum(hdcScr, hdcSrcBuffer, lpmwd, rScrPos.left,
-                                      iPhisChannel, lpctrlZMSource, iVal, DIRECTIONS_ALL, FALSE);
-              ReleaseDC(lpmwd->hwndImg , hdcScr);
+							hdcScr = GetDC(lpmwd->hwndImg);
+							UpdateControlsByCtrlNum(hdcScr, hdcSrcBuffer, lpmwd, rScrPos.left,
+								iPhisChannel, lpctrlZMSource, iVal, DIRECTIONS_ALL, FALSE);
+							ReleaseDC(lpmwd->hwndImg , hdcScr);
 
 							if (reselect_old_buffer_bmp)
 								SelectObject(g_hdcBuffer, hbmp);
-            }
-          }
-        }
-        //if()
-        //lpmwd->hwndImg != hwnd;
-      }
+						}
+					}
+				}
+				//if()
+				//lpmwd->hwndImg != hwnd;
+			}
 
 
-      hwndTLast = hwndT;
-      hwndT = GetNextWindow(hwndT, GW_HWNDNEXT);
-    }
-  }
-  return;
+			hwndTLast = hwndT;
+			hwndT = GetNextWindow(hwndT, GW_HWNDNEXT);
+		}
+	}
+	return;
 }

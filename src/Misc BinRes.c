@@ -49,50 +49,50 @@
 //==============================================================
 int     AddBinResource(HINSTANCE hinst, int iRes, int iResType)
 {
-int             iCount;
-int             iOldAllocated;
-LPBINARYTABLE   lpGlob;
-HRSRC           hRes;
+	int             iCount;
+	int             iOldAllocated;
+	LPBINARYTABLE   lpGlob;
+	HRSRC           hRes;
 
 
-for(iCount = 0; iCount < giBinResGlobAlloc;iCount++)
-    {
-    if(gpBinResTable[iCount].iResID == iRes)
-        return iCount;
-    else
-        if(gpBinResTable[iCount].iResID == 0)
-            break;
-    }
+	for(iCount = 0; iCount < giBinResGlobAlloc;iCount++)
+	{
+		if(gpBinResTable[iCount].iResID == iRes)
+			return iCount;
+		else
+			if(gpBinResTable[iCount].iResID == 0)
+				break;
+	}
 
-// Check if we need to allocate more memory
-// to put the next MIDI map in the Global Table
-//---------------------------------------------
-if(iCount == giBinResGlobAlloc)
-    {
-    iOldAllocated = giBinResGlobAlloc;
-    giBinResGlobAlloc += 16;
-    lpGlob = GlobalAlloc(GPTR, giBinResGlobAlloc*sizeof(BINARYTABLE));
-    if(lpGlob == NULL)
-        return -(IDS_ERR_ALLOCATE_MEMORY);
+	// Check if we need to allocate more memory
+	// to put the next MIDI map in the Global Table
+	//---------------------------------------------
+	if(iCount == giBinResGlobAlloc)
+	{
+		iOldAllocated = giBinResGlobAlloc;
+		giBinResGlobAlloc += 16;
+		lpGlob = GlobalAlloc(GPTR, giBinResGlobAlloc*sizeof(BINARYTABLE));
+		if(lpGlob == NULL)
+			return -(IDS_ERR_ALLOCATE_MEMORY);
 
-    CopyMemory((LPSTR)lpGlob, (LPSTR)gpBinResTable, iOldAllocated*sizeof(BINARYTABLE));
-    GlobalFree(gpBinResTable);
-    gpBinResTable = lpGlob;
-    }
+		CopyMemory((LPSTR)lpGlob, (LPSTR)gpBinResTable, iOldAllocated*sizeof(BINARYTABLE));
+		GlobalFree(gpBinResTable);
+		gpBinResTable = lpGlob;
+	}
 
-// Load the ReadOut Resource
-//--------------------------
-hRes = FindResource(hinst, MAKEINTRESOURCE(iRes), MAKEINTRESOURCE(iResType));
-if(hRes == NULL)
-    return -(IDS_ERR_LOCATING_RESOURCE);
+	// Load the ReadOut Resource
+	//--------------------------
+	hRes = FindResource(hinst, MAKEINTRESOURCE(iRes), MAKEINTRESOURCE(iResType));
+	if(hRes == NULL)
+		return -(IDS_ERR_LOCATING_RESOURCE);
 
-gpBinResTable[iCount].hgBinRes = LoadResource(hinst, hRes);
-gpBinResTable[iCount].lpBinRes = (LPSTR)LockResource(gpBinResTable[iCount].hgBinRes);
-// now  set the string pointer to the begining of the Strings
-//-----------------------------------------------------------
-gpBinResTable[iCount].iResID = iRes;
+	gpBinResTable[iCount].hgBinRes = LoadResource(hinst, hRes);
+	gpBinResTable[iCount].lpBinRes = (LPSTR)LockResource(gpBinResTable[iCount].hgBinRes);
+	// now  set the string pointer to the begining of the Strings
+	//-----------------------------------------------------------
+	gpBinResTable[iCount].iResID = iRes;
 
-return iCount;
+	return iCount;
 }
 
 //==============================================================
@@ -105,18 +105,18 @@ return iCount;
 //==============================================================
 void    DeleteBinResGlobalIndx(int iIndx)
 {
-if(gpBinResTable == NULL)
-    return;
-if(iIndx >= giBinResGlobAlloc)
-    return; // wrong index
+	if(gpBinResTable == NULL)
+		return;
+	if(iIndx >= giBinResGlobAlloc)
+		return; // wrong index
 
-if(gpBinResTable[iIndx].iResID)
-    {
-    UnlockResource(gpBinResTable[iIndx].hgBinRes);
-    FreeResource(gpBinResTable[iIndx].hgBinRes);
-    gpBinResTable[iIndx].iResID = 0;
-    }
-return;
+	if(gpBinResTable[iIndx].iResID)
+	{
+		UnlockResource(gpBinResTable[iIndx].hgBinRes);
+		FreeResource(gpBinResTable[iIndx].hgBinRes);
+		gpBinResTable[iIndx].iResID = 0;
+	}
+	return;
 }
 
 //==============================================================
@@ -129,22 +129,22 @@ return;
 //==============================================================
 void    DeleteBinResGlobalResID(int iResID)
 {
-int     iCount;
+	int     iCount;
 
-if(gpBinResTable == NULL)
-    return;
+	if(gpBinResTable == NULL)
+		return;
 
-for(iCount=0; iCount < giBinResGlobAlloc; iCount++)
-    {
-    if(gpBinResTable[iCount].iResID == iResID)
-        {
-        UnlockResource(gpBinResTable[iCount].hgBinRes);
-        FreeResource(gpBinResTable[iCount].hgBinRes);
-        gpBinResTable[iCount].iResID = 0;
-        return;
-        }
-    }
-return;
+	for(iCount=0; iCount < giBinResGlobAlloc; iCount++)
+	{
+		if(gpBinResTable[iCount].iResID == iResID)
+		{
+			UnlockResource(gpBinResTable[iCount].hgBinRes);
+			FreeResource(gpBinResTable[iCount].hgBinRes);
+			gpBinResTable[iCount].iResID = 0;
+			return;
+		}
+	}
+	return;
 }
 
 //===============================
@@ -155,12 +155,12 @@ return;
 int     InitBinResGlobal(void)
 {
 
-giBinResGlobAlloc = 16;
-gpBinResTable = (LPBINARYTABLE)GlobalAlloc(GPTR, giBinResGlobAlloc*sizeof(BINARYTABLE));
-if(gpBinResTable == NULL)
-    return IDS_ERR_ALLOCATE_MEMORY;
+	giBinResGlobAlloc = 16;
+	gpBinResTable = (LPBINARYTABLE)GlobalAlloc(GPTR, giBinResGlobAlloc*sizeof(BINARYTABLE));
+	if(gpBinResTable == NULL)
+		return IDS_ERR_ALLOCATE_MEMORY;
 
-return 0;
+	return 0;
 }
 
 //====================================
@@ -169,18 +169,18 @@ return 0;
 //====================================
 void    FreeBinResGlobal(void)
 {
-int         iCount;
+	int         iCount;
 
-if(gpBinResTable == NULL)
-    return;
+	if(gpBinResTable == NULL)
+		return;
 
-for(iCount=0; iCount < giBinResGlobAlloc; iCount++)
-    DeleteBinResGlobalIndx(iCount);
+	for(iCount=0; iCount < giBinResGlobAlloc; iCount++)
+		DeleteBinResGlobalIndx(iCount);
 
-GlobalFree((HGLOBAL)gpBinResTable);
-gpBinResTable = NULL;
+	GlobalFree((HGLOBAL)gpBinResTable);
+	gpBinResTable = NULL;
 
-return;
+	return;
 }
 
 
@@ -210,53 +210,53 @@ return;
 //==============================================================
 int     PASCAL  AddRdOutResGlobal(HINSTANCE hinst, int iRes)
 {
-int             iCount;
-int             iOldAllocated;
-LPRDOUTGLOBRES  lpGlob;
-HRSRC           hRes;
-LPSTR           lpStr;
+	int             iCount;
+	int             iOldAllocated;
+	LPRDOUTGLOBRES  lpGlob;
+	HRSRC           hRes;
+	LPSTR           lpStr;
 
-for(iCount=0; iCount < giRdOutGlobAllocated; iCount++)
-    {
-    if(gpRdOutTable[iCount].iResID == iRes)
-        return iCount;
-    else
-        if(gpRdOutTable[iCount].iResID == 0)
-            break;
-    }
+	for(iCount=0; iCount < giRdOutGlobAllocated; iCount++)
+	{
+		if(gpRdOutTable[iCount].iResID == iRes)
+			return iCount;
+		else
+			if(gpRdOutTable[iCount].iResID == 0)
+				break;
+	}
 
-// Check if we need to allocate more memory
-// to put the next MIDI map in the Global Table
-//---------------------------------------------
-if(iCount == giRdOutGlobAllocated)
-    {
-    iOldAllocated = giRdOutGlobAllocated;
-    giRdOutGlobAllocated += 16;
-    lpGlob = (LPRDOUTGLOBRES)GlobalAlloc(GPTR, giRdOutGlobAllocated*sizeof(RDOUTGLOBRES));
-    if(lpGlob == NULL)
-        return -(IDS_ERR_ALLOCATE_MEMORY);
+	// Check if we need to allocate more memory
+	// to put the next MIDI map in the Global Table
+	//---------------------------------------------
+	if(iCount == giRdOutGlobAllocated)
+	{
+		iOldAllocated = giRdOutGlobAllocated;
+		giRdOutGlobAllocated += 16;
+		lpGlob = (LPRDOUTGLOBRES)GlobalAlloc(GPTR, giRdOutGlobAllocated*sizeof(RDOUTGLOBRES));
+		if(lpGlob == NULL)
+			return -(IDS_ERR_ALLOCATE_MEMORY);
 
-    CopyMemory((LPSTR)lpGlob, (LPSTR)gpRdOutTable, iOldAllocated*sizeof(RDOUTGLOBRES));
+		CopyMemory((LPSTR)lpGlob, (LPSTR)gpRdOutTable, iOldAllocated*sizeof(RDOUTGLOBRES));
 
-    GlobalFree(gpRdOutTable);
-    gpRdOutTable = lpGlob;
-    }
+		GlobalFree(gpRdOutTable);
+		gpRdOutTable = lpGlob;
+	}
 
-// Load the ReadOut Resource
-//--------------------------
-hRes = FindResource(hinst, MAKEINTRESOURCE(iRes), MAKEINTRESOURCE(RT_RDOUTTABLE) );
-if(hRes == NULL)
-    return -(IDS_ERR_LOCATING_RESOURCE);
+	// Load the ReadOut Resource
+	//--------------------------
+	hRes = FindResource(hinst, MAKEINTRESOURCE(iRes), MAKEINTRESOURCE(RT_RDOUTTABLE) );
+	if(hRes == NULL)
+		return -(IDS_ERR_LOCATING_RESOURCE);
 
-gpRdOutTable[iCount].hgRdOut = LoadResource(hinst, hRes);
-gpRdOutTable[iCount].lpRdOut = (LPRDOUTTABLE)LockResource(gpRdOutTable[iCount].hgRdOut);
-// now  set the string pointer to the begining of the Strings
-//-----------------------------------------------------------
-lpStr = (LPSTR)gpRdOutTable[iCount].lpRdOut;
-gpRdOutTable[iCount].lpStr =  lpStr + sizeof(RDOUTTABLE);
-gpRdOutTable[iCount].iResID = iRes;
+	gpRdOutTable[iCount].hgRdOut = LoadResource(hinst, hRes);
+	gpRdOutTable[iCount].lpRdOut = (LPRDOUTTABLE)LockResource(gpRdOutTable[iCount].hgRdOut);
+	// now  set the string pointer to the begining of the Strings
+	//-----------------------------------------------------------
+	lpStr = (LPSTR)gpRdOutTable[iCount].lpRdOut;
+	gpRdOutTable[iCount].lpStr =  lpStr + sizeof(RDOUTTABLE);
+	gpRdOutTable[iCount].iResID = iRes;
 
-return iCount;
+	return iCount;
 }
 
 //==============================================================
@@ -269,17 +269,17 @@ return iCount;
 //==============================================================
 void    PASCAL  DeleteRdOutResGlobalIndx(int iIndx)
 {
-if(gpRdOutTable == NULL)
-    return;
-if(iIndx >= giRdOutGlobAllocated)
-    return; // wrong index
-if(gpRdOutTable[iIndx].iResID)
-    {
-    UnlockResource(gpRdOutTable[iIndx].hgRdOut);
-    FreeResource(gpRdOutTable[iIndx].hgRdOut);
-    gpRdOutTable[iIndx].iResID = 0;
-    }
-return;
+	if(gpRdOutTable == NULL)
+		return;
+	if(iIndx >= giRdOutGlobAllocated)
+		return; // wrong index
+	if(gpRdOutTable[iIndx].iResID)
+	{
+		UnlockResource(gpRdOutTable[iIndx].hgRdOut);
+		FreeResource(gpRdOutTable[iIndx].hgRdOut);
+		gpRdOutTable[iIndx].iResID = 0;
+	}
+	return;
 }
 
 //==============================================================
@@ -292,22 +292,22 @@ return;
 //==============================================================
 void    PASCAL  DeleteRdOutResGlobalResID(int iResID)
 {
-int     iCount;
+	int     iCount;
 
-if(gpRdOutTable == NULL)
-    return;
+	if(gpRdOutTable == NULL)
+		return;
 
-for(iCount=0; iCount < giRdOutGlobAllocated; iCount++)
-    {
-    if(gpRdOutTable[iCount].iResID == iResID)
-        {
-        UnlockResource(gpRdOutTable[iCount].hgRdOut);
-        FreeResource(gpRdOutTable[iCount].hgRdOut);
-        gpRdOutTable[iCount].iResID = 0;
-        return;
-        }
-    }
-return;
+	for(iCount=0; iCount < giRdOutGlobAllocated; iCount++)
+	{
+		if(gpRdOutTable[iCount].iResID == iResID)
+		{
+			UnlockResource(gpRdOutTable[iCount].hgRdOut);
+			FreeResource(gpRdOutTable[iCount].hgRdOut);
+			gpRdOutTable[iCount].iResID = 0;
+			return;
+		}
+	}
+	return;
 }
 
 //===============================
@@ -318,12 +318,12 @@ return;
 int     PASCAL InitRdOutResGlobal(void)
 {
 
-giRdOutGlobAllocated = 32;
-gpRdOutTable = (LPRDOUTGLOBRES)GlobalAlloc(GPTR, giRdOutGlobAllocated*sizeof(RDOUTGLOBRES));
-if(gpRdOutTable == NULL)
-    return IDS_ERR_ALLOCATE_MEMORY;
+	giRdOutGlobAllocated = 32;
+	gpRdOutTable = (LPRDOUTGLOBRES)GlobalAlloc(GPTR, giRdOutGlobAllocated*sizeof(RDOUTGLOBRES));
+	if(gpRdOutTable == NULL)
+		return IDS_ERR_ALLOCATE_MEMORY;
 
-return 0;
+	return 0;
 }
 
 //====================================
@@ -332,18 +332,18 @@ return 0;
 //====================================
 void    PASCAL  FreeRdOutResGlobal(void)
 {
-int         iCount;
+	int         iCount;
 
-if(gpRdOutTable == NULL)
-    return;
+	if(gpRdOutTable == NULL)
+		return;
 
-for(iCount=0; iCount < giRdOutGlobAllocated; iCount++)
-    DeleteRdOutResGlobalIndx(iCount);
+	for(iCount=0; iCount < giRdOutGlobAllocated; iCount++)
+		DeleteRdOutResGlobalIndx(iCount);
 
-GlobalFree(gpRdOutTable);
-gpRdOutTable = NULL;
+	GlobalFree(gpRdOutTable);
+	gpRdOutTable = NULL;
 
-return;
+	return;
 }
 
 // Misc resource functions
@@ -375,48 +375,48 @@ return;
 //==============================================================
 int       AddBmpResGlobal(HINSTANCE hinst, int iRes, HDC hdc)
 {
-int             iCount;
-int             iOldAllocated;
-LPBMPGLOBRES    lpGlob;
-BITMAP          bmpInfo;
-HBITMAP         hBmp;
+	int             iCount;
+	int             iOldAllocated;
+	LPBMPGLOBRES    lpGlob;
+	BITMAP          bmpInfo;
+	HBITMAP         hBmp;
 
-for(iCount=0; iCount < giBmpGlobAllocated; iCount++)
-    {
-    if(gpBMPTable[iCount].iResID == iRes)
-        return iCount;
-    else
-        if(gpBMPTable[iCount].hbmp == NULL)
-            break;
-    }
+	for(iCount=0; iCount < giBmpGlobAllocated; iCount++)
+	{
+		if(gpBMPTable[iCount].iResID == iRes)
+			return iCount;
+		else
+			if(gpBMPTable[iCount].hbmp == NULL)
+				break;
+	}
 
-// Check if we need to allocate more memory
-// to put the next Bitmap in the Global Table
-//-------------------------------------------
-if(iCount == giBmpGlobAllocated)
-    {
-    iOldAllocated = giBmpGlobAllocated;
-    giBmpGlobAllocated += 32;
-    lpGlob = GlobalAlloc(GPTR, giBmpGlobAllocated*sizeof(BMPGLOBRES));
-    if(lpGlob == NULL)
-        return -(IDS_ERR_ALLOCATE_MEMORY);
+	// Check if we need to allocate more memory
+	// to put the next Bitmap in the Global Table
+	//-------------------------------------------
+	if(iCount == giBmpGlobAllocated)
+	{
+		iOldAllocated = giBmpGlobAllocated;
+		giBmpGlobAllocated += 32;
+		lpGlob = GlobalAlloc(GPTR, giBmpGlobAllocated*sizeof(BMPGLOBRES));
+		if(lpGlob == NULL)
+			return -(IDS_ERR_ALLOCATE_MEMORY);
 
-    CopyMemory((LPSTR)lpGlob,(LPSTR) gpBMPTable, iOldAllocated*sizeof(BMPGLOBRES));
-    GlobalFree(gpBMPTable);
-    gpBMPTable = lpGlob;
-    }
+		CopyMemory((LPSTR)lpGlob,(LPSTR) gpBMPTable, iOldAllocated*sizeof(BMPGLOBRES));
+		GlobalFree(gpBMPTable);
+		gpBMPTable = lpGlob;
+	}
 
-hBmp = Load256Bitmap(hinst, hdc, (LPSTR)MAKEINTRESOURCE(iRes));
-if(hBmp == NULL)
-    return - (IDS_ERR_LOAD_BITMAP);
+	hBmp = Load256Bitmap(hinst, hdc, (LPSTR)MAKEINTRESOURCE(iRes));
+	if(hBmp == NULL)
+		return - (IDS_ERR_LOAD_BITMAP);
 
-GetObject(hBmp, sizeof(BITMAP), &bmpInfo);
-gpBMPTable[iCount].iWidth = bmpInfo.bmWidth;
-gpBMPTable[iCount].iHeight = bmpInfo.bmHeight;
-gpBMPTable[iCount].hbmp = hBmp;
-gpBMPTable[iCount].iResID = iRes;
+	GetObject(hBmp, sizeof(BITMAP), &bmpInfo);
+	gpBMPTable[iCount].iWidth = bmpInfo.bmWidth;
+	gpBMPTable[iCount].iHeight = bmpInfo.bmHeight;
+	gpBMPTable[iCount].hbmp = hBmp;
+	gpBMPTable[iCount].iResID = iRes;
 
-return iCount;
+	return iCount;
 }
 
 //==============================================================
@@ -429,19 +429,19 @@ return iCount;
 //==============================================================
 void      DeleteBmpResGlobalIndx(int iIndx)
 {
-if(gpBMPTable == NULL)
-    return;
-if(iIndx >= giBmpGlobAllocated)
-    return; // wrong index
-if(gpBMPTable[iIndx].hbmp)
-    {
-    DeleteObject(gpBMPTable[iIndx].hbmp);
-    gpBMPTable[iIndx].hbmp = NULL;
-    gpBMPTable[iIndx].iWidth = 0;
-    gpBMPTable[iIndx].iHeight = 0;
-    gpBMPTable[iIndx].iResID = 0;
-    }
-return;
+	if(gpBMPTable == NULL)
+		return;
+	if(iIndx >= giBmpGlobAllocated)
+		return; // wrong index
+	if(gpBMPTable[iIndx].hbmp)
+	{
+		DeleteObject(gpBMPTable[iIndx].hbmp);
+		gpBMPTable[iIndx].hbmp = NULL;
+		gpBMPTable[iIndx].iWidth = 0;
+		gpBMPTable[iIndx].iHeight = 0;
+		gpBMPTable[iIndx].iResID = 0;
+	}
+	return;
 }
 
 //==============================================================
@@ -454,24 +454,24 @@ return;
 //==============================================================
 void    DeleteBmpResGlobalResID(int iResID)
 {
-int     iCount;
+	int     iCount;
 
-if(gpBMPTable == NULL)
-    return;
+	if(gpBMPTable == NULL)
+		return;
 
-for(iCount=0; iCount < giBmpGlobAllocated; iCount++)
-    {
-    if(gpBMPTable[iCount].iResID == iResID)
-        {
-        DeleteObject(gpBMPTable[iCount].hbmp);
-        gpBMPTable[iCount].hbmp = NULL;
-        gpBMPTable[iCount].iWidth = 0;
-        gpBMPTable[iCount].iHeight = 0;
-        gpBMPTable[iCount].iResID = 0;
-        return;
-        }
-    }
-return;
+	for(iCount=0; iCount < giBmpGlobAllocated; iCount++)
+	{
+		if(gpBMPTable[iCount].iResID == iResID)
+		{
+			DeleteObject(gpBMPTable[iCount].hbmp);
+			gpBMPTable[iCount].hbmp = NULL;
+			gpBMPTable[iCount].iWidth = 0;
+			gpBMPTable[iCount].iHeight = 0;
+			gpBMPTable[iCount].iResID = 0;
+			return;
+		}
+	}
+	return;
 }
 
 //===============================
@@ -483,12 +483,12 @@ int     InitBMPResGlobal(void)
 {
 
 
-giBmpGlobAllocated = 32;
-gpBMPTable = (LPBMPGLOBRES)GlobalAlloc(GPTR, giBmpGlobAllocated*sizeof(BMPGLOBRES));
-if(gpBMPTable == NULL)
-    return IDS_ERR_ALLOCATE_MEMORY;
+	giBmpGlobAllocated = 32;
+	gpBMPTable = (LPBMPGLOBRES)GlobalAlloc(GPTR, giBmpGlobAllocated*sizeof(BMPGLOBRES));
+	if(gpBMPTable == NULL)
+		return IDS_ERR_ALLOCATE_MEMORY;
 
-return 0;
+	return 0;
 }
 
 //====================================
@@ -497,15 +497,15 @@ return 0;
 //====================================
 void    FreeBMPResGlobal(void)
 {
-int         iCount;
+	int         iCount;
 
-if(gpBMPTable == NULL)
-    return;
+	if(gpBMPTable == NULL)
+		return;
 
-for(iCount=0; iCount < giBmpGlobAllocated;iCount++)
-    DeleteBmpResGlobalIndx(iCount);
+	for(iCount=0; iCount < giBmpGlobAllocated;iCount++)
+		DeleteBmpResGlobalIndx(iCount);
 
-GlobalFree(gpBMPTable);
+	GlobalFree(gpBMPTable);
 
-return;
+	return;
 }

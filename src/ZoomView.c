@@ -34,8 +34,8 @@ void	HandleRemoteSequenceControl(WORD wControl);
 //====================================
 int       RegisterZoomViewClass(void)
 {
-int         iReturn;
-WNDCLASS    wc;
+	int         iReturn;
+	WNDCLASS    wc;
 
 
 	// Register Zoom View Class
@@ -56,7 +56,7 @@ WNDCLASS    wc;
 	iReturn = RegisterClass(&wc);
 
 	if(iReturn == 0)
-		 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+		return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
 	return 0;
 }
@@ -72,51 +72,51 @@ WNDCLASS    wc;
 //
 HWND       CreateZoomViewWindow(HWND hWnd, LPSTR szTitle, LPMIXERWNDDATA  pMWD, int iType)
 {
-  RECT                rect;
-  LPMIXERWNDDATA      lpmwd;
+	RECT                rect;
+	LPMIXERWNDDATA      lpmwd;
 	DWORD								style;
- 	char szTempBuff[20];
-  
+	char szTempBuff[20];
+
 	if (gInitialized == FALSE)
 		return NULL;
 
-  if(pMWD == NULL)	// We are creating a NEW ZOOM VIEW WINDOW
-  {
-    lpmwd = MixerWindowDataAlloc(gwActiveMixer,
-                                 gpZoneMaps_Zoom,
-                                 MAX_CHANNELS,
-                                 iType);
+	if(pMWD == NULL)	// We are creating a NEW ZOOM VIEW WINDOW
+	{
+		lpmwd = MixerWindowDataAlloc(gwActiveMixer,
+			gpZoneMaps_Zoom,
+			MAX_CHANNELS,
+			iType);
 
-    if(lpmwd == NULL)
-    {
-      ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
-      return NULL;
-    }
-    // store the Window title
-    //
-    lstrcpy(lpmwd->szTitle, szTitle);
-    // make some room for the label Window
-    // after all we want this window to appear
-    // in it's full size
-    //
-    lpmwd->rWndPos.bottom -= HEIGHT_FULL_LABEL_WND;
-  }
-  else	// We are READING a mix file
-  {
-    lpmwd = pMWD;
-    lpmwd->rWndPos.bottom -= HEIGHT_FULL_LABEL_WND;
+		if(lpmwd == NULL)
+		{
+			ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
+			return NULL;
+		}
+		// store the Window title
+		//
+		lstrcpy(lpmwd->szTitle, szTitle);
+		// make some room for the label Window
+		// after all we want this window to appear
+		// in it's full size
+		//
+		lpmwd->rWndPos.bottom -= HEIGHT_FULL_LABEL_WND;
+	}
+	else	// We are READING a mix file
+	{
+		lpmwd = pMWD;
+		lpmwd->rWndPos.bottom -= HEIGHT_FULL_LABEL_WND;
 #ifdef SCROLLBARS
-// FDS		lpmwd->rWndPos.right += GetSystemMetrics(SM_CYVTHUMB);	// allow space for scroll bar
+		// FDS		lpmwd->rWndPos.right += GetSystemMetrics(SM_CYVTHUMB);	// allow space for scroll bar
 #endif
-  }
+	}
 
 	lpmwd->lpZoneMapZoom = gpZoneMaps_Full;
 
-  // this makes it possible if the window
-  // is streched all the way to fit the entire image
-  //
-  lpmwd->rMaxWndPos.bottom += HEIGHT_FULL_LABEL_WND;
-  lpmwd->rWndPos.bottom += HEIGHT_FULL_LABEL_WND;
+	// this makes it possible if the window
+	// is streched all the way to fit the entire image
+	//
+	lpmwd->rMaxWndPos.bottom += HEIGHT_FULL_LABEL_WND;
+	lpmwd->rWndPos.bottom += HEIGHT_FULL_LABEL_WND;
 
 
 	// Set the style for the Zoom Window View
@@ -124,52 +124,52 @@ HWND       CreateZoomViewWindow(HWND hWnd, LPSTR szTitle, LPMIXERWNDDATA  pMWD, 
 	// WS_VSCROLL - add vertical scroll bar to ZOOM window
 
 	style = MDIS_ALLCHILDSTYLES | WS_CHILD | WS_SYSMENU | WS_CAPTION | WS_VISIBLE
-															| WS_MINIMIZEBOX  | WS_THICKFRAME // | WS_MAXIMIZEBOX
-															| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+		| WS_MINIMIZEBOX  | WS_THICKFRAME // | WS_MAXIMIZEBOX
+		| WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
 
 #ifdef SCROLLBARS
 	style = style | WS_VSCROLL;
 	// ADJUST for Vertical Scroll Bars
-//	lpmwd->rWndPos.right = lpmwd->rWndPos.right + GetSystemMetrics(SM_CYVTHUMB) ;
+	//	lpmwd->rWndPos.right = lpmwd->rWndPos.right + GetSystemMetrics(SM_CYVTHUMB) ;
 #endif
 
-  if(pMWD == NULL)
-    hWnd = CreateMDIWindow (
-                            gszZoomViewClass,
-                            szTitle,
-	                          style,
-                            1,//CW_USEDEFAULT,
-                            1,//CW_USEDEFAULT,
-                            lpmwd->rWndPos.right,
-                            lpmwd->rWndPos.bottom,
-                            ghwndMDIClient,
-                            ghInstMain,
-                            (LPARAM)lpmwd
-                            );
-  else		// use the window positions stored in mix file
-    hWnd = CreateMDIWindow (
-                            gszZoomViewClass,
-                            szTitle,
-                            style,
-                            lpmwd->rWndPos.left,
-                            lpmwd->rWndPos.top,
-                            lpmwd->rWndPos.right,
-                            lpmwd->rWndPos.bottom,
-                            ghwndMDIClient,
-                            ghInstMain,
-                            (LPARAM)lpmwd
-                            );
-  
-	
+	if(pMWD == NULL)
+		hWnd = CreateMDIWindow (
+		gszZoomViewClass,
+		szTitle,
+		style,
+		1,//CW_USEDEFAULT,
+		1,//CW_USEDEFAULT,
+		lpmwd->rWndPos.right,
+		lpmwd->rWndPos.bottom,
+		ghwndMDIClient,
+		ghInstMain,
+		(LPARAM)lpmwd
+		);
+	else		// use the window positions stored in mix file
+		hWnd = CreateMDIWindow (
+		gszZoomViewClass,
+		szTitle,
+		style,
+		lpmwd->rWndPos.left,
+		lpmwd->rWndPos.top,
+		lpmwd->rWndPos.right,
+		lpmwd->rWndPos.bottom,
+		ghwndMDIClient,
+		ghInstMain,
+		(LPARAM)lpmwd
+		);
+
+
 	// Check if we create the window
 
-  if(hWnd == NULL)
-   {
-    MixerWindowDataFree(lpmwd);
-    ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
-    return NULL;//IDS_ERR_CREATE_WINDOW;
-   }
+	if(hWnd == NULL)
+	{
+		MixerWindowDataFree(lpmwd);
+		ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
+		return NULL;//IDS_ERR_CREATE_WINDOW;
+	}
 	else
 	{
 		giZoomWndCnt++;		// increment our zoom window count
@@ -177,59 +177,59 @@ HWND       CreateZoomViewWindow(HWND hWnd, LPSTR szTitle, LPMIXERWNDDATA  pMWD, 
 		ShowTBZoomWinCnt(szTempBuff);
 	}
 
-  //if(pMWD == NULL)
-  //    {
-    // adjust the Image Window Size to fit
-    // perfectly inside of the Client Window
-    //--------------------------------------
-    lpmwd->rVisible.left = 0;
-    lpmwd->rVisible.top = HEIGHT_FULL_LABEL_WND;
-    lpmwd->rVisible.bottom -= HEIGHT_FULL_LABEL_WND;
+	//if(pMWD == NULL)
+	//    {
+	// adjust the Image Window Size to fit
+	// perfectly inside of the Client Window
+	//--------------------------------------
+	lpmwd->rVisible.left = 0;
+	lpmwd->rVisible.top = HEIGHT_FULL_LABEL_WND;
+	lpmwd->rVisible.bottom -= HEIGHT_FULL_LABEL_WND;
 
-    ImageWindowSize(hWnd, &lpmwd->rVisible, lpmwd);
-  //    }
-
-
-  // Ok we have a window opened
-  //
-  SetWindowLong(hWnd, 0, (LPARAM)lpmwd);
+	ImageWindowSize(hWnd, &lpmwd->rVisible, lpmwd);
+	//    }
 
 
-  // Create the Label-Group display Window
-  //
-  rect.left = rect.top = 0;
-  rect.right = lpmwd->rMaxSize.right;
-  rect.bottom = HEIGHT_FULL_LABEL_WND;
-  lpmwd->wWndType = WND_GROUPLBL_ZOOM;//WND_GROUPLBL_FULL;
-
-  if(CreateLblGroupWnd(&rect, hWnd, lpmwd) == NULL)
-  {
-    ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
-    PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
-    return NULL;//IDS_ERR_CREATE_WINDOW;
-  }
+	// Ok we have a window opened
+	//
+	SetWindowLong(hWnd, 0, (LPARAM)lpmwd);
 
 
-  // now create the Image window
-  // and continue
-  // and if something goes wrong
-  // destroy the Window
-  //
-  if(CreateFullViewImageWindow(hWnd, (LPARAM)lpmwd))
-    PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
+	// Create the Label-Group display Window
+	//
+	rect.left = rect.top = 0;
+	rect.right = lpmwd->rMaxSize.right;
+	rect.bottom = HEIGHT_FULL_LABEL_WND;
+	lpmwd->wWndType = WND_GROUPLBL_ZOOM;//WND_GROUPLBL_FULL;
 
-  SetFocus(hWnd);
+	if(CreateLblGroupWnd(&rect, hWnd, lpmwd) == NULL)
+	{
+		ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
+		PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
+		return NULL;//IDS_ERR_CREATE_WINDOW;
+	}
+
+
+	// now create the Image window
+	// and continue
+	// and if something goes wrong
+	// destroy the Window
+	//
+	if(CreateFullViewImageWindow(hWnd, (LPARAM)lpmwd))
+		PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
+
+	SetFocus(hWnd);
 	//SendMessage (ghwndMDIClient, WM_MDIACTIVATE, (WPARAM)hWnd, 0L);
 
 #ifdef SCROLLBARS
-		// Setup the Scroll bars
-		SetScrollRange(hWnd, SB_VERT, 0, 3950, FALSE);							// 3950, 3378
-		SetScrollPos(hWnd, SB_VERT, 1975, TRUE); 
-//		SetScrollPos(hWnd, SB_VERT, lpmwd->iYOffset, TRUE); 
+	// Setup the Scroll bars
+	SetScrollRange(hWnd, SB_VERT, 0, 3950, FALSE);							// 3950, 3378
+	SetScrollPos(hWnd, SB_VERT, 1975, TRUE); 
+	//		SetScrollPos(hWnd, SB_VERT, lpmwd->iYOffset, TRUE); 
 
 #endif
 
-  return hWnd;
+	return hWnd;
 };
 
 
@@ -246,72 +246,72 @@ HWND       CreateZoomViewWindow(HWND hWnd, LPSTR szTitle, LPMIXERWNDDATA  pMWD, 
 //
 HWND       OpenZoomViewWindow(LPMIXERWNDDATA lpmwd, LPSTR szTitle)
 {
-  HWND                hWnd;
-  RECT                rect;
+	HWND                hWnd;
+	RECT                rect;
 
 
-  hWnd = CreateMDIWindow (
-                          gszZoomViewClass,
-                          szTitle,
-                          WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-                          CW_USEDEFAULT,
-                          1,//CW_USEDEFAULT,
-                          lpmwd->rWndPos.right,
-                          lpmwd->rWndPos.bottom,
-                          ghwndMDIClient,
-                          ghInstMain,
-                          (LPARAM)lpmwd
-                          );
-  if(hWnd == NULL)
+	hWnd = CreateMDIWindow (
+		gszZoomViewClass,
+		szTitle,
+		WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+		CW_USEDEFAULT,
+		1,//CW_USEDEFAULT,
+		lpmwd->rWndPos.right,
+		lpmwd->rWndPos.bottom,
+		ghwndMDIClient,
+		ghInstMain,
+		(LPARAM)lpmwd
+		);
+	if(hWnd == NULL)
 	{
 		MixerWindowDataFree(lpmwd);
 		ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
 		return NULL;
 	}
 
-  // adjust the Image Window Size to fit
-  // perfectly inside of the Client Window
-  //--------------------------------------
-  lpmwd->rVisible.left = 0;
-  lpmwd->rVisible.top = HEIGHT_FULL_LABEL_WND;
-  lpmwd->rVisible.bottom -= HEIGHT_FULL_LABEL_WND;
+	// adjust the Image Window Size to fit
+	// perfectly inside of the Client Window
+	//--------------------------------------
+	lpmwd->rVisible.left = 0;
+	lpmwd->rVisible.top = HEIGHT_FULL_LABEL_WND;
+	lpmwd->rVisible.bottom -= HEIGHT_FULL_LABEL_WND;
 
-  ImageWindowSize(hWnd, &lpmwd->rVisible, lpmwd);
-
-
-
-  // Ok we have a window opened
-  //---------------------------
-  SetWindowLong(hWnd, 0, (LPARAM)lpmwd);
+	ImageWindowSize(hWnd, &lpmwd->rVisible, lpmwd);
 
 
-  // Create the Label-Group display Window
-  //--------------------------------------
-  rect.left = rect.top = 0;
-  rect.right = lpmwd->rMaxSize.right;
-  rect.bottom = HEIGHT_FULL_LABEL_WND;
-  lpmwd->wWndType = WND_GROUPLBL_ZOOM;//WND_GROUPLBL_FULL;
 
-  if(CreateLblGroupWnd(&rect, hWnd, lpmwd) == NULL)
+	// Ok we have a window opened
+	//---------------------------
+	SetWindowLong(hWnd, 0, (LPARAM)lpmwd);
+
+
+	// Create the Label-Group display Window
+	//--------------------------------------
+	rect.left = rect.top = 0;
+	rect.right = lpmwd->rMaxSize.right;
+	rect.bottom = HEIGHT_FULL_LABEL_WND;
+	lpmwd->wWndType = WND_GROUPLBL_ZOOM;//WND_GROUPLBL_FULL;
+
+	if(CreateLblGroupWnd(&rect, hWnd, lpmwd) == NULL)
 	{
 		ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
 		PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
 		return NULL;
-  }
+	}
 
-  //----------------------------
-  // now create the Image window
-  // and continue
-  // and if something goes wrong
-  // destroy the Window
-  //----------------------------
+	//----------------------------
+	// now create the Image window
+	// and continue
+	// and if something goes wrong
+	// destroy the Window
+	//----------------------------
 
-  if(CreateFullViewImageWindow(hWnd, (LPARAM)lpmwd))
-      PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
+	if(CreateFullViewImageWindow(hWnd, (LPARAM)lpmwd))
+		PostMessage(ghwndMDIClient, WM_MDIDESTROY, (WPARAM)hWnd, 0L);
 
-  SetFocus(hWnd);
+	SetFocus(hWnd);
 
-  return hWnd;
+	return hWnd;
 };
 
 #endif
@@ -329,17 +329,17 @@ HWND       OpenZoomViewWindow(LPMIXERWNDDATA lpmwd, LPSTR szTitle)
 #define	LINEUPDOWN_OFFSET	25		// Number of pixels to lineup/down
 
 LRESULT CALLBACK  ZoomViewProc(HWND hWnd, UINT wMessage, 
-                               WPARAM wParam, LPARAM lParam)
+							   WPARAM wParam, LPARAM lParam)
 {
-MINMAXINFO FAR      *lpMMI;
-LPMIXERWNDDATA      lpmwd;
-RECT                rect;
-char								szTempBuff[20];
-int nVscrollInc;	// Dummy variable
-//int iPos;
-  char            szBuff[128];
+	MINMAXINFO FAR      *lpMMI;
+	LPMIXERWNDDATA      lpmwd;
+	RECT                rect;
+	char								szTempBuff[20];
+	int nVscrollInc;	// Dummy variable
+	//int iPos;
+	char            szBuff[128];
 
-static cyClient, cxClient, nVscrollMax, nVscrollPos;
+	static cyClient, cxClient, nVscrollMax, nVscrollPos;
 
 	lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
@@ -350,140 +350,140 @@ static cyClient, cxClient, nVscrollMax, nVscrollPos;
 
 		case WM_VSCROLL: 
 
-      GetWindowRect(hWnd, &rect);
-//      iPos = GetScrollPos (hWnd, SB_VERT); 
+			GetWindowRect(hWnd, &rect);
+			//      iPos = GetScrollPos (hWnd, SB_VERT); 
 
 			/* Determine how much to scroll vertically. 
 			*/ 
 			switch (LOWORD(wParam)) 
 			{ 
-				case SB_TOP: 
+			case SB_TOP: 
 				nVscrollInc = -nVscrollPos; 
 				break; 
 
-				case SB_BOTTOM: 
+			case SB_BOTTOM: 
 				nVscrollInc = nVscrollMax - nVscrollPos; 
 				break; 
 
-				case SB_LINEUP: 
-					nVscrollInc = -LINEUPDOWN_OFFSET;
+			case SB_LINEUP: 
+				nVscrollInc = -LINEUPDOWN_OFFSET;
 
-					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
-					{
-//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-//							lpmwd->pntMouseCur.y -= LINEUPDOWN_OFFSET;	// Change the current mouse position
-//						if (lpmwd->pntMouseCur.y < 0)
-//							lpmwd->pntMouseCur.y = 0;
-					
-						ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
-//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
-					}
+				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+				{
+					//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+					//							lpmwd->pntMouseCur.y -= LINEUPDOWN_OFFSET;	// Change the current mouse position
+					//						if (lpmwd->pntMouseCur.y < 0)
+					//							lpmwd->pntMouseCur.y = 0;
+
+					ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
+					//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+				}
 				break; 
 
-				case SB_LINEDOWN: 
+			case SB_LINEDOWN: 
 
-					nVscrollInc = LINEUPDOWN_OFFSET;
+				nVscrollInc = LINEUPDOWN_OFFSET;
 
-					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
-					{
-//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-//						lpmwd->pntMouseCur.y += LINEUPDOWN_OFFSET;	// this is the number of pixels we move down
-//						if (lpmwd->pntMouseCur.y > 3950)
-//							lpmwd->pntMouseCur.y = 3950;		// set to the TOP
-						
-						ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
-//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
-					}
+				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+				{
+					//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+					//						lpmwd->pntMouseCur.y += LINEUPDOWN_OFFSET;	// this is the number of pixels we move down
+					//						if (lpmwd->pntMouseCur.y > 3950)
+					//							lpmwd->pntMouseCur.y = 3950;		// set to the TOP
+
+					ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
+					//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+				}
 				break; 
 
-				case SB_PAGEUP:
+			case SB_PAGEUP:
 
-					nVscrollInc = min(-1,-cyClient);	// Page up the window size
+				nVscrollInc = min(-1,-cyClient);	// Page up the window size
 
-					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
-					{
-//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-//						lpmwd->pntMouseCur.y += nVscrollInc; //PAGEUPDOWN_OFFSET;	// Change the current mouse position
+				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+				{
+					//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+					//						lpmwd->pntMouseCur.y += nVscrollInc; //PAGEUPDOWN_OFFSET;	// Change the current mouse position
 
-						ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
-//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
-					}
+					ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
+					//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+				}
 				break; 
 
-				case SB_PAGEDOWN: 
+			case SB_PAGEDOWN: 
 
-					nVscrollInc = max(1, cyClient);	// Page down the window size
+				nVscrollInc = max(1, cyClient);	// Page down the window size
 
-					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
-					{
-//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
-//						lpmwd->pntMouseCur.y += nVscrollInc;		// PAGEUPDOWN_OFFSET;	// this is the number of pixels we move down
-						
-						ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
-//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
-					}
+				if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+				{
+					//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+					//						lpmwd->pntMouseCur.y += nVscrollInc;		// PAGEUPDOWN_OFFSET;	// this is the number of pixels we move down
+
+					ScrollImgWindow(lpmwd->hwndImg, lpmwd, nVscrollInc);		// Scroll to window to the new position
+					//						lpmwd->pntMouseLast = lpmwd->pntMouseCur;	// restore original mouse coordinates
+				}
 				break; 
 
-				case SB_THUMBTRACK: 
+			case SB_THUMBTRACK: 
 				nVscrollInc = 7; 
 				break; 
 
-				default: 
-					g_iYSpeed = 0;
-					nVscrollInc = 0; 
+			default: 
+				g_iYSpeed = 0;
+				nVscrollInc = 0; 
 			} 
 
-//				if ( nVscrollInc = max(-nVscrollPos,min(nVscrollInc, nVscrollMax - nVscrollInc)) ) 
-				if ( nVscrollInc !=0 ) 
-        {
-					nVscrollPos += nVscrollInc;
+			//				if ( nVscrollInc = max(-nVscrollPos,min(nVscrollInc, nVscrollMax - nVscrollInc)) ) 
+			if ( nVscrollInc !=0 ) 
+			{
+				nVscrollPos += nVscrollInc;
 
-					if(nVscrollPos > nVscrollMax)
-						nVscrollPos = nVscrollMax;
-					if(nVscrollPos < 0)
-						nVscrollPos = 0;
+				if(nVscrollPos > nVscrollMax)
+					nVscrollPos = nVscrollMax;
+				if(nVscrollPos < 0)
+					nVscrollPos = 0;
 
-//					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
-//						SetScrollPos(hWnd,SB_VERT,lpmwd->iYOffset,TRUE);
-//					else
-//						SetScrollPos(hWnd,SB_VERT,nVscrollPos,TRUE);
-				}
+				//					if (lpmwd && lpmwd->iCurMode == MW_NOTHING_MODE)
+				//						SetScrollPos(hWnd,SB_VERT,lpmwd->iYOffset,TRUE);
+				//					else
+				//						SetScrollPos(hWnd,SB_VERT,nVscrollPos,TRUE);
+			}
 
 			break;
 #endif
 
-    //////////////////////////////////////////////////////////////
-    case WM_ERASEBKGND: // to reduce flashing on the screen
-        break;
+			//////////////////////////////////////////////////////////////
+		case WM_ERASEBKGND: // to reduce flashing on the screen
+			break;
 
-    //////////////////////////////////////////////////////////////
-    case WM_COMMAND:
-	    switch (LOWORD(wParam))
-		    {
-            default:
-                return DefMDIChildProc(hWnd, wMessage, wParam, lParam);
+			//////////////////////////////////////////////////////////////
+		case WM_COMMAND:
+			switch (LOWORD(wParam))
+			{
+			default:
+				return DefMDIChildProc(hWnd, wMessage, wParam, lParam);
 			}
-        break;
+			break;
 
-    //////////////////////////////////////////////////////////////
-		// lpmwd-wKeyFlags is sent to the ScrollSideWays() routine and
-		// it checks to see if it is set and scrolls only one module
-		// at a time if it is.
+			//////////////////////////////////////////////////////////////
+			// lpmwd-wKeyFlags is sent to the ScrollSideWays() routine and
+			// it checks to see if it is set and scrolls only one module
+			// at a time if it is.
 
-    case WM_KEYUP:
-      switch(wParam)
-      {
-      case VK_LEFT:
-        ScrollSideWays(hWnd, lpmwd, LEFT);  // Scrolling left
-        break;
-      case VK_RIGHT:
-        ScrollSideWays(hWnd, lpmwd, RIGHT);   // Scrollnig right
-        break;
+		case WM_KEYUP:
+			switch(wParam)
+			{
+			case VK_LEFT:
+				ScrollSideWays(hWnd, lpmwd, LEFT);  // Scrolling left
+				break;
+			case VK_RIGHT:
+				ScrollSideWays(hWnd, lpmwd, RIGHT);   // Scrollnig right
+				break;
 			case VK_UP:
-        ScrollSideWays(hWnd, lpmwd, FIRST_INPUT);   // Scrollnig right
+				ScrollSideWays(hWnd, lpmwd, FIRST_INPUT);   // Scrollnig right
 				break;
 			case VK_DOWN:
-        ScrollSideWays(hWnd, lpmwd, FIRST_AUX);   // Scrollnig right
+				ScrollSideWays(hWnd, lpmwd, FIRST_AUX);   // Scrollnig right
 				break;
 			case VK_SHIFT:
 				lpmwd->wKeyFlags &= ~VK_SHIFT;
@@ -494,9 +494,9 @@ static cyClient, cxClient, nVscrollMax, nVscrollPos;
 				else
 					HandleRemoteSequenceControl(IDM_S_NEXT);
 				break;
-      }
-      break;                              
-		//
+			}
+			break;                              
+			//
 		case WM_KEYDOWN:
 			switch(wParam)
 			{
@@ -504,51 +504,51 @@ static cyClient, cxClient, nVscrollMax, nVscrollPos;
 				lpmwd->wKeyFlags |= VK_SHIFT;
 				break;
 			}
-        break;
-    //////////////////////////////////////////////////////////////
-    //case WM_MDIACTIVATE:
-    //    break;
-    //////////////////////////////////////////////////////////////
-    case WM_SIZE:
+			break;
+			//////////////////////////////////////////////////////////////
+			//case WM_MDIACTIVATE:
+			//    break;
+			//////////////////////////////////////////////////////////////
+		case WM_SIZE:
 
 #ifdef SCROLLBARS
-				cxClient = LOWORD(lParam);
-				cyClient = HIWORD(lParam);
-				cyClient = cyClient - HEIGHT_FULL_LABEL_WND; 
+			cxClient = LOWORD(lParam);
+			cyClient = HIWORD(lParam);
+			cyClient = cyClient - HEIGHT_FULL_LABEL_WND; 
 
-					nVscrollMax = 3950;
+			nVscrollMax = 3950;
 
-//					nVscrollPos = min (nVscrollPos, nVscrollMax) ; 
-					SetScrollRange(hWnd,SB_VERT,0,nVscrollMax, FALSE);
-//					SetScrollPos(hWnd, SB_VERT,nVscrollPos, TRUE);
+			//					nVscrollPos = min (nVscrollPos, nVscrollMax) ; 
+			SetScrollRange(hWnd,SB_VERT,0,nVscrollMax, FALSE);
+			//					SetScrollPos(hWnd, SB_VERT,nVscrollPos, TRUE);
 #endif
-        HandleWndSize(hWnd, lpmwd, LOWORD(lParam), HIWORD(lParam), wParam);
-        break;
-    //////////////////////////////////////////////////////////////
-    case WM_GETMINMAXINFO:
-            lpMMI = (MINMAXINFO FAR*)lParam;
-            // get the information for this window
-            //------------------------------------
-            if(lpmwd)
-            {
-                lpMMI->ptMinTrackSize.x = lpmwd->rMaxWndPos.left;
-                lpMMI->ptMinTrackSize.y = lpmwd->rMaxWndPos.top;
-                lpMMI->ptMaxTrackSize.x = lpmwd->rMaxWndPos.right;
-                lpMMI->ptMaxTrackSize.y = lpmwd->rMaxWndPos.bottom;
-            }
-            break;
-    //////////////////////////////////////////////////////////////
-    case WM_MOVE:
-        if(lpmwd)
-        {
-            GetWindowRect(hWnd, &rect);
-            ScreenToClient(ghwndMDIClient, (LPPOINT)&rect.left);
-            lpmwd->rWndPos.left = rect.left;
-            lpmwd->rWndPos.top  = rect.top;
-        }
+			HandleWndSize(hWnd, lpmwd, LOWORD(lParam), HIWORD(lParam), wParam);
+			break;
+			//////////////////////////////////////////////////////////////
+		case WM_GETMINMAXINFO:
+			lpMMI = (MINMAXINFO FAR*)lParam;
+			// get the information for this window
+			//------------------------------------
+			if(lpmwd)
+			{
+				lpMMI->ptMinTrackSize.x = lpmwd->rMaxWndPos.left;
+				lpMMI->ptMinTrackSize.y = lpmwd->rMaxWndPos.top;
+				lpMMI->ptMaxTrackSize.x = lpmwd->rMaxWndPos.right;
+				lpMMI->ptMaxTrackSize.y = lpmwd->rMaxWndPos.bottom;
+			}
+			break;
+			//////////////////////////////////////////////////////////////
+		case WM_MOVE:
+			if(lpmwd)
+			{
+				GetWindowRect(hWnd, &rect);
+				ScreenToClient(ghwndMDIClient, (LPPOINT)&rect.left);
+				lpmwd->rWndPos.left = rect.left;
+				lpmwd->rWndPos.top  = rect.top;
+			}
 
-        break;
-		//////////////////
+			break;
+			//////////////////
 
 #ifdef NOTWORKING
 
@@ -562,21 +562,21 @@ static cyClient, cxClient, nVscrollMax, nVscrollPos;
 					if (zDelta < 0 )
 					{
 						nVscrollInc = 50;
-//						lpmwd->pntMouseCur.y += nVscrollInc;
-//						if (lpmwd->pntMouseCur.y > 3950)	// 3950 or 3378
-//							lpmwd->pntMouseCur.y = 3950;		// set to the TOP
+						//						lpmwd->pntMouseCur.y += nVscrollInc;
+						//						if (lpmwd->pntMouseCur.y > 3950)	// 3950 or 3378
+						//							lpmwd->pntMouseCur.y = 3950;		// set to the TOP
 					}
 					else
 					{
 						nVscrollInc = -50;
-//						lpmwd->pntMouseCur.y += nVscrollInc;
-//						if (lpmwd->pntMouseCur.y < 0)
-//							lpmwd->pntMouseCur.y = 0;
+						//						lpmwd->pntMouseCur.y += nVscrollInc;
+						//						if (lpmwd->pntMouseCur.y < 0)
+						//							lpmwd->pntMouseCur.y = 0;
 					}
 
-//					ScrollImgWindow(lpmwd->hwndImg, lpmwd,(int)(lpmwd->pntMouseCur.y - lpmwd->pntMouseLast.y));
+					//					ScrollImgWindow(lpmwd->hwndImg, lpmwd,(int)(lpmwd->pntMouseCur.y - lpmwd->pntMouseLast.y));
 					ScrollImgWindow(lpmwd->hwndImg, lpmwd,nVscrollInc);
-//					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
+					//					lpmwd->pntMouseLast = lpmwd->pntMouseCur;
 
 #ifdef SCROLLBARSNOTUSEDYET
 					if ( nVscrollInc !=0 ) 
@@ -589,11 +589,11 @@ static cyClient, cxClient, nVscrollMax, nVscrollPos;
 						if(nVscrollPos < 0)
 							nVscrollPos = 0;
 
-				sprintf(szBuff, "      nVscrollPos = %d ", nVscrollPos);
-				SendMessage(ghwndStatus, SB_SETTEXT, MAKEWPARAM(0,SBT_POPOUT), (LPARAM)szBuff);
+						sprintf(szBuff, "      nVscrollPos = %d ", nVscrollPos);
+						SendMessage(ghwndStatus, SB_SETTEXT, MAKEWPARAM(0,SBT_POPOUT), (LPARAM)szBuff);
 
-//						SetScrollPos(hWnd,SB_VERT,nVscrollInc + lpmwd->iYOffset + lpmwd->rVisible.bottom,TRUE);
-//						SetScrollPos(hWnd,SB_VERT,nVscrollPos+lpmwd->rVisible.bottom,TRUE);
+						//						SetScrollPos(hWnd,SB_VERT,nVscrollInc + lpmwd->iYOffset + lpmwd->rVisible.bottom,TRUE);
+						//						SetScrollPos(hWnd,SB_VERT,nVscrollPos+lpmwd->rVisible.bottom,TRUE);
 					}
 #endif
 
@@ -604,24 +604,24 @@ static cyClient, cxClient, nVscrollMax, nVscrollPos;
 #endif		// notworking
 
 
-    //////////////////////////////////////////////////////////////
-    case WM_DESTROY:
-        if(ghwndZoom == hWnd)
-				{
-            ghwndZoom = NULL;
-				}
-						giZoomWndCnt--;		// decrement zoom window count and display it
-						wsprintf(szTempBuff,"Zoom Views: %d",giZoomWndCnt);
-						ShowTBZoomWinCnt(szTempBuff);				
+			//////////////////////////////////////////////////////////////
+		case WM_DESTROY:
+			if(ghwndZoom == hWnd)
+			{
+				ghwndZoom = NULL;
+			}
+			giZoomWndCnt--;		// decrement zoom window count and display it
+			wsprintf(szTempBuff,"Zoom Views: %d",giZoomWndCnt);
+			ShowTBZoomWinCnt(szTempBuff);				
 
-		//      FALL THRU
+			//      FALL THRU
 
-    default:
-        return DefMDIChildProc(hWnd, wMessage, wParam, lParam);
+		default:
+			return DefMDIChildProc(hWnd, wMessage, wParam, lParam);
 
 	}
 
-return 0;
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -654,7 +654,7 @@ int       RegisterStereoCueMetersViewClass(void)
 	iReturn = RegisterClass(&wc);
 
 	if(iReturn == 0)
-		 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+		return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
 	return 0;
 }
@@ -690,35 +690,35 @@ int showStereoCueMetersView (void)
 
 
 	g_bmpStereoCueMeters = LoadBitmap (ghInstConsoleDef, MAKEINTRESOURCE(IDB_STEREO_CUE_METERS));
-  GetObject(g_bmpStereoCueMeters, sizeof(BITMAP), &g_bmpInfoSCM);
+	GetObject(g_bmpStereoCueMeters, sizeof(BITMAP), &g_bmpInfoSCM);
 
 	g_bmpVU2 = LoadBitmap (ghInstConsoleDef, MAKEINTRESOURCE(IDB_VU_DISPLAY2));
-  GetObject(g_bmpVU2, sizeof(BITMAP), &g_bmpInfoVU2);
+	GetObject(g_bmpVU2, sizeof(BITMAP), &g_bmpInfoVU2);
 
 	// load the resources we need to display this VU
 	//
 
 	hwnd = CreateWindow (
-												gszStereoCueMetersClass,
-												"L CUE R",
-												WS_POPUP  | WS_CAPTION,
-												100,//CW_USEDEFAULT,
-												100,//CW_USEDEFAULT,
-												g_bmpInfoSCM.bmWidth + 
-													GetSystemMetrics(SM_CXBORDER)*3,
-												g_bmpInfoSCM.bmHeight + 
-												  GetSystemMetrics(SM_CYCAPTION) +
-													GetSystemMetrics(SM_CYBORDER)*3,
-												 NULL, //ghwndMain,
-												(HMENU) NULL,
-												ghInstMain,
-												(LPARAM) NULL
-												);
+		gszStereoCueMetersClass,
+		"L CUE R",
+		WS_POPUP  | WS_CAPTION,
+		100,//CW_USEDEFAULT,
+		100,//CW_USEDEFAULT,
+		g_bmpInfoSCM.bmWidth + 
+		GetSystemMetrics(SM_CXBORDER)*3,
+		g_bmpInfoSCM.bmHeight + 
+		GetSystemMetrics(SM_CYCAPTION) +
+		GetSystemMetrics(SM_CYBORDER)*3,
+		NULL, //ghwndMain,
+		(HMENU) NULL,
+		ghInstMain,
+		(LPARAM) NULL
+		);
 
-  if(hwnd == NULL)
-  {
-	  ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
-  }
+	if(hwnd == NULL)
+	{
+		ErrorBox(ghwndMain, ghInstStrRes,IDS_ERR_CREATE_WINDOW);
+	}
 
 	g_stereoCueMetersWindow = hwnd;	// Set Global handle to Cue VU Meter window
 
@@ -768,12 +768,12 @@ void		ShowStereoCueMetersWindow (BOOL show)
 			ClientToScreen (ghwndMDIClient, (LPPOINT)&r.right);
 
 			g_leftPosSCM = r.right - (g_bmpInfoSCM.bmWidth + 
-																GetSystemMetrics(SM_CXBORDER)*3);	
+				GetSystemMetrics(SM_CXBORDER)*3);	
 
 			g_topPosSCM = r.top + ((r.bottom - r.top)/2) - 
-													((g_bmpInfoSCM.bmHeight + 
-												  GetSystemMetrics(SM_CYCAPTION) +
-													GetSystemMetrics(SM_CYBORDER)*3)/2);
+				((g_bmpInfoSCM.bmHeight + 
+				GetSystemMetrics(SM_CYCAPTION) +
+				GetSystemMetrics(SM_CYBORDER)*3)/2);
 
 			SetWindowPos (g_stereoCueMetersWindow, NULL, g_leftPosSCM, g_topPosSCM, 0, 0, SWP_NOSIZE); 
 
@@ -797,62 +797,62 @@ void		ShowStereoCueMetersWindow (BOOL show)
 //
 
 LRESULT CALLBACK  StereoCueMetersViewProc(HWND hWnd, UINT wMessage, 
-																					WPARAM wParam, LPARAM lParam)
+										  WPARAM wParam, LPARAM lParam)
 {
-   PAINTSTRUCT ps; 
-   HDC				 hdc; 
- 
-   switch (wMessage) { 
- 
-    case WM_DISPLAYCHANGE: // Only comes through on plug'n'play systems 
-    { 
-       SIZE  szScreen; 
-       DWORD dwBitsPerPixel = (DWORD)wParam; 
+	PAINTSTRUCT ps; 
+	HDC				 hdc; 
 
-       szScreen.cx = LOWORD(lParam); 
-       szScreen.cy = HIWORD(lParam); 
+	switch (wMessage) { 
 
-    } 
-    break; 
+	case WM_DISPLAYCHANGE: // Only comes through on plug'n'play systems 
+		{ 
+			SIZE  szScreen; 
+			DWORD dwBitsPerPixel = (DWORD)wParam; 
+
+			szScreen.cx = LOWORD(lParam); 
+			szScreen.cy = HIWORD(lParam); 
+
+		} 
+		break; 
 		// 					 
-		case WM_ERASEBKGND:
-			break;
-			
-    case WM_PAINT: 
-			hdc = BeginPaint (hWnd, &ps); 
-			BitBlt (hdc, 0, 0, g_bmpInfoSCM.bmWidth, g_bmpInfoSCM.bmHeight, g_hdcSCM, 0, 0, SRCCOPY);
-			EndPaint (hWnd, &ps); 
-			break; 
- 			 
-    case WM_LBUTTONDOWN:				  
-      PostMessage(hWnd, WM_MOVE, 0, lParam);
-      break;
+	case WM_ERASEBKGND:
+		break;
 
-		case WM_ACTIVATE:
-			// force the first MDI child window
-			//
-			if (LOWORD(wParam) != 0)
-				SetActiveWindow (ghwndMain);
-				//SetActiveWindow (GetTopWindow(ghwndMDIClient));
-			
+	case WM_PAINT: 
+		hdc = BeginPaint (hWnd, &ps); 
+		BitBlt (hdc, 0, 0, g_bmpInfoSCM.bmWidth, g_bmpInfoSCM.bmHeight, g_hdcSCM, 0, 0, SRCCOPY);
+		EndPaint (hWnd, &ps); 
+		break; 
 
-			break;
+	case WM_LBUTTONDOWN:				  
+		PostMessage(hWnd, WM_MOVE, 0, lParam);
+		break;
 
-		case WM_DESTROY: 
-			DeleteObject (g_bmpStereoCueMeters);
-			DeleteObject (g_bmpCueVu);
+	case WM_ACTIVATE:
+		// force the first MDI child window
+		//
+		if (LOWORD(wParam) != 0)
+			SetActiveWindow (ghwndMain);
+		//SetActiveWindow (GetTopWindow(ghwndMDIClient));
 
-			DeleteDC (g_hdcSCM);
-			DeleteDC (g_hdcVUoffscreen);
-     // Tell WinHelp we don't need it any more... 
-     //WinHelp (hWnd, APPNAME".HLP", HELP_QUIT,(DWORD)0); 
-     PostQuitMessage(0); 
-     break; 
- 
-    default: 
-       return (DefWindowProc(hWnd, wMessage, wParam, lParam)); 
-   } 
-   return (0); 
+
+		break;
+
+	case WM_DESTROY: 
+		DeleteObject (g_bmpStereoCueMeters);
+		DeleteObject (g_bmpCueVu);
+
+		DeleteDC (g_hdcSCM);
+		DeleteDC (g_hdcVUoffscreen);
+		// Tell WinHelp we don't need it any more... 
+		//WinHelp (hWnd, APPNAME".HLP", HELP_QUIT,(DWORD)0); 
+		PostQuitMessage(0); 
+		break; 
+
+	default: 
+		return (DefWindowProc(hWnd, wMessage, wParam, lParam)); 
+	} 
+	return (0); 
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -876,7 +876,7 @@ void	DisplayStereoCueVUData(VU_READ *pVuDataBuffer)
 	iWidth  = g_bmpInfoVU2.bmWidth;
 
 	hdc = GetDC (g_stereoCueMetersWindow);
-  hdcLocal = CreateCompatibleDC(hdc);
+	hdcLocal = CreateCompatibleDC(hdc);
 	oldBmp = SelectObject (hdcLocal, g_bmpVU2);
 
 	iVal = pVuDataBuffer->wVUValue[0];
@@ -907,7 +907,7 @@ void	DisplayStereoCueVUData(VU_READ *pVuDataBuffer)
 
 	// go to the screen
 	BitBlt(hdc, 27, 9, iWidth, iHeight, g_hdcVUoffscreen, 0, 0, SRCCOPY);
-	
+
 
 
 	iVal = pVuDataBuffer->wVUValue[2];

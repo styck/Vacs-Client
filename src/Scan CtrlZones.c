@@ -28,8 +28,8 @@
 //==================================================
 LPCTRLZONEMAP     ScanCtrlZonesPnt(LPCTRLZONEMAP lpczmArr, POINT pnt)
 {
-LPCTRLZONEMAP    lpczmPtr;
-RECT                rect;
+	LPCTRLZONEMAP    lpczmPtr;
+	RECT                rect;
 
 	lpczmPtr = lpczmArr;
 	rect = lpczmPtr->rZone;
@@ -37,16 +37,16 @@ RECT                rect;
 	// Search until the end of the list
 	//---------------------------------
 	while(rect.right)
-  {
-    if(PtInRect(&rect, pnt))
-    {
-        return lpczmPtr;
-    }
-    lpczmPtr++;
-    rect = lpczmPtr->rZone;
-  }
+	{
+		if(PtInRect(&rect, pnt))
+		{
+			return lpczmPtr;
+		}
+		lpczmPtr++;
+		rect = lpczmPtr->rZone;
+	}
 
-return NULL;
+	return NULL;
 }
 
 //==================================================
@@ -64,22 +64,22 @@ return NULL;
 //==================================================
 LPCTRLZONEMAP      ScanCtrlZonesType(LPCTRLZONEMAP lpczmArr, int iType)
 {
-LPCTRLZONEMAP    lpczmPtr;
+	LPCTRLZONEMAP    lpczmPtr;
 
 	lpczmPtr = lpczmArr;
 
 	// Search until the end of the list
 	//---------------------------------
 	while(lpczmPtr->rZone.right)
-  {
-    if(lpczmPtr->iCtrlType == iType)
-    {
-        return lpczmPtr;
-    }
-    lpczmPtr++;
-  }
+	{
+		if(lpczmPtr->iCtrlType == iType)
+		{
+			return lpczmPtr;
+		}
+		lpczmPtr++;
+	}
 
-return NULL;
+	return NULL;
 }
 
 //==================================================
@@ -97,25 +97,25 @@ return NULL;
 //==================================================
 LPCTRLZONEMAP      ScanCtrlZonesNum(LPCTRLZONEMAP lpczmArr, int iNum)
 {
-  LPCTRLZONEMAP    lpczmPtr;
+	LPCTRLZONEMAP    lpczmPtr;
 
-  lpczmPtr = lpczmArr;
+	lpczmPtr = lpczmArr;
 
-  if(lpczmPtr == NULL)
-    return NULL;
-  
-  // Search until the end of the list
-  //---------------------------------
-  while(lpczmPtr->rZone.right)
-  {
-    if(lpczmPtr->iCtrlChanPos == iNum)
-    {
-      return lpczmPtr;
-    }
-    lpczmPtr++;
-  }
+	if(lpczmPtr == NULL)
+		return NULL;
 
-  return NULL;
+	// Search until the end of the list
+	//---------------------------------
+	while(lpczmPtr->rZone.right)
+	{
+		if(lpczmPtr->iCtrlChanPos == iNum)
+		{
+			return lpczmPtr;
+		}
+		lpczmPtr++;
+	}
+
+	return NULL;
 }
 
 //===================================================
@@ -140,15 +140,15 @@ LPCTRLZONEMAP      ScanCtrlZonesDisp(LPCTRLZONEMAP lpczmArr, int iDisp)
 	// Search until the end of the list
 	//---------------------------------
 	while(lpczmPtr->rZone.right)
-  {
-    if(lpczmPtr->iDispType == iDisp)
-    {
-        return lpczmPtr;
-    }
-    lpczmPtr++;
-  }
+	{
+		if(lpczmPtr->iDispType == iDisp)
+		{
+			return lpczmPtr;
+		}
+		lpczmPtr++;
+	}
 
-return NULL;
+	return NULL;
 }
 
 //===================================================
@@ -166,24 +166,24 @@ return NULL;
 //===================================================
 LPCTRLZONEMAP      ScanCtrlZonesAbs(LPCTRLZONEMAP lpczmArr, int iCtrlNumAbs)
 {
-  LPCTRLZONEMAP    lpczmPtr;
+	LPCTRLZONEMAP    lpczmPtr;
 
 
-  if(lpczmArr == NULL)
-    return NULL;
-  lpczmPtr = lpczmArr;
+	if(lpczmArr == NULL)
+		return NULL;
+	lpczmPtr = lpczmArr;
 
-  // Search until the end of the list
-  //---------------------------------
-  while(lpczmPtr->rZone.right)
-  {
-    if(lpczmPtr->iCtrlNumAbs == iCtrlNumAbs)
-    {
-       return lpczmPtr;
-    }
-    lpczmPtr++;
-  }
+	// Search until the end of the list
+	//---------------------------------
+	while(lpczmPtr->rZone.right)
+	{
+		if(lpczmPtr->iCtrlNumAbs == iCtrlNumAbs)
+		{
+			return lpczmPtr;
+		}
+		lpczmPtr++;
+	}
 
-  return NULL;
+	return NULL;
 }
 

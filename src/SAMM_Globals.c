@@ -23,7 +23,7 @@
 //--------------------
 // Application General
 //--------------------
-char                gszProgDir[256];
+char                gszProgDir[MAX_PATH];
 HINSTANCE           ghInstConsoleDef = NULL;
 HINSTANCE           ghInstStrRes = NULL;
 HANDLE              ghMainMenu = NULL;
@@ -265,36 +265,36 @@ int                 giBmpGlobAllocated = 100;
 //------------
 PREFERENCES         gprfEdit={0}; // Null the Entire thing
 PREFERENCES         gprfPref=
-														{
-														SAMMPLUS_ID,
-														sizeof(PREFERENCES),
-														SAMMPLUS_VERSION,
-														-1,
-														-1,
-														-1,
-														-1,
-														{0},// MIDIINCAPS
-														{0},// MIDIOUTCAPS
-														{0},// MTCINCAPS
-														{0},// MTCOUTCAPS
-														0,
-														0,
-														0,
-														0,
-														0,
-														1,
-														{0},// set the entire array to 0
-														{0},// set the entire array to 0
-														{0},// set the entire array to 0
-														{0},// set the entire array to 0
-														0,
-														0,
-														0,
-														0,
-														0,
-														100,
-														{0}// set the entire array of Reserved to 0
-														};
+{
+	SAMMPLUS_ID,
+	sizeof(PREFERENCES),
+	SAMMPLUS_VERSION,
+	-1,
+	-1,
+	-1,
+	-1,
+	{0},// MIDIINCAPS
+	{0},// MIDIOUTCAPS
+	{0},// MTCINCAPS
+	{0},// MTCOUTCAPS
+	0,
+	0,
+	0,
+	0,
+	0,
+	1,
+	{0},// set the entire array to 0
+	{0},// set the entire array to 0
+	{0},// set the entire array to 0
+	{0},// set the entire array to 0
+	0,
+	0,
+	0,
+	0,
+	0,
+	100,
+	{0}// set the entire array of Reserved to 0
+};
 
 
 HBITMAP             ghbmpPrefBkgnd = NULL;

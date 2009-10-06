@@ -27,87 +27,87 @@
 //======================================
 long CreatePropertySheet_PRF(HWND hwndOwner)
 {
-PROPSHEETPAGE psp[3];	// <==== MUST CHANGE THIS TO MATCH THE NUMBER OF PAGES BELOW
-PROPSHEETHEADER psh;
+	PROPSHEETPAGE psp[3];	// <==== MUST CHANGE THIS TO MATCH THE NUMBER OF PAGES BELOW
+	PROPSHEETHEADER psh;
 
-int iIndex=0;
+	int iIndex=0;
 
 #ifdef NOTUSED	// Removed 1/7/2001 as per Gamble
-psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
-psp[iIndex].dwFlags = 0;
-psp[iIndex].hInstance = ghInstStrRes;    
-psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_GENERAL);
-psp[iIndex].pszIcon = NULL;
-psp[iIndex].pfnDlgProc = dlgPRFGeneral;
-psp[iIndex].pszTitle = NULL;
-psp[iIndex].lParam = 0;
-iIndex++;
+	psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+	psp[iIndex].dwFlags = 0;
+	psp[iIndex].hInstance = ghInstStrRes;    
+	psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_GENERAL);
+	psp[iIndex].pszIcon = NULL;
+	psp[iIndex].pfnDlgProc = dlgPRFGeneral;
+	psp[iIndex].pszTitle = NULL;
+	psp[iIndex].lParam = 0;
+	iIndex++;
 #endif
 
 #ifdef MIDI_SUPPORT
-psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
-psp[iIndex].dwFlags = 0;
-psp[iIndex].hInstance = ghInstStrRes;
-psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MIDI);
-psp[iIndex].pszIcon = NULL;
-psp[iIndex].pfnDlgProc = dlgPRFMidi;
-psp[iIndex].pszTitle = NULL;
-psp[iIndex].lParam = 0;
-iIndex++;
+	psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+	psp[iIndex].dwFlags = 0;
+	psp[iIndex].hInstance = ghInstStrRes;
+	psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MIDI);
+	psp[iIndex].pszIcon = NULL;
+	psp[iIndex].pfnDlgProc = dlgPRFMidi;
+	psp[iIndex].pszTitle = NULL;
+	psp[iIndex].lParam = 0;
+	iIndex++;
 
-psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
-psp[iIndex].dwFlags = 0;
-psp[iIndex].hInstance = ghInstStrRes;
-psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MTC);
-psp[iIndex].pszIcon = NULL;
-psp[iIndex].pfnDlgProc = dlgPRFMTC;
-psp[iIndex].pszTitle = NULL;
-psp[iIndex].lParam = 0;
-iIndex++;
+	psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+	psp[iIndex].dwFlags = 0;
+	psp[iIndex].hInstance = ghInstStrRes;
+	psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MTC);
+	psp[iIndex].pszIcon = NULL;
+	psp[iIndex].pfnDlgProc = dlgPRFMTC;
+	psp[iIndex].pszTitle = NULL;
+	psp[iIndex].lParam = 0;
+	iIndex++;
 #endif
 
-psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
-psp[iIndex].dwFlags = 0;
-psp[iIndex].hInstance = ghInstStrRes;
-psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MIXER_CHANNELPORT);
-psp[iIndex].pszIcon = NULL;
-psp[iIndex].pfnDlgProc = dlgPRFMixerChanPort;
-psp[iIndex].pszTitle = NULL;
-psp[iIndex].lParam = 0;
-iIndex++;
+	psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+	psp[iIndex].dwFlags = 0;
+	psp[iIndex].hInstance = ghInstStrRes;
+	psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_MIXER_CHANNELPORT);
+	psp[iIndex].pszIcon = NULL;
+	psp[iIndex].pfnDlgProc = dlgPRFMixerChanPort;
+	psp[iIndex].pszTitle = NULL;
+	psp[iIndex].lParam = 0;
+	iIndex++;
 
 #ifdef NOTUSED	// Removed 1/7/2001 as per Gamble
-psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
-psp[iIndex].dwFlags = 0;
-psp[iIndex].hInstance = ghInstStrRes;
-psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_VIEWS);
-psp[iIndex].pszIcon = NULL;
-psp[iIndex].pfnDlgProc = dlgPRFViews;
-psp[iIndex].pszTitle = NULL;
-psp[iIndex].lParam = 0;
-iIndex++;
-    
-psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
-psp[iIndex].dwFlags = 0;
-psp[iIndex].hInstance = ghInstStrRes;
-psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_ACTIONS);
-psp[iIndex].pszIcon = NULL;
-psp[iIndex].pfnDlgProc = dlgPRFActions;
-psp[iIndex].pszTitle = NULL;
-psp[iIndex].lParam = 0;
-iIndex++;
+	psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+	psp[iIndex].dwFlags = 0;
+	psp[iIndex].hInstance = ghInstStrRes;
+	psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_VIEWS);
+	psp[iIndex].pszIcon = NULL;
+	psp[iIndex].pfnDlgProc = dlgPRFViews;
+	psp[iIndex].pszTitle = NULL;
+	psp[iIndex].lParam = 0;
+	iIndex++;
+
+	psp[iIndex].dwSize = sizeof(PROPSHEETPAGE);
+	psp[iIndex].dwFlags = 0;
+	psp[iIndex].hInstance = ghInstStrRes;
+	psp[iIndex].pszTemplate = MAKEINTRESOURCE(IDD_PRF_ACTIONS);
+	psp[iIndex].pszIcon = NULL;
+	psp[iIndex].pfnDlgProc = dlgPRFActions;
+	psp[iIndex].pszTitle = NULL;
+	psp[iIndex].lParam = 0;
+	iIndex++;
 #endif
 
-psh.dwSize = sizeof(PROPSHEETHEADER);
-psh.dwFlags = PSH_PROPSHEETPAGE;
-psh.hwndParent = hwndOwner;
-psh.hInstance = ghInstMain;
-psh.pszIcon = NULL;
-psh.pszCaption = (LPSTR) "Preferences";
-psh.nPages = sizeof(psp) / sizeof(PROPSHEETPAGE);
-psh.ppsp = (LPCPROPSHEETPAGE) &psp;
+	psh.dwSize = sizeof(PROPSHEETHEADER);
+	psh.dwFlags = PSH_PROPSHEETPAGE;
+	psh.hwndParent = hwndOwner;
+	psh.hInstance = ghInstMain;
+	psh.pszIcon = NULL;
+	psh.pszCaption = (LPSTR) "Preferences";
+	psh.nPages = sizeof(psp) / sizeof(PROPSHEETPAGE);
+	psh.ppsp = (LPCPROPSHEETPAGE) &psp;
 
-return (PropertySheet(&psh));
+	return (PropertySheet(&psh));
 }
 
 //=============================================
@@ -122,15 +122,15 @@ return (PropertySheet(&psh));
 void        DoPreferences(void)
 {
 
-gprfEdit = gprfPref;
-if(CreatePropertySheet_PRF(ghwndMain)>=0)
-    if(ApplyPreferences(FALSE))
-        SavePreferences();
-    else
-        InformationStatus(ghInstStrRes, IDS_PREF_NOTSAVED);
-        
+	gprfEdit = gprfPref;
+	if(CreatePropertySheet_PRF(ghwndMain)>=0)
+		if(ApplyPreferences(FALSE))
+			SavePreferences();
+		else
+			InformationStatus(ghInstStrRes, IDS_PREF_NOTSAVED);
 
-return;
+
+	return;
 }
 
 //=======================================
@@ -145,296 +145,296 @@ return;
 //=======================================
 //=======================================
 BOOL APIENTRY dlgPRFGeneral(HWND hDlg,UINT message,
-	                        UINT wParam, LONG lParam)
+							UINT wParam, LONG lParam)
 {
-static PROPSHEETPAGE * psGeneral;
+	static PROPSHEETPAGE * psGeneral;
 
-switch (message)
-    {
+	switch (message)
+	{
 	case WM_INITDIALOG:	
 		// Save the PROPSHEETPAGE information.
 		psGeneral = (PROPSHEETPAGE *)lParam;
 		return (TRUE);
 
 	case WM_NOTIFY:
-    	switch (((NMHDR *) lParam)->code) 
-    	    {
+		switch (((NMHDR *) lParam)->code) 
+		{
 
-			case PSN_SETACTIVE:
-				// Initialize the controls.
-			    
-            	break;
+		case PSN_SETACTIVE:
+			// Initialize the controls.
 
-			case PSN_APPLY:
+			break;
 
- 	           	SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
-				break;
+		case PSN_APPLY:
 
-			case PSN_KILLACTIVE:
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				return 1;
-				break;
+			SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
+			break;
 
-			case PSN_RESET:
-				// Reset to the original values.
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				break;
-            
-            }
-        break;
-    }
-return (FALSE);   
+		case PSN_KILLACTIVE:
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			return 1;
+			break;
+
+		case PSN_RESET:
+			// Reset to the original values.
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			break;
+
+		}
+		break;
+	}
+	return (FALSE);   
 }
 
 #ifdef MIDI_SUPPORT
 //==================================================
 BOOL APIENTRY dlgPRFMidi(HWND hDlg,UINT message,
-	                     UINT wParam, LONG lParam)
+						 UINT wParam, LONG lParam)
 {
-static PROPSHEETPAGE * psMIDI;
-HWND        hwnd;
+	static PROPSHEETPAGE * psMIDI;
+	HWND        hwnd;
 
-switch (message)
-    {
+	switch (message)
+	{
 	case WM_INITDIALOG:	
 		// Save the PROPSHEETPAGE information.
 		psMIDI = (PROPSHEETPAGE *)lParam;
 
 		// Initialize the controls.
-        hwnd = GetDlgItem(hDlg, IDC_PRF_MIDI_IN);
-        ListMidiInDev(hwnd);
-        SendMessage(hwnd, CB_SETCURSEL, gprfEdit.iMidiIn_DevId, (LPARAM)0);
+		hwnd = GetDlgItem(hDlg, IDC_PRF_MIDI_IN);
+		ListMidiInDev(hwnd);
+		SendMessage(hwnd, CB_SETCURSEL, gprfEdit.iMidiIn_DevId, (LPARAM)0);
 
-        hwnd = GetDlgItem(hDlg, IDC_PRF_MIDI_OUT);
-        ListMidiOutDev(hwnd);
-        SendMessage(hwnd, CB_SETCURSEL, gprfEdit.iMidiOut_DevId, (LPARAM)0);
+		hwnd = GetDlgItem(hDlg, IDC_PRF_MIDI_OUT);
+		ListMidiOutDev(hwnd);
+		SendMessage(hwnd, CB_SETCURSEL, gprfEdit.iMidiOut_DevId, (LPARAM)0);
 
 		return (TRUE);
-        break;
+		break;
 
-    case PSPCB_CREATE:
+	case PSPCB_CREATE:
 
-        return TRUE;
-        break;
+		return TRUE;
+		break;
 
 	case WM_NOTIFY:
-    	switch (((NMHDR *) lParam)->code) 
-    	{
+		switch (((NMHDR *) lParam)->code) 
+		{
 
-			case PSN_SETACTIVE:
+		case PSN_SETACTIVE:
 
-				break;
+			break;
 
-			case PSN_APPLY:
-                hwnd = GetDlgItem(hDlg, IDC_PRF_MIDI_IN);
-                gprfEdit.iMidiIn_DevId = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
-                
-                hwnd = GetDlgItem(hDlg, IDC_PRF_MIDI_OUT);
-                gprfEdit.iMidiOut_DevId = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
+		case PSN_APPLY:
+			hwnd = GetDlgItem(hDlg, IDC_PRF_MIDI_IN);
+			gprfEdit.iMidiIn_DevId = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
 
- 	           	SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
-				break;
+			hwnd = GetDlgItem(hDlg, IDC_PRF_MIDI_OUT);
+			gprfEdit.iMidiOut_DevId = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
 
-			case PSN_KILLACTIVE:
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				return 1;
-				break;
+			SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
+			break;
 
-			case PSN_RESET:
-				// Reset to the original values.
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				break;
+		case PSN_KILLACTIVE:
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			return 1;
+			break;
 
-            }
-        break;
-    }
-return (FALSE);   
+		case PSN_RESET:
+			// Reset to the original values.
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			break;
+
+		}
+		break;
+	}
+	return (FALSE);   
 }
 
 
 //==================================================
 BOOL APIENTRY dlgPRFMTC(HWND hDlg,UINT message,
-	                     UINT wParam, LONG lParam)
+						UINT wParam, LONG lParam)
 {
-static PROPSHEETPAGE * psMTC;
-HWND        hwnd;
+	static PROPSHEETPAGE * psMTC;
+	HWND        hwnd;
 
-switch (message)
-    {
+	switch (message)
+	{
 	case WM_INITDIALOG:	
 		// Save the PROPSHEETPAGE information.
 		psMTC = (PROPSHEETPAGE *)lParam;
 
 		// Initialize the controls.
-        hwnd = GetDlgItem(hDlg, IDC_PRF_MTC_IN);
-        ListMidiInDev(hwnd);
-        SendMessage(hwnd, CB_SETCURSEL, gprfEdit.iMTCIn_DevId, (LPARAM)0);
+		hwnd = GetDlgItem(hDlg, IDC_PRF_MTC_IN);
+		ListMidiInDev(hwnd);
+		SendMessage(hwnd, CB_SETCURSEL, gprfEdit.iMTCIn_DevId, (LPARAM)0);
 
-        hwnd = GetDlgItem(hDlg, IDC_PRF_MTC_OUT);
-        ListMidiOutDev(hwnd);
-        SendMessage(hwnd, CB_SETCURSEL, gprfEdit.iMTCOut_DevId, (LPARAM)0);
+		hwnd = GetDlgItem(hDlg, IDC_PRF_MTC_OUT);
+		ListMidiOutDev(hwnd);
+		SendMessage(hwnd, CB_SETCURSEL, gprfEdit.iMTCOut_DevId, (LPARAM)0);
 
 		return (TRUE);
-        break;
+		break;
 
-    case PSPCB_CREATE:
+	case PSPCB_CREATE:
 
-        return TRUE;
-        break;
+		return TRUE;
+		break;
 
 	case WM_NOTIFY:
-    	switch (((NMHDR *) lParam)->code) 
-    	{
+		switch (((NMHDR *) lParam)->code) 
+		{
 
-			case PSN_SETACTIVE:
+		case PSN_SETACTIVE:
 
-				break;
+			break;
 
-			case PSN_APPLY:
-                hwnd = GetDlgItem(hDlg, IDC_PRF_MTC_IN);
-                gprfEdit.iMTCIn_DevId = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
-                
-                hwnd = GetDlgItem(hDlg, IDC_PRF_MTC_OUT);
-                gprfEdit.iMTCOut_DevId = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
+		case PSN_APPLY:
+			hwnd = GetDlgItem(hDlg, IDC_PRF_MTC_IN);
+			gprfEdit.iMTCIn_DevId = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
 
- 	           	SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
-				break;
+			hwnd = GetDlgItem(hDlg, IDC_PRF_MTC_OUT);
+			gprfEdit.iMTCOut_DevId = SendMessage(hwnd, CB_GETCURSEL, 0, 0);
 
-			case PSN_KILLACTIVE:
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				return 1;
-				break;
+			SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
+			break;
 
-			case PSN_RESET:
-				// Reset to the original values.
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				break;
+		case PSN_KILLACTIVE:
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			return 1;
+			break;
 
-            }
-        break;
-    }
-return (FALSE);   
+		case PSN_RESET:
+			// Reset to the original values.
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			break;
+
+		}
+		break;
+	}
+	return (FALSE);   
 }
 #endif // #ifdef MIDI_SUPPORT
 
 //==================================================
 BOOL APIENTRY dlgPRFActions(HWND hDlg,UINT message,
-	                        UINT wParam, LONG lParam)
+							UINT wParam, LONG lParam)
 {
-static PROPSHEETPAGE * psActions;
+	static PROPSHEETPAGE * psActions;
 
-switch (message)
-    {
+	switch (message)
+	{
 	case WM_INITDIALOG:	
 		// Save the PROPSHEETPAGE information.
 		psActions = (PROPSHEETPAGE *)lParam;
 		return (TRUE);
 
 	case WM_NOTIFY:
-    	switch (((NMHDR FAR *) lParam)->code) 
-    	{
+		switch (((NMHDR FAR *) lParam)->code) 
+		{
 
-			case PSN_SETACTIVE:
-				// Initialize the controls.
-				break;
+		case PSN_SETACTIVE:
+			// Initialize the controls.
+			break;
 
-			case PSN_APPLY:
- 	           	SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
-				break;
+		case PSN_APPLY:
+			SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
+			break;
 
-			case PSN_KILLACTIVE:
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				return 1;
-				break;
+		case PSN_KILLACTIVE:
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			return 1;
+			break;
 
-			case PSN_RESET:
-				// Reset to the original values.
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				break;
-            }
-        break;
-    }
-return (FALSE);   
+		case PSN_RESET:
+			// Reset to the original values.
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			break;
+		}
+		break;
+	}
+	return (FALSE);   
 }
 
 //==================================================
 BOOL APIENTRY dlgPRFMixerChanPort(HWND hDlg,UINT message,
-	                              UINT wParam, LONG lParam)
+								  UINT wParam, LONG lParam)
 {
-static PROPSHEETPAGE * psM_CP;
+	static PROPSHEETPAGE * psM_CP;
 
-switch (message)
-    {
+	switch (message)
+	{
 	case WM_INITDIALOG:	
 		// Save the PROPSHEETPAGE information.
 		psM_CP = (PROPSHEETPAGE *)lParam;
 		return (TRUE);
 
 	case WM_NOTIFY:
-    	switch (((NMHDR FAR *) lParam)->code) 
-    	{
+		switch (((NMHDR FAR *) lParam)->code) 
+		{
 
-			case PSN_SETACTIVE:
-				// Initialize the controls.
-				break;
+		case PSN_SETACTIVE:
+			// Initialize the controls.
+			break;
 
-			case PSN_APPLY:
- 	           	SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
-				break;
+		case PSN_APPLY:
+			SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
+			break;
 
-			case PSN_KILLACTIVE:
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				return 1;
-				break;
+		case PSN_KILLACTIVE:
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			return 1;
+			break;
 
-			case PSN_RESET:
-				// Reset to the original values.
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				break;
-            }
-        break;
-    }
-return (FALSE);   
+		case PSN_RESET:
+			// Reset to the original values.
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			break;
+		}
+		break;
+	}
+	return (FALSE);   
 }
 
 //==================================================
 BOOL APIENTRY dlgPRFViews(HWND hDlg,UINT message,
-	                      UINT wParam, LONG lParam)
+						  UINT wParam, LONG lParam)
 {
-static PROPSHEETPAGE * psViews;
+	static PROPSHEETPAGE * psViews;
 
-switch (message)
-    {
+	switch (message)
+	{
 	case WM_INITDIALOG:	
 		// Save the PROPSHEETPAGE information.
 		psViews = (PROPSHEETPAGE *)lParam;
 		return (TRUE);
 
 	case WM_NOTIFY:
-    	switch (((NMHDR FAR *) lParam)->code) 
-    	{
+		switch (((NMHDR FAR *) lParam)->code) 
+		{
 
-			case PSN_SETACTIVE:
-				// Initialize the controls.
-				break;
+		case PSN_SETACTIVE:
+			// Initialize the controls.
+			break;
 
-			case PSN_APPLY:
- 	           	SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
-				break;
+		case PSN_APPLY:
+			SetWindowLong(hDlg,	DWL_MSGRESULT, TRUE);
+			break;
 
-			case PSN_KILLACTIVE:
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				return 1;
-				break;
+		case PSN_KILLACTIVE:
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			return 1;
+			break;
 
-			case PSN_RESET:
-				// Reset to the original values.
-	           	SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
-				break;
-            }
-        break;
-    }
-return (FALSE);   
+		case PSN_RESET:
+			// Reset to the original values.
+			SetWindowLong(hDlg,	DWL_MSGRESULT, FALSE);
+			break;
+		}
+		break;
+	}
+	return (FALSE);   
 }
 
 //=========================
@@ -443,39 +443,39 @@ return (FALSE);
 //=========================
 void      SavePreferences(void)
 {
-char        szBuff[255];
-HANDLE      FHandle;
-BOOL        bResult;
-DWORD       dwBWrite;
+	char        szBuff[255];
+	HANDLE      FHandle;
+	BOOL        bResult;
+	DWORD       dwBWrite;
 
-wsprintf(szBuff,"%s%s", gszProgDir, "Vacs.prf");
+	wsprintf(szBuff,"%s%s", gszProgDir, "Vacs.prf");
 
-FHandle = CreateFile(szBuff, GENERIC_WRITE, 
-                    0, NULL, CREATE_ALWAYS, 
-                    FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
-                    NULL);
-if(FHandle == INVALID_HANDLE_VALUE)
-    {
-    ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATING_FILE);
-    return;
-    }
+	FHandle = CreateFile(szBuff, GENERIC_WRITE, 
+		0, NULL, CREATE_ALWAYS, 
+		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH,
+		NULL);
+	if(FHandle == INVALID_HANDLE_VALUE)
+	{
+		ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATING_FILE);
+		return;
+	}
 
-gprfPref.dwVersion = SAMMPLUS_VERSION;
-gprfPref.dwSize = sizeof(PREFERENCES);
-gprfPref.dwID = SAMMPLUS_ID;
+	gprfPref.dwVersion = SAMMPLUS_VERSION;
+	gprfPref.dwSize = sizeof(PREFERENCES);
+	gprfPref.dwID = SAMMPLUS_ID;
 
-bResult = WriteFile(FHandle, (LPVOID)&gprfPref, sizeof(PREFERENCES), &dwBWrite, NULL);
-if(bResult == FALSE || dwBWrite == 0)
-    {
-    ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATING_FILE);
-    CloseHandle(FHandle);
-    return;
-    }
+	bResult = WriteFile(FHandle, (LPVOID)&gprfPref, sizeof(PREFERENCES), &dwBWrite, NULL);
+	if(bResult == FALSE || dwBWrite == 0)
+	{
+		ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_CREATING_FILE);
+		CloseHandle(FHandle);
+		return;
+	}
 
-CloseHandle(FHandle);
+	CloseHandle(FHandle);
 
-InformationStatus(ghInstStrRes, IDS_PREF_SAVED);
-return;
+	InformationStatus(ghInstStrRes, IDS_PREF_SAVED);
+	return;
 }
 
 //=========================
@@ -484,49 +484,49 @@ return;
 //=========================
 void      LoadPreferences(void)
 {
-char        szBuff[255];
-HANDLE      FHandle;
-PREFERENCES prfBuff;
-DWORD       dwBRead;
-BOOL        bResult;
+	char        szBuff[255];
+	HANDLE      FHandle;
+	PREFERENCES prfBuff;
+	DWORD       dwBRead;
+	BOOL        bResult;
 
-wsprintf(szBuff,"%s%s", gszProgDir, "Vacs.prf");
+	wsprintf(szBuff,"%s%s", gszProgDir, "Vacs.prf");
 
-FHandle = CreateFile(szBuff, GENERIC_READ, 0,  
-                    NULL, OPEN_EXISTING, 
-                    FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, 
-                    NULL);
-if(FHandle ==  INVALID_HANDLE_VALUE)
-    {
-    //ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_OPENING_FILE);
-    return;
-    }
+	FHandle = CreateFile(szBuff, GENERIC_READ, 0,  
+		NULL, OPEN_EXISTING, 
+		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_WRITE_THROUGH, 
+		NULL);
+	if(FHandle ==  INVALID_HANDLE_VALUE)
+	{
+		//ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_OPENING_FILE);
+		return;
+	}
 
-bResult = ReadFile(FHandle, (LPSTR)&prfBuff, sizeof(PREFERENCES), &dwBRead, NULL);
-if(bResult == FALSE || dwBRead == 0)
-    {
-    InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
-    goto ON_EXIT;
-    }
+	bResult = ReadFile(FHandle, (LPSTR)&prfBuff, sizeof(PREFERENCES), &dwBRead, NULL);
+	if(bResult == FALSE || dwBRead == 0)
+	{
+		InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
+		goto ON_EXIT;
+	}
 
 
-if((prfBuff.dwID != SAMMPLUS_ID) || (prfBuff.dwSize != sizeof(PREFERENCES))||
-    prfBuff.dwVersion > SAMMPLUS_VERSION)
-    {
-    ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_PREF_FILE);
-    }
-else
-    {
-    gprfPref = prfBuff;
-    if(prfBuff.dwVersion < SAMMPLUS_VERSION)
-        InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
-    }
+	if((prfBuff.dwID != SAMMPLUS_ID) || (prfBuff.dwSize != sizeof(PREFERENCES))||
+		prfBuff.dwVersion > SAMMPLUS_VERSION)
+	{
+		ErrorBox(ghwndMain, ghInstStrRes, IDS_INCOMP_PREF_FILE);
+	}
+	else
+	{
+		gprfPref = prfBuff;
+		if(prfBuff.dwVersion < SAMMPLUS_VERSION)
+			InformationStatus(ghInstStrRes, IDS_NEW_VER_PRF_FILE);
+	}
 
 
 
 ON_EXIT:
-CloseHandle(FHandle);
-return;
+	CloseHandle(FHandle);
+	return;
 }
 
 //====================================================
@@ -543,90 +543,90 @@ BOOL        ApplyPreferences(BOOL   bForce)
 
 
 #ifdef MIDI_SUPPORT
-//-----------------
-// START MIDI STUFF
-//
-//
-//      the MIDI IN device 
-//------------------------
-if(bForce || gprfEdit.iMidiIn_DevId != gprfPref.iMidiIn_DevId ||
-   lstrcmp(gprfEdit.MidiInDev.szPname, gprfPref.MidiInDev.szPname)==0)
-    {
-    // Close the default(for the moment) device
-    //-----------------------------------------
-    if(CloseMIDIInDev(&gMidiDev))
-        // try to open the new device ...
-        //-------------------------------
-        if(OpenMIDIInDev(gprfEdit.iMidiIn_DevId, &gMidiDev) == FALSE)
-            // there was an error opening the MIDI IN
-            // device, so try to reopen the default one
-            //-----------------------------------------
-            OpenMIDIInDev(gprfPref.iMidiIn_DevId, &gMidiDev);
-    }
+	//-----------------
+	// START MIDI STUFF
+	//
+	//
+	//      the MIDI IN device 
+	//------------------------
+	if(bForce || gprfEdit.iMidiIn_DevId != gprfPref.iMidiIn_DevId ||
+		lstrcmp(gprfEdit.MidiInDev.szPname, gprfPref.MidiInDev.szPname)==0)
+	{
+		// Close the default(for the moment) device
+		//-----------------------------------------
+		if(CloseMIDIInDev(&gMidiDev))
+			// try to open the new device ...
+			//-------------------------------
+			if(OpenMIDIInDev(gprfEdit.iMidiIn_DevId, &gMidiDev) == FALSE)
+				// there was an error opening the MIDI IN
+				// device, so try to reopen the default one
+				//-----------------------------------------
+				OpenMIDIInDev(gprfPref.iMidiIn_DevId, &gMidiDev);
+	}
 
-//      the MIDI OUT device
-//-------------------------
-if(bForce || gprfEdit.iMidiOut_DevId != gprfPref.iMidiOut_DevId ||
-   lstrcmp(gprfEdit.MidiOutDev.szPname, gprfPref.MidiOutDev.szPname)==0)
-    {
-    // Close the default(for the moment) device
-    //-----------------------------------------
-    if(CloseMIDIOutDev(&gMidiDev))
-        // try to open the new device ...
-        //-------------------------------
-        if(OpenMIDIOutDev(gprfEdit.iMidiOut_DevId, &gMidiDev) == FALSE)
-            // there was an error opening the MIDI OUT
-            // device, so try to reopen the default one
-            //-----------------------------------------
-            OpenMIDIOutDev(gprfPref.iMidiOut_DevId, &gMidiDev);
-    }
+	//      the MIDI OUT device
+	//-------------------------
+	if(bForce || gprfEdit.iMidiOut_DevId != gprfPref.iMidiOut_DevId ||
+		lstrcmp(gprfEdit.MidiOutDev.szPname, gprfPref.MidiOutDev.szPname)==0)
+	{
+		// Close the default(for the moment) device
+		//-----------------------------------------
+		if(CloseMIDIOutDev(&gMidiDev))
+			// try to open the new device ...
+			//-------------------------------
+			if(OpenMIDIOutDev(gprfEdit.iMidiOut_DevId, &gMidiDev) == FALSE)
+				// there was an error opening the MIDI OUT
+				// device, so try to reopen the default one
+				//-----------------------------------------
+				OpenMIDIOutDev(gprfPref.iMidiOut_DevId, &gMidiDev);
+	}
 
-//      the MTC/SMPTE IN device
-//-----------------------------
-if(bForce || gprfEdit.iMTCIn_DevId != gprfPref.iMTCIn_DevId ||
-   lstrcmp(gprfEdit.MidiMTCInDev.szPname, gprfPref.MidiMTCInDev.szPname)==0)
-    {
-    // Close the default(for a moment) device
-    //-----------------------------------------
-    if(CloseMIDIInDev(&gMTCDev))
-        // try to open the new device ...
-        // only if the Midi and MTC
-        // devices are different
-        //-------------------------------
-        if(gprfEdit.iMTCIn_DevId != gprfEdit.iMidiIn_DevId)
-            if(OpenMIDIInDev(gprfEdit.iMTCIn_DevId, &gMTCDev) == FALSE)
-                // there was an error opening the MTC
-                // device, so try to reopen the default one
-                //-----------------------------------------
-                OpenMIDIInDev(gprfPref.iMTCIn_DevId, &gMTCDev);
-    }
+	//      the MTC/SMPTE IN device
+	//-----------------------------
+	if(bForce || gprfEdit.iMTCIn_DevId != gprfPref.iMTCIn_DevId ||
+		lstrcmp(gprfEdit.MidiMTCInDev.szPname, gprfPref.MidiMTCInDev.szPname)==0)
+	{
+		// Close the default(for a moment) device
+		//-----------------------------------------
+		if(CloseMIDIInDev(&gMTCDev))
+			// try to open the new device ...
+			// only if the Midi and MTC
+			// devices are different
+			//-------------------------------
+			if(gprfEdit.iMTCIn_DevId != gprfEdit.iMidiIn_DevId)
+				if(OpenMIDIInDev(gprfEdit.iMTCIn_DevId, &gMTCDev) == FALSE)
+					// there was an error opening the MTC
+					// device, so try to reopen the default one
+					//-----------------------------------------
+					OpenMIDIInDev(gprfPref.iMTCIn_DevId, &gMTCDev);
+	}
 
-//      the MTC/SMPTE OUT device
-//------------------------------
-if(bForce || gprfEdit.iMTCOut_DevId != gprfPref.iMTCOut_DevId ||
-   lstrcmp(gprfEdit.MidiMTCOutDev.szPname, gprfPref.MidiMTCOutDev.szPname)==0)
-    {
-    // Close the default(for the moment) device
-    //-----------------------------------------
-    if(CloseMIDIOutDev(&gMTCDev))
-        // try to open the new device ...
-        // only if the Midi and MTC
-        // devices are different
-        //-------------------------------
-        if(gprfEdit.iMTCOut_DevId != gprfEdit.iMidiOut_DevId)
-            if(OpenMIDIOutDev(gprfEdit.iMTCOut_DevId, &gMTCDev) == FALSE)
-                // there was an error opening the MTC
-                // device, so try to reopen the default one
-                //-----------------------------------------
-                OpenMIDIOutDev(gprfPref.iMTCOut_DevId, &gMTCDev);
-    }
+	//      the MTC/SMPTE OUT device
+	//------------------------------
+	if(bForce || gprfEdit.iMTCOut_DevId != gprfPref.iMTCOut_DevId ||
+		lstrcmp(gprfEdit.MidiMTCOutDev.szPname, gprfPref.MidiMTCOutDev.szPname)==0)
+	{
+		// Close the default(for the moment) device
+		//-----------------------------------------
+		if(CloseMIDIOutDev(&gMTCDev))
+			// try to open the new device ...
+			// only if the Midi and MTC
+			// devices are different
+			//-------------------------------
+			if(gprfEdit.iMTCOut_DevId != gprfEdit.iMidiOut_DevId)
+				if(OpenMIDIOutDev(gprfEdit.iMTCOut_DevId, &gMTCDev) == FALSE)
+					// there was an error opening the MTC
+					// device, so try to reopen the default one
+					//-----------------------------------------
+					OpenMIDIOutDev(gprfPref.iMTCOut_DevId, &gMTCDev);
+	}
 #endif // #ifdef MIDI_SUPPORT
-// DONE WITH MIDI STUFF
-//---------------------
+	// DONE WITH MIDI STUFF
+	//---------------------
 
 
-gprfPref = gprfEdit;
-return TRUE;
+	gprfPref = gprfEdit;
+	return TRUE;
 }
 
 

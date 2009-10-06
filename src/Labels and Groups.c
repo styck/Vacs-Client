@@ -37,8 +37,8 @@ LPSTR   GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan);
 //=====================================
 int      RegLblGroupWnd(void)
 {
-int         iReturn;
-WNDCLASS    wc;
+	int         iReturn;
+	WNDCLASS    wc;
 
 
 	// Register Label Group Class
@@ -59,9 +59,9 @@ WNDCLASS    wc;
 	iReturn = RegisterClass(&wc);
 
 	if(iReturn == 0)
-		 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+		return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
-return 0;
+	return 0;
 }
 
 //===========================
@@ -70,34 +70,34 @@ return 0;
 //===========================
 HWND     CreateLblGroupWnd(LPRECT prect, HWND hwndParent,LPMIXERWNDDATA lpmwd)
 {
-HWND        hwnd = NULL;
+	HWND        hwnd = NULL;
 
 	hwnd = CreateWindow(
-						 gszLblGroupClass,   // Window class name
-						 NULL,              // Window's title
-						 WS_CHILD  |
-						 WS_CLIPSIBLINGS |
-						 WS_VISIBLE,
-						 prect->left,
-						 prect->top,
-						 prect->right,      // Set it to the max Width
-						 prect->bottom,     // Set it to the max Height
-						 hwndParent,        // Parent window's handle
-						 NULL,              // Default to Class Menu
-						 ghInstMain,        // Instance of window
-						 NULL               // Ptr To Data Structure For WM_CREATE
-										 );
+		gszLblGroupClass,   // Window class name
+		NULL,              // Window's title
+		WS_CHILD  |
+		WS_CLIPSIBLINGS |
+		WS_VISIBLE,
+		prect->left,
+		prect->top,
+		prect->right,      // Set it to the max Width
+		prect->bottom,     // Set it to the max Height
+		hwndParent,        // Parent window's handle
+		NULL,              // Default to Class Menu
+		ghInstMain,        // Instance of window
+		NULL               // Ptr To Data Structure For WM_CREATE
+		);
 
 	if(hwnd == NULL)
 	{
-			return NULL;
+		return NULL;
 	}
 
 	lpmwd->hwndLblGroup = hwnd;
 	SetWindowLong(hwnd, 0, (LPARAM)lpmwd);
 	UpdateWindow(hwnd);
 
-return hwnd;
+	return hwnd;
 }
 
 //===============================
@@ -110,15 +110,15 @@ return hwnd;
 
 LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lParam)
 {
-  LPMIXERWNDDATA      lpmwd;
-  PAINTSTRUCT         ps;
-  HDC                 hdc;
-  int                 iXVal;
+	LPMIXERWNDDATA      lpmwd;
+	PAINTSTRUCT         ps;
+	HDC                 hdc;
+	int                 iXVal;
 
 	lpmwd = (LPMIXERWNDDATA)GetWindowLong(hWnd,0);
 
 	switch (wMessage)
-  {
+	{
 
 		/////////////////////////////////////////////////////////////////////////
 		// If LEFT mouse button is held down and dragged/moved across the labels then
@@ -129,56 +129,9 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 		// This works for both the zoom and full view windows
 		////////////////////////////////////////////////////////////////////////
 
-		case WM_MOUSEMOVE:
-			if(wParam & MK_LBUTTON)
-			{
-				iXVal = LOWORD(lParam);
-				if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
-				{
-					if(GroupChannel(iXVal, 1))
-					{
-						///////////////////////////////////////////
-						// If there are ANY channels grouped
-						// then update our toolbar to indicate
-
-						if(IsAnyGrouped())
-							GroupedStatus(TRUE);
-						else
-							GroupedStatus(FALSE);
-
-						RefreshAllLblWindows();
-					}
-				}
-			}
-			else if(wParam & MK_RBUTTON)
-			{
-				iXVal = LOWORD(lParam);
-				if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
-				{
-					if(UnGroupChannel(iXVal))
-					{
-						///////////////////////////////////////////
-						// If there are ANY channels grouped
-						// then update our toolbar to indicate
-
-						if(IsAnyGrouped())
-							GroupedStatus(TRUE);
-						else
-							GroupedStatus(FALSE);
-
-						InvalidateRect(hWnd, NULL, FALSE);
-						UpdateWindow(hWnd);
-						RefreshAllLblWindows();
-					}
-				}
-			}
-
-		break;
-
-		//////////////////////////////////////////////////////////////
-		// Grouping a channel
-
-		case WM_LBUTTONDOWN:
+	case WM_MOUSEMOVE:
+		if(wParam & MK_LBUTTON)
+		{
 			iXVal = LOWORD(lParam);
 			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
 			{
@@ -196,12 +149,9 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 					RefreshAllLblWindows();
 				}
 			}
-			break;
-
-		//////////////////////////////////////////////////////////////
-		// Ungrouping a channel
-
-		case WM_RBUTTONDOWN:
+		}
+		else if(wParam & MK_RBUTTON)
+		{
 			iXVal = LOWORD(lParam);
 			if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
 			{
@@ -221,37 +171,87 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 					RefreshAllLblWindows();
 				}
 			}
+		}
 
-			break;
-
-		//////////////////////////////////////////////////////////////
-		case WM_ERASEBKGND:
-				break;
+		break;
 
 		//////////////////////////////////////////////////////////////
-		case WM_PAINT:
+		// Grouping a channel
 
-				hdc = BeginPaint(hWnd, &ps);
-				DrawLbl(hdc, lpmwd);	// Update the lables
+	case WM_LBUTTONDOWN:
+		iXVal = LOWORD(lParam);
+		if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
+		{
+			if(GroupChannel(iXVal, 1))
+			{
+				///////////////////////////////////////////
+				// If there are ANY channels grouped
+				// then update our toolbar to indicate
 
-				////////////////////////////
-				// Update the GROUPED status box
-					if(IsAnyGrouped())
-						GroupedStatus(TRUE);
-					else
-						GroupedStatus(FALSE);
+				if(IsAnyGrouped())
+					GroupedStatus(TRUE);
+				else
+					GroupedStatus(FALSE);
 
-				EndPaint(hWnd, &ps);
-				break;
+				RefreshAllLblWindows();
+			}
+		}
+		break;
 
 		//////////////////////////////////////////////////////////////
-		default:
-				return DefWindowProc(hWnd, wMessage, wParam, lParam);
+		// Ungrouping a channel
 
-  }
+	case WM_RBUTTONDOWN:
+		iXVal = LOWORD(lParam);
+		if(CalculatePhisChannelFromScreen( &iXVal, lpmwd))
+		{
+			if(UnGroupChannel(iXVal))
+			{
+				///////////////////////////////////////////
+				// If there are ANY channels grouped
+				// then update our toolbar to indicate
+
+				if(IsAnyGrouped())
+					GroupedStatus(TRUE);
+				else
+					GroupedStatus(FALSE);
+
+				InvalidateRect(hWnd, NULL, FALSE);
+				UpdateWindow(hWnd);
+				RefreshAllLblWindows();
+			}
+		}
+
+		break;
+
+		//////////////////////////////////////////////////////////////
+	case WM_ERASEBKGND:
+		break;
+
+		//////////////////////////////////////////////////////////////
+	case WM_PAINT:
+
+		hdc = BeginPaint(hWnd, &ps);
+		DrawLbl(hdc, lpmwd);	// Update the lables
+
+		////////////////////////////
+		// Update the GROUPED status box
+		if(IsAnyGrouped())
+			GroupedStatus(TRUE);
+		else
+			GroupedStatus(FALSE);
+
+		EndPaint(hWnd, &ps);
+		break;
+
+		//////////////////////////////////////////////////////////////
+	default:
+		return DefWindowProc(hWnd, wMessage, wParam, lParam);
+
+	}
 
 
-return 0;
+	return 0;
 }
 
 //=================================================
@@ -270,134 +270,134 @@ return 0;
 //=================================================
 void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
 {
-  HDC         hdcMem;
-  HBITMAP     hbmpMem, hbmp;
-  HBRUSH      hbrGray, hbrDkGray, hbrWhite, hbrBlack;
-  int         iWidth, iHeight;
-  RECT        rect = {0};
-  char        szBuff[5];
-  char        szText[32];
-  int         iCount;
-  int         iPhisChannel;
-  int         iBmpIndex;
-  int         iTarget, iic;
+	HDC         hdcMem;
+	HBITMAP     hbmpMem, hbmp;
+	HBRUSH      hbrGray, hbrDkGray, hbrWhite, hbrBlack;
+	int         iWidth, iHeight;
+	RECT        rect = {0};
+	char        szBuff[5];
+	char        szText[32];
+	int         iCount;
+	int         iPhisChannel;
+	int         iBmpIndex;
+	int         iTarget, iic;
 
-  if(lpmwd == NULL)
-      return;
+	if(lpmwd == NULL)
+		return;
 
-  szBuff[4] = 0; // set the last one to 0
+	szBuff[4] = 0; // set the last one to 0
 
-  // Get the size of the Window
-  //---------------------------
-  GetClientRect(lpmwd->hwndLblGroup, &rect);
+	// Get the size of the Window
+	//---------------------------
+	GetClientRect(lpmwd->hwndLblGroup, &rect);
 
-  iHeight = rect.bottom;
-  iWidth  = rect.right;
+	iHeight = rect.bottom;
+	iWidth  = rect.right;
 
-  // Prepare the Bitmaps
-  //--------------------
-  hbmp    = CreateCompatibleBitmap(hdc, iWidth, iHeight);
-  hbmpMem = CreateCompatibleBitmap(hdc, iWidth, iHeight);
+	// Prepare the Bitmaps
+	//--------------------
+	hbmp    = CreateCompatibleBitmap(hdc, iWidth, iHeight);
+	hbmpMem = CreateCompatibleBitmap(hdc, iWidth, iHeight);
 
-  hdcMem = CreateCompatibleDC(hdc);
+	hdcMem = CreateCompatibleDC(hdc);
 
-  hbrGray = GetStockObject(GRAY_BRUSH);
-  hbrDkGray = GetStockObject(DKGRAY_BRUSH);
-  hbrWhite = GetStockObject(WHITE_BRUSH);
-  hbrBlack = GetStockObject(BLACK_BRUSH);
+	hbrGray = GetStockObject(GRAY_BRUSH);
+	hbrDkGray = GetStockObject(DKGRAY_BRUSH);
+	hbrWhite = GetStockObject(WHITE_BRUSH);
+	hbrBlack = GetStockObject(BLACK_BRUSH);
 
-  // Go to a loop to draw all the visible labels
-  // labels to the Memory bitmap
-  //--------------------------------------------
+	// Go to a loop to draw all the visible labels
+	// labels to the Memory bitmap
+	//--------------------------------------------
 
-  rect.right = 0; // Set it to this on purpose
+	rect.right = 0; // Set it to this on purpose
 
-  for(iCount = lpmwd->iStartScrChan; iCount < lpmwd->iEndScrChan + 1; iCount++)
-  {
-      iPhisChannel = lpmwd->lpwRemapToScr[iCount]; // Get the actual phis channel
-      iBmpIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
+	for(iCount = lpmwd->iStartScrChan; iCount < lpmwd->iEndScrChan + 1; iCount++)
+	{
+		iPhisChannel = lpmwd->lpwRemapToScr[iCount]; // Get the actual phis channel
+		iBmpIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
 
-      rect.right += gpBMPTable[iBmpIndex].iWidth;
-      CopyMemory(szBuff, lpmwd->lpZoneMap[iPhisChannel].chDefLabel, 4);
-      
+		rect.right += gpBMPTable[iBmpIndex].iWidth;
+		CopyMemory(szBuff, lpmwd->lpZoneMap[iPhisChannel].chDefLabel, 4);
 
-			/////////////////////////////////////////////////////////
-			// Handle displaying labels, must handle the Sub/Matrix
-			// differently, switching the label text depending on 
-			// where we are on the scrolling image
 
-      if(gDeviceSetup.iaChannelTypes[iPhisChannel] == 2 && 
-        lpmwd->iYOffset < 2853)
-      {
+		/////////////////////////////////////////////////////////
+		// Handle displaying labels, must handle the Sub/Matrix
+		// differently, switching the label text depending on 
+		// where we are on the scrolling image
 
-				// Calculate which Matrix Label to use
+		if(gDeviceSetup.iaChannelTypes[iPhisChannel] == 2 && 
+			lpmwd->iYOffset < 2853)
+		{
 
-        iTarget = 0;
-        for(iic = 0; iic < MAX_AUX_CHANNELS; iic++)
-        {
-          if(g_aiAux[iic] == iPhisChannel )
-          {
-            iTarget = iic;
-            break;
-          }
-        }
-				
-				if(gpBMPTable[iBmpIndex].iWidth < 20)		// See if this is a FULL VIEW label
-					wsprintf(szText, "%s", szBuff);				// Yep
-				else																		// No, display Matrix label
-					wsprintf(szText, "%s\n%s", szBuff, &g_pMatrixLabels[iTarget * MAX_LABEL_SIZE]);
+			// Calculate which Matrix Label to use
 
-				////////////////////////////////////////////////////////////////////////////////////
-				// Now display the label, either hilighted if grouped (FULL VIEW ONLY for Matrix)
-				// or unhilighted if NOT grouped.
-
-				if(IsGrouped(iPhisChannel) && (gpBMPTable[iBmpIndex].iWidth < 20))
-				{
-					FillRect(hdc, &rect, hbrBlack);
-					WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(255, 0, 0), (LPSTR)szText);
-				}
-				else
-				{
-					FillRect(hdc, &rect, hbrGray);
-					WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szText);
-				}
-
-      }
-      else
+			iTarget = 0;
+			for(iic = 0; iic < MAX_AUX_CHANNELS; iic++)
 			{
-				if(gpBMPTable[iBmpIndex].iWidth < 20)		// See if this is a FULL VIEW label
-					wsprintf(szText, "%s", szBuff);				// Yep
-				else																		// No, display Channel label
-					wsprintf(szText, "%s\n%s", szBuff, &gpLabels[iPhisChannel * MAX_LABEL_SIZE]);
-
-				///////////////////////////////////////////////////////////////
-				// Now display the label, either hilighted if grouped
-				// or unhilighted if NOT grouped.
-
-				if(IsGrouped(iPhisChannel))
+				if(g_aiAux[iic] == iPhisChannel )
 				{
-					FillRect(hdc, &rect, hbrBlack);
-					WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(255, 0, 0), (LPSTR)szText);
+					iTarget = iic;
+					break;
 				}
-				else
-				{
-					FillRect(hdc, &rect, hbrGray);
-					WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szText);
-				}
-
 			}
 
-      rect.left = rect.right;
-  }
+			if(gpBMPTable[iBmpIndex].iWidth < 20)		// See if this is a FULL VIEW label
+				wsprintf(szText, "%s", szBuff);				// Yep
+			else																		// No, display Matrix label
+				wsprintf(szText, "%s\n%s", szBuff, &g_pMatrixLabels[iTarget * MAX_LABEL_SIZE]);
 
-  // Free the Bitmaps
-  //-----------------
-  DeleteObject(hbmp);
-  DeleteObject(hbmpMem);
-  // Free the DC
-  //------------
-  DeleteDC(hdcMem);
-  return;
+			////////////////////////////////////////////////////////////////////////////////////
+			// Now display the label, either hilighted if grouped (FULL VIEW ONLY for Matrix)
+			// or unhilighted if NOT grouped.
+
+			if(IsGrouped(iPhisChannel) && (gpBMPTable[iBmpIndex].iWidth < 20))
+			{
+				FillRect(hdc, &rect, hbrBlack);
+				WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(255, 0, 0), (LPSTR)szText);
+			}
+			else
+			{
+				FillRect(hdc, &rect, hbrGray);
+				WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szText);
+			}
+
+		}
+		else
+		{
+			if(gpBMPTable[iBmpIndex].iWidth < 20)		// See if this is a FULL VIEW label
+				wsprintf(szText, "%s", szBuff);				// Yep
+			else																		// No, display Channel label
+				wsprintf(szText, "%s\n%s", szBuff, &gpLabels[iPhisChannel * MAX_LABEL_SIZE]);
+
+			///////////////////////////////////////////////////////////////
+			// Now display the label, either hilighted if grouped
+			// or unhilighted if NOT grouped.
+
+			if(IsGrouped(iPhisChannel))
+			{
+				FillRect(hdc, &rect, hbrBlack);
+				WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(255, 0, 0), (LPSTR)szText);
+			}
+			else
+			{
+				FillRect(hdc, &rect, hbrGray);
+				WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szText);
+			}
+
+		}
+
+		rect.left = rect.right;
+	}
+
+	// Free the Bitmaps
+	//-----------------
+	DeleteObject(hbmp);
+	DeleteObject(hbmpMem);
+	// Free the DC
+	//------------
+	DeleteDC(hdcMem);
+	return;
 }
 
 
@@ -407,30 +407,30 @@ void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
 //
 BOOL  CalculatePhisChannelFromScreen(int *piRet, LPMIXERWNDDATA lpmwd)
 {
-  int   iPhisChannel;
-  int   iBmpIndex;
-  int   iWidth;
-  int   iX; // the x possition on the screen
-  
-
-  iPhisChannel = lpmwd->lpwRemapToScr[lpmwd->iStartScrChan]; // Get the first physical channel
-  iBmpIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
-  iWidth = gpBMPTable[iBmpIndex].iWidth;
-
-  iX = *piRet;
-  iX = lpmwd->iStartScrChan + (iX/iWidth);
-  if(iX > MAX_CHANNELS)
-    return FALSE;
-
-  // Cool now get the Physical Channel
-  //
-  *piRet = lpmwd->lpwRemapToScr[iX]; 
-
-  if(*piRet > MAX_CHANNELS)
-    return FALSE;
+	int   iPhisChannel;
+	int   iBmpIndex;
+	int   iWidth;
+	int   iX; // the x possition on the screen
 
 
-  return TRUE;
+	iPhisChannel = lpmwd->lpwRemapToScr[lpmwd->iStartScrChan]; // Get the first physical channel
+	iBmpIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
+	iWidth = gpBMPTable[iBmpIndex].iWidth;
+
+	iX = *piRet;
+	iX = lpmwd->iStartScrChan + (iX/iWidth);
+	if(iX > MAX_CHANNELS)
+		return FALSE;
+
+	// Cool now get the Physical Channel
+	//
+	*piRet = lpmwd->lpwRemapToScr[iX]; 
+
+	if(*piRet > MAX_CHANNELS)
+		return FALSE;
+
+
+	return TRUE;
 }
 
 
@@ -441,18 +441,18 @@ BOOL  CalculatePhisChannelFromScreen(int *piRet, LPMIXERWNDDATA lpmwd)
 //
 void    DrawChannelLabel(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
-  HFONT   hfont;
-  RECT    r = lpctrlZM->rZone;
-  LPSTR   pLabel;
+	HFONT   hfont;
+	RECT    r = lpctrlZM->rZone;
+	LPSTR   pLabel;
 
 
-  hfont = SelectObject(hdc, g_hConsoleFont);
-  //iChan = LOWORD(lpmwd->lpwRemapToScr[iChan]); // Get the first physical channel
+	hfont = SelectObject(hdc, g_hConsoleFont);
+	//iChan = LOWORD(lpmwd->lpwRemapToScr[iChan]); // Get the first physical channel
 
-  pLabel = GetLabelText(lpctrlZM, iChan);
-  if(pLabel)
-    WriteTextToDC(hdc, &r, 0, 0, RGB(0, 0, 0), pLabel);
-  SelectObject(hdc, hfont);
+	pLabel = GetLabelText(lpctrlZM, iChan);
+	if(pLabel)
+		WriteTextToDC(hdc, &r, 0, 0, RGB(0, 0, 0), pLabel);
+	SelectObject(hdc, hfont);
 };
 
 
@@ -462,56 +462,56 @@ void    DrawChannelLabel(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDA
 //
 LPSTR   GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan)
 {
-  LPSTR   pRet = NULL;
-  int     iTarget;
-  int     iCount;
+	LPSTR   pRet = NULL;
+	int     iTarget;
+	int     iCount;
 
-  if(gDeviceSetup.iaChannelTypes[iChan] == DCX_DEVMAP_MODULE_MASTER)
-  {
-    // Check for the Aux Labels ...
-    //
-    if((lpctrlZM->iCtrlChanPos >= CTRL_NUM_AUX1_LABEL_LOOKUP) && 
-       (lpctrlZM->iCtrlChanPos <= CTRL_NUM_AUX16_LABEL_LOOKUP))
-    {
-      iTarget = lpctrlZM->iCtrlChanPos - CTRL_NUM_AUX1_LABEL_LOOKUP;
-      pRet = &g_pAuxLabels[iTarget * MAX_LABEL_SIZE];    
-      /*
-      for(iCount = 0; iCount < MAX_CHANNELS; iCount++)
-      {
-        if(gDeviceSetup.iaChannelTypes[iCount] == 2)
-          if(iTarget == 0)
-          {
-            pRet = &g_pAuxLabels[iCount * MAX_LABEL_SIZE];    
-            break;
-          }
-          else
-            iTarget --;
-      }
-      */
-    }
-    else
-      pRet =  &gpLabels[iChan * MAX_LABEL_SIZE];
-  }
-  else
-    if(gDeviceSetup.iaChannelTypes[iChan] == DCX_DEVMAP_MODULE_AUX &&
-      lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_LABEL)
-    {
-      iTarget = 0;
-      for(iCount = 0; iCount < MAX_AUX_CHANNELS; iCount++)
-      {
-        if(g_aiMatrix[iCount] == lpctrlZM->iModuleNumber )
-        {
-          iTarget = iCount;
-          break;
-        }
-      }
+	if(gDeviceSetup.iaChannelTypes[iChan] == DCX_DEVMAP_MODULE_MASTER)
+	{
+		// Check for the Aux Labels ...
+		//
+		if((lpctrlZM->iCtrlChanPos >= CTRL_NUM_AUX1_LABEL_LOOKUP) && 
+			(lpctrlZM->iCtrlChanPos <= CTRL_NUM_AUX16_LABEL_LOOKUP))
+		{
+			iTarget = lpctrlZM->iCtrlChanPos - CTRL_NUM_AUX1_LABEL_LOOKUP;
+			pRet = &g_pAuxLabels[iTarget * MAX_LABEL_SIZE];    
+			/*
+			for(iCount = 0; iCount < MAX_CHANNELS; iCount++)
+			{
+			if(gDeviceSetup.iaChannelTypes[iCount] == 2)
+			if(iTarget == 0)
+			{
+			pRet = &g_pAuxLabels[iCount * MAX_LABEL_SIZE];    
+			break;
+			}
+			else
+			iTarget --;
+			}
+			*/
+		}
+		else
+			pRet =  &gpLabels[iChan * MAX_LABEL_SIZE];
+	}
+	else
+		if(gDeviceSetup.iaChannelTypes[iChan] == DCX_DEVMAP_MODULE_AUX &&
+			lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_LABEL)
+		{
+			iTarget = 0;
+			for(iCount = 0; iCount < MAX_AUX_CHANNELS; iCount++)
+			{
+				if(g_aiMatrix[iCount] == lpctrlZM->iModuleNumber )
+				{
+					iTarget = iCount;
+					break;
+				}
+			}
 
-      pRet = &g_pMatrixLabels[iTarget * MAX_LABEL_SIZE];    
-    }
-    else
-      pRet = &gpLabels[iChan * MAX_LABEL_SIZE];
+			pRet = &g_pMatrixLabels[iTarget * MAX_LABEL_SIZE];    
+		}
+		else
+			pRet = &gpLabels[iChan * MAX_LABEL_SIZE];
 
-  return pRet;
+	return pRet;
 }
 
 
@@ -527,47 +527,47 @@ LPCTRLZONEMAP g_pCtrlZm = NULL;
 //
 LRESULT CALLBACK NewEditWindowProc( HWND hwnd, UINT uMsg,  WPARAM wParam,  LPARAM lParam )
 {
-  HWND    hwndParent;
-  char    chBuffer[32];
-  LPSTR   pLabel;
+	HWND    hwndParent;
+	char    chBuffer[32];
+	LPSTR   pLabel;
 
-  switch(uMsg)
-  {
+	switch(uMsg)
+	{
 
-  case WM_KEYDOWN:
-    switch(wParam)
-    {
-    case VK_RETURN:
-      hwndParent = GetParent(GetParent(hwnd));
-      GetWindowText(hwnd, chBuffer, MAX_LABEL_SIZE);
-      
-      pLabel = GetLabelText(g_pCtrlZm, g_iChannelLabel);
-      if(pLabel)
-        wsprintf(pLabel, "%s", chBuffer);
-      //wsprintf(&gpLabels[g_iChannelLabel * MAX_LABEL_SIZE], "%s", chBuffer);
+	case WM_KEYDOWN:
+		switch(wParam)
+		{
+		case VK_RETURN:
+			hwndParent = GetParent(GetParent(hwnd));
+			GetWindowText(hwnd, chBuffer, MAX_LABEL_SIZE);
 
-      DestroyWindow(hwnd);
-      RefreshAllLblWindows();
-      SetFocus(hwndParent);
-      break;
-    case VK_ESCAPE:
-      hwndParent = GetParent(GetParent(hwnd));
-      DestroyWindow(hwnd);
-      SetFocus(hwndParent);
-      break;
-    default:
-      return CallWindowProc(g_editWindowProc, hwnd, uMsg, wParam, lParam);
-      break;
-    }
-    
-    break;
+			pLabel = GetLabelText(g_pCtrlZm, g_iChannelLabel);
+			if(pLabel)
+				wsprintf(pLabel, "%s", chBuffer);
+			//wsprintf(&gpLabels[g_iChannelLabel * MAX_LABEL_SIZE], "%s", chBuffer);
 
-  default:
-    return CallWindowProc(g_editWindowProc, hwnd, uMsg, wParam, lParam);
-    break;
-  }
+			DestroyWindow(hwnd);
+			RefreshAllLblWindows();
+			SetFocus(hwndParent);
+			break;
+		case VK_ESCAPE:
+			hwndParent = GetParent(GetParent(hwnd));
+			DestroyWindow(hwnd);
+			SetFocus(hwndParent);
+			break;
+		default:
+			return CallWindowProc(g_editWindowProc, hwnd, uMsg, wParam, lParam);
+			break;
+		}
 
-  return 1;
+		break;
+
+	default:
+		return CallWindowProc(g_editWindowProc, hwnd, uMsg, wParam, lParam);
+		break;
+	}
+
+	return 1;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -576,62 +576,62 @@ LRESULT CALLBACK NewEditWindowProc( HWND hwnd, UINT uMsg,  WPARAM wParam,  LPARA
 //
 void  EditModuleLabel(HWND hwnd, LPMIXERWNDDATA lpmwd, BOOL bShow)
 {
-  char          chBuffer[32];
-  LPSTR         pLabel;
-  
+	char          chBuffer[32];
+	LPSTR         pLabel;
 
-  if(bShow && lpmwd)
-  {
-    g_pCtrlZm= lpmwd->lpCtrlZM;
 
-    if(g_hwndLabelEdit)
-    {
-      DestroyWindow(g_hwndLabelEdit);
-      g_hwndLabelEdit = NULL;
-    }
-    ReleaseCapture();
+	if(bShow && lpmwd)
+	{
+		g_pCtrlZm= lpmwd->lpCtrlZM;
+
+		if(g_hwndLabelEdit)
+		{
+			DestroyWindow(g_hwndLabelEdit);
+			g_hwndLabelEdit = NULL;
+		}
+		ReleaseCapture();
 
 		g_iChannelLabel = LOBYTE(lpmwd->lpwRemapToScr[lpmwd->iCurChan + 
-							                          lpmwd->iStartScrChan]); //lpmwd->iCurChan;
- 
-    //wsprintf(chBuffer, "%s", &gpLabels[g_iChannelLabel * MAX_LABEL_SIZE]);
-    pLabel = GetLabelText(g_pCtrlZm, g_iChannelLabel);
-    if(pLabel)
-      wsprintf(chBuffer, "%s", pLabel);
-    else
-      return; // bail out of here ... there isn't a buffer where to put this data
-    
-    g_hwndLabelEdit = CreateWindow(
-					 "EDIT",   // Window class name
-					 NULL,              // Window's title
-					 WS_CHILD  |
-           WS_CLIPSIBLINGS |
-           WS_VISIBLE ,
-					 g_pCtrlZm->rZone.left + lpmwd->iXadj,
-					 g_pCtrlZm->rZone.top - lpmwd->iYOffset,
-					 g_pCtrlZm->rZone.right - g_pCtrlZm->rZone.left,       // Set it to the max Width
-					 g_pCtrlZm->rZone.bottom - g_pCtrlZm->rZone.top,      // Set it to the max Height
-					 hwnd,        // Parent window's handle
-					 NULL,              // Default to Class Menu
-					 ghInstMain,         // Instance of window
-					 NULL               // Ptr To Data Structure For WM_CREATE
-                   );
+			lpmwd->iStartScrChan]); //lpmwd->iCurChan;
 
-   										
-//    g_iChannelLabel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
-    g_editWindowProc = (WNDPROC)SetWindowLong(g_hwndLabelEdit, GWL_WNDPROC, (LONG)NewEditWindowProc);
+		//wsprintf(chBuffer, "%s", &gpLabels[g_iChannelLabel * MAX_LABEL_SIZE]);
+		pLabel = GetLabelText(g_pCtrlZm, g_iChannelLabel);
+		if(pLabel)
+			wsprintf(chBuffer, "%s", pLabel);
+		else
+			return; // bail out of here ... there isn't a buffer where to put this data
+
+		g_hwndLabelEdit = CreateWindow(
+			"EDIT",   // Window class name
+			NULL,              // Window's title
+			WS_CHILD  |
+			WS_CLIPSIBLINGS |
+			WS_VISIBLE ,
+			g_pCtrlZm->rZone.left + lpmwd->iXadj,
+			g_pCtrlZm->rZone.top - lpmwd->iYOffset,
+			g_pCtrlZm->rZone.right - g_pCtrlZm->rZone.left,       // Set it to the max Width
+			g_pCtrlZm->rZone.bottom - g_pCtrlZm->rZone.top,      // Set it to the max Height
+			hwnd,        // Parent window's handle
+			NULL,              // Default to Class Menu
+			ghInstMain,         // Instance of window
+			NULL               // Ptr To Data Structure For WM_CREATE
+			);
+
+
+		//    g_iChannelLabel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
+		g_editWindowProc = (WNDPROC)SetWindowLong(g_hwndLabelEdit, GWL_WNDPROC, (LONG)NewEditWindowProc);
 
 		SendMessage(g_hwndLabelEdit, WM_SETFONT, (LPARAM)g_hConsoleFont, 0);
-    SetWindowText(g_hwndLabelEdit, chBuffer);
-    SetFocus(g_hwndLabelEdit);
-  }
-  else
-  {
-    ReleaseCapture();
-    DestroyWindow(g_hwndLabelEdit);
-    g_hwndLabelEdit = NULL;
-    SetFocus(GetParent(hwnd));
-  }
+		SetWindowText(g_hwndLabelEdit, chBuffer);
+		SetFocus(g_hwndLabelEdit);
+	}
+	else
+	{
+		ReleaseCapture();
+		DestroyWindow(g_hwndLabelEdit);
+		g_hwndLabelEdit = NULL;
+		SetFocus(GetParent(hwnd));
+	}
 
 };
 

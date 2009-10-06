@@ -25,7 +25,7 @@ void TurnOffAllVUforMixerWindow(LPMIXERWNDDATA lpmwd);
 LPSTR   GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan);
 int isCtrlValueNotEqualToDefault (LPCTRLZONEMAP   lpctrlZM, int ctrlNum);
 void HandleCueMasterMuteFilterEx(int iPhisChann, LPMIXERWNDDATA lpmwd, 
-                                  LPCTRLZONEMAP lpctrlZM, BOOL bIsOn);
+								 LPCTRLZONEMAP lpctrlZM, BOOL bIsOn);
 
 extern int                 g_aiAux[MAX_MATRIX_COUNT];
 
@@ -38,13 +38,13 @@ extern int                 g_aiAux[MAX_MATRIX_COUNT];
 //==================================================
 void    DrawVertFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
-HBITMAP         hbmpOld;
-HBITMAP         hbmp;
-int             iHeight, iWidth;
-RECT            rZone;
-int             iTop, iLeft;
-int             iPhisChannel;
-int             iBMPIndex;
+	HBITMAP         hbmpOld;
+	HBITMAP         hbmp;
+	int             iHeight, iWidth;
+	RECT            rZone;
+	int             iTop, iLeft;
+	int             iPhisChannel;
+	int             iBMPIndex;
 
 	// Get this Control Zone
 	//----------------------
@@ -63,7 +63,7 @@ int             iBMPIndex;
 	//--------------------------------------
 
 	BitBlt(hdc, rZone.left, rZone.top, rZone.right - rZone.left, rZone.bottom - rZone.top,
-				 g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
+		g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
 
 	// Clean the buffer so others can use it freely
 	//---------------------------------------------
@@ -93,7 +93,7 @@ int             iBMPIndex;
 	iLeft = rZone.left +(((rZone.right-rZone.left)-iWidth)/2);
 
 	BitBlt(hdc, iLeft, iTop, iWidth, iHeight,
-				 g_hdcTempBuffer, 0, 0, SRCCOPY);
+		g_hdcTempBuffer, 0, 0, SRCCOPY);
 
 	SelectObject(g_hdcTempBuffer, hbmpOld);
 	return;
@@ -133,7 +133,7 @@ void    DrawHorizFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA
 	//--------------------------------------
 
 	BitBlt(hdc, rZone.left, rZone.top, rZone.right - rZone.left, rZone.bottom - rZone.top,
-				 g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
+		g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
 
 	// Clean the buffer so others can use it freely
 	//---------------------------------------------
@@ -168,7 +168,7 @@ void    DrawHorizFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA
 	iTop = rZone.top +(((rZone.bottom-rZone.top)-iHeight)/2);
 
 	BitBlt(hdc, iLeft, iTop, iWidth, iHeight,
-				 g_hdcTempBuffer, 0, 0, SRCCOPY);
+		g_hdcTempBuffer, 0, 0, SRCCOPY);
 
 	SelectObject(g_hdcTempBuffer, hbmpOld);
 
@@ -185,205 +185,205 @@ void    DrawHorizFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA
 //==================================================
 void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWNDDATA lpmwd, int iChan, int iVUtype)
 {
-  HBITMAP         hbmpOld;
-  HBITMAP         hbmp;
-  int             iHeight, iWidth;
-  RECT            rZone;
-  int             iTop, iLeft;
-  int             iPhisChannel;
-  HDC             hdcLocal;
-  int             iVal;
-  WORD            wVUType;
-  int             iModuleType;
+	HBITMAP         hbmpOld;
+	HBITMAP         hbmp;
+	int             iHeight, iWidth;
+	RECT            rZone;
+	int             iTop, iLeft;
+	int             iPhisChannel;
+	HDC             hdcLocal;
+	int             iVal;
+	WORD            wVUType;
+	int             iModuleType;
 
 	// Get the MODULE Type, ie INPUT, MASTER, and MATRIX
 
-  iModuleType = gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber];
-  
-  if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_VU_METER) && 
-     ( iModuleType == DCX_DEVMAP_MODULE_INPUT) )
-  {
-    wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_INPUT_PREPOST_FADER_VU)>0)?0:2;
-  }
-  else
-  {
-    if(iModuleType == DCX_DEVMAP_MODULE_MASTER)
-    {
-      if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY2)
-        wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_MASTER_POST_RT_VU)>0)?2:6;
-      else
-        if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY)
-          wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_MASTER_POST_LT_VU)>0)?0:4;
-        else
-          wVUType = lpctrlZM->iCtrlType - CTRL_TYPE_VU_DISPLAY;
-    }
-    else
-      if(iModuleType == DCX_DEVMAP_MODULE_MATRIX)
-      {
-        if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY2)
-          wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_SUB_POST_RT_VU)>0)?2:6;
-        else
-          if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY)
-            wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_SUB_POST_LT_VU)>0)?0:4;
-          else
-            if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY10)
-              wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_MATRIX_POST_RT_VU)>0)?2:6;
-            else
-              if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY8)
-                wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_MATRIX_POST_LT_VU)>0)?0:4;
-              else
-                wVUType = lpctrlZM->iCtrlType - CTRL_TYPE_VU_DISPLAY;
-      }
-    else
-      wVUType = lpctrlZM->iCtrlType - CTRL_TYPE_VU_DISPLAY;
-  }
-  
-  if(wVUType > 7)
-    wVUType -= 8;
+	iModuleType = gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber];
 
-  // Get this Control Zone
-  //----------------------
-  rZone = lpctrlZM->rZone;
-  iPhisChannel = iChan;
+	if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_VU_METER) && 
+		( iModuleType == DCX_DEVMAP_MODULE_INPUT) )
+	{
+		wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_INPUT_PREPOST_FADER_VU)>0)?0:2;
+	}
+	else
+	{
+		if(iModuleType == DCX_DEVMAP_MODULE_MASTER)
+		{
+			if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY2)
+				wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_MASTER_POST_RT_VU)>0)?2:6;
+			else
+				if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY)
+					wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_MASTER_POST_LT_VU)>0)?0:4;
+				else
+					wVUType = lpctrlZM->iCtrlType - CTRL_TYPE_VU_DISPLAY;
+		}
+		else
+			if(iModuleType == DCX_DEVMAP_MODULE_MATRIX)
+			{
+				if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY2)
+					wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_SUB_POST_RT_VU)>0)?2:6;
+				else
+					if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY)
+						wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_SUB_POST_LT_VU)>0)?0:4;
+					else
+						if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY10)
+							wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_MATRIX_POST_RT_VU)>0)?2:6;
+						else
+							if(lpctrlZM->iCtrlType == CTRL_TYPE_VU_DISPLAY8)
+								wVUType = (GETPHISDATAVALUE(0, lpctrlZM, CTRL_NUM_MATRIX_POST_LT_VU)>0)?0:4;
+							else
+								wVUType = lpctrlZM->iCtrlType - CTRL_TYPE_VU_DISPLAY;
+			}
+			else
+				wVUType = lpctrlZM->iCtrlType - CTRL_TYPE_VU_DISPLAY;
+	}
 
-  // Get this Controls Bitmap
-  //-------------------------
-  hbmp = gpBMPTable[lpctrlZM->iCtrlBmp[0]].hbmp;
-  iHeight = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iHeight;
-  iWidth  = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iWidth;
+	if(wVUType > 7)
+		wVUType -= 8;
 
-  hdcLocal = CreateCompatibleDC(hdc);
-  hbmpOld = SelectObject(g_hdcBuffer, hbmp);
-  
+	// Get this Control Zone
+	//----------------------
+	rZone = lpctrlZM->rZone;
+	iPhisChannel = iChan;
+
+	// Get this Controls Bitmap
+	//-------------------------
+	hbmp = gpBMPTable[lpctrlZM->iCtrlBmp[0]].hbmp;
+	iHeight = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iHeight;
+	iWidth  = gpBMPTable[lpctrlZM->iCtrlBmp[0]].iWidth;
+
+	hdcLocal = CreateCompatibleDC(hdc);
+	hbmpOld = SelectObject(g_hdcBuffer, hbmp);
+
 	// Get the VU data value
 	//
-  iVal = pVuData->wVUValue[wVUType];
+	iVal = pVuData->wVUValue[wVUType];
 
-  // Validate index
-  //
-  if(iVal > 4095)   
-    iVal = 4095;
-  if(iVal < 0)  
-    iVal = 0;
+	// Validate index
+	//
+	if(iVal > 4095)   
+		iVal = 4095;
+	if(iVal < 0)  
+		iVal = 0;
 
-  switch(lpctrlZM->iCtrlChanPos)
-  {
+	switch(lpctrlZM->iCtrlChanPos)
+	{
 
-  case CTRL_NUM_INPUT_COMP_VU:
-    iVal = gVU_CompDispTable[iVal];
-    // Calculate the Vertical Position
-    //--------------------------------
-    iTop = rZone.top;
-    // Calculate the Horizontal position
-    //----------------------------------
-    iLeft = rZone.left - iVal;
-    break;
-  case CTRL_NUM_INPUT_GATE_VU:
-    iVal = gVU_GateDispTable[iVal];
-    // Calculate the Vertical Position
-    //--------------------------------
-    iTop = rZone.top;
-    // Calculate the Horizontal position
-    //----------------------------------
-    iLeft = rZone.left - iVal;
-    break;
+	case CTRL_NUM_INPUT_COMP_VU:
+		iVal = gVU_CompDispTable[iVal];
+		// Calculate the Vertical Position
+		//--------------------------------
+		iTop = rZone.top;
+		// Calculate the Horizontal position
+		//----------------------------------
+		iLeft = rZone.left - iVal;
+		break;
+	case CTRL_NUM_INPUT_GATE_VU:
+		iVal = gVU_GateDispTable[iVal];
+		// Calculate the Vertical Position
+		//--------------------------------
+		iTop = rZone.top;
+		// Calculate the Horizontal position
+		//----------------------------------
+		iLeft = rZone.left - iVal;
+		break;
 
-  case CTRL_NUM_INPUT_VU_METER:
-  default:
-    iVal = gVU_VertDispTable[iVal];
-    // Calculate the Vertical Position
-    //--------------------------------
-    iTop = rZone.bottom - iVal;
-    // Calculate the Horizontal position
-    //----------------------------------
-    iLeft = rZone.left;
-    break;
-  }
-
-
-  // this is Input module so go ahead and display the Peak and the Average data
-  //
-  if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_VU_METER) &&
-    (gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT) )
-  {
-    BitBlt(hdc, 0, iHeight - iVal, iWidth/2, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
-
-    iVal = pVuData->wVUValue[wVUType + 1];
-
-    // Validate index
-    //
-    if(iVal > 4095)   
-      iVal = 4095;
-    if(iVal < 0)  
-      iVal = 0;
-
-    iVal = gVU_VertDispTable[iVal];
-
-      // Calculate the Vertical Position
-    //--------------------------------
-    iTop = rZone.bottom - iVal;
-
-    // Calculate the Horizontal position
-    //----------------------------------
-    BitBlt(hdc, iWidth/2, iHeight - iVal, iWidth/2, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
-  }
-  else
-    if( ((lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_VU_METER) &&
-       (iModuleType == DCX_DEVMAP_MODULE_MASTER) || (iModuleType  == DCX_DEVMAP_MODULE_CUE)) 
-        ||
-        ( ((lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_VU_METER) || 
-          (lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX2_VU_METER)) 
-          &&
-          (iModuleType  == DCX_DEVMAP_MODULE_MATRIX)) )
-    {
-      iVal = pVuData->wVUValue[wVUType];
-      // Calculate the Vertical Position
-      //--------------------------------
-      if(iVal > 4095)iVal = 4095;
-      if(iVal < 0)iVal = 0;
-      iVal = gVU_VertDispTable[iVal];
-      iTop = rZone.bottom - iVal;
-      BitBlt(hdc, 0, iHeight - iVal, iWidth/2, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
+	case CTRL_NUM_INPUT_VU_METER:
+	default:
+		iVal = gVU_VertDispTable[iVal];
+		// Calculate the Vertical Position
+		//--------------------------------
+		iTop = rZone.bottom - iVal;
+		// Calculate the Horizontal position
+		//----------------------------------
+		iLeft = rZone.left;
+		break;
+	}
 
 
-      iVal = pVuData->wVUValue[wVUType + 1];
-      if(iVal > 4095)iVal = 4095;
-      if(iVal < 0)iVal = 0;
+	// this is Input module so go ahead and display the Peak and the Average data
+	//
+	if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_VU_METER) &&
+		(gDeviceSetup.iaChannelTypes[lpctrlZM->iModuleNumber] == DCX_DEVMAP_MODULE_INPUT) )
+	{
+		BitBlt(hdc, 0, iHeight - iVal, iWidth/2, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
+
+		iVal = pVuData->wVUValue[wVUType + 1];
+
+		// Validate index
+		//
+		if(iVal > 4095)   
+			iVal = 4095;
+		if(iVal < 0)  
+			iVal = 0;
+
+		iVal = gVU_VertDispTable[iVal];
+
+		// Calculate the Vertical Position
+		//--------------------------------
+		iTop = rZone.bottom - iVal;
+
+		// Calculate the Horizontal position
+		//----------------------------------
+		BitBlt(hdc, iWidth/2, iHeight - iVal, iWidth/2, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
+	}
+	else
+		if( ((lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_VU_METER) &&
+			(iModuleType == DCX_DEVMAP_MODULE_MASTER) || (iModuleType  == DCX_DEVMAP_MODULE_CUE)) 
+			||
+			( ((lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX_VU_METER) || 
+			(lpctrlZM->iCtrlChanPos == CTRL_NUM_MATRIX2_VU_METER)) 
+			&&
+			(iModuleType  == DCX_DEVMAP_MODULE_MATRIX)) )
+		{
+			iVal = pVuData->wVUValue[wVUType];
+			// Calculate the Vertical Position
+			//--------------------------------
+			if(iVal > 4095)iVal = 4095;
+			if(iVal < 0)iVal = 0;
+			iVal = gVU_VertDispTable[iVal];
+			iTop = rZone.bottom - iVal;
+			BitBlt(hdc, 0, iHeight - iVal, iWidth/2, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
 
 
-      // Calculate the Vertical Position
-      //--------------------------------
-      iVal = gVU_VertDispTable[iVal];
-      iTop = rZone.bottom - iVal;
+			iVal = pVuData->wVUValue[wVUType + 1];
+			if(iVal > 4095)iVal = 4095;
+			if(iVal < 0)iVal = 0;
 
-      // Calculate the Horizontal position
-      //----------------------------------
-      BitBlt(hdc, iWidth/2, iHeight - iVal, iWidth/2, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
 
-    }
-    else
-    {
-      if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_GATE_VU) ||
-        (lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_COMP_VU))
-      {
-        // draw it  Lef to Right
-        //
-        BitBlt(hdc, iWidth - iVal, 0, iVal, iHeight, g_hdcBuffer, iWidth - iVal, 0, SRCCOPY);
-      }
-      else
-      {
-      // draw it  Normaly !!!
-      //
-      BitBlt(hdc, 0, iHeight - iVal, iWidth, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
-      }
-    }
+			// Calculate the Vertical Position
+			//--------------------------------
+			iVal = gVU_VertDispTable[iVal];
+			iTop = rZone.bottom - iVal;
 
-  // Cleanup stuff ..
-  // !!!!
-  SelectObject(g_hdcBuffer, hbmpOld);
-  DeleteDC(hdcLocal);
+			// Calculate the Horizontal position
+			//----------------------------------
+			BitBlt(hdc, iWidth/2, iHeight - iVal, iWidth/2, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
 
-  return;
+		}
+		else
+		{
+			if((lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_GATE_VU) ||
+				(lpctrlZM->iCtrlChanPos == CTRL_NUM_INPUT_COMP_VU))
+			{
+				// draw it  Lef to Right
+				//
+				BitBlt(hdc, iWidth - iVal, 0, iVal, iHeight, g_hdcBuffer, iWidth - iVal, 0, SRCCOPY);
+			}
+			else
+			{
+				// draw it  Normaly !!!
+				//
+				BitBlt(hdc, 0, iHeight - iVal, iWidth, iVal, g_hdcBuffer, 0, iHeight - iVal, SRCCOPY);
+			}
+		}
+
+		// Cleanup stuff ..
+		// !!!!
+		SelectObject(g_hdcBuffer, hbmpOld);
+		DeleteDC(hdcLocal);
+
+		return;
 }
 
 //==================================================
@@ -396,12 +396,12 @@ void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWND
 //==================================================
 void    PushBtn(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
-HBITMAP         hbmpOld;
-HBITMAP         hbmp;
-int             iHeight, iWidth;
-RECT            rZone;
-int             ivalue;
-int             iBMPIndex;
+	HBITMAP         hbmpOld;
+	HBITMAP         hbmp;
+	int             iHeight, iWidth;
+	RECT            rZone;
+	int             ivalue;
+	int             iBMPIndex;
 
 	// Get this Control Zone
 	//----------------------
@@ -409,22 +409,22 @@ int             iBMPIndex;
 
 	// Check the Value
 	//----------------
-//fds		ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);	// ALWAYS RETURNS 0
+	//fds		ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);	// ALWAYS RETURNS 0
 	ivalue = 0;
 	if(ivalue == iVal)
-  {
-    // Get this Controls Bitmap
-    //-------------------------
-    hbmp = gpBMPTable[lpczm->iCtrlBmp[1]].hbmp;
-    iHeight = gpBMPTable[lpczm->iCtrlBmp[1]].iHeight;
-    iWidth  = gpBMPTable[lpczm->iCtrlBmp[1]].iWidth;
+	{
+		// Get this Controls Bitmap
+		//-------------------------
+		hbmp = gpBMPTable[lpczm->iCtrlBmp[1]].hbmp;
+		iHeight = gpBMPTable[lpczm->iCtrlBmp[1]].iHeight;
+		iWidth  = gpBMPTable[lpczm->iCtrlBmp[1]].iWidth;
 
 		hbmpOld = SelectObject(g_hdcTempBuffer, hbmp);
 
-    // Put the Bitmap on the Screen
-    //-----------------------------
-    BitBlt(hdc, rZone.left, rZone.top, iWidth, iHeight,
-					 g_hdcTempBuffer, 0, 0, SRCCOPY);
+		// Put the Bitmap on the Screen
+		//-----------------------------
+		BitBlt(hdc, rZone.left, rZone.top, iWidth, iHeight,
+			g_hdcTempBuffer, 0, 0, SRCCOPY);
 
 		SelectObject(g_hdcTempBuffer, hbmpOld);
 	}
@@ -439,14 +439,14 @@ int             iBMPIndex;
 		// copy the Control bitmap to the memory
 		//--------------------------------------
 		BitBlt(hdc, rZone.left, rZone.top, 
-								rZone.right - rZone.left, 
-								rZone.bottom - rZone.top,
-					 g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
+			rZone.right - rZone.left, 
+			rZone.bottom - rZone.top,
+			g_hdcTempBuffer, rZone.left, rZone.top, SRCCOPY);
 		// Clean the buffer so others can use it freely
 		//---------------------------------------------
 		SelectObject(g_hdcTempBuffer, hbmpOld);
 
-  }
+	}
 
 	return;
 }
@@ -459,11 +459,11 @@ int             iBMPIndex;
 //
 //==================================================
 void    OpenExplodeWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
-                          LPMIXERWNDDATA lpmwd, int iChan)
+						  LPMIXERWNDDATA lpmwd, int iChan)
 {
 
 
-return;
+	return;
 }
 
 
@@ -477,50 +477,50 @@ return;
 //==================================================
 void    RdOutText(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
-  RECT            r;
-  char            szRdOut[32];
-  BOOL            bText = FALSE;
-  int             ivalue;
-  HBITMAP         hbmp;
-  int             iBMPIndex;
-  HFONT           hfont;
+	RECT            r;
+	char            szRdOut[32];
+	BOOL            bText = FALSE;
+	int             ivalue;
+	HBITMAP         hbmp;
+	int             iBMPIndex;
+	HFONT           hfont;
 	HBRUSH					hBrush;
 
-  ZeroMemory(szRdOut, 32);
+	ZeroMemory(szRdOut, 32);
 
-  if(lpczm->iCtrlNumAbs < 0)
-  {
+	if(lpczm->iCtrlNumAbs < 0)
+	{
 
 		//////////////////////////////////////////////
 		// Handle the special case for the Cue A/B
 		// system and toggle the text depending
 		// on the which cue is selected
 
-    if((lpczm->iCtrlChanPos == CTRL_NUM_MASTER_CUEB_SYSTEM_SEL || lpczm->iCtrlChanPos == CTRL_NUM_MASTER_CUEA_SYSTEM_SEL) &&
-			  lpczm->iCtrlType == CTRL_TYPE_STRING_UPDATE)
-    {
-      bText = TRUE;	// Text only, no need to lookup value
-      if(GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEB_SYSTEM_SEL) == 0 &&
-        GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEA_SYSTEM_SEL) > 0 ) 
-      {
-        strcpy(szRdOut, "Cue System B");
-        goto START_STRING_UPDATE;
-      }
-      else
-      {
-        if(GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEA_SYSTEM_SEL) == 0 &&
-           GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEB_SYSTEM_SEL) > 0 ) 
-        {
-          strcpy(szRdOut, "Cue System A");
-          goto START_STRING_UPDATE;
-        }
-      }
+		if((lpczm->iCtrlChanPos == CTRL_NUM_MASTER_CUEB_SYSTEM_SEL || lpczm->iCtrlChanPos == CTRL_NUM_MASTER_CUEA_SYSTEM_SEL) &&
+			lpczm->iCtrlType == CTRL_TYPE_STRING_UPDATE)
+		{
+			bText = TRUE;	// Text only, no need to lookup value
+			if(GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEB_SYSTEM_SEL) == 0 &&
+				GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEA_SYSTEM_SEL) > 0 ) 
+			{
+				strcpy(szRdOut, "Cue System B");
+				goto START_STRING_UPDATE;
+			}
+			else
+			{
+				if(GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEA_SYSTEM_SEL) == 0 &&
+					GETPHISDATAVALUE(0, lpczm, CTRL_NUM_MASTER_CUEB_SYSTEM_SEL) > 0 ) 
+				{
+					strcpy(szRdOut, "Cue System A");
+					goto START_STRING_UPDATE;
+				}
+			}
 
-      return;
-    }
+			return;
+		}
 
-    return;
-  }
+		return;
+	}
 
 START_STRING_UPDATE:
 
@@ -537,10 +537,10 @@ START_STRING_UPDATE:
 
 	if(bText)
 	{
-			hBrush = CreateSolidBrush(PALETTERGB(156,223,206));
-			FillRect(hdc,&r, hBrush);
-			if(hBrush)
-				DeleteObject(hBrush);
+		hBrush = CreateSolidBrush(PALETTERGB(156,223,206));
+		FillRect(hdc,&r, hBrush);
+		if(hBrush)
+			DeleteObject(hBrush);
 
 	}
 	else
@@ -558,30 +558,30 @@ START_STRING_UPDATE:
 		// copy the Clean  bitmap to the memory
 		//--------------------------------------
 
-			BitBlt(hdc, r.left, r.top, r.right - r.left, r.bottom - r.top,
-					 g_hdcBuffer, r.left, r.top, SRCCOPY);
+		BitBlt(hdc, r.left, r.top, r.right - r.left, r.bottom - r.top,
+			g_hdcBuffer, r.left, r.top, SRCCOPY);
 
 		SelectObject(g_hdcBuffer, hbmp);
 
-	// Check if we are only showing text, else get the value to show
+		// Check if we are only showing text, else get the value to show
 
 		// Check the Value
 		//-----------------
 		ivalue = CDef_GetCtrlMaxVal(lpczm->iCtrlNumAbs);
 		if(ivalue < iVal)
-				iVal = ivalue;
-//FDS		ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);	// ALWAYS RETURNS 0
+			iVal = ivalue;
+		//FDS		ivalue = CDef_GetCtrlMinVal(lpczm->iCtrlNumAbs);	// ALWAYS RETURNS 0
 		ivalue = 0;
 		if(ivalue > iVal)
-				iVal = ivalue;
+			iVal = ivalue;
 
 		CDef_GetCtrlReadout(lpczm->iCtrlNumAbs, iVal, szRdOut);
 	}
 
-  hfont = SelectObject(hdc, g_hConsoleFont);
-  WriteTextToDC(hdc, &r, 0, 0, RGB(0, 0, 0), szRdOut);
-  SelectObject(hdc, hfont);
-  return;
+	hfont = SelectObject(hdc, g_hConsoleFont);
+	WriteTextToDC(hdc, &r, 0, 0, RGB(0, 0, 0), szRdOut);
+	SelectObject(hdc, hfont);
+	return;
 }
 
 //==================================================
@@ -593,22 +593,22 @@ START_STRING_UPDATE:
 //==================================================
 void    ChannelNameTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
-  RECT            r;
-  char            szRdOut[64];
-  BOOL            bText = FALSE;
-  HBITMAP         hbmp;
-  //int             iPhisChannel;
-  int             iBMPIndex;
-  HFONT           hfont;
+	RECT            r;
+	char            szRdOut[64];
+	BOOL            bText = FALSE;
+	HBITMAP         hbmp;
+	//int             iPhisChannel;
+	int             iBMPIndex;
+	HFONT           hfont;
 	LPSTR						plabel;
 	int							i=0;
 
-  ZeroMemory(szRdOut, 64);
+	ZeroMemory(szRdOut, 64);
 
 
-  // Get this Control Zone
-  //----------------------
-  r = lpczm->rZone;
+	// Get this Control Zone
+	//----------------------
+	r = lpczm->rZone;
 
 	plabel = GetLabelText(lpczm, iChan);
 
@@ -624,26 +624,26 @@ void    ChannelNameTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERW
 		plabel++;
 	}
 
-  // Load the Module Bitmap in the Memory DC
-  //----------------------------------------
-  //iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
-  iBMPIndex = lpmwd->lpZoneMap[iChan].iBmpIndx;
+	// Load the Module Bitmap in the Memory DC
+	//----------------------------------------
+	//iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
+	iBMPIndex = lpmwd->lpZoneMap[iChan].iBmpIndx;
 
-  // Select the Original Bitmap
-  //---------------------------
-  hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
+	// Select the Original Bitmap
+	//---------------------------
+	hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
 
-  // copy the Clean  bitmap to the memory
-  //--------------------------------------
-  BitBlt(hdc, r.left, r.top, r.right - r.left, r.bottom - r.top,
-         g_hdcBuffer, r.left, r.top, SRCCOPY);
-  SelectObject(g_hdcBuffer, hbmp);
+	// copy the Clean  bitmap to the memory
+	//--------------------------------------
+	BitBlt(hdc, r.left, r.top, r.right - r.left, r.bottom - r.top,
+		g_hdcBuffer, r.left, r.top, SRCCOPY);
+	SelectObject(g_hdcBuffer, hbmp);
 
 
-  hfont = SelectObject(hdc, g_hConsoleFont);
-  WriteTextLinesToDCVerticaly(hdc, &r, 0, 0, RGB(0, 0, 0), szRdOut);
-  SelectObject(hdc, hfont);
-  return;
+	hfont = SelectObject(hdc, g_hConsoleFont);
+	WriteTextLinesToDCVerticaly(hdc, &r, 0, 0, RGB(0, 0, 0), szRdOut);
+	SelectObject(hdc, hfont);
+	return;
 }
 
 //==================================================
@@ -655,33 +655,33 @@ void    ChannelNameTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERW
 //==================================================
 void    ChannelNumberTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
-  RECT            r;
-  char            szRdOut[64], chBuff[64];
-  BOOL            bText = FALSE;
-  HBITMAP         hbmp;
-  //int             iPhisChannel;
-  int             iBMPIndex;
-  HFONT           hfont;
+	RECT            r;
+	char            szRdOut[64], chBuff[64];
+	BOOL            bText = FALSE;
+	HBITMAP         hbmp;
+	//int             iPhisChannel;
+	int             iBMPIndex;
+	HFONT           hfont;
 	LPSTR						plabel;
 	int							i=0, iic;
 
-  ZeroMemory(szRdOut, 64);
-  ZeroMemory(chBuff, 64);
+	ZeroMemory(szRdOut, 64);
+	ZeroMemory(chBuff, 64);
 
 
-  // Get this Control Zone
-  //----------------------
-  r = lpczm->rZone;
+	// Get this Control Zone
+	//----------------------
+	r = lpczm->rZone;
 
 	if( gDeviceSetup.iaChannelTypes[lpczm->iModuleNumber] == DCX_DEVMAP_MODULE_AUX )
 	{
-    for(iic = 0; iic < MAX_AUX_CHANNELS; iic++)
-    {
-      if(g_aiAux[iic] == lpczm->iModuleNumber)
-      {
-        break;
-      }
-    }
+		for(iic = 0; iic < MAX_AUX_CHANNELS; iic++)
+		{
+			if(g_aiAux[iic] == lpczm->iModuleNumber)
+			{
+				break;
+			}
+		}
 		wsprintf(chBuff, "%02d", iic + 1);
 	}
 	else
@@ -701,26 +701,26 @@ void    ChannelNumberTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXE
 		plabel++;
 	}
 
-  // Load the Module Bitmap in the Memory DC
-  //----------------------------------------
-  //iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
-  iBMPIndex = lpmwd->lpZoneMap[iChan].iBmpIndx;
+	// Load the Module Bitmap in the Memory DC
+	//----------------------------------------
+	//iPhisChannel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
+	iBMPIndex = lpmwd->lpZoneMap[iChan].iBmpIndx;
 
-  // Select the Original Bitmap
-  //---------------------------
-  hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
+	// Select the Original Bitmap
+	//---------------------------
+	hbmp = SelectObject(g_hdcBuffer, gpBMPTable[iBMPIndex].hbmp);
 
-  // copy the Clean  bitmap to the memory
-  //--------------------------------------
-  BitBlt(hdc, r.left, r.top, r.right - r.left, r.bottom - r.top,
-         g_hdcBuffer, r.left, r.top, SRCCOPY);
-  SelectObject(g_hdcBuffer, hbmp);
+	// copy the Clean  bitmap to the memory
+	//--------------------------------------
+	BitBlt(hdc, r.left, r.top, r.right - r.left, r.bottom - r.top,
+		g_hdcBuffer, r.left, r.top, SRCCOPY);
+	SelectObject(g_hdcBuffer, hbmp);
 
 
-  hfont = SelectObject(hdc, g_hConsoleFont);
-  WriteTextLinesToDCVerticaly(hdc, &r, 0, 0, RGB(0, 0, 0), szRdOut);
-  SelectObject(hdc, hfont);
-  return;
+	hfont = SelectObject(hdc, g_hConsoleFont);
+	WriteTextLinesToDCVerticaly(hdc, &r, 0, 0, RGB(0, 0, 0), szRdOut);
+	SelectObject(hdc, hfont);
+	return;
 }
 
 
@@ -737,11 +737,11 @@ void    ChannelNumberTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXE
 
 void    UpDownControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
-int                 iPhisChannel, iV, ivalue;
-RECT                r;
-CONTROLDATA         ctrlData;
-HDC                 hdcScr;//, hdcMem;
-int									sum_in_flag = 0;
+	int                 iPhisChannel, iV, ivalue;
+	RECT                r;
+	CONTROLDATA         ctrlData;
+	HDC                 hdcScr;//, hdcMem;
+	int									sum_in_flag = 0;
 
 	if( hdc )
 		return;
@@ -765,7 +765,7 @@ int									sum_in_flag = 0;
 	// Begin setting
 
 	if (gDeviceSetup.iaChannelTypes[iPhisChannel] == DCX_DEVMAP_MODULE_MASTER && 
-			lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_CUE_A_SUM_IN)
+		lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_CUE_A_SUM_IN)
 	{
 		sum_in_flag = isCtrlValueNotEqualToDefault (lpctrlZM, CTRL_NUM_MASTER_CUE_A_SUM_IN);
 	}
@@ -779,7 +779,7 @@ int									sum_in_flag = 0;
 	else
 		iV ++;
 
-//FDS	ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);	// ALWAYS RETURNS 0
+	//FDS	ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);	// ALWAYS RETURNS 0
 	ivalue = 0;
 	if(ivalue > iV)
 		iV = ivalue;
@@ -807,15 +807,15 @@ int									sum_in_flag = 0;
 	ctrlData.wVal     = iV;
 
 	SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE, 
-									 lpctrlZM, iV - ivalue, lpmwd, TRUE);
+		lpctrlZM, iV - ivalue, lpmwd, TRUE);
 
-                                               
+
 	// Special case for Cue Sum-in. It should almost act like a Cue-button
 	// Activate the Cue system when it is not OFF and activate the SCILENT 
 	// Cue system when it is OFF.
 
 	if (gDeviceSetup.iaChannelTypes[iPhisChannel] == DCX_DEVMAP_MODULE_MASTER && 
-			lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_CUE_A_SUM_IN)
+		lpctrlZM->iCtrlChanPos == CTRL_NUM_MASTER_CUE_A_SUM_IN)
 	{
 		if (isCtrlValueNotEqualToDefault (lpctrlZM, CTRL_NUM_MASTER_CUE_A_SUM_IN))
 		{
@@ -836,7 +836,7 @@ int									sum_in_flag = 0;
 	// NOTE: THIS IS ALSO CALLED AGAIN IN THE UpdateSameMixWndByCtrlNum() THAT FOLLOWS
 	// NEED THIS TO UPDATE SELF, THIS CONTROL AND NEXT ARE HANDLED DIFFERENTLY
 	// THAN THE OTHERS
-	 UpdateControlsByCtrlNum(hdcScr, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, lpctrlZM, iV, DIRECTIONS_ALL, TRUE);
+	UpdateControlsByCtrlNum(hdcScr, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, lpctrlZM, iV, DIRECTIONS_ALL, TRUE);
 
 
 	// now update all of the other mixers
@@ -865,89 +865,89 @@ int									sum_in_flag = 0;
 //===============================================
 void    LeftRightControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
-  int                 iPhisChannel, iV, ivalue;
-  RECT                r;
-  CONTROLDATA         ctrlData;
-  HDC                 hdcScr;//, hdcMem;
+	int                 iPhisChannel, iV, ivalue;
+	RECT                r;
+	CONTROLDATA         ctrlData;
+	HDC                 hdcScr;//, hdcMem;
 
-  if( hdc )
-    return;
+	if( hdc )
+		return;
 
-  // Handle the button Up down
-  //--------------------------
-  iPhisChannel = iChan;
+	// Handle the button Up down
+	//--------------------------
+	iPhisChannel = iChan;
 
-  // get the zone map pointer
-  //-------------------------
-  lpctrlZM = lpmwd->lpCtrlZM;
+	// get the zone map pointer
+	//-------------------------
+	lpctrlZM = lpmwd->lpCtrlZM;
 
-  r = lpctrlZM->rZone; 
+	r = lpctrlZM->rZone; 
 
-  iV = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
+	iV = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
 
-  // detect in which part of the zone is the mouse
-  // and then go up or down ... simple stuff
-  //----------------------------------------------
-  if( (lpmwd->pntMouseCur.x - lpmwd->iXadj) < (r.left + ((r.right-r.left)/2)) )
-    iV --;
-  else
-    iV ++;
+	// detect in which part of the zone is the mouse
+	// and then go up or down ... simple stuff
+	//----------------------------------------------
+	if( (lpmwd->pntMouseCur.x - lpmwd->iXadj) < (r.left + ((r.right-r.left)/2)) )
+		iV --;
+	else
+		iV ++;
 
-  ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
-  if(ivalue > iV)
-    iV = ivalue;
-  ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
-  if(ivalue <= iV)
-    iV = ivalue - 1;
+	ivalue = CDef_GetCtrlMinVal(lpctrlZM->iCtrlNumAbs);
+	if(ivalue > iV)
+		iV = ivalue;
+	ivalue = CDef_GetCtrlMaxVal(lpctrlZM->iCtrlNumAbs);
+	if(ivalue <= iV)
+		iV = ivalue - 1;
 
-  // do not go further if value is the same
-  //---------------------------------------
-  ivalue = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
-  if(ivalue == iV)
-    return;
+	// do not go further if value is the same
+	//---------------------------------------
+	ivalue = GETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos);
+	if(ivalue == iV)
+		return;
 
 
-  // Set the Phisical Data Value
-  //----------------------------
-  SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iV);
+	// Set the Phisical Data Value
+	//----------------------------
+	SETPHISDATAVALUE(lpmwd->iMixer, lpctrlZM, lpctrlZM->iCtrlChanPos, iV);
 
-  // Send the Data out
-  //------------------
-  ctrlData.wMixer   = lpmwd->iMixer;
-  ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
-  ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
-  ctrlData.wVal     = iV;
+	// Send the Data out
+	//------------------
+	ctrlData.wMixer   = lpmwd->iMixer;
+	ctrlData.wChannel = lpctrlZM->iModuleNumber;//iPhisChannel;
+	ctrlData.wCtrl    = lpctrlZM->iCtrlNumAbs; // we use this one since for the definition dll
+	ctrlData.wVal     = iV;
 
-  SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE, 
-                   lpctrlZM, iV - ivalue, lpmwd, TRUE);
-                                               
+	SendDataToDevice(&ctrlData, (lpmwd->wKeyFlags & MK_SHIFT)?FALSE:TRUE, 
+		lpctrlZM, iV - ivalue, lpmwd, TRUE);
 
-  //  Now update all of the other
-  // controls that have the same
-  // iCtrlNum and are Capable of
-  // display on this Mixer_Window
-  //-----------------------------
-  hdcScr = GetDC(lpmwd->hwndImg);
+
+	//  Now update all of the other
+	// controls that have the same
+	// iCtrlNum and are Capable of
+	// display on this Mixer_Window
+	//-----------------------------
+	hdcScr = GetDC(lpmwd->hwndImg);
 
 
 	// NOTE: THIS IS ALSO CALLED AGAIN IN THE UpdateSameMixWndByCtrlNum() THAT FOLLOWS
 	// NEED THIS TO UPDATE SELF, THIS CONTROL IS HANDLED DIFFERENTLY THAN OTHERS FOR NOW
 
-  UpdateControlsByCtrlNum(hdcScr, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, lpctrlZM, iV, DIRECTIONS_ALL, TRUE);
+	UpdateControlsByCtrlNum(hdcScr, g_hdcMemory, lpmwd, lpmwd->iXadj, iPhisChannel, lpctrlZM, iV, DIRECTIONS_ALL, TRUE);
 
 
-  // now update all of the other mixers
-  // windows that represent this mixer
-  // using the iMixer, iPhisChannel
-  // and iVal
-  //-----------------------------------
-  UpdateSameMixWndByCtrlNum(lpmwd->hwndImg, lpmwd->iMixer, iPhisChannel, lpctrlZM, iV, NULL);
+	// now update all of the other mixers
+	// windows that represent this mixer
+	// using the iMixer, iPhisChannel
+	// and iVal
+	//-----------------------------------
+	UpdateSameMixWndByCtrlNum(lpmwd->hwndImg, lpmwd->iMixer, iPhisChannel, lpctrlZM, iV, NULL);
 
-  ReleaseDC(lpmwd->hwndImg, hdcScr);
- 
-  return;
+	ReleaseDC(lpmwd->hwndImg, hdcScr);
+
+	return;
 }
-  
+
 
 //==================================================
 //FUNCTION: JumpToMZWindow
@@ -958,19 +958,19 @@ void    LeftRightControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDA
 // Y offset
 //==================================================
 void    JumpToMZWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
-                            LPMIXERWNDDATA lpmwd, int iChan)
+					   LPMIXERWNDDATA lpmwd, int iChan)
 {
-LPMIXERWNDDATA      lpMWD;
-int				iYOffset = 0;
-int				iScrVisible = 0;
-HWND			hWnd;
+	LPMIXERWNDDATA      lpMWD;
+	int				iYOffset = 0;
+	int				iScrVisible = 0;
+	HWND			hWnd;
 
 
 	// Set the offset based on the control type
 
 	switch(lpczm->iCtrlType)
 	{
-  case    CTRL_TYPE_OPEN_ZOOM_IAUX:
+	case    CTRL_TYPE_OPEN_ZOOM_IAUX:
 		iYOffset = JUMP_TO_INPUT_AUX;
 		break;
 	case		CTRL_TYPE_OPEN_ZOOM_CCOMP:
@@ -1000,113 +1000,113 @@ HWND			hWnd;
 	}
 
 
-////////////////////////////////////////
-// See if we have a Linked Zoom View
-// If not then we must create one    
+	////////////////////////////////////////
+	// See if we have a Linked Zoom View
+	// If not then we must create one    
 
 	if(ghwndZoom == NULL)
-  {
-    lpMWD = MixerWindowDataAlloc(gwActiveMixer,
-                                 gpZoneMaps_Zoom,
-                                 MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
-    if(lpMWD == NULL)
-    {
-        ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
-        return;
-    }
-    else
-    {
-        // Set the Window Start channel
-        // and Remap table, and start channel
-        // and End Channel
-        //-----------------------------------
-        CopyMemory(lpMWD->lpwRemapToScr, lpmwd->lpwRemapToScr, MAX_CHANNELS * sizeof(WORD));
-        CopyMemory(lpMWD->lpwRemapToPhis, lpmwd->lpwRemapToPhis, MAX_CHANNELS * sizeof(WORD));
+	{
+		lpMWD = MixerWindowDataAlloc(gwActiveMixer,
+			gpZoneMaps_Zoom,
+			MAX_CHANNELS, DCX_DEVMAP_MODULE_INPUT);
+		if(lpMWD == NULL)
+		{
+			ErrorBox(ghwndMain, ghInstStrRes, IDS_ERR_ALLOCATE_MEMORY);
+			return;
+		}
+		else
+		{
+			// Set the Window Start channel
+			// and Remap table, and start channel
+			// and End Channel
+			//-----------------------------------
+			CopyMemory(lpMWD->lpwRemapToScr, lpmwd->lpwRemapToScr, MAX_CHANNELS * sizeof(WORD));
+			CopyMemory(lpMWD->lpwRemapToPhis, lpmwd->lpwRemapToPhis, MAX_CHANNELS * sizeof(WORD));
 
-        lpMWD->iYOffset = iYOffset;
-				
-				iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
-				lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
+			lpMWD->iYOffset = iYOffset;
 
-				if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
-					lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
+			iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
+			lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
 
-				lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
-        lpMWD->iCurChan = lpmwd->iCurChan;
-				
-        wsprintf(lpMWD->szTitle, "Zoom View");	// was Zoom View (Link)
+			if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
+				lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
 
-				// If we don't have a link yet, try to find a Zoom View that
-				// is already open.
+			lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
+			lpMWD->iCurChan = lpmwd->iCurChan;
 
-				hWnd=FindWindowEx(ghwndMDIClient,NULL,gszZoomViewClass,"Zoom View");
+			wsprintf(lpMWD->szTitle, "Zoom View");	// was Zoom View (Link)
 
-				if(hWnd)
-				{
-					ghwndZoom = hWnd;		// We found a Zoom View, make it our link to the Full View
+			// If we don't have a link yet, try to find a Zoom View that
+			// is already open.
+
+			hWnd=FindWindowEx(ghwndMDIClient,NULL,gszZoomViewClass,"Zoom View");
+
+			if(hWnd)
+			{
+				ghwndZoom = hWnd;		// We found a Zoom View, make it our link to the Full View
 
 
-				}
-				else	// No Zoom View windows exist, so create one.
-				{
-					ghwndZoom = CreateZoomViewWindow(ghwndMDIClient,"Zoom View", lpMWD, DCX_DEVMAP_MODULE_INPUT);// was Zoom View (Link)
+			}
+			else	// No Zoom View windows exist, so create one.
+			{
+				ghwndZoom = CreateZoomViewWindow(ghwndMDIClient,"Zoom View", lpMWD, DCX_DEVMAP_MODULE_INPUT);// was Zoom View (Link)
 
-				}
+			}
 #ifdef NOTUSED
-					InvalidateRect(lpMWD->hwndLblGroup, NULL, FALSE);
-					UpdateWindow(lpMWD->hwndLblGroup);
-        
-					lpMWD->pntMouseCur.y = iYOffset - lpMWD->iYOffset;
-					lpMWD->pntMouseLast.y = 0;
+			InvalidateRect(lpMWD->hwndLblGroup, NULL, FALSE);
+			UpdateWindow(lpMWD->hwndLblGroup);
 
-					ScrollImgWindow(ghwndZoom, lpMWD, 0);		// Position the Zoom view as requested.
+			lpMWD->pntMouseCur.y = iYOffset - lpMWD->iYOffset;
+			lpMWD->pntMouseLast.y = 0;
 
-					InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
-					UpdateWindow(lpMWD->hwndImg);
+			ScrollImgWindow(ghwndZoom, lpMWD, 0);		// Position the Zoom view as requested.
 
-					RequestVisibleVU(lpMWD, -1, -1);
+			InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
+			UpdateWindow(lpMWD->hwndImg);
+
+			RequestVisibleVU(lpMWD, -1, -1);
 #endif
 
-    }
-  }
+		}
+	}
 	else	// We already have a linked Zoom View
-  {
-    lpMWD = (LPMIXERWNDDATA)GetWindowLong(ghwndZoom, 0);
-    if(lpMWD)
-    {
-				TurnOffAllVUforMixerWindow(lpMWD);
-				// Set the Window Start channel
-        // and Remap table, and start channel
-        // and End Channel
-        //-----------------------------------
-        CopyMemory(lpMWD->lpwRemapToScr, lpmwd->lpwRemapToScr, MAX_CHANNELS * sizeof(WORD));
-        CopyMemory(lpMWD->lpwRemapToPhis, lpmwd->lpwRemapToPhis, MAX_CHANNELS * sizeof(WORD));
-        
-				iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
-				lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
+	{
+		lpMWD = (LPMIXERWNDDATA)GetWindowLong(ghwndZoom, 0);
+		if(lpMWD)
+		{
+			TurnOffAllVUforMixerWindow(lpMWD);
+			// Set the Window Start channel
+			// and Remap table, and start channel
+			// and End Channel
+			//-----------------------------------
+			CopyMemory(lpMWD->lpwRemapToScr, lpmwd->lpwRemapToScr, MAX_CHANNELS * sizeof(WORD));
+			CopyMemory(lpMWD->lpwRemapToPhis, lpmwd->lpwRemapToPhis, MAX_CHANNELS * sizeof(WORD));
 
-				if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
-					lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
+			iScrVisible	= lpMWD->iEndScrChan - lpMWD->iStartScrChan;
+			lpMWD->iEndScrChan = lpmwd->iCurChan + iScrVisible;
 
-				lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
-        lpMWD->iCurChan = lpmwd->iCurChan;
+			if(lpMWD->iEndScrChan >= lpmwd->lZMCount)
+				lpMWD->iEndScrChan = lpMWD->lZMCount - 1;
 
-        InvalidateRect(lpMWD->hwndLblGroup, NULL, FALSE);
-        UpdateWindow(lpMWD->hwndLblGroup);
-        
-				lpMWD->pntMouseCur.y = iYOffset - lpMWD->iYOffset;
-				lpMWD->pntMouseLast.y = 0;
+			lpMWD->iStartScrChan = lpMWD->iEndScrChan - iScrVisible;
+			lpMWD->iCurChan = lpmwd->iCurChan;
 
-				ScrollImgWindow(ghwndZoom, lpMWD, 0);
+			InvalidateRect(lpMWD->hwndLblGroup, NULL, FALSE);
+			UpdateWindow(lpMWD->hwndLblGroup);
 
-        InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
-        UpdateWindow(lpMWD->hwndImg);
+			lpMWD->pntMouseCur.y = iYOffset - lpMWD->iYOffset;
+			lpMWD->pntMouseLast.y = 0;
 
-			  RequestVisibleVU(lpMWD, -1, -1);
+			ScrollImgWindow(ghwndZoom, lpMWD, 0);
 
-    }
-  }
+			InvalidateRect(lpMWD->hwndImg, NULL, FALSE);
+			UpdateWindow(lpMWD->hwndImg);
 
-return;
+			RequestVisibleVU(lpMWD, -1, -1);
+
+		}
+	}
+
+	return;
 }
 

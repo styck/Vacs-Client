@@ -35,58 +35,58 @@ int			giTBGroupStatus = 9516;			// Group status indicator
 //=================================
 int       CreateMainWindow(void)
 {
-int         iReturn;
-WNDCLASS    wc;
+	int         iReturn;
+	WNDCLASS    wc;
 
 
-// Register Main Window Class
-//---------------------------
-ZeroMemory(&wc, sizeof(WNDCLASS));      // Clear wndclass structure
+	// Register Main Window Class
+	//---------------------------
+	ZeroMemory(&wc, sizeof(WNDCLASS));      // Clear wndclass structure
 
-wc.style = CS_HREDRAW | CS_VREDRAW | CS_BYTEALIGNCLIENT;
-wc.lpfnWndProc = (WNDPROC)WndMainProc;
-wc.cbClsExtra = 0;
-wc.cbWndExtra = 0;
-wc.hInstance = ghInstMain;
-wc.hIcon = LoadIcon(ghInstMain, MAKEINTRESOURCE(SAMMMainIcon));// this might leak memory
-wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-wc.hbrBackground = GetStockObject(BLACK_BRUSH);
-wc.lpszMenuName = NULL;
-wc.lpszClassName = gszMainWndClass;
+	wc.style = CS_HREDRAW | CS_VREDRAW | CS_BYTEALIGNCLIENT;
+	wc.lpfnWndProc = (WNDPROC)WndMainProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = ghInstMain;
+	wc.hIcon = LoadIcon(ghInstMain, MAKEINTRESOURCE(SAMMMainIcon));// this might leak memory
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = GetStockObject(BLACK_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = gszMainWndClass;
 
-iReturn = RegisterClass(&wc);
+	iReturn = RegisterClass(&wc);
 
-if(iReturn == 0)
-	 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+	if(iReturn == 0)
+		return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
-// Create Main Window
-//-------------------
-ghwndMain = CreateWindow(
-					 gszMainWndClass,         // Window class name
-					 gszMainWndTitle,         // Window's title
-					 WS_OVERLAPPED   |       // Overlapped Style
-					 WS_CAPTION      |       // Title and Min/Max
-					 WS_SYSMENU      |       // Add system menu box
-					 WS_MINIMIZEBOX  |       // Add minimize box
-					 WS_MAXIMIZEBOX  |       // Add maximize box
-					 WS_THICKFRAME   |       // thick sizeable frame
-					 WS_CLIPCHILDREN ,
-					 CW_USEDEFAULT,          // Use default x
-					 CW_USEDEFAULT,          // Use default y
-					 CW_USEDEFAULT,          // Use default Width
-					 CW_USEDEFAULT,          // Use default Height
-					 NULL,                   // Parent window's handle
-					 NULL,                   // Default to Class Menu
-					 ghInstMain,              // Instance of window
-					 NULL);                  // Ptr To Data Structure For WM_CREATE
+	// Create Main Window
+	//-------------------
+	ghwndMain = CreateWindow(
+		gszMainWndClass,         // Window class name
+		gszMainWndTitle,         // Window's title
+		WS_OVERLAPPED   |       // Overlapped Style
+		WS_CAPTION      |       // Title and Min/Max
+		WS_SYSMENU      |       // Add system menu box
+		WS_MINIMIZEBOX  |       // Add minimize box
+		WS_MAXIMIZEBOX  |       // Add maximize box
+		WS_THICKFRAME   |       // thick sizeable frame
+		WS_CLIPCHILDREN ,
+		CW_USEDEFAULT,          // Use default x
+		CW_USEDEFAULT,          // Use default y
+		CW_USEDEFAULT,          // Use default Width
+		CW_USEDEFAULT,          // Use default Height
+		NULL,                   // Parent window's handle
+		NULL,                   // Default to Class Menu
+		ghInstMain,              // Instance of window
+		NULL);                  // Ptr To Data Structure For WM_CREATE
 
-if(ghwndMain == NULL)
-	 return(IDS_ERR_CREATE_WINDOW);      // Error... Exit
+	if(ghwndMain == NULL)
+		return(IDS_ERR_CREATE_WINDOW);      // Error... Exit
 
 
-//AddToCaption(ghwndMain, sz_MIXERNAME);
-SetMenu(ghwndMain, ghMainMenu);
-return 0;
+	//AddToCaption(ghwndMain, sz_MIXERNAME);
+	SetMenu(ghwndMain, ghMainMenu);
+	return 0;
 };
 
 
@@ -101,14 +101,14 @@ return 0;
 //
 int		CreateToolBars(HWND		hwndParent)
 {
-  int					iRet = 0;
+	int					iRet = 0;
 	TBBUTTONINFO tbinfo = {0};
 	static  TBBUTTON		tbb[TB_BUTTONS_COUNT];
 
-  int					iCount = 0, iButtonCount = 0, iSeqScenNumber, 
-							iSeqButton,iSeqButton2, iNumZoomWindowsButton, iGroupStatusWindow, i;
-  RECT				r;                      
-  HWND        hToolTips;
+	int					iCount = 0, iButtonCount = 0, iSeqScenNumber, 
+		iSeqButton,iSeqButton2, iNumZoomWindowsButton, iGroupStatusWindow, i;
+	RECT				r;                      
+	HWND        hToolTips;
 
 	TOOLINFO	lpToolInfo;
 
@@ -123,216 +123,216 @@ int		CreateToolBars(HWND		hwndParent)
 	// End			6	IDM_S_GOTO_LAST				REMOVED PER GAMBLE
 
 
-// These are all the buttons but Gamble does not want them all
-// says they are too dangerous
+	// These are all the buttons but Gamble does not want them all
+	// says they are too dangerous
 
 #ifdef NOTUSED
 	for(iCount = 0; iCount < 7; iCount ++)
 	{
-	  tbb[iCount].iBitmap = iCount;
-	  tbb[iCount].idCommand = iCount + IDM_S_PLAY; 
-	  tbb[iCount].fsState = TBSTATE_ENABLED;
-	  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE; 
-	  tbb[iCount].dwData = 0;
-	  tbb[iCount].iString = -1; 
+		tbb[iCount].iBitmap = iCount;
+		tbb[iCount].idCommand = iCount + IDM_S_PLAY; 
+		tbb[iCount].fsState = TBSTATE_ENABLED;
+		tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE; 
+		tbb[iCount].dwData = 0;
+		tbb[iCount].iString = -1; 
 	}
 #endif
-		//////////////////////
-		// Forward button
-	  tbb[iCount].iBitmap = 4;
-	  tbb[iCount].idCommand = IDM_S_BACK; 
-	  tbb[iCount].fsState = TBSTATE_ENABLED;
-	  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE; 
-	  tbb[iCount].dwData = 0;
-	  tbb[iCount].iString = -1; 
-		iCount++;
+	//////////////////////
+	// Forward button
+	tbb[iCount].iBitmap = 4;
+	tbb[iCount].idCommand = IDM_S_BACK; 
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE; 
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
-		//////////////////////
-		// Back button
+	//////////////////////
+	// Back button
 
-	  tbb[iCount].iBitmap = 5;
-	  tbb[iCount].idCommand = IDM_S_NEXT; 
-	  tbb[iCount].fsState = TBSTATE_ENABLED;
-	  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE; 
-	  tbb[iCount].dwData = 0;
-	  tbb[iCount].iString = -1; 
-		iCount++;
+	tbb[iCount].iBitmap = 5;
+	tbb[iCount].idCommand = IDM_S_NEXT; 
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE; 
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 	//////////////////
-  // add a separator
-  //
-  tbb[iCount].iBitmap = -1;
-  tbb[iCount].idCommand = 0;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_SEP; // | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
+	// add a separator
+	//
+	tbb[iCount].iBitmap = -1;
+	tbb[iCount].idCommand = 0;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_SEP; // | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
 	iCount++;
 
 	//////////////////
 	// Sequence Scene Number
 	iSeqScenNumber = iCount;			// save for later
-  tbb[iCount].iBitmap = -1; // account for the separator
-  tbb[iCount].idCommand = giTBSeqSceneNumber;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1;
-  iCount++;
+	tbb[iCount].iBitmap = -1; // account for the separator
+	tbb[iCount].idCommand = giTBSeqSceneNumber;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1;
+	iCount++;
 
 	//////////////////
 	// Active Sequence name
 	iSeqButton = iCount;			// save for later
-  tbb[iCount].iBitmap = -1; // account for the separator
-  tbb[iCount].idCommand = giTBSeqReadout;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1;
-  iCount++;
+	tbb[iCount].iBitmap = -1; // account for the separator
+	tbb[iCount].idCommand = giTBSeqReadout;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1;
+	iCount++;
 
 	//////////////////
 	// Next Sequence name
 	iSeqButton2 = iCount;			// save for later
-  tbb[iCount].iBitmap = -1; // account for the separator
-  tbb[iCount].idCommand = giTBSeqReadout2;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1;
-  iCount++;
-  
-  
+	tbb[iCount].iBitmap = -1; // account for the separator
+	tbb[iCount].idCommand = giTBSeqReadout2;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1;
+	iCount++;
+
+
 	//////////////////
-  // add a separator
-  //
-  tbb[iCount].iBitmap = -1;
-  tbb[iCount].idCommand = 0;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	// add a separator
+	//
+	tbb[iCount].iBitmap = -1;
+	tbb[iCount].idCommand = 0;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 	//////////////////
 	// Save mix file(fast save)
-  tbb[iCount].iBitmap = 11; // account for the separator
-  tbb[iCount].idCommand = IDM_F_SAVE_FILE;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	tbb[iCount].iBitmap = 11; // account for the separator
+	tbb[iCount].idCommand = IDM_F_SAVE_FILE;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 	//////////////////
-  // add a separator
-  //
-  tbb[iCount].iBitmap = -1;
-  tbb[iCount].idCommand = 0;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
-	
+	// add a separator
+	//
+	tbb[iCount].iBitmap = -1;
+	tbb[iCount].idCommand = 0;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
+
 	//////////////////
 	// Sequence Window tool button
-  tbb[iCount].iBitmap = 20; // account for the separator
-  tbb[iCount].idCommand = IDM_V_SEQUENCE;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	tbb[iCount].iBitmap = 20; // account for the separator
+	tbb[iCount].idCommand = IDM_V_SEQUENCE;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 	//////////////////
 	// Group Window tool button
-  tbb[iCount].iBitmap = 7; // account for the separator
-  tbb[iCount].idCommand = IDM_V_GROUP;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	tbb[iCount].iBitmap = 7; // account for the separator
+	tbb[iCount].idCommand = IDM_V_GROUP;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 	//////////////////
-  // Zoom Window tool button
-  tbb[iCount].iBitmap = 8; // account for the separator
-  tbb[iCount].idCommand = IDM_V_FULLZOOM;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	// Zoom Window tool button
+	tbb[iCount].iBitmap = 8; // account for the separator
+	tbb[iCount].idCommand = IDM_V_FULLZOOM;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 	//////////////////
-  // Full Window tool button
-  tbb[iCount].iBitmap = 9; // account for the separator
-  tbb[iCount].idCommand = IDM_V_FULLCONSOLE;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	// Full Window tool button
+	tbb[iCount].iBitmap = 9; // account for the separator
+	tbb[iCount].idCommand = IDM_V_FULLCONSOLE;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
-  // add a separator
-  //
-  tbb[iCount].iBitmap = -1;
-  tbb[iCount].idCommand = 0;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
-
-	//////////////////
-  // Cancel the Cues
-  //
-  tbb[iCount].iBitmap = 21; 
-  tbb[iCount].idCommand = IDM_V_CANCELCUES;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	// add a separator
+	//
+	tbb[iCount].iBitmap = -1;
+	tbb[iCount].idCommand = 0;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 	//////////////////
-  // Cancel the Groups
-  //
-  tbb[iCount].iBitmap = 10; // account for the separator
-  tbb[iCount].idCommand = IDM_V_CANCELGROUPS;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	// Cancel the Cues
+	//
+	tbb[iCount].iBitmap = 21; 
+	tbb[iCount].idCommand = IDM_V_CANCELCUES;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
+
+	//////////////////
+	// Cancel the Groups
+	//
+	tbb[iCount].iBitmap = 10; // account for the separator
+	tbb[iCount].idCommand = IDM_V_CANCELGROUPS;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 	//////////////////
 	// Grouped Status Window
 	//////////////////
 	iGroupStatusWindow = iCount;
-  tbb[iCount].iBitmap = -1; // account for the separator
-  tbb[iCount].idCommand = giTBGroupStatus;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1;
-  iCount++;
+	tbb[iCount].iBitmap = -1; // account for the separator
+	tbb[iCount].idCommand = giTBGroupStatus;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1;
+	iCount++;
 
 	////////////////////////////////////////////////
-  // Groups Selector starts after this separartor
-  //
-  tbb[iCount].iBitmap = -1;
-  tbb[iCount].idCommand = 0;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	// Groups Selector starts after this separartor
+	//
+	tbb[iCount].iBitmap = -1;
+	tbb[iCount].idCommand = 0;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 	////////////////////////////////////
-  // Group selection buttons
-  //
+	// Group selection buttons
+	//
 	for(i=0; i < 9; i++)
 	{
 		tbb[iCount].iBitmap = 12 + i; 
@@ -341,44 +341,44 @@ int		CreateToolBars(HWND		hwndParent)
 		tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;
 		tbb[iCount].dwData = 0;
 		tbb[iCount].iString = -1;  // i
-	  iCount++;
+		iCount++;
 	}
 
-  // add a separator
-  //
-  tbb[iCount].iBitmap = -1;
-  tbb[iCount].idCommand = 0;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1; 
-  iCount++;
+	// add a separator
+	//
+	tbb[iCount].iBitmap = -1;
+	tbb[iCount].idCommand = 0;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_SEP;// | TBSTYLE_AUTOSIZE;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1; 
+	iCount++;
 
 
 	//////////////////
 	// Number of Zoom windows open
 	//////////////////
 	iNumZoomWindowsButton = iCount;			// save for later
-  tbb[iCount].iBitmap = -1; // account for the separator
-  tbb[iCount].idCommand = giTBZoomWinCntReadout;
-  tbb[iCount].fsState = TBSTATE_ENABLED;
-  tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
-  tbb[iCount].dwData = 0;
-  tbb[iCount].iString = -1;
-  iCount++;
+	tbb[iCount].iBitmap = -1; // account for the separator
+	tbb[iCount].idCommand = giTBZoomWinCntReadout;
+	tbb[iCount].fsState = TBSTATE_ENABLED;
+	tbb[iCount].fsStyle = TBSTYLE_BUTTON | TBSTYLE_AUTOSIZE;// | TBSTYLE_DROPDOWN;
+	tbb[iCount].dwData = 0;
+	tbb[iCount].iString = -1;
+	iCount++;
 
 	// Set the number of buttons
 
 	iButtonCount = iCount;
 
 #ifdef ORIGINAL
-  ghwndTBPlay = CreateToolbarEx(hwndParent, WS_CHILD | TBSTYLE_TOOLTIPS | TBSTYLE_ALTDRAG | TBSTYLE_LIST ,// | CCS_ADJUSTABLE, 
-															  1100, 19, ghInstMain, IDB_PLAYTOOL,(LPCTBBUTTON) &tbb, iButtonCount,
-															  16, 14, 16, 14, sizeof(TBBUTTON));
+	ghwndTBPlay = CreateToolbarEx(hwndParent, WS_CHILD | TBSTYLE_TOOLTIPS | TBSTYLE_ALTDRAG | TBSTYLE_LIST ,// | CCS_ADJUSTABLE, 
+		1100, 19, ghInstMain, IDB_PLAYTOOL,(LPCTBBUTTON) &tbb, iButtonCount,
+		16, 14, 16, 14, sizeof(TBBUTTON));
 #else
-  ghwndTBPlay = CreateToolbarEx(hwndParent, WS_CHILD | TBSTYLE_TOOLTIPS | TBSTYLE_LIST , 
-															  IDB_PLAYTOOL, 19, ghInstMain, IDB_PLAYTOOL,(LPCTBBUTTON) &tbb, iButtonCount,
-															  16, 14, 16, 14, sizeof(TBBUTTON));
+	ghwndTBPlay = CreateToolbarEx(hwndParent, WS_CHILD | TBSTYLE_TOOLTIPS | TBSTYLE_LIST , 
+		IDB_PLAYTOOL, 19, ghInstMain, IDB_PLAYTOOL,(LPCTBBUTTON) &tbb, iButtonCount,
+		16, 14, 16, 14, sizeof(TBBUTTON));
 
 #endif
 
@@ -394,9 +394,9 @@ int		CreateToolBars(HWND		hwndParent)
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBSeqSceneNumber, (LPARAM)&tbinfo);
 
-  SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-  SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
-	
+	SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
+
 	// Get the size of the sequence button passed in WPARAM
 
 	SendMessage(ghwndTBPlay, TB_GETITEMRECT, (WPARAM)iSeqScenNumber, (LPARAM)&r);
@@ -407,9 +407,9 @@ int		CreateToolBars(HWND		hwndParent)
 	//////////////////////////////////////////////////
 
 	ghwndTBSeqSceneNumber = CreateWindow("STATIC", "", WS_VISIBLE | WS_CHILD | WS_BORDER,//CBS_DROPDOWNLIST | CBS_HASSTRINGS,
-																	r.left, r.top, r.right - r.left, r.bottom - r.top,
-																	ghwndTBPlay, NULL, ghInstMain, NULL);
-	
+		r.left, r.top, r.right - r.left, r.bottom - r.top,
+		ghwndTBPlay, NULL, ghInstMain, NULL);
+
 	SetWindowText(ghwndTBSeqSceneNumber, "0");
 
 
@@ -424,9 +424,9 @@ int		CreateToolBars(HWND		hwndParent)
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBSeqReadout, (LPARAM)&tbinfo);
 
-  SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-  SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
-	
+	SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
+
 	// Get the size of the sequence button passed in WPARAM
 
 	SendMessage(ghwndTBPlay, TB_GETITEMRECT, (WPARAM)iSeqButton, (LPARAM)&r);
@@ -437,9 +437,9 @@ int		CreateToolBars(HWND		hwndParent)
 	//////////////////////////////////////////////////
 
 	ghwndTBSeqReadout = CreateWindow("STATIC", "", WS_VISIBLE | WS_CHILD | WS_BORDER,//CBS_DROPDOWNLIST | CBS_HASSTRINGS,
-																	r.left, r.top, r.right - r.left, r.bottom - r.top,
-																	ghwndTBPlay, NULL, ghInstMain, NULL);
-	
+		r.left, r.top, r.right - r.left, r.bottom - r.top,
+		ghwndTBPlay, NULL, ghInstMain, NULL);
+
 	SetWindowText(ghwndTBSeqReadout, "Sequence ..........");
 
 
@@ -453,9 +453,9 @@ int		CreateToolBars(HWND		hwndParent)
 	tbinfo.cx = 185;	// SIZE OF THE SEQUENCE WINDOW
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBSeqReadout2, (LPARAM)&tbinfo);
-	
-  SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-  SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
+
+	SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
 
 	// Get the size of the sequence button passed in WPARAM
 
@@ -467,15 +467,15 @@ int		CreateToolBars(HWND		hwndParent)
 	//////////////////////////////////////////////////
 
 	ghwndTBSeqReadout2 = CreateWindow("STATIC", "", WS_VISIBLE | WS_CHILD | WS_BORDER,//CBS_DROPDOWNLIST | CBS_HASSTRINGS,
-																	r.left, r.top, r.right - r.left, r.bottom - r.top,
-																	ghwndTBPlay, NULL, ghInstMain, NULL);
-	
+		r.left, r.top, r.right - r.left, r.bottom - r.top,
+		ghwndTBPlay, NULL, ghInstMain, NULL);
+
 	SetWindowText(ghwndTBSeqReadout2, "Next Sequence ......");
 
 
-///////////////////////////////////////////
-// Num Zoom Windows display
-	
+	///////////////////////////////////////////
+	// Num Zoom Windows display
+
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
 	tbinfo.fsStyle = TBSTYLE_SEP;
@@ -483,8 +483,8 @@ int		CreateToolBars(HWND		hwndParent)
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBZoomWinCntReadout, (LPARAM)&tbinfo);
 
-  SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-  SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
+	SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
 
 	// Get the size of the number of zoom windows open button passed in WPARAM
 
@@ -497,13 +497,13 @@ int		CreateToolBars(HWND		hwndParent)
 	//////////////////////////////////////////////////
 
 	ghwndTBZoomWinCntReadout = CreateWindow("STATIC", "", WS_VISIBLE | WS_CHILD | WS_BORDER,//CBS_DROPDOWNLIST | CBS_HASSTRINGS,
-																	r.left, r.top, r.right - r.left, r.bottom - r.top,
-																	ghwndTBPlay, NULL, ghInstMain, NULL);
-	
+		r.left, r.top, r.right - r.left, r.bottom - r.top,
+		ghwndTBPlay, NULL, ghInstMain, NULL);
+
 	SetWindowText(ghwndTBZoomWinCntReadout, "Zoom Views: 0");
 
-//////////////////////////////////////////
-// GROUP STATUS WINDOW
+	//////////////////////////////////////////
+	// GROUP STATUS WINDOW
 
 	tbinfo.cbSize = sizeof(TBBUTTONINFO);
 	tbinfo.dwMask = TBIF_SIZE | TBIF_STYLE;
@@ -512,8 +512,8 @@ int		CreateToolBars(HWND		hwndParent)
 
 	SendMessage(ghwndTBPlay, TB_SETBUTTONINFO, (WPARAM)giTBGroupStatus, (LPARAM)&tbinfo);
 
-  SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-  SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
+	SetWindowPos(ghwndTBPlay, NULL, 100, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SendMessage(ghwndTBPlay, TB_AUTOSIZE, 0, 0);
 
 	// Get the size of the number of GROUP STATUS windows open button passed in WPARAM
 
@@ -525,20 +525,20 @@ int		CreateToolBars(HWND		hwndParent)
 	//////////////////////////////////////////////////
 
 	ghwndTBGroupStatus = CreateWindow("STATIC", "", WS_VISIBLE | WS_CHILD | WS_BORDER,//CBS_DROPDOWNLIST | CBS_HASSTRINGS,
-																	r.left, r.top, r.right - r.left, r.bottom - r.top,
-																	ghwndTBPlay, NULL, ghInstMain, NULL);
-	
+		r.left, r.top, r.right - r.left, r.bottom - r.top,
+		ghwndTBPlay, NULL, ghInstMain, NULL);
+
 	GroupedStatus(FALSE);		// NOTHING IS GROUPED WHEN CREATING
 
-//////////////////////////////////////////
+	//////////////////////////////////////////
 
-  ShowWindow(ghwndTBPlay, SW_SHOW);
+	ShowWindow(ghwndTBPlay, SW_SHOW);
 
 	/////////////////////////////////////////////////////////////////
 	// Set up the Tool Tips for our Tool Bar
 	/////////////////////////////////////////////////////////////////
 
-  hToolTips = (HWND)SendMessage(ghwndTBPlay, TB_GETTOOLTIPS, 0, 0);
+	hToolTips = (HWND)SendMessage(ghwndTBPlay, TB_GETTOOLTIPS, 0, 0);
 	if(hToolTips)
 	{
 		lpToolInfo.cbSize = sizeof(lpToolInfo);
@@ -550,7 +550,7 @@ int		CreateToolBars(HWND		hwndParent)
 	}
 	SendMessage(hToolTips,TTM_ADDTOOL,0,(LPARAM)(LPTOOLINFO)&lpToolInfo);
 
-  SendMessage(hToolTips, TTM_ACTIVATE, (WPARAM)TRUE,0);
+	SendMessage(hToolTips, TTM_ACTIVATE, (WPARAM)TRUE,0);
 
 	// Set times for the tool tip to pop-up
 
@@ -558,7 +558,7 @@ int		CreateToolBars(HWND		hwndParent)
 	SendMessage(hToolTips, TTM_SETDELAYTIME, (WPARAM)TTDT_INITIAL, (LPARAM)MAKELONG(200,0));
 	SendMessage(hToolTips, TTM_SETDELAYTIME, (WPARAM)TTDT_RESHOW, (LPARAM)MAKELONG(200,0));
 
-return iRet;
+	return iRet;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -594,8 +594,8 @@ void ShowTBZoomWinCnt(LPSTR pName)
 void GroupedStatus(BOOL bStatus)
 {
 	HDC hdc;
-  RECT        rect = {0};
-  HBRUSH  hbrBack;
+	RECT        rect = {0};
+	HBRUSH  hbrBack;
 
 	if(bStatus == TRUE)
 	{
@@ -606,7 +606,7 @@ void GroupedStatus(BOOL bStatus)
 			hdc = GetDC(ghwndTBGroupStatus);
 
 			hbrBack = CreateSolidBrush(RGB(0,255,0));	// Set Green background
-		  FillRect(hdc, &rect, hbrBack);						// fill it in
+			FillRect(hdc, &rect, hbrBack);						// fill it in
 
 			// Display Group status
 
@@ -668,51 +668,51 @@ void EnableTBGroupButtons(int iLast)
 //=======================================
 int       Create256Window(void)
 {
-int         iReturn;
-WNDCLASS    wc;
+	int         iReturn;
+	WNDCLASS    wc;
 
 
-// Register Main Window Class
-//---------------------------
-memset(&wc, 0x00, sizeof(WNDCLASS));      // Clear wndclass structure
+	// Register Main Window Class
+	//---------------------------
+	memset(&wc, 0x00, sizeof(WNDCLASS));      // Clear wndclass structure
 
-wc.style = CS_CLASSDC;
-wc.lpfnWndProc = (WNDPROC)DefWindowProc;
-wc.cbClsExtra = 0;
-wc.cbWndExtra = 0;
-wc.hInstance = ghInstMain;
-wc.hIcon = NULL;
-wc.hCursor = NULL;
-wc.hbrBackground = GetStockObject(BLACK_BRUSH);
-wc.lpszMenuName = NULL;
-wc.lpszClassName = gsz256ColorsClass;	// "256COLOR";
+	wc.style = CS_CLASSDC;
+	wc.lpfnWndProc = (WNDPROC)DefWindowProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = ghInstMain;
+	wc.hIcon = NULL;
+	wc.hCursor = NULL;
+	wc.hbrBackground = GetStockObject(BLACK_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = gsz256ColorsClass;	// "256COLOR";
 
-iReturn = RegisterClass(&wc);
+	iReturn = RegisterClass(&wc);
 
-if(iReturn == 0)
-	 return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
+	if(iReturn == 0)
+		return(IDS_ERR_REGISTER_CLASS);     // Error... Exit
 
-// Create Main Window
-//-------------------
-ghwnd256 = CreateWindow(
-					 "256COLOR",         // Window class name
-					 NULL,         // Window's title
-					 WS_POPUP,
-					 CW_USEDEFAULT,          // Use default x
-					 CW_USEDEFAULT,          // Use default y
-					 CW_USEDEFAULT,          // Use default Width
-					 CW_USEDEFAULT,          // Use default Height
-					 NULL,                   // Parent window's handle
-					 NULL,                   // Default to Class Menu
-					 ghInstMain,              // Instance of window
-					 NULL);                  // Ptr To Data Structure For WM_CREATE
+	// Create Main Window
+	//-------------------
+	ghwnd256 = CreateWindow(
+		"256COLOR",         // Window class name
+		NULL,         // Window's title
+		WS_POPUP,
+		CW_USEDEFAULT,          // Use default x
+		CW_USEDEFAULT,          // Use default y
+		CW_USEDEFAULT,          // Use default Width
+		CW_USEDEFAULT,          // Use default Height
+		NULL,                   // Parent window's handle
+		NULL,                   // Default to Class Menu
+		ghInstMain,              // Instance of window
+		NULL);                  // Ptr To Data Structure For WM_CREATE
 
-if(ghwnd256 == NULL)
-	 return(IDS_ERR_CREATE_WINDOW);      // Error... Exit
+	if(ghwnd256 == NULL)
+		return(IDS_ERR_CREATE_WINDOW);      // Error... Exit
 
-ghdc256 = GetDC(ghwnd256);
-//UpdatePalette(FALSE, hdc256);
-return 0;
+	ghdc256 = GetDC(ghwnd256);
+	//UpdatePalette(FALSE, hdc256);
+	return 0;
 }
 
 //=============================================
@@ -722,8 +722,8 @@ return 0;
 //=============================================
 void      Close256Window(void)
 {
-ReleaseDC(ghwnd256, ghdc256);
-DestroyWindow(ghwnd256);
+	ReleaseDC(ghwnd256, ghdc256);
+	DestroyWindow(ghwnd256);
 
-return;
+	return;
 }
