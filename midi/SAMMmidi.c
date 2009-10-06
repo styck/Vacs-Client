@@ -73,24 +73,24 @@ void    AssembleSMPTETime(void);
 BOOL WINAPI DllMain (HANDLE hDLL, DWORD dwReason, LPVOID lpReserved)
 {
 
-switch (dwReason)
-    {
-    case DLL_PROCESS_ATTACH:
-        lCounter = 0;
-        wSMPTEBuffIndex = 0;
-        break;
+	switch (dwReason)
+	{
+	case DLL_PROCESS_ATTACH:
+		lCounter = 0;
+		wSMPTEBuffIndex = 0;
+		break;
 
-    case DLL_THREAD_ATTACH:
-        break;
+	case DLL_THREAD_ATTACH:
+		break;
 
-    case DLL_THREAD_DETACH:
-        break;
+	case DLL_THREAD_DETACH:
+		break;
 
-    case DLL_PROCESS_DETACH:
-        break;
-    }
+	case DLL_PROCESS_DETACH:
+		break;
+	}
 
-return TRUE;
+	return TRUE;
 }
 
 
@@ -99,15 +99,15 @@ void     Dll_SetMainWindow(HWND hwnd)
 {
 
 
-hwndMain = hwnd;
+	hwndMain = hwnd;
 
-return;
+	return;
 };
 
 //=====================================================
 HWND     Dll_GetMainWindow(void)
 {
-return hwndMain;
+	return hwndMain;
 }
 
 //==============================================================
@@ -116,119 +116,119 @@ return hwndMain;
 // Places Complete Midi Msg (4 Bytes) In Buffer In Proper Order
 //==============================================================
 void  CALLBACK  Dll_MidiInProc(HMIDIIN hIn, UINT wMsg, DWORD dwMidiDev,
-                                       DWORD dwParam1, DWORD dwParam2)
+							   DWORD dwParam1, DWORD dwParam2)
 {
 
-long        lHead, lTail, lBuffSz;
-BYTE        chMidiMsg[4];
-int         iCount, iIndx;
-LPSTR       lpData, lpRecordedData;
-LPMIDIHDR   lpmidiHdr;
-DWORD       dwBRecorded;
+	long        lHead, lTail, lBuffSz;
+	BYTE        chMidiMsg[4];
+	int         iCount, iIndx;
+	LPSTR       lpData, lpRecordedData;
+	LPMIDIHDR   lpmidiHdr;
+	DWORD       dwBRecorded;
 
-DWORD				dwMidiDataTransfer;		//fds added
+	DWORD				dwMidiDataTransfer;		//fds added
 
-if(lpMidiDT == NULL)
-    lpMidiDT = (LPMIDIDATATRANSFER) dwMidiDataTransfer;
+	if(lpMidiDT == NULL)
+		lpMidiDT = (LPMIDIDATATRANSFER) dwMidiDataTransfer;
 
-switch(wMsg)
-    {
-    case MIM_DATA:
-        chMidiMsg[0] = LOBYTE(LOWORD(dwParam1));
-        chMidiMsg[1] = HIBYTE(LOWORD(dwParam1));
-        chMidiMsg[2] = LOBYTE(HIWORD(dwParam1));
-        chMidiMsg[3] = HIBYTE(HIWORD(dwParam1));
+	switch(wMsg)
+	{
+	case MIM_DATA:
+		chMidiMsg[0] = LOBYTE(LOWORD(dwParam1));
+		chMidiMsg[1] = HIBYTE(LOWORD(dwParam1));
+		chMidiMsg[2] = LOBYTE(HIWORD(dwParam1));
+		chMidiMsg[3] = HIBYTE(HIWORD(dwParam1));
 
-        // Check if it is a Controler Msg
-        //-------------------------------
-//        if((chMidiMsg[0]&0x0f)== MIDICONTROLVALUE)
+		// Check if it is a Controler Msg
+		//-------------------------------
+		//        if((chMidiMsg[0]&0x0f)== MIDICONTROLVALUE)
 
-        // check if it is a MTC message
-        //-----------------------------
-        if(chMidiMsg[0] == MIDIMTCVALUE)
-            {
-            ReceiveSMPTEMsg(chMidiMsg);
-            break;
-            }
+		// check if it is a MTC message
+		//-----------------------------
+		if(chMidiMsg[0] == MIDIMTCVALUE)
+		{
+			ReceiveSMPTEMsg(chMidiMsg);
+			break;
+		}
 
-        // assign them to local variables for speed
-        //-----------------------------------------
-        lpData = lpMidiDT->lpMidiInBuff;
-        lHead = lpMidiDT->lInHeadPos;
-        lTail = lpMidiDT->lInTailPos;
-        lBuffSz = lpMidiDT->lMidiInBuffSz;
+		// assign them to local variables for speed
+		//-----------------------------------------
+		lpData = lpMidiDT->lpMidiInBuff;
+		lHead = lpMidiDT->lInHeadPos;
+		lTail = lpMidiDT->lInTailPos;
+		lBuffSz = lpMidiDT->lMidiInBuffSz;
 
-        for(iCount=0; iCount < 4; iCount++)
-            {
-            lHead ++;
-            // The Incoming data goes to the Head of the FIFO Buffer
-            //------------------------------------------------------
-            if(lHead >= lBuffSz)
-                lHead = 0;
-            // Check if the FIFO buffer has overrun
-            //-------------------------------------
-            if(lHead == lTail)
-                {
-                lpMidiDT->lError = 10; // Set the Error flag
-                // Reset the lHead back
-                //---------------------
-                if(lHead == 0)
-                    lHead = lBuffSz;
-                else
-                    lHead --;
-                return;
-                }
+		for(iCount=0; iCount < 4; iCount++)
+		{
+			lHead ++;
+			// The Incoming data goes to the Head of the FIFO Buffer
+			//------------------------------------------------------
+			if(lHead >= lBuffSz)
+				lHead = 0;
+			// Check if the FIFO buffer has overrun
+			//-------------------------------------
+			if(lHead == lTail)
+			{
+				lpMidiDT->lError = 10; // Set the Error flag
+				// Reset the lHead back
+				//---------------------
+				if(lHead == 0)
+					lHead = lBuffSz;
+				else
+					lHead --;
+				return;
+			}
 
-            lpData[lHead] = chMidiMsg[iCount];
-            lpMidiDT->lInHeadPos = lHead;
-            }
-        break;
+			lpData[lHead] = chMidiMsg[iCount];
+			lpMidiDT->lInHeadPos = lHead;
+		}
+		break;
 
-    case MIM_LONGDATA:
-        lpmidiHdr = (LPMIDIHDR)dwParam1;
-        dwBRecorded = lpmidiHdr->dwBytesRecorded;
-        lpRecordedData = lpmidiHdr->lpData;
-        lpData = lpMidiDT->lpMidiInBuff;
-        lHead = lpMidiDT->lInHeadPos;
-        lTail = lpMidiDT->lInTailPos;
-        lBuffSz = lpMidiDT->lMidiInBuffSz;
+	case MIM_LONGDATA:
+		lpmidiHdr = (LPMIDIHDR)dwParam1;
+		dwBRecorded = lpmidiHdr->dwBytesRecorded;
+		lpRecordedData = lpmidiHdr->lpData;
+		lpData = lpMidiDT->lpMidiInBuff;
+		lHead = lpMidiDT->lInHeadPos;
+		lTail = lpMidiDT->lInTailPos;
+		lBuffSz = lpMidiDT->lMidiInBuffSz;
 
-        for(iCount=0; iCount < dwBRecorded; iCount++)
-            {
-            lHead ++;
-            // The Incoming data goes to the Head of the FIFO Buffer
-            //------------------------------------------------------
-            if(lHead >= lBuffSz)
-                lHead = 0;
-            // Check if the FIFO buffer has overrun
-            //-------------------------------------
-            if(lHead == lTail)
-                {
-                lpMidiDT->lError = 10; // Set the Error flag
-                // Reset the lHead back
-                //---------------------
-                if(lHead == 0)
-                    lHead = lBuffSz;
-                else
-                    lHead --;
-                goto MIDI_LONG_DONE;
-                }
+		for(iCount=0; iCount < dwBRecorded; iCount++)
+		{
+			lHead ++;
+			// The Incoming data goes to the Head of the FIFO Buffer
+			//------------------------------------------------------
+			if(lHead >= lBuffSz)
+				lHead = 0;
+			// Check if the FIFO buffer has overrun
+			//-------------------------------------
+			if(lHead == lTail)
+			{
+				lpMidiDT->lError = 10; // Set the Error flag
+				// Reset the lHead back
+				//---------------------
+				if(lHead == 0)
+					lHead = lBuffSz;
+				else
+					lHead --;
+				goto MIDI_LONG_DONE;
+			}
 
-            lpData[lHead] = lpRecordedData[iCount];
-            lpMidiDT->lInHeadPos = lHead;
-            }
+			lpData[lHead] = lpRecordedData[iCount];
+			lpMidiDT->lInHeadPos = lHead;
+		}
 
-    MIDI_LONG_DONE:
-        lpMidiDT->iMidiInLongReceived = 1;// set the flag that
-        iIndx = lpmidiHdr->dwUser;
-//fds        if((iIndx >= 0)&&(iIndx < NUMBER_MIDI_HDRS))
-//fds            lpMidiDT->pbInHdr[iIndx] = 0;
-//        else
-            lpMidiDT->lError = 20;
-        break;
-    }
+MIDI_LONG_DONE:
+		lpMidiDT->iMidiInLongReceived = 1;// set the flag that
+		iIndx = lpmidiHdr->dwUser;
+		//fds        if((iIndx >= 0)&&(iIndx < NUMBER_MIDI_HDRS))
+		//fds            lpMidiDT->pbInHdr[iIndx] = 0;
+		//        else
+		lpMidiDT->lError = 20;
+		break;
+	}
 
-return;
+	return;
 }
 
 //==============================================================
@@ -239,29 +239,29 @@ return;
 //  have been send out.
 //==============================================================
 void CALLBACK  Dll_MidiOutProc(HMIDIOUT hOut, UINT wMsg, DWORD dwMidiDev,
-                                        DWORD dwParam1, DWORD dwParam2)
+							   DWORD dwParam1, DWORD dwParam2)
 
 {
-LPMIDIHDR   lpmidiHdr;
-int         iIndx;
-LPMIDIDEV   pMidiDev;
+	LPMIDIHDR   lpmidiHdr;
+	int         iIndx;
+	LPMIDIDEV   pMidiDev;
 
-pMidiDev = (LPMIDIDEV)dwMidiDev;
+	pMidiDev = (LPMIDIDEV)dwMidiDev;
 
-switch(wMsg)
-    {
-    case MOM_DONE:
-        lpmidiHdr = (LPMIDIHDR)dwParam1;
-        iIndx = lpmidiHdr->dwUser;
-        if((iIndx >= 0)&&(iIndx < NUMBER_MIDI_HDRS))
-            pMidiDev->midiDT.piaOutHdr[iIndx] = 0;
-        else
-            pMidiDev->midiDT.lError = 20;
+	switch(wMsg)
+	{
+	case MOM_DONE:
+		lpmidiHdr = (LPMIDIHDR)dwParam1;
+		iIndx = lpmidiHdr->dwUser;
+		if((iIndx >= 0)&&(iIndx < NUMBER_MIDI_HDRS))
+			pMidiDev->midiDT.piaOutHdr[iIndx] = 0;
+		else
+			pMidiDev->midiDT.lError = 20;
 
-        break;
-    }
+		break;
+	}
 
-return;
+	return;
 }
 
 //===============================
@@ -271,32 +271,32 @@ return;
 void    ReceiveSMPTEMsg(BYTE * chArr)
 {
 
-BYTE        byte;
+	BYTE        byte;
 
-// Set a flag to detect when the SMPTE has stoped
-//-----------------------------------------------
-lpMidiDT->iSMPTEMsgReceived = 1;
+	// Set a flag to detect when the SMPTE has stoped
+	//-----------------------------------------------
+	lpMidiDT->iSMPTEMsgReceived = 1;
 
-byte = chArr[1];
-byte &= 0x0f0;
-byte = byte >> 4;
-if(byte == wSMPTEBuffIndex)
-    bSMPTEMsg[wSMPTEBuffIndex]=chArr[1];
-else
-    {
-    // Something went wrong
-    // and we should start assembling the
-    // MTC messages allover
-    //-----------------------------------
-    wSMPTEBuffIndex = 0;
-    return;
-    }
+	byte = chArr[1];
+	byte &= 0x0f0;
+	byte = byte >> 4;
+	if(byte == wSMPTEBuffIndex)
+		bSMPTEMsg[wSMPTEBuffIndex]=chArr[1];
+	else
+	{
+		// Something went wrong
+		// and we should start assembling the
+		// MTC messages allover
+		//-----------------------------------
+		wSMPTEBuffIndex = 0;
+		return;
+	}
 
-wSMPTEBuffIndex++;
-if(wSMPTEBuffIndex >=  MAX_SMPTE_MESSAGES)
-    AssembleSMPTETime();
+	wSMPTEBuffIndex++;
+	if(wSMPTEBuffIndex >=  MAX_SMPTE_MESSAGES)
+		AssembleSMPTETime();
 
-return;
+	return;
 }
 
 //============================
@@ -305,82 +305,82 @@ return;
 void    AssembleSMPTETime(void)
 {
 
-WORD    wSMPTEFormat, wSMPTEFrames, wSMPTESeconds, wSMPTEMins, wSMPTEHours;
-DWORD   dwCurSMPTETime;
+	WORD    wSMPTEFormat, wSMPTEFrames, wSMPTESeconds, wSMPTEMins, wSMPTEHours;
+	DWORD   dwCurSMPTETime;
 
 
-// Get the MTC/SMPTE data
-//-----------------------
-__asm
-    {
-    // Get the SMPTE Format
-    //---------------------
-    MOV     AL, bSMPTEMsg[7]
-    SHL     AL, 1
-    AND     AL, 0xF0 //11110000B
-    MOV     AH, 0
-    MOV     wSMPTEFormat, AX
+	// Get the MTC/SMPTE data
+	//-----------------------
+	__asm
+	{
+		// Get the SMPTE Format
+		//---------------------
+		MOV     AL, bSMPTEMsg[7]
+		SHL     AL, 1
+			AND     AL, 0xF0 //11110000B
+			MOV     AH, 0
+			MOV     wSMPTEFormat, AX
 
-    // now get the SMPTE time
-    //-----------------------
-    MOV     AH, bSMPTEMsg[0]
-    AND     AH, 0FH
+			// now get the SMPTE time
+			//-----------------------
+			MOV     AH, bSMPTEMsg[0]
+		AND     AH, 0FH
 
-    MOV     AL, bSMPTEMsg[1]
-    AND     AL, 0FH
-    SHL     AL, 4
-    ADD     AL, AH  // Frames
-    MOV     AH, 0   // in AX
-    MOV     wSMPTEFrames, AX
+			MOV     AL, bSMPTEMsg[1]
+		AND     AL, 0FH
+			SHL     AL, 4
+			ADD     AL, AH  // Frames
+			MOV     AH, 0   // in AX
+			MOV     wSMPTEFrames, AX
 
-    MOV     BH, bSMPTEMsg[2]
-    AND     BH, 0FH
+			MOV     BH, bSMPTEMsg[2]
+		AND     BH, 0FH
 
-    MOV     BL, bSMPTEMsg[3]
-    AND     BL, 0FH
-    SHL     BL, 4
-    ADD     BL, BH  // Seconds
-    MOV     BH, 0   // in BX
-    MOV     wSMPTESeconds, BX
+			MOV     BL, bSMPTEMsg[3]
+		AND     BL, 0FH
+			SHL     BL, 4
+			ADD     BL, BH  // Seconds
+			MOV     BH, 0   // in BX
+			MOV     wSMPTESeconds, BX
 
-    MOV     CH, bSMPTEMsg[4]
-    AND     CH, 0FH
+			MOV     CH, bSMPTEMsg[4]
+		AND     CH, 0FH
 
-    MOV     CL, bSMPTEMsg[5]
-    AND     CL, 0FH
-    SHL     CL, 4
-    ADD     CL, CH  // Minutes
-    MOV     CH, 0   // in CX
-    MOV     wSMPTEMins, CX
+			MOV     CL, bSMPTEMsg[5]
+		AND     CL, 0FH
+			SHL     CL, 4
+			ADD     CL, CH  // Minutes
+			MOV     CH, 0   // in CX
+			MOV     wSMPTEMins, CX
 
-    MOV     DH, bSMPTEMsg[6]
-    AND     DH, 0FH
+			MOV     DH, bSMPTEMsg[6]
+		AND     DH, 0FH
 
-    MOV     DL, bSMPTEMsg[7]
-    AND     DL, 01H
-    SHL     DL, 4
-    ADD     DL, DH  // Hours
-    MOV     DH, 0   // in DX
-    MOV     wSMPTEHours, DX
+			MOV     DL, bSMPTEMsg[7]
+		AND     DL, 01H
+			SHL     DL, 4
+			ADD     DL, DH  // Hours
+			MOV     DH, 0   // in DX
+			MOV     wSMPTEHours, DX
 
-    MOV     DH, DL
-    MOV     DL, CL
-    MOV     word ptr dwCurSMPTETime + 2, DX
-    MOV     AH, BL
-    MOV     word ptr dwCurSMPTETime, AX
-    }
+			MOV     DH, DL
+			MOV     DL, CL
+			MOV     word ptr dwCurSMPTETime + 2, DX
+			MOV     AH, BL
+			MOV     word ptr dwCurSMPTETime, AX
+	}
 
 
-//fds lpMidiDT->smpteTime.hour   = (BYTE)wSMPTEHours;
-//fds lpMidiDT->smpteTime.min    = (BYTE)wSMPTEMins;
-//fds lpMidiDT->smpteTime.sec    = (BYTE)wSMPTESeconds;
-//fds lpMidiDT->smpteTime.frame  = (BYTE)wSMPTEFrames;
+	//fds lpMidiDT->smpteTime.hour   = (BYTE)wSMPTEHours;
+	//fds lpMidiDT->smpteTime.min    = (BYTE)wSMPTEMins;
+	//fds lpMidiDT->smpteTime.sec    = (BYTE)wSMPTESeconds;
+	//fds lpMidiDT->smpteTime.frame  = (BYTE)wSMPTEFrames;
 
-lpMidiDT->wSMPTEFormat = wSMPTEFormat;
-lpMidiDT->dwSMPTETime = dwCurSMPTETime;
-lpMidiDT->iNewTime    = 1;
-wSMPTEBuffIndex = 0;
+	lpMidiDT->wSMPTEFormat = wSMPTEFormat;
+	lpMidiDT->dwSMPTETime = dwCurSMPTETime;
+	lpMidiDT->iNewTime    = 1;
+	wSMPTEBuffIndex = 0;
 
-return;
+	return;
 }
 
