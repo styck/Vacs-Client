@@ -90,10 +90,10 @@ void SetupGlobal()
 int     GetInData(LPSTR lps)
 { 
 	int iRet=0;
-  //CopyMemory(lps, m_cm.m_chInBuff, m_cm.m_iInLength);
-  //iRet = m_cm.m_iInLength;
-  //m_cm.m_iInLength = 0;
-  return iRet;
+	//CopyMemory(lps, m_cm.m_chInBuff, m_cm.m_iInLength);
+	//iRet = m_cm.m_iInLength;
+	//m_cm.m_iInLength = 0;
+	return iRet;
 };
 
 
@@ -118,14 +118,14 @@ BOOL    OpenComm(void)
 
 	// open COMM device
 	if ((m_cm.m_hDevice = CreateFile( m_cm.m_chDevName, 
-															GENERIC_READ | GENERIC_WRITE,
-															0,                    // exclusive access
-															NULL,                 // no security attrs
-															OPEN_EXISTING,
-															FILE_ATTRIBUTE_NORMAL |
-															FILE_FLAG_OVERLAPPED, // overlapped I/O
-															NULL )) != INVALID_HANDLE_VALUE)
-		{
+		GENERIC_READ | GENERIC_WRITE,
+		0,                    // exclusive access
+		NULL,                 // no security attrs
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL |
+		FILE_FLAG_OVERLAPPED, // overlapped I/O
+		NULL )) != INVALID_HANDLE_VALUE)
+	{
 		// get any early notifications
 		//----------------------------
 		SetCommMask(m_cm.m_hDevice, EV_RXCHAR ) ;
@@ -137,7 +137,7 @@ BOOL    OpenComm(void)
 		// purge any information in the buffer
 		//------------------------------------
 		PurgeComm( m_cm.m_hDevice,  PURGE_TXABORT | PURGE_RXABORT |
-													PURGE_TXCLEAR | PURGE_RXCLEAR ) ;
+			PURGE_TXCLEAR | PURGE_RXCLEAR ) ;
 
 		// set up for overlapped I/O
 		//--------------------------
@@ -149,7 +149,7 @@ BOOL    OpenComm(void)
 		CommTimeOuts.WriteTotalTimeoutMultiplier = 2*CBR_9600/ m_cm.m_dwBaudRate;
 		CommTimeOuts.WriteTotalTimeoutConstant = 0 ;
 		SetCommTimeouts( m_cm.m_hDevice, &CommTimeOuts ) ;
-		}
+	}
 
 	bRet = SetupConnection() ;
 
@@ -159,14 +159,14 @@ BOOL    OpenComm(void)
 
 		m_cm.osRead.hEvent = CreateEvent( NULL, TRUE, FALSE, NULL ) ;
 		if (m_cm.osRead.hEvent == NULL)
-			{
+		{
 			// For now we are doing nothing here ....
-			}
+		}
 		m_cm.osWrite.hEvent = CreateEvent( NULL, TRUE, FALSE, NULL ) ;
 		if ( m_cm.osWrite.hEvent == NULL)
-			{
+		{
 			//  For now we are doing nothing here .... 
-			}
+		}
 
 		m_cm.m_hInClose = CreateEvent(NULL, TRUE, FALSE, NULL );
 		m_cm.m_hInClosed = CreateEvent(NULL, TRUE, FALSE, NULL );
@@ -179,23 +179,23 @@ BOOL    OpenComm(void)
 		// to watch for an event.
 
 		if (NULL == (m_cm.m_hIOThread =
-												CreateThread( (LPSECURITY_ATTRIBUTES) NULL,
-													0,
-													(LPTHREAD_START_ROUTINE) CommIOThreadProc,
-													(LPVOID) &m_cm,
-													0, &m_cm.m_dwThreadID)))
-			{
+			CreateThread( (LPSECURITY_ATTRIBUTES) NULL,
+			0,
+			(LPTHREAD_START_ROUTINE) CommIOThreadProc,
+			(LPVOID) &m_cm,
+			0, &m_cm.m_dwThreadID)))
+		{
 			m_cm.m_bConnected = FALSE ;
 			CloseHandle( m_cm.m_hDevice); m_cm.m_hDevice = NULL;
 			bRet = FALSE ;
-			}
+		}
 		else
-			{
+		{
 
 			// assert DTR
 			//-----------
 			EscapeCommFunction( m_cm.m_hDevice, SETDTR ) ;
-			}
+		}
 	}
 	else
 	{
@@ -216,7 +216,7 @@ BOOL    CloseComm()
 
 
 	if(m_cm.m_hDevice)
-		{
+	{
 		// set connected flag to FALSE
 		//----------------------------
 		m_cm.m_bConnected = FALSE;
@@ -245,7 +245,7 @@ BOOL    CloseComm()
 		// purge any outstanding reads/writes and close device handle
 		//-----------------------------------------------------------
 		PurgeComm( m_cm.m_hDevice, PURGE_TXABORT | PURGE_RXABORT |
-													PURGE_TXCLEAR | PURGE_RXCLEAR ) ;
+			PURGE_TXCLEAR | PURGE_RXCLEAR ) ;
 		CloseHandle( m_cm.m_hDevice) ;
 
 		m_cm.m_hDevice = NULL;
@@ -259,7 +259,7 @@ BOOL    CloseComm()
 
 		DestroyFifo(&m_cm.m_InFifo);
 		DestroyFifo(&m_cm.m_OutFifo);
-		}
+	}
 
 
 	return bRet;
@@ -344,7 +344,7 @@ BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength)
 
 
 	bWriteStat = WriteFile( m_cm.m_hDevice, lpBlock, dwLength,
-												 &dwBytesWritten, &m_cm.osWrite ) ;
+		&dwBytesWritten, &m_cm.osWrite ) ;
 
 	// Note that normally the code will not execute the following
 	// because the driver caches write operations. Small I/O requests
@@ -353,9 +353,9 @@ BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength)
 	// overlapped operation was specified
 
 	if (!bWriteStat)
-		{
+	{
 		if(GetLastError() == ERROR_IO_PENDING)
-			{
+		{
 			// We should wait for the completion of the write operation
 			// so we know if it worked or not
 
@@ -371,29 +371,29 @@ BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength)
 			// the write.
 
 			while(!GetOverlappedResult( m_cm.m_hDevice,
-										 &m_cm.osWrite, &dwBytesWritten, TRUE ))
-				{
+				&m_cm.osWrite, &dwBytesWritten, TRUE ))
+			{
 				dwError = GetLastError();
 				if(dwError == ERROR_IO_INCOMPLETE)
-					{
+				{
 					// normal result if not finished
 					dwBytesSent += dwBytesWritten;
 					continue;
-					}
+				}
 				else
-					{
+				{
 					// an error occurred, try to recover
 					wsprintf( szError, "<CE-%u>", dwError ) ;
 					//WriteTTYBlock( hWnd, szError, lstrlen( szError ) ) ;
 					ClearCommError( m_cm.m_hDevice, &dwErrorFlags, &ComStat ) ;
 					if ((dwErrorFlags > 0) && m_cm.m_bDisplayErrors)
-						{
+					{
 						wsprintf( szError, "<CE-%u>", dwErrorFlags ) ;
 						//WriteTTYBlock( hWnd, szError, lstrlen( szError ) ) ;
-						}
-					break;
 					}
+					break;
 				}
+			}
 			dwBytesSent += dwBytesWritten;
 
 			if( dwBytesSent != dwLength )
@@ -403,19 +403,19 @@ BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength)
 
 			OutputDebugString(szError);
 
-			}
+		}
 		else
-			{
+		{
 			// some other error occurred
 			ClearCommError( m_cm.m_hDevice, &dwErrorFlags, &ComStat ) ;
 			if ((dwErrorFlags > 0) && m_cm.m_bDisplayErrors)
-				{
+			{
 				wsprintf( szError, "<CE-%u>", dwErrorFlags ) ;
 				//WriteTTYBlock( hWnd, szError, lstrlen( szError ) ) ;
-				}
-			bRet = FALSE;
 			}
+			bRet = FALSE;
 		}
+	}
 
 	return bRet;
 };
@@ -426,7 +426,7 @@ BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength)
 //
 BOOL    SetupCommPort(void)
 {
-return TRUE;
+	return TRUE;
 };
 
 ///
@@ -476,49 +476,49 @@ int     ReadCommBlock( LPCOMMDEVICE  pcd, LPSTR lpszBlock, int nMaxLength )
 	if (dwLength > 0)
 	{
 		bReadStat = ReadFile( pcd->m_hDevice, lpszBlock,
-											dwLength, &dwLength, &pcd->osRead) ;
+			dwLength, &dwLength, &pcd->osRead) ;
 		if (!bReadStat)
 		{
-			 if (GetLastError() == ERROR_IO_PENDING)
-			 {
-					OutputDebugString("\n\rIO Pending");
-					// We have to wait for read to complete.
-					// This function will timeout according to the
-					// CommTimeOuts.ReadTotalTimeoutConstant variable
-					// Every time it times out, check for port errors
-					while(!GetOverlappedResult( pcd->m_hDevice,
-																			&pcd->osRead, &dwLength, TRUE ))
+			if (GetLastError() == ERROR_IO_PENDING)
+			{
+				OutputDebugString("\n\rIO Pending");
+				// We have to wait for read to complete.
+				// This function will timeout according to the
+				// CommTimeOuts.ReadTotalTimeoutConstant variable
+				// Every time it times out, check for port errors
+				while(!GetOverlappedResult( pcd->m_hDevice,
+					&pcd->osRead, &dwLength, TRUE ))
+				{
+					dwError = GetLastError();
+					if(dwError == ERROR_IO_INCOMPLETE)
+						// normal result if not finished
+						continue;
+					else
 					{
-						 dwError = GetLastError();
-						 if(dwError == ERROR_IO_INCOMPLETE)
-								// normal result if not finished
-								continue;
-						 else
-						 {
-								// an error occurred, try to recover
-								wsprintf( szError, "<CE-%u>", dwError ) ;
-								//WriteTTYBlock( hWnd, szError, lstrlen( szError ) ) ;
-								ClearCommError( pcd->m_hDevice, &dwErrorFlags, &ComStat ) ;
-								if ((dwErrorFlags > 0) && pcd->m_bDisplayErrors)
-								{
-									wsprintf( szError, "<CE-%u>", dwErrorFlags ) ;
-									//WriteTTYBlock( hWnd, szError, lstrlen( szError ) ) ;
-								}
-								break;
-						 }
+						// an error occurred, try to recover
+						wsprintf( szError, "<CE-%u>", dwError ) ;
+						//WriteTTYBlock( hWnd, szError, lstrlen( szError ) ) ;
+						ClearCommError( pcd->m_hDevice, &dwErrorFlags, &ComStat ) ;
+						if ((dwErrorFlags > 0) && pcd->m_bDisplayErrors)
+						{
+							wsprintf( szError, "<CE-%u>", dwErrorFlags ) ;
+							//WriteTTYBlock( hWnd, szError, lstrlen( szError ) ) ;
+						}
+						break;
 					}
+				}
 			}
 			else
-				{
+			{
 				// some other error occurred
 				dwLength = 0 ;
 				ClearCommError( pcd->m_hDevice, &dwErrorFlags, &ComStat ) ;
 				if ((dwErrorFlags > 0) && pcd->m_bDisplayErrors)
-					{
+				{
 					wsprintf( szError, "<CE-%u>", dwErrorFlags ) ;
 					//WriteTTYBlock( hWnd, szError, lstrlen( szError ) ) ;
-					}
-			 }
+				}
+			}
 		}
 	}
 
@@ -547,15 +547,15 @@ UINT    CommIOThreadProc(LPVOID lpv)
 	//------------------------------------------
 	/*
 	os.hEvent = CreateEvent( NULL,    // no security
-													TRUE,    // explicit reset req
-													FALSE,   // initial event reset
-													NULL ) ; // no name
+	TRUE,    // explicit reset req
+	FALSE,   // initial event reset
+	NULL ) ; // no name
 	if (os.hEvent == NULL)
-		{
-		MessageBox( NULL, "Failed to create event for thread!", "TTY Error!",
-								MB_ICONEXCLAMATION | MB_OK ) ;
-		goto ON_EXIT;
-		}
+	{
+	MessageBox( NULL, "Failed to create event for thread!", "TTY Error!",
+	MB_ICONEXCLAMATION | MB_OK ) ;
+	goto ON_EXIT;
+	}
 	*/
 
 	if (!SetCommMask( pcd->m_hDevice, EV_RXCHAR ))
@@ -583,7 +583,7 @@ UINT    CommIOThreadProc(LPVOID lpv)
 					PutFifo(&pcd->m_InFifo, abIn, nLength);
 					if(pcd->m_hwndDataIn)
 						PostMessage(pcd->m_hwndDataIn, WM_U_COMIO_IN_DONE, 0, 0);
-					}
+				}
 
 			} while ( nLength > 0 ) ;
 		}
@@ -591,7 +591,7 @@ UINT    CommIOThreadProc(LPVOID lpv)
 
 	// clear information in structure (kind of a "we're done flag")
 
-	ON_EXIT:
+ON_EXIT:
 	pcd->m_dwThreadID = 0 ;
 	pcd->m_hIOThread = NULL ;
 	SetEvent(pcd->m_hInClosed);

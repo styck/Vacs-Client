@@ -65,7 +65,7 @@ int		PutFifo(COMM_FIFO *p, LPSTR pSrc, int size)
 			p->pHead += size - iRet;
 
 		}
-		
+
 		p->iSize += size;
 		iRet = size;
 	}
@@ -113,7 +113,7 @@ int		GetFifo(COMM_FIFO *p, LPSTR pDest, int size)
 			p->pTail += store - iRet;
 
 		}
-		
+
 		p->iSize -= store;
 		iRet = store;
 	}
@@ -126,7 +126,7 @@ int		GetFifo(COMM_FIFO *p, LPSTR pDest, int size)
 int		GetDataSize(COMM_FIFO *p)
 {
 	int	iRet = -1;
-		
+
 	// make sure this is thread safe ...
 	//
 	if(WaitForSingleObject(p->access, FIFO_ACCESS_TOUT) == WAIT_TIMEOUT)
