@@ -51,7 +51,8 @@ typedef union MIDI_SHORT_DATAtag
 		}s;
 }MIDI_SHORT_DATA; //
 
-#ifdef DLL_EXPORT_COMM
+/// #ifdef DLL_EXPORT_COMM
+#if 1 // DLL_EXPORT_COMM is defined in the project settings
 
 typedef struct
   {
@@ -98,7 +99,7 @@ __declspec(dllexport)void SetupGlobal();
   //
 __declspec(dllexport)BOOL    SetupCommPort(void);
 
-__declspec(dllexport)BOOL    OpenCommPort(LPSTR lpsName);
+__declspec(dllexport)BOOL    MyOpenCommPort(LPSTR lpsName);
 __declspec(dllexport)BOOL    OpenComm(void);
 __declspec(dllexport)BOOL    CloseComm();
 
@@ -120,33 +121,34 @@ __declspec(dllexport)int	GetCommInFifoSize();
 
 UINT	CommIOThreadProc(LPVOID );
 
-#else
-__declspec(dllimport)void	SendCommData(BYTE		ch, BYTE b1, BYTE b2);
-
-__declspec(dllimport)void SetupGlobal();
-
-  // Show Dialog box to Configure the Comm Port
-  //
-__declspec(dllimport)BOOL    SetupCommPort(void);
-
-__declspec(dllimport)BOOL    OpenCommPort(LPSTR lpsName);
-__declspec(dllimport)BOOL    OpenComm(void);
-__declspec(dllimport)BOOL    CloseComm();
-
-__declspec(dllimport)BOOL    SetupConnection();
-__declspec(dllimport)BOOL    CloseConnection();
-
-
-__declspec(dllimport)BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength);
-
-__declspec(dllimport)BOOL    IsOpen();
-
-__declspec(dllimport)int     GetInData(LPSTR lps);
-__declspec(dllimport)BOOL    SetDataInWindow(HWND hwnd);
-
-__declspec(dllimport)int GetCommInFifo(LPSTR p, int size);
-__declspec(dllimport)int	GetCommInFifoSize();
-
+//#else
+//__declspec(dllimport)void	SendCommData(BYTE		ch, BYTE b1, BYTE b2);
+//
+//__declspec(dllimport)void SetupGlobal();
+//
+//  // Show Dialog box to Configure the Comm Port
+//  //
+//__declspec(dllimport)BOOL    SetupCommPort(void);
+//
+//__declspec(dllimport)BOOL    OpenCommPort(LPSTR lpsName);
+//__declspec(dllimport)HANDLE  OpenCommPort(ULONG portNumber, DWORD baudRate, DWORD flags);
+//__declspec(dllimport)BOOL    OpenComm(void);
+//__declspec(dllimport)BOOL    CloseComm();
+//
+//__declspec(dllimport)BOOL    SetupConnection();
+//__declspec(dllimport)BOOL    CloseConnection();
+//
+//
+//__declspec(dllimport)BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength);
+//
+//__declspec(dllimport)BOOL    IsOpen();
+//
+//__declspec(dllimport)int     GetInData(LPSTR lps);
+//__declspec(dllimport)BOOL    SetDataInWindow(HWND hwnd);
+//
+//__declspec(dllimport)int GetCommInFifo(LPSTR p, int size);
+//__declspec(dllimport)int	GetCommInFifoSize();
+//
 
 #endif
 

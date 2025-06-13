@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{eb41f0c9-bf35-4324-8713-fb2c09fc9591}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{dbacebc0-941c-4bed-ae1a-e1acaa044d66}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{4c407142-839d-499a-b038-29481c564630}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\256Colors.C">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ConsoleCommunication.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ControlDataFilters.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Controls.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CreateMain.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\datafile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\eqDisplay.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Events interface.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FullView.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Groups.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Init.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Labels and Groups.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MasterWindow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MDI_Main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MemoryMap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MIDI.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Misc BinRes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mix Files.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Preferences.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Remap and Mode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SAMM_Globals.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scan CtrlZones.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Sequence.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Status.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trackingwindow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ZoneMaps.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ZoomView.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\RC\SAMM.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\CDef_External.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\CDef_implement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ConsoleDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ConsoleDefinitionRC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\CTRL.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\DCXTCP_protocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\DLLIST.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\lang.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\MACRO.H">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\SAMM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\samm_rc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\SAMMext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\sammres00.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\SAMMstruc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Spooler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\RC\bmp00001.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\RC\bmp00002.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\RC\icon1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\RC\playbar_bw2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="src\RC\SAMMmain.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\RC\cur00001.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\RC\cur00002.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\RC\cur00003.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\RC\cur00004.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\RC\cursor1.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\RC\idcur.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\RC\idcur_up.cur">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

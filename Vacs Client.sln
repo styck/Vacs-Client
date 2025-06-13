@@ -1,17 +1,19 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vacs Client", "Vacs Client.vcproj", "{7ECDC4ED-866C-45AC-A3A8-31E50A4900DB}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vacs Client", "Vacs Client.vcxproj", "{7ECDC4ED-866C-45AC-A3A8-31E50A4900DB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commport", "commport\commport.vcproj", "{BFA0E021-6FB4-4083-8DD9-6762043C4BE2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commport", "commport\commport.vcxproj", "{BFA0E021-6FB4-4083-8DD9-6762043C4BE2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleDefinition", "ConsoleDefinition\ConsoleDefinition.vcproj", "{740464D5-D72A-482F-B461-E64963928877}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleDefinition", "ConsoleDefinition\ConsoleDefinition.vcxproj", "{740464D5-D72A-482F-B461-E64963928877}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DLList32", "DLList32\DLList32.vcproj", "{93E11C93-76EB-4447-9EDE-B3F3F36B239E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DLList32", "DLList32\DLList32.vcxproj", "{93E11C93-76EB-4447-9EDE-B3F3F36B239E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usengl", "usengl\usengl.vcproj", "{4720132D-E3CD-497A-8172-09C9593D6B47}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "usengl", "usengl\usengl.vcxproj", "{4720132D-E3CD-497A-8172-09C9593D6B47}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "midi", "midi\midi.vcproj", "{0CEADA34-DC13-4081-8539-89295D016889}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "midi", "midi\midi.vcxproj", "{0CEADA34-DC13-4081-8539-89295D016889}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,5 +48,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB822369-6248-4A7A-9DC1-67A2F303ED09}
 	EndGlobalSection
 EndGlobal

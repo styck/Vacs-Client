@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{7ECDC4ED-866C-45AC-A3A8-31E50A4900DB}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>17.0.35913.81</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\bind\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\binr\</OutDir>
+    <IntDir>.\WasteRelease\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\bind/Vacs Client.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;MIDI_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>.\WasteDebug/Vacs Client.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\WasteDebug/</AssemblerListingLocation>
+      <ObjectFileName>.\WasteDebug/</ObjectFileName>
+      <ProgramDataBaseFileName>.\WasteDebug/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;version.lib;winmm.lib;binD/ConsoleDefinition.lib;binD/commport.lib;binD/DLList32.lib;binD/midi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>bind/Vacs.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\bind/Vacs.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\bind/Vacs Client.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\binr/Vacs Client.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>.\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>.\WasteRelease/Vacs Client.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\WasteRelease/</AssemblerListingLocation>
+      <ObjectFileName>.\WasteRelease/</ObjectFileName>
+      <ProgramDataBaseFileName>.\WasteRelease/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;version.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>binr/Vacs.exe</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <ProgramDatabaseFile>.\binr/Vacs.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\binr/Vacs Client.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\256Colors.C" />
+    <ClCompile Include="src\ConsoleCommunication.c" />
+    <ClCompile Include="src\ControlDataFilters.c" />
+    <ClCompile Include="src\Controls.c" />
+    <ClCompile Include="src\CreateMain.c" />
+    <ClCompile Include="src\datafile.c" />
+    <ClCompile Include="src\eqDisplay.c" />
+    <ClCompile Include="src\Events interface.c" />
+    <ClCompile Include="src\FullView.c" />
+    <ClCompile Include="src\Groups.c" />
+    <ClCompile Include="src\Init.c" />
+    <ClCompile Include="src\Labels and Groups.c" />
+    <ClCompile Include="src\Main.c" />
+    <ClCompile Include="src\MasterWindow.c" />
+    <ClCompile Include="src\MDI_Main.c" />
+    <ClCompile Include="src\MemoryMap.c" />
+    <ClCompile Include="src\MIDI.c" />
+    <ClCompile Include="src\Misc BinRes.c" />
+    <ClCompile Include="src\Mix Files.c" />
+    <ClCompile Include="src\Preferences.c" />
+    <ClCompile Include="src\Remap and Mode.c" />
+    <ClCompile Include="src\SAMM_Globals.c" />
+    <ClCompile Include="src\Scan CtrlZones.c" />
+    <ClCompile Include="src\Sequence.c" />
+    <ClCompile Include="src\Status.c" />
+    <ClCompile Include="src\trackingwindow.c" />
+    <ClCompile Include="src\ZoneMaps.c" />
+    <ClCompile Include="src\ZoomView.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\RC\SAMM.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">src\RC;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">src\RC;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\CDef_External.h" />
+    <ClInclude Include="inc\CDef_implement.h" />
+    <ClInclude Include="inc\ConsoleDefinition.h" />
+    <ClInclude Include="inc\ConsoleDefinitionRC.h" />
+    <ClInclude Include="inc\CTRL.H" />
+    <ClInclude Include="inc\DCXTCP_protocol.h" />
+    <ClInclude Include="inc\DLLIST.H" />
+    <ClInclude Include="inc\lang.h" />
+    <ClInclude Include="inc\MACRO.H" />
+    <ClInclude Include="inc\SAMM.h" />
+    <ClInclude Include="inc\SAMMext.h" />
+    <ClInclude Include="inc\sammres00.h" />
+    <ClInclude Include="inc\SAMMstruc.h" />
+    <ClInclude Include="inc\samm_rc.h" />
+    <ClInclude Include="inc\Spooler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="src\RC\bmp00001.bmp" />
+    <Image Include="src\RC\bmp00002.bmp" />
+    <Image Include="src\RC\icon1.ico" />
+    <Image Include="src\RC\playbar_bw2.bmp" />
+    <Image Include="src\RC\SAMMmain.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\RC\cur00001.cur" />
+    <None Include="src\RC\cur00002.cur" />
+    <None Include="src\RC\cur00003.cur" />
+    <None Include="src\RC\cur00004.cur" />
+    <None Include="src\RC\cursor1.cur" />
+    <None Include="src\RC\idcur.cur" />
+    <None Include="src\RC\idcur_up.cur" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

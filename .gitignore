@@ -1,0 +1,17 @@
+# Ignore all generated files
+*.txt
+*.htm
+*.log
+*.sbr
+*.tlog
+*.obj
+*.idb
+*.pdb
+**/CopilotIndices/
+**/copilot-chat/
+**/FileContentIndex/
+**/v17/
+**/bind/
+**/binr/
+**/Debug/
+

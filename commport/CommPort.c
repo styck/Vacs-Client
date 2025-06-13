@@ -100,7 +100,7 @@ int     GetInData(LPSTR lps)
 ////////////////////////////////////////////////////////////////////
 //
 //
-BOOL    OpenCommPort(LPSTR lpsName)
+BOOL    MyOpenCommPort(LPSTR lpsName)
 {
 	lstrcpy(m_cm.m_chDevName, lpsName);
 	return OpenComm();

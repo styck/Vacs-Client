@@ -380,7 +380,7 @@ int   InitializeProc(void)
 	// now try to open the External interface
 	//
 	//----------------------------------------
-	if (OpenCommPort("\\\\.\\COM1"))
+	if (MyOpenCommPort("\\\\.\\COM1"))
 	{
 		//		unsigned char enable_time[6] = { 0xF0,0x15,0x25,0x31,0x01,0xF7};
 		//		unsigned char	spec_mode_1[9] = {0xF0,0x15,0x25,0x02,0x00,0x00,0x00,0x00,0xF7};

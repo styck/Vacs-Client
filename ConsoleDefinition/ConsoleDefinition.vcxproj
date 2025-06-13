@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{740464D5-D72A-482F-B461-E64963928877}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>17.0.35913.81</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\..\binR\</OutDir>
+    <IntDir>.\..\wasteRelease\ConsoleDefinition\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\..\binD\</OutDir>
+    <IntDir>.\..\Debug\ConsoleDefinition\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\..\binR/ConsoleDefinition.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>.\..\wasteRelease\ConsoleDefinition/ConsoleDefinition.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\..\wasteRelease\ConsoleDefinition/</AssemblerListingLocation>
+      <ObjectFileName>.\..\wasteRelease\ConsoleDefinition/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\wasteRelease\ConsoleDefinition/</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>comctl32.lib;wsock32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\binR/ConsoleDefinition.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <ProgramDatabaseFile>.\..\binR/ConsoleDefinition.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <ImportLibrary>.\..\binR/ConsoleDefinition.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\..\binR/ConsoleDefinition.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <TypeLibraryName>.\..\binD/ConsoleDefinition.tlb</TypeLibraryName>
+      <HeaderFileName />
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\GServerLite\GServer;..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>.\..\wasteDebug\ConsoleDefinition/ConsoleDefinition.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>.\..\wasteDebug\ConsoleDefinition/</AssemblerListingLocation>
+      <ObjectFileName>.\..\wasteDebug\ConsoleDefinition/</ObjectFileName>
+      <ProgramDataBaseFileName>.\..\wasteDebug\ConsoleDefinition/</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CallingConvention>StdCall</CallingConvention>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>comctl32.lib;wsock32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\binD/ConsoleDefinition.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>.\..\binD/ConsoleDefinition.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <ImportLibrary>.\..\binD/ConsoleDefinition.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\..\binD/ConsoleDefinition.bsc</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Image Include="Resource\CLIENT_B.BMP" />
+    <Image Include="Resource\dcp8\bitmap1.bmp" />
+    <Image Include="Resource\dcp8\bmp00001.bmp" />
+    <Image Include="Resource\dcp8\fknb_fdr.BMP" />
+    <Image Include="Resource\dcp8\F_dcp8.BMP" />
+    <Image Include="Resource\dcp8\idicon_g.ico" />
+    <Image Include="Resource\dcp8\idicon_s.ico" />
+    <Image Include="Resource\dcp8\seq_clos.bmp" />
+    <Image Include="Resource\dcp8\seq_open.bmp" />
+    <Image Include="Resource\dcp8\zknb_cmp.BMP" />
+    <Image Include="Resource\dcp8\zknb_fdr.BMP" />
+    <Image Include="Resource\dcp8\zknb_gat.BMP" />
+    <Image Include="Resource\dcp8\Z_dcp8.BMP" />
+    <Image Include="Resource\dcx\bitmap1.bmp" />
+    <Image Include="Resource\dcx\BtnBlue_Med1.bmp" />
+    <Image Include="Resource\dcx\BtnBlue_Med2.bmp" />
+    <Image Include="Resource\dcx\BtnCian_Med1.bmp" />
+    <Image Include="Resource\dcx\BtnGreen_Med1.bmp" />
+    <Image Include="Resource\dcx\BtnGreen_Med2.bmp" />
+    <Image Include="Resource\dcx\BtnPurple_Med1.bmp" />
+    <Image Include="Resource\dcx\BtnYellow_Med2.bmp" />
+    <Image Include="Resource\dcx\btn_aux_aux_mute.bmp" />
+    <Image Include="Resource\dcx\btn_aux_mono_center.bmp" />
+    <Image Include="Resource\dcx\btn_comp_in.BMP" />
+    <Image Include="Resource\dcx\btn_eq_right.BMP" />
+    <Image Include="Resource\dcx\btn_full_cue.bmp" />
+    <Image Include="Resource\dcx\btn_full_mute.bmp" />
+    <Image Include="Resource\dcx\btn_gate_in.BMP" />
+    <Image Include="Resource\dcx\btn_input_aux_post_in.BMP" />
+    <Image Include="Resource\dcx\btn_input_direct_out.bmp" />
+    <Image Include="Resource\dcx\btn_input_extkey.bmp" />
+    <Image Include="Resource\dcx\btn_input_keycue.bmp" />
+    <Image Include="Resource\dcx\btn_input_locut.bmp" />
+    <Image Include="Resource\dcx\btn_line_b_aux_16_in.BMP" />
+    <Image Include="Resource\dcx\btn_lofreq_shelf_in.BMP" />
+    <Image Include="Resource\dcx\btn_master_aux_red.bmp" />
+    <Image Include="Resource\dcx\btn_master_blue_medium.bmp" />
+    <Image Include="Resource\dcx\btn_master_green_medium.bmp" />
+    <Image Include="Resource\dcx\btn_master_orange_medium.bmp" />
+    <Image Include="Resource\dcx\btn_master_ppwr.bmp" />
+    <Image Include="Resource\dcx\btn_master_yellow_medium.bmp" />
+    <Image Include="Resource\dcx\btn_master_yellow_tiny.bmp" />
+    <Image Include="Resource\dcx\btn_matrix_mute_mono_in.BMP" />
+    <Image Include="Resource\dcx\btn_Safe.bmp" />
+    <Image Include="Resource\dcx\btn_subaux_eq_hi_shelf.bmp" />
+    <Image Include="Resource\dcx\btn_subaux_eq_in.bmp" />
+    <Image Include="Resource\dcx\btn_subaux_eq_lo_shelf.bmp" />
+    <Image Include="Resource\dcx\btn_submatrix_mute.bmp" />
+    <Image Include="Resource\dcx\btn_tiny_blue.bmp" />
+    <Image Include="Resource\dcx\btn_tiny_green.bmp" />
+    <Image Include="Resource\dcx\btn_vu_select_in.BMP" />
+    <Image Include="Resource\dcx\btn_yellow_small.bmp" />
+    <Image Include="Resource\dcx\Center_Mono_Clip_ON.bmp" />
+    <Image Include="Resource\dcx\clip_light_big.bmp" />
+    <Image Include="Resource\dcx\clip_light_medium.bmp" />
+    <Image Include="Resource\dcx\clip_light_small.bmp" />
+    <Image Include="Resource\dcx\compgate_in.bmp" />
+    <Image Include="Resource\dcx\corTekLogo.BMP" />
+    <Image Include="Resource\dcx\Cuea_pre.bmp" />
+    <Image Include="Resource\dcx\cue_01.bmp" />
+    <Image Include="Resource\dcx\Cue_A_PostPan.BMP" />
+    <Image Include="Resource\dcx\Cue_Middle.BMP" />
+    <Image Include="Resource\dcx\FaderKnobMed.bmp" />
+    <Image Include="Resource\dcx\FaderKnobSmall.bmp" />
+    <Image Include="Resource\dcx\fdr_blue_medium.bmp" />
+    <Image Include="Resource\dcx\fdr_blue_small.bmp" />
+    <Image Include="Resource\dcx\fdr_red_medium.bmp" />
+    <Image Include="Resource\dcx\fdr_white_big.bmp" />
+    <Image Include="Resource\dcx\fdr_white_medium.bmp" />
+    <Image Include="Resource\dcx\fdr_white_small.bmp" />
+    <Image Include="Resource\dcx\fdr_yellow_medium.bmp" />
+    <Image Include="Resource\dcx\full_input_module.bmp" />
+    <Image Include="Resource\dcx\full_subaux_module.bmp" />
+    <Image Include="Resource\dcx\gate_eq_in.bmp" />
+    <Image Include="Resource\dcx\hf_shelf.bmp" />
+    <Image Include="Resource\dcx\IDB_COMPGATE_IN.BMP" />
+    <Image Include="Resource\dcx\IDB_EQ_IN.bmp" />
+    <Image Include="Resource\dcx\IDB_HF_PEAKSHELF.BMP" />
+    <Image Include="Resource\dcx\IDB_INPUT_MUTE.BMP" />
+    <Image Include="Resource\dcx\IDB_INSERT_INOUT.bmp" />
+    <Image Include="Resource\dcx\IDB_LF_PEAKSHELF.bmp" />
+    <Image Include="Resource\dcx\IDB_SUBINSERT.BMP" />
+    <Image Include="Resource\dcx\IDB_SUBMUTE.BMP" />
+    <Image Include="Resource\dcx\InputMute.bmp" />
+    <Image Include="Resource\dcx\input_a_module.bmp" />
+    <Image Include="Resource\dcx\input_insert.bmp" />
+    <Image Include="Resource\dcx\input_pan_knob.bmp" />
+    <Image Include="Resource\dcx\input_volume_knob.bmp" />
+    <Image Include="Resource\dcx\key_in.bmp" />
+    <Image Include="Resource\dcx\lf_shelf.bmp" />
+    <Image Include="Resource\dcx\low_cut.bmp" />
+    <Image Include="Resource\dcx\Master-Post-on.BMP" />
+    <Image Include="Resource\dcx\MasterCue_Module.BMP" />
+    <Image Include="Resource\dcx\PanKnob.bmp" />
+    <Image Include="Resource\dcx\pan_indicator.bmp" />
+    <Image Include="Resource\dcx\Phase Rev.BMP" />
+    <Image Include="Resource\dcx\PPower.BMP" />
+    <Image Include="Resource\dcx\ppwr_in.bmp" />
+    <Image Include="Resource\dcx\small_mute.BMP" />
+    <Image Include="Resource\dcx\small_post.BMP" />
+    <Image Include="Resource\dcx\Stereo Cue Meters.BMP" />
+    <Image Include="Resource\dcx\submatrix_module.BMP" />
+    <Image Include="Resource\dcx\tinny_mute.BMP" />
+    <Image Include="Resource\dcx\VolumeKnob1.bmp" />
+    <Image Include="Resource\dcx\VUMeterActive.bmp" />
+    <Image Include="Resource\dcx\VUMeterActive_Horizontal.bmp" />
+    <Image Include="Resource\dcx\vu_displ.bmp" />
+    <Image Include="Resource\fswu_1.BMP" />
+    <Image Include="Resource\fswu_2.BMP" />
+    <Image Include="Resource\fsw_1.BMP" />
+    <Image Include="Resource\fsw_2.BMP" />
+    <Image Include="Resource\ICON1.ICO" />
+    <Image Include="Resource\IQS_PAL.bmp" />
+    <Image Include="Resource\rd.ico" />
+    <Image Include="Resource\zbu_mute.BMP" />
+    <Image Include="Resource\zbu_solo.BMP" />
+    <Image Include="Resource\zb_mute.BMP" />
+    <Image Include="Resource\zb_solo.BMP" />
+    <Image Include="Resource\ZOOMVIEW.ICO" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\inc\DCX_Full_Input.bin" />
+    <None Include="..\inc\DCX_Zoom_Input.bin" />
+    <None Include="..\inc\DCX_Zoom_Master.bin" />
+    <None Include="..\inc\DCX_Zoom_SubMatrix.bin" />
+    <None Include="..\inc\Samm_rc.bin" />
+    <None Include="..\inc\SAMM_RD.BIN" />
+    <None Include="Resource\SAMMGRAP.CUR" />
+    <None Include="Resource\SAMMHAND.CUR" />
+    <None Include="Resource\SAMMVSCR.CUR" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\DCXServer\DCXparser.h" />
+    <ClInclude Include="..\inc\CDef_External.h" />
+    <ClInclude Include="..\inc\CDef_implement.h" />
+    <ClInclude Include="..\inc\ConsoleDefinition.h" />
+    <ClInclude Include="..\inc\ConsoleDefinitionRC.h" />
+    <ClInclude Include="..\inc\CTRL.H" />
+    <ClInclude Include="..\inc\DCXTCP_protocol.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CDef_DevCommunication.c" />
+    <ClCompile Include="CDef_Preferences.c" />
+    <ClCompile Include="dcx_parser.c" />
+    <ClCompile Include="DLL_Main.c" />
+    <ClCompile Include="implement.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource\ConsoleDefinition.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Resource</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Resource;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

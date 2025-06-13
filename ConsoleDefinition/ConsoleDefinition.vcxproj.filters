@@ -1,0 +1,454 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{7d2ade5c-1b71-4582-afad-f9fa9da1374a}</UniqueIdentifier>
+      <Extensions>bmp,ico,cur</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{f69530d1-7981-44ef-b4f8-4bd31b891b49}</UniqueIdentifier>
+      <Extensions>*.h</Extensions>
+    </Filter>
+    <Filter Include="Binary Tables">
+      <UniqueIdentifier>{eb4cc9af-3f3e-4726-b58d-1f3b0e379525}</UniqueIdentifier>
+      <Extensions>*.bin</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{8fce74b9-d603-4f98-a390-be0d7a801c89}</UniqueIdentifier>
+      <Extensions>*.c</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resource\dcx\bitmap1.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\bitmap1.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\bmp00001.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_aux_aux_mute.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_aux_mono_center.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_comp_in.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_eq_right.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_full_cue.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_full_mute.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_gate_in.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_input_aux_post_in.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_input_direct_out.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_input_extkey.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_input_keycue.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_input_locut.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_line_b_aux_16_in.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_lofreq_shelf_in.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_master_aux_red.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_master_blue_medium.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_master_green_medium.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_master_orange_medium.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_master_ppwr.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_master_yellow_medium.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_master_yellow_tiny.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_matrix_mute_mono_in.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_Safe.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_subaux_eq_hi_shelf.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_subaux_eq_in.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_subaux_eq_lo_shelf.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_submatrix_mute.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_tiny_blue.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_tiny_green.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_vu_select_in.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\btn_yellow_small.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\BtnBlue_Med1.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\BtnBlue_Med2.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\BtnCian_Med1.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\BtnGreen_Med1.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\BtnGreen_Med2.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\BtnPurple_Med1.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\BtnYellow_Med2.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\Center_Mono_Clip_ON.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\CLIENT_B.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\clip_light_big.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\clip_light_medium.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\clip_light_small.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\compgate_in.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\corTekLogo.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\cue_01.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\Cue_A_PostPan.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\Cue_Middle.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\Cuea_pre.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\F_dcp8.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\FaderKnobMed.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\FaderKnobSmall.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\fdr_blue_medium.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\fdr_blue_small.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\fdr_red_medium.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\fdr_white_big.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\fdr_white_medium.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\fdr_white_small.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\fdr_yellow_medium.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\fknb_fdr.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\fsw_1.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\fsw_2.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\fswu_1.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\fswu_2.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\full_input_module.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\full_subaux_module.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\gate_eq_in.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\hf_shelf.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\ICON1.ICO">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\IDB_COMPGATE_IN.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\IDB_EQ_IN.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\IDB_HF_PEAKSHELF.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\IDB_INPUT_MUTE.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\IDB_INSERT_INOUT.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\IDB_LF_PEAKSHELF.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\IDB_SUBINSERT.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\IDB_SUBMUTE.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\idicon_g.ico">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\idicon_s.ico">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\input_a_module.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\input_insert.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\input_pan_knob.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\input_volume_knob.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\InputMute.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\IQS_PAL.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\key_in.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\lf_shelf.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\low_cut.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\Master-Post-on.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\MasterCue_Module.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\pan_indicator.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\PanKnob.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\Phase Rev.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\PPower.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\ppwr_in.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\rd.ico">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\seq_clos.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\seq_open.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\small_mute.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\small_post.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\Stereo Cue Meters.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\submatrix_module.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\tinny_mute.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\VolumeKnob1.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\vu_displ.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\VUMeterActive.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcx\VUMeterActive_Horizontal.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\Z_dcp8.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\zb_mute.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\zb_solo.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\zbu_mute.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\zbu_solo.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\zknb_cmp.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\zknb_fdr.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\dcp8\zknb_gat.BMP">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resource\ZOOMVIEW.ICO">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource\SAMMGRAP.CUR">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="Resource\SAMMHAND.CUR">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="Resource\SAMMVSCR.CUR">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="..\inc\DCX_Full_Input.bin">
+      <Filter>Binary Tables</Filter>
+    </None>
+    <None Include="..\inc\DCX_Zoom_Input.bin">
+      <Filter>Binary Tables</Filter>
+    </None>
+    <None Include="..\inc\DCX_Zoom_Master.bin">
+      <Filter>Binary Tables</Filter>
+    </None>
+    <None Include="..\inc\DCX_Zoom_SubMatrix.bin">
+      <Filter>Binary Tables</Filter>
+    </None>
+    <None Include="..\inc\Samm_rc.bin">
+      <Filter>Binary Tables</Filter>
+    </None>
+    <None Include="..\inc\SAMM_RD.BIN">
+      <Filter>Binary Tables</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\inc\CDef_External.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CDef_implement.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\ConsoleDefinition.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\ConsoleDefinitionRC.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CTRL.H">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DCXServer\DCXparser.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\DCXTCP_protocol.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CDef_DevCommunication.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CDef_Preferences.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="dcx_parser.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DLL_Main.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="implement.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource\ConsoleDefinition.rc">
+      <Filter>Source</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
