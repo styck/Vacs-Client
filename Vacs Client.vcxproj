@@ -85,7 +85,6 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;comctl32.lib;version.lib;winmm.lib;binD/ConsoleDefinition.lib;binD/commport.lib;binD/DLList32.lib;binD/midi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>bind/Vacs.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\bind/Vacs.pdb</ProgramDatabaseFile>
