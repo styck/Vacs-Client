@@ -250,26 +250,6 @@ int   InitializeProc(void)
 	//if(gpMixerWindows_DL_List == NULL)
 	//    return IDS_ERR_ALLOCATE_MEMORY;
 
-	//-----------------
-	// Load the Pallete
-	// and realize it
-	//-----------------
-	CreateResPalette((LPSTR)MAKEINTRESOURCE(IDB_IQS_PALETTE));
-	if(ghPalette == NULL)
-		return IDS_ERR_CREATING_PALETTE;
-
-	//--------------------------------
-	// Create the window which we are
-	// going to use for the 256 colors
-	// .. it will free its resources
-	// when it is closing
-	//--------------------------------
-	iReturn = Init256Colors();
-	if(iReturn)
-		return iReturn;	// Must have been an error, return the error code
-
-	UpdatePalette(TRUE, ghdc256);
-
 	//----------------------------------
 	// Load Bitmap for the Client Window
 	//
@@ -589,11 +569,6 @@ void      ShutdownProc(void)
 	// for the Mixer_Windows
 	//----------------------------
 	//FreeDLListRootAll(gpMixerWindows_DL_List);
-
-	// Free the Palette
-	//-----------------
-	if(ghPalette)
-		DeleteObject(ghPalette);
 
 	//-------------------
 	// delete few bitmaps

@@ -406,7 +406,8 @@ int       AddBmpResGlobal(HINSTANCE hinst, int iRes, HDC hdc)
 		gpBMPTable = lpGlob;
 	}
 
-	hBmp = Load256Bitmap(hinst, hdc, (LPSTR)MAKEINTRESOURCE(iRes));
+	hBmp = (HBITMAP)LoadImage(hinst, MAKEINTRESOURCE(iRes), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+
 	if(hBmp == NULL)
 		return - (IDS_ERR_LOAD_BITMAP);
 

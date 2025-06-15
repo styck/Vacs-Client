@@ -1072,28 +1072,6 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 		PostQuitMessage(0);
 		ghwndMain = NULL;
 		break;
-
-		//////////////////////////////////////////////////////////////
-	case WM_PALETTECHANGED:
-		if((HWND)wParam == hWnd)
-			return 0;
-
-	case WM_QUERYNEWPALETTE:
-		hDC = GetDC(hWnd);
-		UpdatePalette(FALSE, hDC);
-		ReleaseDC(hWnd, hDC);
-		return 1;
-		break;
-		//////////////////////////////////////////////////////////////
-	case WM_SYSCOMMAND:
-		if( ((wParam & 0xFFF0)  == SC_MINIMIZE) ||
-			((wParam & 0xFFF0)  == SC_MAXIMIZE) ||
-			((wParam & 0xFFF0)  == SC_RESTORE) )
-		{
-			hDC = GetDC(hWnd);
-			UpdatePalette(FALSE, hDC);
-			ReleaseDC(hWnd, hDC);
-		}
 	default:
 		return DefFrameProc(hWnd, ghwndMDIClient, wMessage, wParam, lParam);
 	}

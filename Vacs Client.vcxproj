@@ -143,7 +143,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\256Colors.C" />
     <ClCompile Include="src\ConsoleCommunication.c" />
     <ClCompile Include="src\ControlDataFilters.c" />
     <ClCompile Include="src\Controls.c" />
