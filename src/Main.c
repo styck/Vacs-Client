@@ -1,4 +1,4 @@
-//=================================================
+﻿//=================================================
 // Copyright 1998 - 2002, CorTek Softawre, Inc.
 //=================================================
 //
@@ -14,7 +14,7 @@
 #include "MACRO.h"
 #include "ConsoleDefinition.h"
 #include "..\\commport\\commport.h"
-
+#include <crtdbg.h> // for memory leak checking
 
 extern HWND			g_stereoCueMetersWindow;
 
@@ -58,8 +58,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	HANDLE	hAccel;
 	char            szBuff[MAX_PATH];
 
-	ghInstMain = hInstance;
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	ghInstMain = hInstance;
 	hAccel = LoadAccelerators(hInstance,"MdiAccel");
 
 	// 
@@ -1091,8 +1092,8 @@ LRESULT CALLBACK  WndMainProc(HWND hWnd, UINT wMessage,
 BOOL CALLBACK   AboutProc(HWND hdlg, UINT uiMsg, WPARAM wP, LPARAM lP)
 {
 
-	static  HFONT   hFontDlg;
-	static  HFONT   hFontCopyRight;
+	static  HFONT   hFontDlg = NULL;
+	static  HFONT   hFontCopyRight = NULL;
 	static  LPSTR   lpVersion;
 	static  DWORD   dwVerInfoSize;
 	static  DWORD   dwVerHnd;
@@ -1112,6 +1113,15 @@ BOOL CALLBACK   AboutProc(HWND hdlg, UINT uiMsg, WPARAM wP, LPARAM lP)
 		switch(LOWORD(wP))
 		{
 		case IDOK:
+			// Free GDI fonts if created
+			if (hFontDlg) {
+				DeleteObject(hFontDlg);
+				hFontDlg = NULL;
+			}
+			if (hFontCopyRight) {
+				DeleteObject(hFontCopyRight);
+				hFontCopyRight = NULL;
+			}
 			EndDialog(hdlg, TRUE);
 			break;
 		}
@@ -1209,7 +1219,15 @@ BOOL CALLBACK   AboutProc(HWND hdlg, UINT uiMsg, WPARAM wP, LPARAM lP)
 
 	case WM_CLOSE:
 	case WM_QUIT:
-
+		// Free GDI fonts if created
+		if (hFontDlg) {
+			DeleteObject(hFontDlg);
+			hFontDlg = NULL;
+		}
+		if (hFontCopyRight) {
+			DeleteObject(hFontCopyRight);
+			hFontCopyRight = NULL;
+		}
 		EndDialog(hdlg, TRUE);
 		break;
 	}
@@ -2085,8 +2103,7 @@ LPSTR GetLastMixFileName(void)
 	DWORD dwBufferSize = sizeof( szTempSeq );  
 
 	static char			szText[MAX_PATH] = "LA$T.mix";
-
-	char szScratch[MAX_PATH];
+	static char			szScratch[MAX_PATH];
 
 	////////////////////////////////////
 	// Get the last mix file that was
@@ -2120,9 +2137,9 @@ LPSTR GetLastMixFileName(void)
 	if(rc == ERROR_SUCCESS)
 	{
 		ExtractFileName(szTempSeq, szScratch);	// get the filename
-		return &szScratch[0];
+		return szScratch;
 	}
 	else
-		return &szText[0];
+		return szText;
 
 }
