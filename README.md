@@ -1,5 +1,5 @@
 
-Controlling software for the Gamble DCX console
+Controlling software for the Gamble DCX console, see https://www.gambleboards.com/
 
 ![image](https://github.com/user-attachments/assets/4ded374f-9d01-4de6-a0a8-e62548c3efd2)
 
