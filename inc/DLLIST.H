@@ -1,4 +1,3 @@
-// DLLIST.H header guard
 #ifndef DLLIST_H_INCLUDED
 #define DLLIST_H_INCLUDED
 
@@ -39,15 +38,14 @@
 // (All internal/private definitions have been removed from this public header.)
 // DLL export/import macro
 #ifdef _WIN32
-#  ifdef DLList32_EXPORTS
-#    define DLList32_API __declspec(dllexport)
-#  else
-#    define DLList32_API __declspec(dllimport)
-#  endif
+#ifdef DLList32_EXPORTS
+#define DLList32_API __declspec(dllexport)
 #else
-#  define DLList32_API
+#define DLList32_API __declspec(dllimport)
 #endif
-
+#else
+#define DLList32_API
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -75,4 +73,3 @@ DLList32_API LPVOID      GetEntryData(LPDLROOTPTR pRootPtrObj, long lEntryPos);
 // ...existing code...
 
 #endif // DLLIST_H_INCLUDED
-
