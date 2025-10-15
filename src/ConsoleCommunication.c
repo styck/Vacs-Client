@@ -4,25 +4,23 @@
 // Copyright 1998, CorTek Software, Inc.
 //=================================================
 
-
 #include "SAMM.h"
 #include "SAMMEXT.h"
-#include "MACRO.h"
 #include "ConsoleDefinition.h"
 #include "DCXTCP_protocol.h" 
-
 
 /////////////////////////////////////////////////////////////////////////
 // FUNCTION: DefinitionCallback
 //
 //
 //
-void    DefinitionCallback(UINT uiMessage, UINT ui2, VOID * vp1, VOID *vp2)
+void DefinitionCallback(UINT uiMessage, UINT ui2, VOID * vp1, VOID *vp2)
 {
-	char    szStr[128];
-	MMTIME  *pmm;
+	char szStr[128];
+	MMTIME *pmm;
 
-	if(WaitForSingleObject(gDisplayEvent, 10) == WAIT_OBJECT_0){
+	if(WaitForSingleObject(gDisplayEvent, 10) == WAIT_OBJECT_0)
+	{
 		switch( uiMessage )
 		{
 		case DCX_VU_DATA:
@@ -53,7 +51,8 @@ void    DefinitionCallback(UINT uiMessage, UINT ui2, VOID * vp1, VOID *vp2)
 
 		}
 		SetEvent(gDisplayEvent);
-	}else{
+	}else
+	{
 		//
 		//  Handle Error codes here ... if timed-out the data will be thrown-out ... !!!!
 		//
