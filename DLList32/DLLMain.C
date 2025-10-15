@@ -2,12 +2,11 @@
 // CopyRight 1998 CorTek Software, Inc.
 //=====================================================
 
-
 #include <windows.h>
 
 // function definition
 //--------------------
-int                         IQS_GetSystemInfo(SYSTEM_INFO *);
+int IQS_GetSystemInfo(SYSTEM_INFO*);
 
 
 // Some of the defines gave to be here
@@ -38,15 +37,18 @@ extern SYSTEM_INFO             g_sinf;
 //  GLOBAL VARS: ghMod - handle of DLL (initialized when PROCESS_ATTACHes)
 //
 //------------------------------------------------------------------------
-BOOL WINAPI DllMain (HANDLE hDLL, DWORD dwReason, LPVOID lpReserved)
+BOOL WINAPI DllMain(HANDLE hDLL, DWORD dwReason, LPVOID lpReserved)
 {
-
-switch (dwReason)
+    switch (dwReason)
     {
     case DLL_PROCESS_ATTACH:
-        if(g_sinf.dwPageSize == 0)
-            if(IQS_GetSystemInfo(&g_sinf))
+        if (g_sinf.dwPageSize == 0) 
+        {
+            if (IQS_GetSystemInfo(&g_sinf)) 
+            {
                 return FALSE;
+            }
+        }
         break;
 
     case DLL_THREAD_ATTACH:
@@ -59,7 +61,7 @@ switch (dwReason)
         break;
     }
 
-return TRUE;
+    return TRUE;
 }
 
 //=====================================================
@@ -69,25 +71,25 @@ return TRUE;
 //
 //
 //=====================================================
-void        ShowLastError(void)
+void ShowLastError(void)
 {
-LPVOID      lpMsgBuf;
+    LPVOID      lpMsgBuf;
 
-FormatMessage( 
-    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-    NULL,
-    GetLastError(),
-    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-    (LPTSTR) &lpMsgBuf,
-    0,
-    NULL 
-);
-// Display the string.
-MessageBoxA( NULL, (LPCSTR)lpMsgBuf, "GetLastError", MB_OK | MB_ICONINFORMATION );
-// Free the buffer.
-LocalFree( lpMsgBuf );
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        NULL,
+        GetLastError(),
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+        (LPTSTR)&lpMsgBuf,
+        0,
+        NULL
+    );
+    // Display the string.
+    MessageBoxA(NULL, (LPCSTR)lpMsgBuf, "GetLastError", MB_OK | MB_ICONINFORMATION);
+    // Free the buffer.
+    LocalFree(lpMsgBuf);
 
-return;
+    return;
 }
 //=============================================================
 //FUNCTION: IQS_GetSystemInfo
@@ -97,46 +99,45 @@ return;
 //          n = Error;
 //
 //=============================================================
-int     IQS_GetSystemInfo(SYSTEM_INFO *psinf)
+int IQS_GetSystemInfo(SYSTEM_INFO* psinf)
 {
-
-GetSystemInfo(psinf);
-switch(psinf->dwAllocationGranularity)
+    GetSystemInfo(psinf);
+    switch (psinf->dwAllocationGranularity)
     {
-    //------------------------
-    case    0x10000:
+        //------------------------
+    case 0x10000:
         psinf->dwAllocationGranularity = 16;
         break;
-    //------------------------
-    case    0x8000:
+        //------------------------
+    case 0x8000:
         psinf->dwAllocationGranularity = 15;
         break;
-    //------------------------
-    case    0x4000:
+        //------------------------
+    case 0x4000:
         psinf->dwAllocationGranularity = 14;
         break;
-    //------------------------
-    case    0x2000:
+        //------------------------
+    case 0x2000:
         psinf->dwAllocationGranularity = 13;
         break;
-    //------------------------
-    case    0x1000:
+        //------------------------
+    case 0x1000:
         psinf->dwAllocationGranularity = 12;
         break;
-    //------------------------
-    case    0x800:
+        //------------------------
+    case 0x800:
         psinf->dwAllocationGranularity = 11;
         break;
-    //------------------------
-    case    0x400:
+        //------------------------
+    case 0x400:
         psinf->dwAllocationGranularity = 10;
         break;
-    //------------------------
-    case    0x200:
+        //------------------------
+    case 0x200:
         psinf->dwAllocationGranularity = 9;
         break;
-    //------------------------
-    case    0x20000:
+        //------------------------
+    case 0x20000:
         psinf->dwAllocationGranularity = 17;
         break;
 
@@ -144,6 +145,5 @@ switch(psinf->dwAllocationGranularity)
         return 1; // ERROR
         break;
     }
-
-return 0;
+    return 0;
 }
