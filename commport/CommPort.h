@@ -91,63 +91,63 @@ typedef COMMDEVICE * LPCOMMDEVICE;
 extern COMMDEVICE  m_cm;
 
 
-__declspec(dllexport)void	SendCommData(BYTE		ch, BYTE b1, BYTE b2);
+DLList32_API void	SendCommData(BYTE		ch, BYTE b1, BYTE b2);
 
-__declspec(dllexport)void SetupGlobal();
+DLList32_API void SetupGlobal();
 
   // Show Dialog box to Configure the Comm Port
   //
-__declspec(dllexport)BOOL    SetupCommPort(void);
+DLList32_API BOOL    SetupCommPort(void);
 
-__declspec(dllexport)BOOL    MyOpenCommPort(LPSTR lpsName);
-__declspec(dllexport)BOOL    OpenComm(void);
-__declspec(dllexport)BOOL    CloseComm();
+DLList32_API BOOL    MyOpenCommPort(LPSTR lpsName);
+DLList32_API BOOL    OpenComm(void);
+DLList32_API BOOL    CloseComm();
 
-__declspec(dllexport)BOOL    SetupConnection();
-__declspec(dllexport)BOOL    CloseConnection();
-
-
-__declspec(dllexport)BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength);
-
-__declspec(dllexport)BOOL    IsOpen();
-
-__declspec(dllexport)int     GetInData(LPSTR lps);
-__declspec(dllexport)BOOL    SetDataInWindow(HWND hwnd);
+DLList32_API BOOL    SetupConnection();
+DLList32_API BOOL    CloseConnection();
 
 
+DLList32_API BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength);
 
-__declspec(dllexport)int GetCommInFifo(LPSTR p, int size);
-__declspec(dllexport)int	GetCommInFifoSize();
+DLList32_API BOOL    IsOpen();
+
+DLList32_API int     GetInData(LPSTR lps);
+DLList32_API BOOL    SetDataInWindow(HWND hwnd);
+
+
+
+DLList32_API int GetCommInFifo(LPSTR p, int size);
+DLList32_API int	GetCommInFifoSize();
 
 UINT	CommIOThreadProc(LPVOID );
 
 //#else
-//__declspec(dllimport)void	SendCommData(BYTE		ch, BYTE b1, BYTE b2);
+//DLList32_API void	SendCommData(BYTE		ch, BYTE b1, BYTE b2);
 //
-//__declspec(dllimport)void SetupGlobal();
+//DLList32_API void SetupGlobal();
 //
 //  // Show Dialog box to Configure the Comm Port
 //  //
-//__declspec(dllimport)BOOL    SetupCommPort(void);
+//DLList32_API BOOL    SetupCommPort(void);
 //
-//__declspec(dllimport)BOOL    OpenCommPort(LPSTR lpsName);
-//__declspec(dllimport)HANDLE  OpenCommPort(ULONG portNumber, DWORD baudRate, DWORD flags);
-//__declspec(dllimport)BOOL    OpenComm(void);
-//__declspec(dllimport)BOOL    CloseComm();
+//DLList32_API BOOL    OpenCommPort(LPSTR lpsName);
+//DLList32_API HANDLE  OpenCommPort(ULONG portNumber, DWORD baudRate, DWORD flags);
+//DLList32_API BOOL    OpenComm(void);
+//DLList32_API BOOL    CloseComm();
 //
-//__declspec(dllimport)BOOL    SetupConnection();
-//__declspec(dllimport)BOOL    CloseConnection();
+//DLList32_API BOOL    SetupConnection();
+//DLList32_API BOOL    CloseConnection();
 //
 //
-//__declspec(dllimport)BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength);
+//DLList32_API BOOL    WriteCommBlock(LPSTR lpBlock, DWORD dwLength);
 //
-//__declspec(dllimport)BOOL    IsOpen();
+//DLList32_API BOOL    IsOpen();
 //
-//__declspec(dllimport)int     GetInData(LPSTR lps);
-//__declspec(dllimport)BOOL    SetDataInWindow(HWND hwnd);
+//DLList32_API int     GetInData(LPSTR lps);
+//DLList32_API BOOL    SetDataInWindow(HWND hwnd);
 //
-//__declspec(dllimport)int GetCommInFifo(LPSTR p, int size);
-//__declspec(dllimport)int	GetCommInFifoSize();
+//DLList32_API int GetCommInFifo(LPSTR p, int size);
+//DLList32_API int	GetCommInFifoSize();
 //
 
 #endif

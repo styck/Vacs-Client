@@ -527,21 +527,21 @@ void    SetSubEqData(EQ_DISPLAY_DATA *pEqGraph, LPMIXERWNDDATA pmwd, int iPhisCh
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA pmwd, int iPhisChannel)
+void __stdcall DrawEqGraphHook(HDC hdc,LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan )
 {
 	RECT  rZone;
 	EQ_DISPLAY_DATA eqDisplay[5];
 	LPCTRLZONEMAP pctrl;
 
-	rZone = pctrlzm->rZone;
+	rZone = lpctrlZM->rZone;
 	rZone.right = rZone.right - rZone.left;
 	rZone.bottom = rZone.bottom - rZone.top;
 
-	// Handle the EQ graph for the Sub-Matrix(Matrix!!!) ....
+	// Handle the EQ graph for the Sub-Matrix(Matrix!!!) .... 
 	//
-	if( pctrlzm->iCtrlType == CTRL_TYPE_DISP_SUB_EQ_FILTER)
+	if( lpctrlZM->iCtrlType == CTRL_TYPE_DISP_SUB_EQ_FILTER)
 	{
-		SetSubEqData(eqDisplay, pmwd, iPhisChannel, pctrlzm->iModuleNumber);
+		SetSubEqData(eqDisplay, lpmwd, iChan, lpctrlZM->iModuleNumber);
 		goto ON_DRAW_EQ_GRAPH;
 	}
 
@@ -549,7 +549,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	// from the controls
 	//
 	// set values of test response
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_LOWCUT_INOUT);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_LOWCUT_INOUT);
 	if( ! GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_LOWCUT_INOUT))
 	{
 		eqDisplay[0].fbw = 0;
@@ -566,7 +566,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	//
 	//
 	//
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_LOWFREQ);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_LOWFREQ);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[1].ffc = InputFreq_LO[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_LOWFREQ)];
@@ -574,7 +574,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	else
 		eqDisplay[1].ffc = 5000;
 
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_LF_BW);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_LF_BW);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[1].fbw = InputBW_ML[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_LF_BW)];
@@ -582,18 +582,18 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	else
 		eqDisplay[1].fbw = 1.0;
 
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_LF_PEAKSHELF);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_LF_PEAKSHELF);
 	if( GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_LF_PEAKSHELF))
 	{
 		eqDisplay[1].eqId = EQ_ID_LOSHELF;
 	}
 	else
 	{
-		pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_LF_BC);
+		pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_LF_BC);
 		eqDisplay[1].eqId = EQ_ID_BP;
 	}
 
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_LF_BC);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_LF_BC);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[1].fgain = InputBC_LF[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_LF_BC)];
@@ -609,7 +609,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	//
 	//
 	//
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_HIGHFREQ);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_HIGHFREQ);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[4].ffc = InputFreq_HI[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_HIGHFREQ)];
@@ -617,7 +617,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	else
 		eqDisplay[4].ffc = 5000;
 
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_HF_BW);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_HF_BW);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[4].fbw = InputBW_ML[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_HF_BW)];
@@ -625,10 +625,10 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	else
 		eqDisplay[4].fbw = 1.0;
 
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_HF_PEAKSHELF);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_HF_PEAKSHELF);
 	if(  GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_HF_PEAKSHELF))
 	{
-		pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_HF_BC);
+		pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_HF_BC);
 		if(pctrl) // Validate the Pointer !!!
 		{
 			eqDisplay[4].fgain = InputBC_LF[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_HF_BC)];
@@ -640,7 +640,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	}
 	else
 	{
-		pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_HF_BC);
+		pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_HF_BC);
 		if(pctrl) // Validate the Pointer !!!
 		{
 			eqDisplay[4].fgain = InputBC_LF[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_HF_BC)];
@@ -657,7 +657,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	//
 	//
 	//
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_LOMIDFREQ);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_LOMIDFREQ);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[2].ffc = InputFreq_LM[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_LOMIDFREQ)];
@@ -665,7 +665,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	else
 		eqDisplay[2].ffc = 500;
 
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_LM_BW);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_LM_BW);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[2].fbw = InputBW_ML[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_LM_BW)];
@@ -674,7 +674,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 		eqDisplay[2].fbw = 1.0;
 
 
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_LM_BC);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_LM_BC);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[2].fgain = InputBC_ML[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_LM_BC)];
@@ -696,7 +696,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	//
 	//
 	//
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_HM_BW);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_HM_BW);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[3].fbw = InputBW_ML[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_HM_BW)];
@@ -704,7 +704,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	else
 		eqDisplay[3].fbw = 1.0;
 
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_HIMIDFREQ);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_HIMIDFREQ);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[3].ffc = InputFreq_HM[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_HIMIDFREQ)];
@@ -712,7 +712,7 @@ void DrawEqGraphHook(HDC hdc, LPCTRLZONEMAP pctrlzm, int iValue, LPMIXERWNDDATA 
 	else
 		eqDisplay[3].ffc = 2000;
 
-	pctrl = ScanCtrlZonesNum(pmwd->lpZoneMap[iPhisChannel].lpZoneMap, CTRL_NUM_INPUT_HM_BC);
+	pctrl = ScanCtrlZonesNum(lpmwd->lpZoneMap[iChan].lpZoneMap, CTRL_NUM_INPUT_HM_BC);
 	if(pctrl) // Validate the Pointer !!!
 	{
 		eqDisplay[3].fgain = InputBC_ML[GETPHISDATAVALUE(0, pctrl, CTRL_NUM_INPUT_HM_BC)];

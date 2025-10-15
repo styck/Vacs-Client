@@ -208,7 +208,7 @@ void    FreeBinResGlobal(void)
 //
 //
 //==============================================================
-int     PASCAL  AddRdOutResGlobal(HINSTANCE hinst, int iRes)
+int     __stdcall AddRdOutResGlobal(HINSTANCE hinst, int iRes)
 {
 	int             iCount;
 	int             iOldAllocated;
@@ -267,7 +267,7 @@ int     PASCAL  AddRdOutResGlobal(HINSTANCE hinst, int iRes)
 //          Global Resource table
 //
 //==============================================================
-void    PASCAL  DeleteRdOutResGlobalIndx(int iIndx)
+void    __stdcall DeleteRdOutResGlobalIndx(int iIndx)
 {
 	if(gpRdOutTable == NULL)
 		return;
@@ -290,7 +290,7 @@ void    PASCAL  DeleteRdOutResGlobalIndx(int iIndx)
 //          Global Resource table
 //
 //==============================================================
-void    PASCAL  DeleteRdOutResGlobalResID(int iResID)
+void    __stdcall DeleteRdOutResGlobalResID(int iResID)
 {
 	int     iCount;
 
@@ -315,7 +315,7 @@ void    PASCAL  DeleteRdOutResGlobalResID(int iResID)
 //
 //
 //===============================
-int     PASCAL InitRdOutResGlobal(void)
+int     __stdcall InitRdOutResGlobal(void)
 {
 
 	giRdOutGlobAllocated = 32;
@@ -330,7 +330,7 @@ int     PASCAL InitRdOutResGlobal(void)
 //FUNCTION: FreeRdOutResGlobal
 //
 //====================================
-void    PASCAL  FreeRdOutResGlobal(void)
+void    __stdcall  FreeRdOutResGlobal(void)
 {
 	int         iCount;
 

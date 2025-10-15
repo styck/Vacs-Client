@@ -1,19 +1,38 @@
-# Ignore all generated files
-*.txt
-*.htm
-*.log
-*.sbr
-*.tlog
-*.obj
-*.idb
+# CMake build directories
+/build-cmake/
+/build/
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+
+# Visual Studio build output
+/binD/
+/binR/
+/Debug/
+/Release/
 *.pdb
-**/CopilotIndices/
-**/copilot-chat/
-**/FileContentIndex/
-**/v17/
-**/bind/
-**/binr/
-**/Debug/
-**/build/
-CMakeCache.txt
-CMakeFiles/
+*.exp
+*.lib
+*.dll
+*.exe
+*.bsc
+
+# Visual Studio project files (optional, if generated)
+*.user
+*.VC.db
+*.VC.opendb
+
+# Other generated files
+*.obj
+*.log
+*.suo
+*.ipch
+*.tlog
+*.lastbuildstate
+*.idb
+*.ilk
+*.pch
+
+# Ignore Copilot chat artifacts
+*/copilot-chat/
+.vs

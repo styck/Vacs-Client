@@ -110,12 +110,13 @@ HWND     Dll_GetMainWindow(void)
 	return hwndMain;
 }
 
+
 //==============================================================
 // FUNCTION:    Dll_MidiInProc
 // Midi In CallBack Routine
 // Places Complete Midi Msg (4 Bytes) In Buffer In Proper Order
 //==============================================================
-void  CALLBACK  Dll_MidiInProc(HMIDIIN hIn, UINT wMsg, DWORD dwMidiDev,
+void CALLBACK Dll_MidiInProc(HMIDIIN hIn, UINT wMsg, DWORD dwMidiDev,
 							   DWORD dwParam1, DWORD dwParam2)
 {
 
@@ -383,4 +384,3 @@ void    AssembleSMPTETime(void)
 
 	return;
 }
-

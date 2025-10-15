@@ -109,7 +109,7 @@ int   InitializeProc(void)
 
 	gDeviceSetup.hwndMain = ghwndMain;             // Main application Window
 	gDeviceSetup.hinst    = ghInstMain;            // Application Instance
-	gDeviceSetup.pfTXComm = DefinitionCallback;    // Callback function for the DLL to call directly into
+	gDeviceSetup.pfTXComm = (LP_XCOMM_MAIN_proto)DefinitionCallback;    // Callback function for the DLL to call directly into
 
 	// Initialize the Definitiom DLL .... internal stuff
 

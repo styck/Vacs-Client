@@ -36,7 +36,7 @@ extern int                 g_aiAux[MAX_MATRIX_COUNT];
 // the Veritical Faders
 //
 //==================================================
-void    DrawVertFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall DrawVertFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	HBITMAP         hbmpOld;
 	HBITMAP         hbmp;
@@ -107,7 +107,7 @@ void    DrawVertFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA 
 //
 //
 //==================================================
-void    DrawHorizFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall DrawHorizFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	HBITMAP         hbmpOld;
 	HBITMAP         hbmp;
@@ -183,7 +183,7 @@ void    DrawHorizFader(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA
 //
 //
 //==================================================
-void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWNDDATA lpmwd, int iChan, int iVUtype)
+void __stdcall DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWNDDATA lpmwd, int iChan, int iVUtype)
 {
 	HBITMAP         hbmpOld;
 	HBITMAP         hbmp;
@@ -394,7 +394,7 @@ void    DrawVUData(HDC hdc, LPCTRLZONEMAP lpctrlZM, VU_READ *pVuData, LPMIXERWND
 //
 //
 //==================================================
-void    PushBtn(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall PushBtn(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	HBITMAP         hbmpOld;
 	HBITMAP         hbmp;
@@ -458,7 +458,7 @@ void    PushBtn(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, in
 //
 //
 //==================================================
-void    OpenExplodeWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
+void __stdcall OpenExplodeWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
 						  LPMIXERWNDDATA lpmwd, int iChan)
 {
 
@@ -475,7 +475,7 @@ void    OpenExplodeWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
 // Update Only the Text in the RdOut
 //
 //==================================================
-void    RdOutText(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall RdOutText(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	RECT            r;
 	char            szRdOut[32];
@@ -591,7 +591,7 @@ START_STRING_UPDATE:
 // Display the channel name Verticaly
 //
 //==================================================
-void    ChannelNameTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall ChannelNameTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	RECT            r;
 	char            szRdOut[64];
@@ -653,7 +653,7 @@ void    ChannelNameTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERW
 // Display the channel name Verticaly
 //
 //==================================================
-void    ChannelNumberTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall ChannelNumberTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	RECT            r;
 	char            szRdOut[64], chBuff[64];
@@ -735,7 +735,7 @@ void    ChannelNumberTextVertical(HDC hdc, LPCTRLZONEMAP lpczm, int iVal, LPMIXE
 // so it should respond only if hdc == NULL
 //===============================================
 
-void    UpDownControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall UpDownControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	int                 iPhisChannel, iV, ivalue;
 	RECT                r;
@@ -863,7 +863,7 @@ void    UpDownControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA 
 // also this control will not display anything
 // so it should respond only if hdc == NULL
 //===============================================
-void    LeftRightControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall LeftRightControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	int                 iPhisChannel, iV, ivalue;
 	RECT                r;
@@ -957,7 +957,7 @@ void    LeftRightControl(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDA
 //  Jump to a Mixer Zoom Window with a particular
 // Y offset
 //==================================================
-void    JumpToMZWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
+void __stdcall JumpToMZWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
 					   LPMIXERWNDDATA lpmwd, int iChan)
 {
 	LPMIXERWNDDATA      lpMWD;
@@ -1109,4 +1109,3 @@ void    JumpToMZWindow(HDC hdc, LPCTRLZONEMAP lpczm, int iVal,
 
 	return;
 }
-

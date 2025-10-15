@@ -15,13 +15,16 @@
 //
 #define   PIXELS_PER_SEGMENT (double)3.0
 
-void    InitCompnGateLookupTables
+extern int                 gVU_CompDispTable[4096];
+extern int                 gVU_GateDispTable[4096];
+
+void    InitCompnGateLookupTables(void)
 {
   int     iCount;
-  double   fDacComp, fDacGate, fDBLow, fDBPixPerSeg, fPixelShift;
+  double   fDacComp, fDacGate, fDBLow, fDBPixPerSeg, fPixelShift, fDBPerSeg;
 
-  ZeroMemory(gVU_CompDispTable, 4096);
-  ZeroMemory(gVU_GateDispTable, 4096);
+  memset(gVU_CompDispTable, 0, 4096 * sizeof(int));
+  memset(gVU_GateDispTable, 0, 4096 * sizeof(int));
 
   // do compression meter,
   // Comp ADC range: <52 map to 0dB, >3033 map to 20dB
@@ -37,9 +40,9 @@ void    InitCompnGateLookupTables
 				+    ( 20.0*log10(fDacComp/300.0) ) / 1.98
 				+ pow( 20.0*log10(fDacComp/300.0) ,2.0) / 79.794  ;
 	if(fDacComp < 0.0)
-		 fDacComp = 0.0
+		 fDacComp = 0.0;
 	if(fDacComp > 20.0)
-		 fDacComp = 20.0
+		 fDacComp = 20.0;
   
 	if(fDacComp < 12.0)
       {
@@ -76,9 +79,9 @@ void    InitCompnGateLookupTables
 				- pow( 20.0*log10(fDacGate) ,2.0) / 521.229
 				+ pow( 20.0*log10(fDacGate) ,3.0) / 48000.0 ;
 	if(fDacGate < 0.0)
-		 fDacGate = 0.0
+		 fDacGate = 0.0;
 	if(fDacGate > 20.0)
-		 fDacGate = 20.0
+		 fDacGate = 20.0;
   
 	if(fDacGate < 12.0)
       {

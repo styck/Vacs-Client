@@ -38,13 +38,13 @@ SYSTEM_INFO             g_sinf = {0};
 //  Locks the main Root and allocates the memory for the
 // pLockLock
 //========================================================
-LPDLROOTPTR LockDLListRoot(LPDLROOTPTR pRootOrig)
+DLList32_API LPDLROOTPTR LockDLListRoot(LPDLROOTPTR pRootOrig)
 {
 LPDLROOTPTR pRootLock = NULL;
 
 // Allocate memory
 //----------------
-pRootLock = GlobalAlloc(GPTR, sizeof(DLROOT));
+pRootLock = (LPDLROOTPTR)GlobalAlloc(GPTR, sizeof(DLROOTPTR));
 if(pRootLock == NULL)
     return NULL;
 
@@ -71,7 +71,7 @@ return pRootLock;
 //  Unlocks the main Root and frees the memory allocated
 // for the pRootLock
 //========================================================
-BOOL    UnlockDLListRoot(LPDLROOTPTR pRootOrig, LPDLROOTPTR pRootLock)
+DLList32_API BOOL UnlockDLListRoot(LPDLROOTPTR pRootOrig, LPDLROOTPTR pRootLock)
 {
 // now Leave the critical section
 //-------------------------------
@@ -88,7 +88,7 @@ return TRUE;
 //
 //
 //==================================
-LPDLROOTPTR  InitDoubleLinkedList(long   lEntryDataSize, long lEntriesNum,
+DLList32_API LPDLROOTPTR InitDoubleLinkedList(long   lEntryDataSize, long lEntriesNum,
                                   BOOL bSyncEnabled, BOOL bGrow, HANDLE hFile, LPSTR lpstrFName)
 {
 LPDLROOT            pdlRoot;
@@ -265,7 +265,9 @@ pdlRoot->fmapRoot = fmap;
 
 // Allocate the RootPtr object
 //----------------------------
-pRootPtr = GlobalAlloc(GPTR, sizeof(DLROOTPTR));
+// Allocate the RootPtr object
+//----------------------------
+pRootPtr = (LPDLROOTPTR)GlobalAlloc(GPTR, sizeof(DLROOTPTR));
 if(pRootPtr == NULL)
     {
     FreeDLListRoot(pdlRoot);
@@ -522,7 +524,7 @@ return;
 //
 //
 //===================================
-void FreeDLListRootAll(LPDLROOTPTR *pRootPtr)
+DLList32_API void FreeDLListRootAll(LPDLROOTPTR *pRootPtr)
 {
 LPDLROOTPTR        pRootPtrObj;
 
@@ -560,7 +562,7 @@ return;
 // to the root
 //
 //=====================================
-long   AddEntry(LPDLROOTPTR lpdlrPtr,LPSTR lpstrData, 
+DLList32_API long AddEntry(LPDLROOTPTR lpdlrPtr,LPSTR lpstrData, 
                 long lEntrySize)
 {
 long    lReturn;
@@ -603,7 +605,7 @@ return lReturn;
 // Note: it always does insert the
 // Entry after the lAfter(Entry)
 //=======================================
-long    InsertEntry(LPDLROOTPTR lpdlrPtr, long lAfter, 
+DLList32_API long InsertEntry(LPDLROOTPTR lpdlrPtr, long lAfter, 
                     LPSTR lpstrData, long lEntrySize, long lRelation)
 {
 LPDLENTRY       pdle, pdlAfter;
@@ -938,7 +940,7 @@ return -1;
 // DelEntryPtr
 //
 //==============================
-int   DelEntry(LPDLROOTPTR lpdlr, long lEntryNum)
+DLList32_API int DelEntry(LPDLROOTPTR lpdlr, long lEntryNum)
 {
 /*
 long        lCount, lTotCount;
@@ -1004,7 +1006,7 @@ return 0;
 // to convert all of its
 // children to Siblings
 //==============================
-int    DelEntryPtr(LPDLROOTPTR lpdlrPtr, long lItemPos)
+DLList32_API int DelEntryPtr(LPDLROOTPTR lpdlrPtr, long lItemPos)
 {
 LPDLROOT        lpdlr;
 LPDLENTRY       pdle, pdleParent, pdleChild, pdleNext, pdlePrev;
@@ -1261,7 +1263,7 @@ return 0;
 // memory
 //
 //============================
-LPDLROOTPTR CompactDLList(LPDLROOTPTR lpdlrPtr)
+DLList32_API LPDLROOTPTR CompactDLList(LPDLROOTPTR lpdlrPtr)
 {
 /*
 LPDLROOT    lpdlrNew;
@@ -1336,7 +1338,7 @@ return NULL;
 //
 //
 //==========================================
-long    GetEntryLinkState(LPDLROOTPTR pRootPtrObj, long lCur)
+DLList32_API long GetEntryLinkState(LPDLROOTPTR pRootPtrObj, long lCur)
 {
 LPDLROOT    pdlr;
 long        lLinkState;
@@ -1393,7 +1395,7 @@ return lLinkState;
 //                    part of the Entry
 //
 //==========================================
-long     GetFirstEntry(LPDLROOTPTR pRootPtrObj)
+DLList32_API long GetFirstEntry(LPDLROOTPTR pRootPtrObj)
 {
 LPDLROOT    pdlr;
 long        lReturn;
@@ -1423,7 +1425,7 @@ return lReturn;
 //                    part of the Entry
 //
 //==========================================
-long    GetLastEntry(LPDLROOTPTR pRootPtrObj)
+DLList32_API long GetLastEntry(LPDLROOTPTR pRootPtrObj)
 {
 LPDLROOT    pdlr;
 long        lReturn;
@@ -1454,7 +1456,7 @@ return lReturn;
 //                    part of the Entry
 //
 //==========================================
-long    GetNextEntry(LPDLROOTPTR pRootPtrObj, long lCur)
+DLList32_API long GetNextEntry(LPDLROOTPTR pRootPtrObj, long lCur)
 {
 LPDLROOT    pdlr;
 long        lReturn;
@@ -1515,7 +1517,7 @@ return lReturn;
 //                    part of the Entry
 //
 //==========================================
-long      GetPrevEntry(LPDLROOTPTR pRootPtrObj, long lCur)
+DLList32_API long GetPrevEntry(LPDLROOTPTR pRootPtrObj, long lCur)
 {
 LPDLROOT    pdlr;
 long        lReturn;
@@ -1581,7 +1583,7 @@ return lReturn;
 //          NULL = error;
 //          ptr  = pointer to this Entrys data
 //================================================
-LPVOID  GetEntryData(LPDLROOTPTR pRootPtrObj, long lEntryPos)
+DLList32_API LPVOID GetEntryData(LPDLROOTPTR pRootPtrObj, long lEntryPos)
 {
 LPDLROOT    pdlr;
 LPVOID      pData;
@@ -1967,5 +1969,3 @@ IQS_UnmapViewOfFile(&fmap);
 
 return 0;
 }
-
-                          

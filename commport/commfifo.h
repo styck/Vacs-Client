@@ -9,9 +9,17 @@
 #pragma once
 #endif // _MSC_VER >= 1000
 
+#include <windows.h>
+
 // Buffer size and state
 #define MAXBLOCK      4096
 #define FIFO_ACCESS_TOUT		100
+
+#ifdef DLList32_EXPORTS
+#define DLList32_API __declspec(dllexport)
+#else
+#define DLList32_API __declspec(dllimport)
+#endif
 
 typedef struct
 {
@@ -26,17 +34,17 @@ typedef struct
 
 
 #ifdef DLL_EXPORT_COMM
-__declspec(dllexport)void	SetupFifo(COMM_FIFO *p);
-__declspec(dllexport)int		PutFifo(COMM_FIFO *p, LPSTR pSrc, int size);
-__declspec(dllexport)int		GetFifo(COMM_FIFO *p, LPSTR pSrc, int size);
-__declspec(dllexport)int		GetDataSize(COMM_FIFO *p);
-__declspec(dllexport)void	DestroyFifo(COMM_FIFO *p);
+DLList32_API void	SetupFifo(COMM_FIFO *p);
+DLList32_API int		PutFifo(COMM_FIFO *p, LPSTR pSrc, int size);
+DLList32_API int		GetFifo(COMM_FIFO *p, LPSTR pSrc, int size);
+DLList32_API int		GetDataSize(COMM_FIFO *p);
+DLList32_API void	DestroyFifo(COMM_FIFO *p);
 #else
-__declspec(dllimport)void	SetupFifo(COMM_FIFO *p);
-__declspec(dllimport)int		PutFifo(COMM_FIFO *p, LPSTR pSrc, int size);
-__declspec(dllimport)int		GetFifo(COMM_FIFO *p, LPSTR pSrc, int size);
-__declspec(dllimport)int		GetDataSize(COMM_FIFO *p);
-__declspec(dllimport)void	DestroyFifo(COMM_FIFO *p);
+DLList32_API void	SetupFifo(COMM_FIFO *p);
+DLList32_API int		PutFifo(COMM_FIFO *p, LPSTR pSrc, int size);
+DLList32_API int		GetFifo(COMM_FIFO *p, LPSTR pSrc, int size);
+DLList32_API int		GetDataSize(COMM_FIFO *p);
+DLList32_API void	DestroyFifo(COMM_FIFO *p);
 #endif
 
 

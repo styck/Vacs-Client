@@ -18,7 +18,7 @@
 
 // ZoneMap NULL Function
 //
-void    ZoneMapNullFunction(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall ZoneMapNullFunction(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	return;
 }
@@ -906,4 +906,3 @@ void    FreeZoneMapsMemory(void)
 
 	return;
 }
-

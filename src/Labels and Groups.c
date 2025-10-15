@@ -439,7 +439,7 @@ BOOL  CalculatePhisChannelFromScreen(int *piRet, LPMIXERWNDDATA lpmwd)
 //    Update the text for this label
 //
 //
-void    DrawChannelLabel(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
+void __stdcall DrawChannelLabel(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
 	HFONT   hfont;
 	RECT    r = lpctrlZM->rZone;
@@ -619,7 +619,7 @@ void  EditModuleLabel(HWND hwnd, LPMIXERWNDDATA lpmwd, BOOL bShow)
 
 
 		//    g_iChannelLabel = LOWORD(lpmwd->lpwRemapToScr[lpmwd->iCurChan]);
-		g_editWindowProc = (WNDPROC)SetWindowLong(g_hwndLabelEdit, GWL_WNDPROC, (LONG)NewEditWindowProc);
+		g_editWindowProc = (WNDPROC)SetWindowLongPtr(g_hwndLabelEdit, GWLP_WNDPROC, (LONG_PTR)NewEditWindowProc);
 
 		SendMessage(g_hwndLabelEdit, WM_SETFONT, (LPARAM)g_hConsoleFont, 0);
 		SetWindowText(g_hwndLabelEdit, chBuffer);
@@ -634,8 +634,3 @@ void  EditModuleLabel(HWND hwnd, LPMIXERWNDDATA lpmwd, BOOL bShow)
 	}
 
 };
-
-
-
-
-

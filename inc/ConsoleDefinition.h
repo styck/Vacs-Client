@@ -13,6 +13,12 @@ typedef void (__stdcall XCOMM_MAIN_proto)(UINT ,UINT , void *, void *);
 typedef XCOMM_MAIN_proto * LP_XCOMM_MAIN_proto; // define a pointer to this function type
 
 
+#ifdef CONSOLEDEFINITION_EXPORTS
+#define CONSOLEDEFINITION_API __declspec(dllexport)
+#else
+#define CONSOLEDEFINITION_API __declspec(dllimport)
+#endif
+
 
 // Device Setup data
 //
@@ -125,75 +131,76 @@ int     LoadPreferences();
 int     SavePreferences();
 
 
+
 // Exported functions
-__declspec(dllexport)int      CDef_isRunning(void);
-__declspec(dllexport)int      CDef_MixerTypePreference(void);
-__declspec(dllexport)int      CDef_Init(void);
-__declspec(dllexport)BOOL     CDEF_GetCSData(HWND);
+CONSOLEDEFINITION_API int      CDef_isRunning(void);
+CONSOLEDEFINITION_API int      CDef_MixerTypePreference(void);
+CONSOLEDEFINITION_API int      CDef_Init(void);
+CONSOLEDEFINITION_API BOOL     CDEF_GetCSData(HWND);
 
-__declspec(dllexport)int			CDEF_ReadDCXBinFile (void);
+CONSOLEDEFINITION_API int			CDEF_ReadDCXBinFile (void);
 
-__declspec(dllexport)int      CDef_ShutDown(void);
-__declspec(dllexport)int      CDef_SetGlobalData(LPDEVICE_SETUP_DATA);
-__declspec(dllexport)int      CDef_Version(void);
-__declspec(dllexport)int      CDef_Preferences(HWND hwnd);
+CONSOLEDEFINITION_API int      CDef_ShutDown(void);
+CONSOLEDEFINITION_API int      CDef_SetGlobalData(LPDEVICE_SETUP_DATA);
+CONSOLEDEFINITION_API int      CDef_Version(void);
+CONSOLEDEFINITION_API int      CDef_Preferences(HWND hwnd);
 
-__declspec(dllexport)int      CDef_SendData(LPCONTROLDATA);
-__declspec(dllexport)int      CDef_RequestServerSetupData(void);
-__declspec(dllexport)int      CDef_RequestServerTableData(void);
-__declspec(dllexport)int      CDef_StartVuData(void);
-__declspec(dllexport)int      CDef_StopVuData(void);
-__declspec(dllexport)int		  CDef_ShowVuData(char *);
+CONSOLEDEFINITION_API int      CDef_SendData(LPCONTROLDATA);
+CONSOLEDEFINITION_API int      CDef_RequestServerSetupData(void);
+CONSOLEDEFINITION_API int      CDef_RequestServerTableData(void);
+CONSOLEDEFINITION_API int      CDef_StartVuData(void);
+CONSOLEDEFINITION_API int      CDef_StopVuData(void);
+CONSOLEDEFINITION_API int	  CDef_ShowVuData(char *);
 
-__declspec(dllexport)int      ReadRawTcpData(SOCKET , int );
+CONSOLEDEFINITION_API int      ReadRawTcpData(SOCKET , int );
 
-__declspec(dllexport)int      CDef_FindControlByName(LPSTR);
-__declspec(dllexport)char     *CDef_GetControlName(int);
+CONSOLEDEFINITION_API int      CDef_FindControlByName(LPSTR);
+CONSOLEDEFINITION_API char     *CDef_GetControlName(int);
 
-__declspec(dllexport)int      CDef_GetCtrlMaxVal(int);
-__declspec(dllexport)int      CDef_GetCtrlMinVal(int);
-__declspec(dllexport)int      CDef_GetCtrlReadout(int , int , LPSTR );
-__declspec(dllexport)int      CDef_GetCtrlDefaultVal(int);
+CONSOLEDEFINITION_API int      CDef_GetCtrlMaxVal(int);
+CONSOLEDEFINITION_API int      CDef_GetCtrlMinVal(int);
+CONSOLEDEFINITION_API int      CDef_GetCtrlReadout(int , int , LPSTR );
+CONSOLEDEFINITION_API int      CDef_GetCtrlDefaultVal(int);
 
 
-__declspec(dllexport)int      CDef_GetLastError(LPSTR , int );
-__declspec(dllexport)void     CDef_ResetBus(void);
+CONSOLEDEFINITION_API int      CDef_GetLastError(LPSTR , int );
+CONSOLEDEFINITION_API void     CDef_ResetBus(void);
 
 #else
 ///////////////////   IMPORT SECTION  ///////////////////////////////
 
 // Imported functions from Other modules ... APP
-__declspec(dllimport)int      CDef_isRunning(void);
+CONSOLEDEFINITION_API int      CDef_isRunning(void);
 
-__declspec(dllimport)int      CDef_MixerTypePreference(void);
+CONSOLEDEFINITION_API int      CDef_MixerTypePreference(void);
 
-__declspec(dllimport)int      CDef_Init(void);
-__declspec(dllimport)BOOL     CDEF_GetCSData(HWND);
+CONSOLEDEFINITION_API int      CDef_Init(void);
+CONSOLEDEFINITION_API BOOL     CDEF_GetCSData(HWND);
 
-__declspec(dllimport)int			CDEF_ReadDCXBinFile (void);
+CONSOLEDEFINITION_API int			CDEF_ReadDCXBinFile (void);
 
-__declspec(dllimport)int      CDef_ShutDown(void);
-__declspec(dllimport)int      CDef_SetGlobalData(LPDEVICE_SETUP_DATA);
-__declspec(dllimport)int      CDef_Version(void);
-__declspec(dllimport)int      CDef_Preferences(HWND hwnd);
+CONSOLEDEFINITION_API int      CDef_ShutDown(void);
+CONSOLEDEFINITION_API int      CDef_SetGlobalData(LPDEVICE_SETUP_DATA);
+CONSOLEDEFINITION_API int      CDef_Version(void);
+CONSOLEDEFINITION_API int      CDef_Preferences(HWND hwnd);
 
-__declspec(dllimport)int      CDef_SendData(LPCONTROLDATA);
-__declspec(dllimport)int      CDef_RequestServerSetupData(void);
-__declspec(dllimport)int      CDef_RequestServerTableData(void);
-__declspec(dllimport)int      CDef_StartVuData(void);
-__declspec(dllimport)int      CDef_StopVuData(void);
-__declspec(dllimport)int		  CDef_ShowVuData(char *);
+CONSOLEDEFINITION_API int      CDef_SendData(LPCONTROLDATA);
+CONSOLEDEFINITION_API int      CDef_RequestServerSetupData(void);
+CONSOLEDEFINITION_API int      CDef_RequestServerTableData(void);
+CONSOLEDEFINITION_API int      CDef_StartVuData(void);
+CONSOLEDEFINITION_API int      CDef_StopVuData(void);
+CONSOLEDEFINITION_API int	  CDef_ShowVuData(char *);
 
-__declspec(dllimport)int      CDef_FindControlByName(LPSTR);
-__declspec(dllimport)char     *CDef_GetControlName(int);
+CONSOLEDEFINITION_API int      CDef_FindControlByName(LPSTR);
+CONSOLEDEFINITION_API char     *CDef_GetControlName(int);
 
-__declspec(dllimport)int      CDef_GetCtrlMaxVal(int);
-__declspec(dllimport)int      CDef_GetCtrlMinVal(int);
-__declspec(dllimport)int      CDef_GetCtrlReadout(int , int , LPSTR );
-__declspec(dllimport)int      CDef_GetCtrlDefaultVal(int);
+CONSOLEDEFINITION_API int      CDef_GetCtrlMaxVal(int);
+CONSOLEDEFINITION_API int      CDef_GetCtrlMinVal(int);
+CONSOLEDEFINITION_API int      CDef_GetCtrlReadout(int , int , LPSTR );
+CONSOLEDEFINITION_API int      CDef_GetCtrlDefaultVal(int);
 
-__declspec(dllimport)int      CDef_GetLastError(LPSTR , int );
-__declspec(dllimport)void     CDef_ResetBus(void);
+CONSOLEDEFINITION_API int      CDef_GetLastError(LPSTR , int );
+CONSOLEDEFINITION_API void     CDef_ResetBus(void);
 
 #endif // end of export/import stuff
 

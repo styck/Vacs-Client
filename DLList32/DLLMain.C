@@ -83,7 +83,7 @@ FormatMessage(
     NULL 
 );
 // Display the string.
-MessageBox( NULL, lpMsgBuf, "GetLastError", MB_OK | MB_ICONINFORMATION );
+MessageBoxA( NULL, (LPCSTR)lpMsgBuf, "GetLastError", MB_OK | MB_ICONINFORMATION );
 // Free the buffer.
 LocalFree( lpMsgBuf );
 

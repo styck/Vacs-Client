@@ -192,8 +192,8 @@ enum
 //--------------------
 
 // MIDI.DLL
-void                    Dll_MidiInProc(HMIDIIN , UINT , DWORD ,DWORD , DWORD );
-void                    Dll_MidiOutProc(HMIDIIN , UINT , DWORD ,DWORD , DWORD );
+void CALLBACK           Dll_MidiInProc(HMIDIIN , UINT , DWORD ,DWORD , DWORD );
+void CALLBACK           Dll_MidiOutProc(HMIDIIN , UINT , DWORD ,DWORD , DWORD );
 void                    Dll_SetMainWindow(HWND);
 HWND                    Dll_GetMainWindow(void);
 
@@ -466,11 +466,11 @@ void            DeleteBinResGlobalResID(int );
 int             InitBinResGlobal(void);
 void            FreeBinResGlobal(void);
 
-int             AddRdOutResGlobal(HINSTANCE, int);
-void            DeleteRdOutResGlobalIndx(int);
-void            DeleteRdOutResGlobalResID(int);
-int             InitRdOutResGlobal(void);
-void            FreeRdOutResGlobal(void);
+int             __stdcall AddRdOutResGlobal(HINSTANCE, int);
+void            __stdcall DeleteRdOutResGlobalIndx(int);
+void            __stdcall DeleteRdOutResGlobalResID(int);
+int             __stdcall InitRdOutResGlobal(void);
+void            __stdcall FreeRdOutResGlobal(void);
 
 int             AddBmpResGlobal(HINSTANCE, int , HDC);
 void            DeleteBmpResGlobalIndx(int);
@@ -629,19 +629,23 @@ void            RecallMemoryMapBuffer(BOOL,DWORD);
 
 // Module 18
 //----------
-void            DrawVertFader(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
-void            DrawHorizFader(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
-void            DrawVUData(HDC , LPCTRLZONEMAP , VU_READ *, LPMIXERWNDDATA , int, int );
-void            PushBtn(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
-void            OpenExplodeWindow(HDC, LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
-void            JumpToMZWindow(HDC, LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
-void            RdOutText(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
-void            UpDownControl(HDC , LPCTRLZONEMAP , int , LPMIXERWNDDATA, int);
-void            LeftRightControl(HDC , LPCTRLZONEMAP , int , LPMIXERWNDDATA, int);
-void            DrawChannelLabel(HDC , LPCTRLZONEMAP , int , LPMIXERWNDDATA, int);
-void            DrawEqGraphHook(HDC ,LPCTRLZONEMAP , int , LPMIXERWNDDATA, int );
-void            ChannelNameTextVertical(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
-void            ChannelNumberTextVertical(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
+extern int                 gVU_VertDispTable[4096];
+extern int                 gVU_CompDispTable[4096];
+extern int                 gVU_GateDispTable[4096];
+
+void __stdcall  DrawVertFader(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
+void __stdcall  DrawHorizFader(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
+void __stdcall  DrawVUData(HDC , LPCTRLZONEMAP , VU_READ *, LPMIXERWNDDATA , int, int );
+void __stdcall  PushBtn(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
+void __stdcall  OpenExplodeWindow(HDC, LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
+void __stdcall  JumpToMZWindow(HDC, LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
+void __stdcall  RdOutText(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
+void __stdcall  UpDownControl(HDC , LPCTRLZONEMAP , int , LPMIXERWNDDATA, int);
+void __stdcall  LeftRightControl(HDC , LPCTRLZONEMAP , int , LPMIXERWNDDATA, int);
+void __stdcall  DrawChannelLabel(HDC , LPCTRLZONEMAP , int , LPMIXERWNDDATA, int);
+void __stdcall  DrawEqGraphHook(HDC ,LPCTRLZONEMAP , int , LPMIXERWNDDATA, int );
+void __stdcall  ChannelNameTextVertical(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
+void __stdcall  ChannelNumberTextVertical(HDC , LPCTRLZONEMAP , int, LPMIXERWNDDATA, int);
 
 
 
