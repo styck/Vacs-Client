@@ -28,29 +28,29 @@
 *               "DllMain" in the Win32 API reference.
 *
 \******************************************************************************/
-BOOL WINAPI DllMain (HANDLE hDLL, DWORD dwReason, LPVOID lpReserved)
+BOOL WINAPI DllMain(HANDLE hDLL, DWORD dwReason, LPVOID lpReserved)
 {
 
-  switch (dwReason)
-  {
+    switch (dwReason)
+    {
     case DLL_PROCESS_ATTACH:
     {
-			if(m_cm.m_hDevice == NULL)
-				SetupGlobal();
-      break;
+        if (m_cm.m_hDevice == NULL)
+            SetupGlobal();
+        break;
     }
 
     case DLL_THREAD_ATTACH:
-      break;
+        break;
 
     case DLL_THREAD_DETACH:
-      break;
+        break;
 
     case DLL_PROCESS_DETACH:
-			CloseComm();
-      break;
-  }
+        CloseComm();
+        break;
+    }
 
-return TRUE;
+    return TRUE;
 }
 

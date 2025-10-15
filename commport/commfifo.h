@@ -23,32 +23,28 @@
 
 typedef struct
 {
-	char		buffer[MAXBLOCK];
-	LPSTR		pHead;
-	LPSTR		pTail;
-	LPSTR		pEnd;
-	int			iSize;
-	HANDLE	access;
+    char buffer[MAXBLOCK];
+    LPSTR pHead;
+    LPSTR pTail;
+    LPSTR pEnd;
+    int iSize;
+    HANDLE	access;
 } COMM_FIFO;
 
 
 
-#ifdef DLL_EXPORT_COMM
-DLList32_API void	SetupFifo(COMM_FIFO *p);
-DLList32_API int		PutFifo(COMM_FIFO *p, LPSTR pSrc, int size);
-DLList32_API int		GetFifo(COMM_FIFO *p, LPSTR pSrc, int size);
-DLList32_API int		GetDataSize(COMM_FIFO *p);
-DLList32_API void	DestroyFifo(COMM_FIFO *p);
+#ifdef DLList32_EXPORTS
+DLList32_API void SetupFifo(COMM_FIFO *p);
+DLList32_API int PutFifo(COMM_FIFO *p, LPSTR pSrc, int size);
+DLList32_API int GetFifo(COMM_FIFO *p, LPSTR pSrc, int size);
+DLList32_API int GetDataSize(COMM_FIFO *p);
+DLList32_API void DestroyFifo(COMM_FIFO *p);
 #else
-DLList32_API void	SetupFifo(COMM_FIFO *p);
-DLList32_API int		PutFifo(COMM_FIFO *p, LPSTR pSrc, int size);
-DLList32_API int		GetFifo(COMM_FIFO *p, LPSTR pSrc, int size);
-DLList32_API int		GetDataSize(COMM_FIFO *p);
-DLList32_API void	DestroyFifo(COMM_FIFO *p);
+DLList32_API void SetupFifo(COMM_FIFO *p);
+DLList32_API int PutFifo(COMM_FIFO *p, LPSTR pSrc, int size);
+DLList32_API int GetFifo(COMM_FIFO *p, LPSTR pSrc, int size);
+DLList32_API int GetDataSize(COMM_FIFO *p);
+DLList32_API void DestroyFifo(COMM_FIFO *p);
 #endif
-
-
-
-
 
 #endif
