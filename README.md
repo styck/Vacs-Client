@@ -32,4 +32,6 @@ To build the project using CMake on Windows (assuming MSVC and CMake 3.28+ insta
 
 If you encounter issues (e.g., missing dependencies like ODBC), ensure Windows SDK and VS Build Tools are installed. The project links to system libs (winmm, comctl32, etc.), so no external installs needed. Test in a clean build dir to avoid cache issues.
 
+Running VACS.exe
 
+It is important to place the https://github.com/styck/dcxTable/dcx.bin file in the same directory as the VACS.exe file, it defines all the controls to the console.
