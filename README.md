@@ -35,3 +35,9 @@ If you encounter issues (e.g., missing dependencies like ODBC), ensure Windows S
 Running VACS.exe
 
 It is important to place the https://github.com/styck/dcxTable/dcx.bin file in the same directory as the VACS.exe file, it defines all the controls to the console.
+
+## Modernization Recommendations
+For detailed suggestions on updating this legacy Windows 95-era codebase to modern standards, see [modernization.md](modernization.md).
+
+## Code Documentation
+For an overview of the codebase architecture, key components, data flows, and interactions, see [CodeDocumentation.md](CodeDocumentation.md).
