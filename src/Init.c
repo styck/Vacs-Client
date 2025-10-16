@@ -15,7 +15,7 @@
 
 HWND g_hwndSplashScreen = NULL;
 void ShowSplashScreen(BOOL );
-BOOL dlgProcSplash(HWND ,UINT , UINT , LONG );
+BOOL APIENTRY dlgProcSplash(HWND ,UINT , UINT , LONG );
 extern LPSTR GetMixerTypeName(enum MIXER_TYPES iMixType ); // see mix_files.c
 
 //////////////////////////////////////////////////////////

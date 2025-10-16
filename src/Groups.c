@@ -31,7 +31,7 @@ BOOL g_columnAdded = FALSE;
 
 void GroupedStatus(BOOL);						// SEE CREATEMAIN.C
 
-LRESULT    GroupWndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK GroupWndProc(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK GroupsProc(HWND, UINT, WPARAM, LPARAM);
 void AddToListControl(int);
 int GetLisControlSelection(void);
@@ -173,7 +173,7 @@ int ShowGroupWindow(BOOL bShow)
 //the MDI child window for the Dialog Box
 //
 
-LRESULT CALLBACK  GroupWndProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK GroupWndProc(HWND hwnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
     RECT rect;
     MINMAXINFO* lpMMI;
