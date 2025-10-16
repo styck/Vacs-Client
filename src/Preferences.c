@@ -2,19 +2,13 @@
 // Copyright 1998, CorTek Software, Inc.
 //=================================================
 
-
 //#include <windows.h>    // includes basic windows functionality
 //#include <commctrl.h>   // includes the common control header
-#include <stdio.h>
-//#include <string.h>
-
 
 // Application Includes
 //---------------------
 #include "SAMM.H"
 #include "SAMMEXT.H"
-#include "MACRO.h"
-
 
 //======================================
 //FUNCTION: CreatePropertySheet

@@ -9,8 +9,6 @@
 //=================================================
 
 #include "SAMM.h"
-#include "SAMMEXT.h"
-#include "MACRO.h"
 
 //==================================================
 //FUNCTION: ScanCtrlZonesPnt
@@ -26,27 +24,27 @@
 //      Here we are going to use the rZone
 //
 //==================================================
-LPCTRLZONEMAP     ScanCtrlZonesPnt(LPCTRLZONEMAP lpczmArr, POINT pnt)
+LPCTRLZONEMAP ScanCtrlZonesPnt(LPCTRLZONEMAP lpczmArr, POINT pnt)
 {
-	LPCTRLZONEMAP    lpczmPtr;
-	RECT                rect;
+    LPCTRLZONEMAP lpczmPtr;
+    RECT rect;
 
-	lpczmPtr = lpczmArr;
-	rect = lpczmPtr->rZone;
+    lpczmPtr = lpczmArr;
+    rect = lpczmPtr->rZone;
 
-	// Search until the end of the list
-	//---------------------------------
-	while(rect.right)
-	{
-		if(PtInRect(&rect, pnt))
-		{
-			return lpczmPtr;
-		}
-		lpczmPtr++;
-		rect = lpczmPtr->rZone;
-	}
+    // Search until the end of the list
+    //---------------------------------
+    while (rect.right)
+    {
+        if (PtInRect(&rect, pnt))
+        {
+            return lpczmPtr;
+        }
+        lpczmPtr++;
+        rect = lpczmPtr->rZone;
+    }
 
-	return NULL;
+    return NULL;
 }
 
 //==================================================
@@ -62,24 +60,24 @@ LPCTRLZONEMAP     ScanCtrlZonesPnt(LPCTRLZONEMAP lpczmArr, POINT pnt)
 //      Scans the Control Zones using a given type
 //      Here we are going to use the iCtrlType
 //==================================================
-LPCTRLZONEMAP      ScanCtrlZonesType(LPCTRLZONEMAP lpczmArr, int iType)
+LPCTRLZONEMAP ScanCtrlZonesType(LPCTRLZONEMAP lpczmArr, int iType)
 {
-	LPCTRLZONEMAP    lpczmPtr;
+    LPCTRLZONEMAP lpczmPtr;
 
-	lpczmPtr = lpczmArr;
+    lpczmPtr = lpczmArr;
 
-	// Search until the end of the list
-	//---------------------------------
-	while(lpczmPtr->rZone.right)
-	{
-		if(lpczmPtr->iCtrlType == iType)
-		{
-			return lpczmPtr;
-		}
-		lpczmPtr++;
-	}
+    // Search until the end of the list
+    //---------------------------------
+    while (lpczmPtr->rZone.right)
+    {
+        if (lpczmPtr->iCtrlType == iType)
+        {
+            return lpczmPtr;
+        }
+        lpczmPtr++;
+    }
 
-	return NULL;
+    return NULL;
 }
 
 //==================================================
@@ -95,27 +93,27 @@ LPCTRLZONEMAP      ScanCtrlZonesType(LPCTRLZONEMAP lpczmArr, int iType)
 //      Scans the Control Zones using a given Num
 //      Here we are going to use the iCtrlNum
 //==================================================
-LPCTRLZONEMAP      ScanCtrlZonesNum(LPCTRLZONEMAP lpczmArr, int iNum)
+LPCTRLZONEMAP ScanCtrlZonesNum(LPCTRLZONEMAP lpczmArr, int iNum)
 {
-	LPCTRLZONEMAP    lpczmPtr;
+    LPCTRLZONEMAP lpczmPtr;
 
-	lpczmPtr = lpczmArr;
+    lpczmPtr = lpczmArr;
 
-	if(lpczmPtr == NULL)
-		return NULL;
+    if (lpczmPtr == NULL)
+        return NULL;
 
-	// Search until the end of the list
-	//---------------------------------
-	while(lpczmPtr->rZone.right)
-	{
-		if(lpczmPtr->iCtrlChanPos == iNum)
-		{
-			return lpczmPtr;
-		}
-		lpczmPtr++;
-	}
+    // Search until the end of the list
+    //---------------------------------
+    while (lpczmPtr->rZone.right)
+    {
+        if (lpczmPtr->iCtrlChanPos == iNum)
+        {
+            return lpczmPtr;
+        }
+        lpczmPtr++;
+    }
 
-	return NULL;
+    return NULL;
 }
 
 //===================================================
@@ -131,24 +129,24 @@ LPCTRLZONEMAP      ScanCtrlZonesNum(LPCTRLZONEMAP lpczmArr, int iNum)
 //      Scans the Control Zones using a given display
 //      Here we are going to use the iCtrlDisp
 //===================================================
-LPCTRLZONEMAP      ScanCtrlZonesDisp(LPCTRLZONEMAP lpczmArr, int iDisp)
+LPCTRLZONEMAP ScanCtrlZonesDisp(LPCTRLZONEMAP lpczmArr, int iDisp)
 {
-	LPCTRLZONEMAP    lpczmPtr;
+    LPCTRLZONEMAP lpczmPtr;
 
-	lpczmPtr = lpczmArr;
+    lpczmPtr = lpczmArr;
 
-	// Search until the end of the list
-	//---------------------------------
-	while(lpczmPtr->rZone.right)
-	{
-		if(lpczmPtr->iDispType == iDisp)
-		{
-			return lpczmPtr;
-		}
-		lpczmPtr++;
-	}
+    // Search until the end of the list
+    //---------------------------------
+    while (lpczmPtr->rZone.right)
+    {
+        if (lpczmPtr->iDispType == iDisp)
+        {
+            return lpczmPtr;
+        }
+        lpczmPtr++;
+    }
 
-	return NULL;
+    return NULL;
 }
 
 //===================================================
@@ -164,26 +162,24 @@ LPCTRLZONEMAP      ScanCtrlZonesDisp(LPCTRLZONEMAP lpczmArr, int iDisp)
 //      Scans the Control Zones using a given iCtrlNumAbs
 //      Here we are going to use the iCtrlDisp
 //===================================================
-LPCTRLZONEMAP      ScanCtrlZonesAbs(LPCTRLZONEMAP lpczmArr, int iCtrlNumAbs)
+LPCTRLZONEMAP ScanCtrlZonesAbs(LPCTRLZONEMAP lpczmArr, int iCtrlNumAbs)
 {
-	LPCTRLZONEMAP    lpczmPtr;
+    LPCTRLZONEMAP lpczmPtr;
 
+    if (lpczmArr == NULL)
+        return NULL;
+    lpczmPtr = lpczmArr;
 
-	if(lpczmArr == NULL)
-		return NULL;
-	lpczmPtr = lpczmArr;
+    // Search until the end of the list
+    //---------------------------------
+    while (lpczmPtr->rZone.right)
+    {
+        if (lpczmPtr->iCtrlNumAbs == iCtrlNumAbs)
+        {
+            return lpczmPtr;
+        }
+        lpczmPtr++;
+    }
 
-	// Search until the end of the list
-	//---------------------------------
-	while(lpczmPtr->rZone.right)
-	{
-		if(lpczmPtr->iCtrlNumAbs == iCtrlNumAbs)
-		{
-			return lpczmPtr;
-		}
-		lpczmPtr++;
-	}
-
-	return NULL;
+    return NULL;
 }
-

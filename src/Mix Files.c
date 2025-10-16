@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <winioctl.h>
 
-
 // externals ..
 extern int	g_CueMasterSystem;
 extern int  g_iMasterModuleIdx;
