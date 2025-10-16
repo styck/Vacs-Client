@@ -97,4 +97,4 @@ The app is monolithic-procedural with modular DLLs:
 - Bitmap scaling fails on hi-DPI; no error propagation (e.g., failed DLL load crashes).
 - Legacy: wsprintf overflows, no Unicode, Win95 assumptions (e.g., 256-color bitmaps).
 
-For modernization, see [modernization.md](modernization.md).
+For modernization, see [Modernization.md](Modernization.md).
