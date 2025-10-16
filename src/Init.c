@@ -11,13 +11,12 @@
 #include "SAMM.h"
 #include "ConsoleDefinition.h"
 #include "SAMMEXT.h"
-#include "MACRO.h"
 #include "..\\commport\\commport.h"
 
-HWND			g_hwndSplashScreen = NULL;
-void			ShowSplashScreen(BOOL );
-BOOL APIENTRY	dlgProcSplash(HWND ,UINT , UINT , LONG );
-extern LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType ); // see mix_files.c
+HWND g_hwndSplashScreen = NULL;
+void ShowSplashScreen(BOOL );
+BOOL dlgProcSplash(HWND ,UINT , UINT , LONG );
+extern LPSTR GetMixerTypeName(enum MIXER_TYPES iMixType ); // see mix_files.c
 
 //////////////////////////////////////////////////////////
 // The initialize procedure
@@ -25,13 +24,13 @@ extern LPSTR	GetMixerTypeName(enum MIXER_TYPES iMixType ); // see mix_files.c
 // windows, buffers, ....
 //////////////////////////////////////////////////////////
 
-int   InitializeProc(void)
+int InitializeProc(void)
 {
-	int     iReturn;
-	char    szString[MAX_PATH];
-	LPSTR   lpstrFName = NULL;
-	HWND    hwndTest = NULL;
-	int			CTRL_key;	 
+	int iReturn;
+	char szString[MAX_PATH];
+	LPSTR lpstrFName = NULL;
+	HWND hwndTest = NULL;
+	int CTRL_key;	 
 
 	int	i;
 	char iChannelCount = 0;
@@ -377,9 +376,9 @@ int   InitializeProc(void)
 //
 //----------------------------------------
 
-int     Init_MixerData(void)
+int Init_MixerData(void)
 {
-	int     iReturn;
+	int iReturn;
 
 	// Start the Vu data ... Flow
 	//
@@ -629,11 +628,11 @@ void      ShutdownProc(void)
 //  Mixer
 //
 //==================================================
-int       GetGlobalMixerPhisDesc(HINSTANCE hinst)
+int GetGlobalMixerPhisDesc(HINSTANCE hinst)
 {
-	HRSRC           hres;
-	HGLOBAL         hglob;
-	LPMIXERDESC     lpMixerDesc;
+	HRSRC hres;
+	HGLOBAL hglob;
+	LPMIXERDESC lpMixerDesc;
 
 	hres = FindResource(hinst, MAKEINTRESOURCE(MIXER_PHIS_DESC), MAKEINTRESOURCE(RT_MIXER_PHIS_DESC));
 	if(hres == NULL)
@@ -657,13 +656,12 @@ int       GetGlobalMixerPhisDesc(HINSTANCE hinst)
 	return 0;
 }
 
-
 //===============================================================
 // FUNCTION: AdjustGlobalDeviceDescription
 //
 //
 //
-int  GetDeviceChannelCount(void)
+int GetDeviceChannelCount(void)
 {
 	// Actualy we might not need this at all
 	/*
@@ -692,7 +690,7 @@ int  GetDeviceChannelCount(void)
 //
 //
 //
-void    ShowSplashScreen(BOOL bShow)
+void ShowSplashScreen(BOOL bShow)
 {
 	if(bShow)
 	{
@@ -720,13 +718,11 @@ void    ShowSplashScreen(BOOL bShow)
 //=======================================
 BOOL APIENTRY dlgProcSplash(HWND hDlg,UINT message, UINT wParam, LONG lParam)
 {
-
 	switch (message)
 	{
 	case WM_INITDIALOG:	
 		//		return (TRUE);
 		break;
 	}
-
 	return (FALSE);   
 }

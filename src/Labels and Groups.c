@@ -17,29 +17,26 @@
 //
 //=================================================
 
-
 #include "SAMM.h"
 #include "SAMMEXT.h"
 #include "MACRO.h"
 
-extern int                 g_aiAux[MAX_MATRIX_COUNT];
-extern int                 g_aiMatrix[MAX_MATRIX_COUNT];
+extern int g_aiAux[MAX_MATRIX_COUNT];
+extern int g_aiMatrix[MAX_MATRIX_COUNT];
 
-void GroupedStatus(BOOL);						// SEE CREATEMAIN.C
-BOOL IsAnyGrouped(void);						// SEE GROUPS.C
+void GroupedStatus(BOOL); // SEE CREATEMAIN.C
+BOOL IsAnyGrouped(void); // SEE GROUPS.C
 
 LPSTR   GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan);
-
 
 //=====================================
 // FUNCTION: RegLblGroupWnd
 //
 //=====================================
-int      RegLblGroupWnd(void)
+int RegLblGroupWnd(void)
 {
-	int         iReturn;
-	WNDCLASS    wc;
-
+	int iReturn;
+	WNDCLASS wc;
 
 	// Register Label Group Class
 	//--------------------------
@@ -68,9 +65,9 @@ int      RegLblGroupWnd(void)
 //FUNCTION: CreateLblGroupWnd
 //
 //===========================
-HWND     CreateLblGroupWnd(LPRECT prect, HWND hwndParent,LPMIXERWNDDATA lpmwd)
+HWND CreateLblGroupWnd(LPRECT prect, HWND hwndParent,LPMIXERWNDDATA lpmwd)
 {
-	HWND        hwnd = NULL;
+	HWND hwnd = NULL;
 
 	hwnd = CreateWindow(
 		gszLblGroupClass,   // Window class name
@@ -249,8 +246,6 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 		return DefWindowProc(hWnd, wMessage, wParam, lParam);
 
 	}
-
-
 	return 0;
 }
 
@@ -270,17 +265,17 @@ LRESULT CALLBACK LblGroupProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM lP
 //=================================================
 void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
 {
-	HDC         hdcMem;
-	HBITMAP     hbmpMem, hbmp;
-	HBRUSH      hbrGray, hbrDkGray, hbrWhite, hbrBlack;
-	int         iWidth, iHeight;
-	RECT        rect = {0};
-	char        szBuff[5];
-	char        szText[32];
-	int         iCount;
-	int         iPhisChannel;
-	int         iBmpIndex;
-	int         iTarget, iic;
+	HDC hdcMem;
+	HBITMAP hbmpMem, hbmp;
+	HBRUSH hbrGray, hbrDkGray, hbrWhite, hbrBlack;
+	int iWidth, iHeight;
+	RECT rect = {0};
+	char szBuff[5];
+	char szText[32];
+	int iCount;
+	int iPhisChannel;
+	int iBmpIndex;
+	int iTarget, iic;
 
 	if(lpmwd == NULL)
 		return;
@@ -361,7 +356,6 @@ void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
 				FillRect(hdc, &rect, hbrGray);
 				WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szText);
 			}
-
 		}
 		else
 		{
@@ -384,7 +378,6 @@ void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
 				FillRect(hdc, &rect, hbrGray);
 				WriteTextLinesToDC(hdc  , &rect , 0, 0, RGB(0, 255, 0), (LPSTR)szText);
 			}
-
 		}
 
 		rect.left = rect.right;
@@ -400,18 +393,16 @@ void    DrawLbl(HDC hdc, LPMIXERWNDDATA lpmwd)
 	return;
 }
 
-
 ////////////////////////////////////
 // CalculatePhisChannelFromScreen
 //
 //
-BOOL  CalculatePhisChannelFromScreen(int *piRet, LPMIXERWNDDATA lpmwd)
+BOOL CalculatePhisChannelFromScreen(int *piRet, LPMIXERWNDDATA lpmwd)
 {
-	int   iPhisChannel;
-	int   iBmpIndex;
-	int   iWidth;
-	int   iX; // the x possition on the screen
-
+	int iPhisChannel;
+	int iBmpIndex;
+	int iWidth;
+	int iX; // the x possition on the screen
 
 	iPhisChannel = lpmwd->lpwRemapToScr[lpmwd->iStartScrChan]; // Get the first physical channel
 	iBmpIndex = lpmwd->lpZoneMap[iPhisChannel].iBmpIndx;
@@ -433,7 +424,6 @@ BOOL  CalculatePhisChannelFromScreen(int *piRet, LPMIXERWNDDATA lpmwd)
 	return TRUE;
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////
 // DrawChannelLabel
 //    Update the text for this label
@@ -441,10 +431,9 @@ BOOL  CalculatePhisChannelFromScreen(int *piRet, LPMIXERWNDDATA lpmwd)
 //
 void __stdcall DrawChannelLabel(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIXERWNDDATA lpmwd, int iChan)
 {
-	HFONT   hfont;
-	RECT    r = lpctrlZM->rZone;
-	LPSTR   pLabel;
-
+	HFONT hfont;
+	RECT r = lpctrlZM->rZone;
+	LPSTR pLabel;
 
 	hfont = SelectObject(hdc, g_hConsoleFont);
 	//iChan = LOWORD(lpmwd->lpwRemapToScr[iChan]); // Get the first physical channel
@@ -455,16 +444,15 @@ void __stdcall DrawChannelLabel(HDC hdc, LPCTRLZONEMAP lpctrlZM, int iVal, LPMIX
 	SelectObject(hdc, hfont);
 };
 
-
 ///////////////////////////////////////////////////////////////////////
 //
 //
 //
-LPSTR   GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan)
+LPSTR GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan)
 {
-	LPSTR   pRet = NULL;
-	int     iTarget;
-	int     iCount;
+	LPSTR pRet = NULL;
+	int iTarget;
+	int iCount;
 
 	if(gDeviceSetup.iaChannelTypes[iChan] == DCX_DEVMAP_MODULE_MASTER)
 	{
@@ -514,8 +502,6 @@ LPSTR   GetLabelText(LPCTRLZONEMAP lpctrlZM, int iChan)
 	return pRet;
 }
 
-
-
 HWND      g_hwndLabelEdit = NULL;
 WNDPROC   g_editWindowProc = NULL;
 int       g_iChannelLabel = 0;
@@ -527,9 +513,9 @@ LPCTRLZONEMAP g_pCtrlZm = NULL;
 //
 LRESULT CALLBACK NewEditWindowProc( HWND hwnd, UINT uMsg,  WPARAM wParam,  LPARAM lParam )
 {
-	HWND    hwndParent;
-	char    chBuffer[32];
-	LPSTR   pLabel;
+	HWND hwndParent;
+	char chBuffer[32];
+	LPSTR pLabel;
 
 	switch(uMsg)
 	{
@@ -574,11 +560,10 @@ LRESULT CALLBACK NewEditWindowProc( HWND hwnd, UINT uMsg,  WPARAM wParam,  LPARA
 //
 //
 //
-void  EditModuleLabel(HWND hwnd, LPMIXERWNDDATA lpmwd, BOOL bShow)
+void EditModuleLabel(HWND hwnd, LPMIXERWNDDATA lpmwd, BOOL bShow)
 {
-	char          chBuffer[32];
-	LPSTR         pLabel;
-
+	char chBuffer[32];
+	LPSTR pLabel;
 
 	if(bShow && lpmwd)
 	{
@@ -632,5 +617,4 @@ void  EditModuleLabel(HWND hwnd, LPMIXERWNDDATA lpmwd, BOOL bShow)
 		g_hwndLabelEdit = NULL;
 		SetFocus(GetParent(hwnd));
 	}
-
 };

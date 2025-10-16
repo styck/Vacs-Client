@@ -9,8 +9,6 @@
 #include "samm.h"
 #include "macro.h"
 
-
-
 //================================================
 //function: OpenMIDIInDev
 //
