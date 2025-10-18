@@ -876,7 +876,6 @@ void FreeZoneMapsMemory(void)
     GlobalFree(gpLabels);
     gpLabels = NULL;
 
-
     if (g_pAuxLabels)
         GlobalFree(g_pAuxLabels);
     g_pAuxLabels = NULL;

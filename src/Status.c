@@ -232,10 +232,10 @@ int CreateMainStatusWindow(HWND hwndParent)
 
     ghwndStatF4Button = CreateWindow("BUTTON", "F4",
         WS_CHILD | BS_CENTER | BS_VCENTER | BS_PUSHBUTTON | BS_PUSHLIKE,
-        F4_START + BORDER_SIZE,						// x 
-        2,													// y
-        F4_END - F4_START - BORDER_SIZE,		// width 98
-        rCl.bottom - BORDER_SIZE,		// height
+        F4_START + BORDER_SIZE, // x 
+        2, // y
+        F4_END - F4_START - BORDER_SIZE, // width 98
+        rCl.bottom - BORDER_SIZE, // height
         ghwndStatus,
         (HMENU)VK_F4,
         ghInstMain,
@@ -251,14 +251,10 @@ int CreateMainStatusWindow(HWND hwndParent)
     return 0;
 };
 
-
-
-
 //====================================================
 // MDI Client Window Procedure For Processing Messages
 //====================================================
-LRESULT CALLBACK   StatusBarProc(HWND hWnd, UINT wMessage,
-    WPARAM wParam, LPARAM  lParam)
+LRESULT CALLBACK StatusBarProc(HWND hWnd, UINT wMessage, WPARAM wParam, LPARAM  lParam)
 {
     HWND hWndZoom;
     int nCheck;
@@ -350,8 +346,6 @@ LRESULT CALLBACK   StatusBarProc(HWND hWnd, UINT wMessage,
     }
 
 }
-
-
 
 ///////////////////////////////////////////
 void  SetProgressRange(int iLow, int iHigh)

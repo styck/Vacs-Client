@@ -518,7 +518,7 @@ ON_EXIT:
 //  Attempts to apply the Preferences
 //
 //====================================================
-BOOLApplyPreferences(BOOL   bForce)
+BOOL ApplyPreferences(BOOL bForce)
 {
 #ifdef MIDI_SUPPORT
     //-----------------
@@ -604,5 +604,3 @@ BOOLApplyPreferences(BOOL   bForce)
     gprfPref = gprfEdit;
     return TRUE;
 }
-
-

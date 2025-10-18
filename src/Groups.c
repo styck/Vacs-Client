@@ -18,8 +18,8 @@
 #include "MACRO.h"
 
 // External definitions
-extern BOOL    g_bReversDirection;
-extern int     g_iMasterModuleIdx;
+extern BOOL g_bReversDirection;
+extern int g_iMasterModuleIdx;
 
 #define   GROUP_TERMINATOR  0xFFFFFFFF
 

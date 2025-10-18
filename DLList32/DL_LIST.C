@@ -11,19 +11,15 @@
 //=================================================
 
 #include <windows.h>
-
 #define  DLLIST_MAIN
 #include "DLLIST.h"
 #include "SPOOLER.h"
 
-
-
 // Variables
 //----------
-HINSTANCE               hInst = 0;
-long                    lCounter = 0;
-SYSTEM_INFO             g_sinf = { 0 };
-
+HINSTANCE hInst = 0;
+long lCounter = 0;
+SYSTEM_INFO g_sinf = { 0 };
 
 //========================================================
 //FUNCTION: LockDLListRoot
@@ -56,7 +52,6 @@ DLList32_API LPDLROOTPTR LockDLListRoot(LPDLROOTPTR pRootOrig)
     if (pRootOrig->bSyncEnabled)
         EnterCriticalSection(&pRootOrig->csRoot);
 
-
     return pRootLock;
 }
 
@@ -79,7 +74,6 @@ DLList32_API BOOL UnlockDLListRoot(LPDLROOTPTR pRootOrig, LPDLROOTPTR pRootLock)
         LeaveCriticalSection(&pRootOrig->csRoot);
 
     GlobalFree(pRootLock);
-
     return TRUE;
 }
 
@@ -91,13 +85,13 @@ DLList32_API BOOL UnlockDLListRoot(LPDLROOTPTR pRootOrig, LPDLROOTPTR pRootLock)
 DLList32_API LPDLROOTPTR InitDoubleLinkedList(long   lEntryDataSize, long lEntriesNum,
     BOOL bSyncEnabled, BOOL bGrow, HANDLE hFile, LPSTR lpstrFName)
 {
-    LPDLROOT            pdlRoot;
-    LPDLROOTPTR         pRootPtr;
-    DWORD               dwFileStartPos, dwFileSize;
-    DWORD               dwAddSize;
-    HANDLE              hFileMap;
-    FILEMAP             fmap;
-    BOOL                bCloseFileHandle;
+    LPDLROOT pdlRoot;
+    LPDLROOTPTR pRootPtr;
+    DWORD dwFileStartPos, dwFileSize;
+    DWORD dwAddSize;
+    HANDLE hFileMap;
+    FILEMAP fmap;
+    BOOL bCloseFileHandle;
 
     pdlRoot = NULL;
 
@@ -241,7 +235,6 @@ DLList32_API LPDLROOTPTR InitDoubleLinkedList(long   lEntryDataSize, long lEntri
             CloseHandle(hFileMap);
             return NULL; // error
         }
-
     }
 
     // Remember the File mapping object
@@ -289,7 +282,6 @@ DLList32_API LPDLROOTPTR InitDoubleLinkedList(long   lEntryDataSize, long lEntri
         FreeDLListRoot(pdlRoot);
         return NULL;
     }
-
     return pRootPtr;
 }
 
@@ -306,21 +298,19 @@ DLList32_API LPDLROOTPTR InitDoubleLinkedList(long   lEntryDataSize, long lEntri
 //============================================
 int InitIDX(LPDLROOTPTR pdlRootPTR)
 {
-    LPDLROOT            pdlRoot;
-    LPIDX               pIDX;
-    long                lIDXnum, lIDXcount;
+    LPDLROOT pdlRoot;
+    LPIDX pIDX;
+    long lIDXnum, lIDXcount;
 
     pdlRoot = pdlRootPTR->pRoot;
     lIDXnum = pdlRoot->lIDXnum;
     if (lIDXnum < 1)
         return 3; // error .. incorrect Number of Indexes
 
-
     // now set the Free pointers
     //--------------------------
     if ((pdlRoot->lIndexInUse >= MAX_INDEXES) && (pdlRoot->lIndexInUse < 0))
         pdlRoot->lIndexInUse = 0; // set it to the Default Index 
-
 
     if ((pdlRoot->lFirstItem == -1) && (pdlRoot->lFirstItemFree == -1))
     {
@@ -376,12 +366,11 @@ int InitIDX(LPDLROOTPTR pdlRootPTR)
 //==========================================================
 int InitIDXDL_List(LPDLROOT lpdlr, LPFILEMAP p_fmap)
 {
-    LPDLENTRY       pdle;
-    long            lPrev;
-    long            lItemcount;
-    long            lItemsPerBuffer;
-    long            lMapStart, lMapCur;
-
+    LPDLENTRY pdle;
+    long lPrev;
+    long lItemcount;
+    long lItemsPerBuffer;
+    long lMapStart, lMapCur;
 
     lItemsPerBuffer = lpdlr->lItemsPerBuffer;
     lMapStart = lMapCur = p_fmap->lMapStart;
@@ -423,7 +412,6 @@ int InitIDXDL_List(LPDLROOT lpdlr, LPFILEMAP p_fmap)
     }
 
     lpdlr->lFirstItemFree = lMapStart;
-
     return 0;
 }
 
@@ -481,9 +469,9 @@ void    FreeIDX(LPDLROOT lpdlr)
 //====================================
 void FreeDLListRoot(LPDLROOT lpdlr)
 {
-    HANDLE  hfile;
-    HANDLE  hFileMap;
-    BOOL    bCloseFileHandle;
+    HANDLE hfile;
+    HANDLE hFileMap;
+    BOOL bCloseFileHandle;
 
     if (lpdlr == NULL)
         return;
@@ -526,7 +514,7 @@ void FreeDLListRoot(LPDLROOT lpdlr)
 //===================================
 DLList32_API void FreeDLListRootAll(LPDLROOTPTR* pRootPtr)
 {
-    LPDLROOTPTR        pRootPtrObj;
+    LPDLROOTPTR pRootPtrObj;
 
     pRootPtrObj = (*pRootPtr);
     if (pRootPtrObj == NULL)
@@ -562,10 +550,9 @@ DLList32_API void FreeDLListRootAll(LPDLROOTPTR* pRootPtr)
 // to the root
 //
 //=====================================
-DLList32_API long AddEntry(LPDLROOTPTR lpdlrPtr, LPSTR lpstrData,
-    long lEntrySize)
+DLList32_API long AddEntry(LPDLROOTPTR lpdlrPtr, LPSTR lpstrData, long lEntrySize)
 {
-    long    lReturn;
+    long lReturn;
 
     // Check if we this Root is Syncronized
     //-------------------------------------
@@ -605,17 +592,16 @@ DLList32_API long AddEntry(LPDLROOTPTR lpdlrPtr, LPSTR lpstrData,
 // Note: it always does insert the
 // Entry after the lAfter(Entry)
 //=======================================
-DLList32_API long InsertEntry(LPDLROOTPTR lpdlrPtr, long lAfter,
-    LPSTR lpstrData, long lEntrySize, long lRelation)
+DLList32_API long InsertEntry(LPDLROOTPTR lpdlrPtr, long lAfter, LPSTR lpstrData, long lEntrySize, long lRelation)
 {
-    LPDLENTRY       pdle, pdlAfter;
-    LPDLROOT        lpdlr;
-    DWORD           dwToGrow;
-    FILEMAP         fmap = { 0 };
-    FILEMAP         fmapAfter = { 0 };
-    long            ldlePos, lNext;
-    LPSTR           pData;
-    HANDLE          hfilemap;
+    LPDLENTRY pdle, pdlAfter;
+    LPDLROOT lpdlr;
+    DWORD dwToGrow;
+    FILEMAP fmap = { 0 };
+    FILEMAP fmapAfter = { 0 };
+    long ldlePos, lNext;
+    LPSTR pData;
+    HANDLE hfilemap;
 
     dwToGrow = 0;
     lpdlr = lpdlrPtr->pRoot;
@@ -661,7 +647,6 @@ DLList32_API long InsertEntry(LPDLROOTPTR lpdlrPtr, long lAfter,
         lpdlr = lpdlrPtr->pRoot;
         hfilemap = lpdlr->hfilemap;
     }
-
 
     // Get the First free Item Pointer
     //--------------------------------
@@ -922,7 +907,6 @@ ERROR_EXIT:
     return -1;
 }
 
-
 //==============================
 //FUNCION: DelEntry
 //
@@ -1008,15 +992,15 @@ DLList32_API int DelEntry(LPDLROOTPTR lpdlr, long lEntryNum)
 //==============================
 DLList32_API int DelEntryPtr(LPDLROOTPTR lpdlrPtr, long lItemPos)
 {
-    LPDLROOT        lpdlr;
-    LPDLENTRY       pdle, pdleParent, pdleChild, pdleNext, pdlePrev;
-    long            lCurrentPos, lNext;
-    long            lItemsCount;
-    HANDLE          hfilemap;
-    FILEMAP         fmapNext = { 0 };
-    FILEMAP         fmapPrev = { 0 };
-    FILEMAP         fmapParent = { 0 };
-    FILEMAP         fmapChild = { 0 };
+    LPDLROOT lpdlr;
+    LPDLENTRY pdle, pdleParent, pdleChild, pdleNext, pdlePrev;
+    long lCurrentPos, lNext;
+    long lItemsCount;
+    HANDLE hfilemap;
+    FILEMAP fmapNext = { 0 };
+    FILEMAP fmapPrev = { 0 };
+    FILEMAP fmapParent = { 0 };
+    FILEMAP fmapChild = { 0 };
 
     lpdlr = lpdlrPtr->pRoot;
 
@@ -1119,14 +1103,12 @@ DLList32_API int DelEntryPtr(LPDLROOTPTR lpdlrPtr, long lItemPos)
             IQS_UnmapViewOfFile(&fmapParent);
     }
 
-
     // add this item to the Free Items List
     //-------------------------------------
     pdle->lNext = lpdlr->lFirstItemFree;
     lpdlr->lFirstItemFree = lItemPos;
 
     lItemsCount = 1;
-
 
     // from here on we can
     // go only to the Child of this one
@@ -1153,7 +1135,6 @@ DLList32_API int DelEntryPtr(LPDLROOTPTR lpdlrPtr, long lItemPos)
         &fmapChild, hfilemap);
     if (pdleChild == NULL)
         goto ON_EXIT;
-
 
     if (pdleChild)
     {
@@ -1250,11 +1231,8 @@ ON_EXIT:
     {
         lpdlr->lEntryCount = 0;
     }
-
     return 0;
 }
-
-
 
 //============================
 //FUNCTION: CompactDLList
@@ -1340,11 +1318,10 @@ DLList32_API LPDLROOTPTR CompactDLList(LPDLROOTPTR lpdlrPtr)
 //==========================================
 DLList32_API long GetEntryLinkState(LPDLROOTPTR pRootPtrObj, long lCur)
 {
-    LPDLROOT    pdlr;
-    long        lLinkState;
-    FILEMAP     fmap;
-    LPDLENTRY   pdle;
-
+    LPDLROOT pdlr;
+    long lLinkState;
+    FILEMAP fmap;
+    LPDLENTRY pdle;
 
     if (pRootPtrObj->bSyncEnabled)
         EnterCriticalSection(&pRootPtrObj->csRoot);
@@ -1397,8 +1374,8 @@ DLList32_API long GetEntryLinkState(LPDLROOTPTR pRootPtrObj, long lCur)
 //==========================================
 DLList32_API long GetFirstEntry(LPDLROOTPTR pRootPtrObj)
 {
-    LPDLROOT    pdlr;
-    long        lReturn;
+    LPDLROOT pdlr;
+    long lReturn;
 
     if (pRootPtrObj->bSyncEnabled)
         EnterCriticalSection(&pRootPtrObj->csRoot);
@@ -1427,8 +1404,8 @@ DLList32_API long GetFirstEntry(LPDLROOTPTR pRootPtrObj)
 //==========================================
 DLList32_API long GetLastEntry(LPDLROOTPTR pRootPtrObj)
 {
-    LPDLROOT    pdlr;
-    long        lReturn;
+    LPDLROOT pdlr;
+    long lReturn;
 
     if (pRootPtrObj->bSyncEnabled)
         EnterCriticalSection(&pRootPtrObj->csRoot);
@@ -1458,10 +1435,10 @@ DLList32_API long GetLastEntry(LPDLROOTPTR pRootPtrObj)
 //==========================================
 DLList32_API long GetNextEntry(LPDLROOTPTR pRootPtrObj, long lCur)
 {
-    LPDLROOT    pdlr;
-    long        lReturn;
-    LPDLENTRY   pdle;
-    FILEMAP     fmap;
+    LPDLROOT pdlr;
+    long lReturn;
+    LPDLENTRY pdle;
+    FILEMAP fmap;
 
     if (pRootPtrObj->bSyncEnabled)
         EnterCriticalSection(&pRootPtrObj->csRoot);
@@ -1519,10 +1496,10 @@ DLList32_API long GetNextEntry(LPDLROOTPTR pRootPtrObj, long lCur)
 //==========================================
 DLList32_API long GetPrevEntry(LPDLROOTPTR pRootPtrObj, long lCur)
 {
-    LPDLROOT    pdlr;
-    long        lReturn;
-    LPDLENTRY   pdle;
-    FILEMAP     fmap;
+    LPDLROOT pdlr;
+    long lReturn;
+    LPDLENTRY pdle;
+    FILEMAP fmap;
 
     if (pRootPtrObj->bSyncEnabled)
         EnterCriticalSection(&pRootPtrObj->csRoot);
@@ -1585,10 +1562,10 @@ DLList32_API long GetPrevEntry(LPDLROOTPTR pRootPtrObj, long lCur)
 //================================================
 DLList32_API LPVOID GetEntryData(LPDLROOTPTR pRootPtrObj, long lEntryPos)
 {
-    LPDLROOT    pdlr;
-    LPVOID      pData;
-    LPDLENTRY   pdle;
-    FILEMAP     fmap = { 0 };
+    LPDLROOT pdlr;
+    LPVOID pData;
+    LPDLENTRY pdle;
+    FILEMAP fmap = { 0 };
 
     if (pRootPtrObj->bSyncEnabled)
         EnterCriticalSection(&pRootPtrObj->csRoot);
@@ -1616,7 +1593,6 @@ DLList32_API LPVOID GetEntryData(LPDLROOTPTR pRootPtrObj, long lEntryPos)
 
     if (pData == NULL)
     {
-
         IQS_UnmapViewOfFile(&pdlr->fmapData);
 
         pData = IQS_MapViewOfFile(pdlr->hfilemap, pdle->lDataPtr, pdlr->lDataBuffSize, &pdlr->fmapData);
@@ -1629,17 +1605,12 @@ DLList32_API LPVOID GetEntryData(LPDLROOTPTR pRootPtrObj, long lEntryPos)
     //                         &pdlr->fmapData, pdlr->hfilemap);
     }
 
-
     if (pRootPtrObj->bSyncEnabled)
         LeaveCriticalSection(&pRootPtrObj->csRoot);
 
 ON_EXIT:
     return pData;
 }
-
-
-
-/////////////////////////////////////////////////////
 
 //===================================================
 //FUNCTION: IQS_MapViewOfFile
@@ -1650,7 +1621,7 @@ ON_EXIT:
 //
 // NOTE: No validation is performed on the Parameters
 //===================================================
-LPSTR     IQS_MapViewOfFile(HANDLE hfilemap, DWORD dwFilePosition, DWORD dwSize, LPFILEMAP pfilemap)
+LPSTR IQS_MapViewOfFile(HANDLE hfilemap, DWORD dwFilePosition, DWORD dwSize, LPFILEMAP pfilemap)
 {
     register DWORD       dwBytesToMap;
     register DWORD       dwCalcOffset;
@@ -1689,10 +1660,9 @@ ON_EXIT:
 //
 //
 //===================================================
-int     IQS_UnmapViewOfFile(LPFILEMAP pfilemap)
+int IQS_UnmapViewOfFile(LPFILEMAP pfilemap)
 {
-    LPSTR   p;
-
+    LPSTR    p;
     p = pfilemap->pBase;
     pfilemap->pBase = NULL;
     pfilemap->pData = NULL;
@@ -1726,11 +1696,10 @@ int     IQS_UnmapViewOfFile(LPFILEMAP pfilemap)
 //          *pointer* if it is;
 //
 //==================================================================
-LPSTR    IsDataMapped(LPFILEMAP pfmapOrig, long lPos, long lSize,
-    LPFILEMAP pfmapNew, HANDLE hfmap)
+LPSTR IsDataMapped(LPFILEMAP pfmapOrig, long lPos, long lSize, LPFILEMAP pfmapNew, HANDLE hfmap)
 {
-    long        lMapEnd;
-    LPSTR       pData;
+    long lMapEnd;
+    LPSTR pData;
 
     pData = NULL;
 
@@ -1755,7 +1724,6 @@ LPSTR    IsDataMapped(LPFILEMAP pfmapOrig, long lPos, long lSize,
         pData = pfmapOrig->pData + (lPos - pfmapOrig->lMapStart);
         return pData;
     }
-
 
 MAP_TO_NEW:
     if (pfmapNew == NULL)
@@ -1786,14 +1754,14 @@ MAP_TO_NEW:
 //      n = error;
 //
 //===================================================
-int     GrowDLFileMap(LPDLROOTPTR pdlrPtr, long lSize)
+int GrowDLFileMap(LPDLROOTPTR pdlrPtr, long lSize)
 {
-    LPDLROOT    pdlr;
-    HANDLE      hFileMap;
-    HANDLE      hFile;
-    FILEMAP     fmap;
-    long        lCurMapped;
-    DWORD       dwFileStartPos;
+    LPDLROOT pdlr;
+    HANDLE hFileMap;
+    HANDLE hFile;
+    FILEMAP fmap;
+    long lCurMapped;
+    DWORD dwFileStartPos;
 
     pdlr = pdlrPtr->pRoot;
     hFile = pdlr->hfile;
@@ -1911,7 +1879,7 @@ int     GrowDLFileMap(LPDLROOTPTR pdlrPtr, long lSize)
 //      0 = OK
 //      n = error
 //===============================
-int     AddIndexPage(LPDLROOTPTR pdlrPtr)
+int AddIndexPage(LPDLROOTPTR pdlrPtr)
 {
     LPDLROOT lpdlr;
     LPIDX    pidx;

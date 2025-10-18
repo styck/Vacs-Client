@@ -9,7 +9,6 @@
 #include "DLTYPES.H"
 // ...existing code...
 
-
 #define RETURN1IFNULL(ptr) if(ptr==NULL){ return 1;}
 #define RETURN1IFNULL2(ptr1, ptr2) \
     if((ptr1==NULL)||(ptr2==NULL)){ return 1;}
@@ -24,18 +23,18 @@
 #define GETOFFSET_MSTRUC_PTR(struc_v_ptr, struc_m_ptr) ((long)((LPSTR)struc_m_ptr - (LPSTR)struc_v_ptr))
 
 // Only keep private function prototypes here
-int                         InitFromFile(LPDLROOT ,HANDLE ,LPSTR);
-int                         InitIDX(LPDLROOTPTR);
-int                         InitIDXDL_List(LPDLROOT , LPFILEMAP);
-int                         AddIndexPage(LPDLROOTPTR);
-void                        FreeDLListRoot(LPDLROOT);
-void                        FreeIDX(LPDLROOT);
-int                         IQS_GetSystemInfo(SYSTEM_INFO *);
-LPSTR                       IsDataMapped(LPFILEMAP ,long ,long , LPFILEMAP ,HANDLE);
-LPSTR                       IQS_MapViewOfFile(HANDLE ,DWORD ,DWORD ,LPFILEMAP);
-int                         IQS_UnmapViewOfFile(LPFILEMAP);
-int                         GrowDLFileMap(LPDLROOTPTR , long);
-void                        ShowLastError(void);
+int InitFromFile(LPDLROOT ,HANDLE ,LPSTR);
+int InitIDX(LPDLROOTPTR);
+int InitIDXDL_List(LPDLROOT , LPFILEMAP);
+int AddIndexPage(LPDLROOTPTR);
+void FreeDLListRoot(LPDLROOT);
+void FreeIDX(LPDLROOT);
+int IQS_GetSystemInfo(SYSTEM_INFO *);
+LPSTR IsDataMapped(LPFILEMAP ,long ,long , LPFILEMAP ,HANDLE);
+LPSTR IQS_MapViewOfFile(HANDLE ,DWORD ,DWORD ,LPFILEMAP);
+int IQS_UnmapViewOfFile(LPFILEMAP);
+int GrowDLFileMap(LPDLROOTPTR , long);
+void ShowLastError(void);
 
 #endif // SPOOLER_H_INCLUDED
 // the member has an address higher or

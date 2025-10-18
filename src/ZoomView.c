@@ -797,7 +797,6 @@ LRESULT CALLBACK  StereoCueMetersViewProc(HWND hWnd, UINT wMessage, WPARAM wPara
 
     }
     break;
-    // 					 
     case WM_ERASEBKGND:
         break;
 

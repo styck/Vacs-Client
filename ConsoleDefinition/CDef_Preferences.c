@@ -365,7 +365,6 @@ ON_EXIT:
 }
 
 
-
 /////////////////////////////////////////////////////////////////
 // FUNCTION: SavePreferences
 //
@@ -402,7 +401,6 @@ int SavePreferences()
     if (stream == NULL)
         return 1; // error
 
-
     g_pref.dwID = CDEF_PREFERENCES_ID;
     g_pref.dwSize = sizeof(CDEF_PREFERENCES);
     g_pref.dwVersion = CONSOLE_DEFINITION_VERSION;
@@ -415,8 +413,5 @@ int SavePreferences()
     }
 
     fclose(stream);
-
     return iRet;
 }
-
-
