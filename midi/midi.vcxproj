@@ -149,7 +149,7 @@
     <None Include="midi.def" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SAMMmidi.c" />
+    <ClCompile Include="SAMMmidi.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

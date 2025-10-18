@@ -1,7 +1,7 @@
 LIBRARY		"MIDI"
 
 EXPORTS
-    Dll_MidiInProc      @1      NONAME
-    Dll_MidiOutProc     @2      NONAME
-    Dll_SetMainWindow   @100    NONAME
-    Dll_GetMainWindow   @101    NONAME
+    Dll_MidiInProc      @1
+    Dll_MidiOutProc     @2
+    Dll_SetMainWindow   @100
+    Dll_GetMainWindow   @101

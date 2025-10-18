@@ -84,7 +84,7 @@ target_link_libraries(usengl PRIVATE version)
 # midi (Shared Library)
 #--------------------------------------------------------------------
 add_library(midi SHARED
-    midi/SAMMmidi.c
+    midi/SAMMmidi.cpp
     midi/midi.def
 )
 target_include_directories(midi PUBLIC inc)

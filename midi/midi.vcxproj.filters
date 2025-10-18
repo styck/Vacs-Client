@@ -20,7 +20,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SAMMmidi.c">
+    <ClCompile Include="SAMMmidi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
