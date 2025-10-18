@@ -196,7 +196,7 @@ enum
 extern "C" {
 #endif
 void CALLBACK Dll_MidiInProc(HMIDIIN, UINT, DWORD, DWORD, DWORD);
-void CALLBACK Dll_MidiOutProc(HMIDIIN, UINT, DWORD, DWORD, DWORD);
+void CALLBACK Dll_MidiOutProc(HMIDIOUT, UINT, DWORD, DWORD, DWORD);
 void Dll_SetMainWindow(HWND);
 HWND Dll_GetMainWindow(void);
 #ifdef __cplusplus
