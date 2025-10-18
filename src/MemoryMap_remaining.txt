@@ -1,0 +1,10 @@
+This is a temporary file to check the remaining content needed.
+The file was truncated at line 543 with "if (b"
+This should be "if (bForce)"
+
+The remaining functions needed:
+- Complete RecallMemoryMapBuffer
+- PhisDataToScrPos
+- ScrPosToPhisData  
+- InitVULookupTables
+- Debug functions: GETPHISDATAVALUE, SETPHISDATAVALUE, GETPHISDATAVALUEBUFFER, SETPHISDATAVALUEBUFFER

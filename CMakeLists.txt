@@ -108,7 +108,7 @@ add_executable(Vacs_Client
     src/Main.c
     src/MasterWindow.c
     src/MDI_Main.c
-    src/MemoryMap.c
+    src/MemoryMap.cpp
     src/MIDI.c
     "src/Misc BinRes.c"
     "src/Mix Files.c"
